@@ -1,0 +1,40 @@
+{namespace execspec.viewissuepage.showstory}
+
+/**
+ * Renders issue's story.
+ * @param story
+ */
+{template .renderStory}
+<div class="story-container">
+    <div class="story">
+        <div class="narrative">
+            {foreach $token in $story.narrative.tokens}
+                <span class='{$token.kind}'>{$token.text|changeNewlineToBr}</span>
+            {/foreach}
+        </div>
+        <div class='scenarios'>
+            {foreach $scenario in $story.scenarios}
+                <div class='scenario'>
+                    {foreach $token in $scenario.tokens}
+                        {if $token.kind != 'table'}
+                            <span class='{$token.kind}'>{$token.text|changeNewlineToBr}</span>
+                        {else}
+//                            <div class='{$token.kind}'>{$token.text|changeNewlineToBr}
+                                <table class='{$token.kind}'>
+                                    {foreach $row in $token.rows}
+                                        <tr>
+                                            {foreach $token in $row.tokens}
+                                                <td class='{$token.kind}'>{$token.text}</td>
+                                            {/foreach}
+                                        </tr>
+                                    {/foreach}
+                                </table>
+//                            </div>
+                        {/if}
+                    {/foreach}
+                </div>
+            {/foreach}
+        </div>
+    </div>
+</div>
+{/template}

@@ -1,0 +1,62 @@
+#myDialogPanel.my-panel-body {
+    padding: 0px;
+}
+
+.story-container {
+    border-color: aquamarine;
+    border: 1px;
+    font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", sans-serif;
+    color: #555;
+    text-align: left;
+    /*font-size: 0.84em;*/
+    font-size: 13px;
+}
+
+.story {
+    font-size: 14px;
+}
+
+.narrative {
+    color: blue;
+}
+
+.narrative .label {
+    /*display: block;*/
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+.narrative .keyword {
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+.scenario {
+    padding-top: 10px;
+    padding-left: 10px;
+    color: #008844;
+}
+
+.scenario .label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+    padding-left: 0px;
+}
+
+.scenario .title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+}
+
+.scenario .table {
+    border-color: #006400;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.scenario .table .label {
+    font-style: italic;
+}

@@ -1,0 +1,28 @@
+{namespace execspec.viewissuepage.editstory}
+
+/**
+ */
+{template .narrative}
+    <form id="inputFormNarrative" style="height:100%" class="aui top-label" onsubmit="alert('in form submit'); return false;" action="#">
+        <fieldset style="height:100%">
+            <div class="field-group" style="height:100%">
+                <textarea id="inputNarrative" class="textarea full-width-field" style="height:100%"
+                    name="comment" placeholder="Story narrative here..."></textarea>
+            </div>
+        </fieldset>
+    </form>
+{/template}
+
+/**
+ * Renders an input textarea for the edit/add story dialog
+ */
+{template .scenarioInput}
+    <form class="aui top-label" style="height:100%">
+        <fieldset style="height:100%">
+            <div class="field-group" style="height:100%">
+                <textarea style="height:100%" class="textarea full-width-field scenario-input"
+                            name="comment" placeholder="Enter scenario steps here ..."></textarea>
+            </div>
+        </fieldset>
+    </form>
+{/template}

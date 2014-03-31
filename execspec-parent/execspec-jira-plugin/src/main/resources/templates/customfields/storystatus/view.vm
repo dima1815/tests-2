@@ -1,0 +1,3 @@
+#if ($value)
+<span class="story-status-field">$value</span>
+#end

@@ -1,0 +1,96 @@
+<div class="aui-popup aui-dialog" id="editStoryDialog"
+     style="margin-top: -250px; margin-left: -480px; width: 960px; height: 500px; z-index: 3002; display: block;">
+    <div class="dialog-components" style="display: block;"><h2 class="dialog-title">Add New Story</h2>
+        <ul class="dialog-page-menu" style="height: 393px;">
+            <li class="page-menu-item">
+                <button class="item-button">Narrative:</button>
+            </li>
+            <li class="page-menu-item">
+                <button class="item-button">Scenario 1:</button>
+            </li>
+            <li class="page-menu-item">
+                <button class="item-button">Scenario 2:</button>
+            </li>
+            <li class="page-menu-item">
+                <button class="item-button">Scenario 3:</button>
+            </li>
+            <li class="page-menu-item">
+                <button class="item-button">Scenario 4:</button>
+            </li>
+            <li class="page-menu-item selected">
+                <button class="item-button">Scenario 5:</button>
+            </li>
+        </ul>
+        <div class="dialog-page-body">
+            <div class="dialog-panel-body narrativePanel" style="height: 393px; display: none;">
+                <form action="#" onsubmit="alert('in form submit'); return false;" class="aui top-label"
+                      style="height:100%" id="inputFormNarrative">
+                    <fieldset style="height:100%">
+                        <div style="height:100%" class="field-group"><textarea placeholder="Story narrative here..."
+                                                                               name="comment" style="height:100%"
+                                                                               class="textarea full-width-field"
+                                                                               id="inputNarrative"></textarea></div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="dialog-panel-body scenarioPanel1" style="height: 393px; display: none;">
+                <form style="height:100%" class="aui top-label">
+                    <fieldset style="height:100%">
+                        <div style="height:100%" class="field-group"><textarea
+                                placeholder="Enter scenario steps here ..." name="comment"
+                                class="textarea full-width-field" id="scenarioPanel1content.input"
+                                style="height:100%"></textarea></div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="dialog-panel-body scenarioPanel2" style="height: 393px; display: none;">
+                <form style="height:100%" class="aui top-label">
+                    <fieldset style="height:100%">
+                        <div style="height:100%" class="field-group"><textarea
+                                placeholder="Enter scenario steps here ..." name="comment"
+                                class="textarea full-width-field" id="scenarioPanel2content.input"
+                                style="height:100%"></textarea></div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="dialog-panel-body scenarioPanel3" style="height: 393px; display: none;">
+                <form style="height:100%" class="aui top-label">
+                    <fieldset style="height:100%">
+                        <div style="height:100%" class="field-group"><textarea
+                                placeholder="Enter scenario steps here ..." name="comment"
+                                class="textarea full-width-field" id="scenarioPanel3content.input"
+                                style="height:100%"></textarea></div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="dialog-panel-body scenarioPanel4" style="height: 393px; display: none;">
+                <form style="height:100%" class="aui top-label">
+                    <fieldset style="height:100%">
+                        <div style="height:100%" class="field-group"><textarea
+                                placeholder="Enter scenario steps here ..." name="comment"
+                                class="textarea full-width-field" id="scenarioPanel4content.input"
+                                style="height:100%"></textarea></div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="dialog-panel-body scenarioPanel5" style="height: 393px;">
+                <form style="height:100%" class="aui top-label">
+                    <fieldset style="height:100%">
+                        <div style="height:100%" class="field-group"><textarea
+                                placeholder="Enter scenario steps here ..." name="comment"
+                                class="textarea full-width-field" id="scenarioPanel5content.input"
+                                style="height:100%"></textarea></div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="dialog-button-panel">
+            <button class="button-panel-button">Add</button>
+            <button class="button-panel-button">Remove</button>
+            <button class="button-panel-button">Up</button>
+            <button class="button-panel-button">Down</button>
+            <button class="button-panel-button">Edit</button>
+            <button class="button-panel-button">Save</button>
+            <a href="#" class="button-panel-link #">Cancel</a></div>
+    </div>
+</div>
