@@ -8,30 +8,80 @@
 <div class="story-container">
     <div class="story">
         <div class="narrative">
-            {foreach $token in $story.narrative.tokens}
-                <span class='{$token.kind}'>{$token.text|changeNewlineToBr}</span>
-            {/foreach}
+            <div class="label">{$story.narrative.label}</div>
+            <div>
+                <span class="keyword">In order to</span> {$story.narrative.inOrderTo|changeNewlineToBr}
+            </div>
+            <div>
+                <span class="keyword">As a</span> {$story.narrative.asA|changeNewlineToBr}
+            </div>
+            <div>
+                <span class="keyword">In want to</span> {$story.narrative.iWantTo|changeNewlineToBr}
+            </div>
+            {if length($story.narrative.soThat) != 0}
+            <div>
+                <span class="keyword">So that</span> {$story.narrative.soThat|changeNewlineToBr}
+            </div>
+            {/if}
         </div>
         <div class='scenarios'>
             {foreach $scenario in $story.scenarios}
                 <div class='scenario'>
-                    {foreach $token in $scenario.tokens}
-                        {if $token.kind != 'table'}
-                            <span class='{$token.kind}'>{$token.text|changeNewlineToBr}</span>
-                        {else}
-//                            <div class='{$token.kind}'>{$token.text|changeNewlineToBr}
-                                <table class='{$token.kind}'>
-                                    {foreach $row in $token.rows}
+                    <div>
+                        <span class="label">Scenario:</span> <span class="title">{$scenario.title|changeNewlineToBr}</span>
+                    </div>
+                    <div class="steps">
+                    {foreach $step in $scenario.steps}
+                        <div class="step">
+//                            {$step.asString|changeNewlineToBr}
+                            {foreach $token in $step.tokens}
+                                {if $token.kind == 'table'}
+                                    <table class="table-parameter">
+                                        // render table token as html table
                                         <tr>
-                                            {foreach $token in $row.tokens}
-                                                <td class='{$token.kind}'>{$token.text}</td>
+                                            {foreach $header in $token.examplesTableModel.headers}
+                                                <td>{$token.examplesTableModel.headerSeparator}</td>
+                                                <td class="header">{$header}</td>
+                                                {if isLast($header)}
+                                                    <td>{$token.examplesTableModel.headerSeparator}</td>
+                                                {/if}
                                             {/foreach}
                                         </tr>
-                                    {/foreach}
-                                </table>
-//                            </div>
-                        {/if}
+                                        {foreach $rowData in $token.examplesTableModel.data}
+                                            <tr>
+                                                {foreach $cellData in $rowData}
+                                                    <td>{$token.examplesTableModel.valueSeparator}</td>
+                                                    <td class="value">{$cellData}</td>
+                                                    {if isLast($cellData)}
+                                                        <td>{$token.examplesTableModel.valueSeparator}</td>
+                                                    {/if}
+                                                {/foreach}
+                                            </tr>
+                                        {/foreach}
+                                    </table>
+                                {else}
+                                    <span class="{$token.kind}">{$token.asString|changeNewlineToBr}</span>
+                                {/if}
+                            {/foreach}
+                        </div>
+
+//                        {if $token.kind != 'table'}
+//                            <span class='{$token.kind}'>{$token.text|changeNewlineToBr}</span>
+//                        {else}
+////                            <div class='{$token.kind}'>{$token.text|changeNewlineToBr}
+//                                <table class='{$token.kind}'>
+//                                    {foreach $row in $token.rows}
+//                                        <tr>
+//                                            {foreach $token in $row.tokens}
+//                                                <td class='{$token.kind}'>{$token.text}</td>
+//                                            {/foreach}
+//                                        </tr>
+//                                    {/foreach}
+//                                </table>
+////                            </div>
+//                        {/if}
                     {/foreach}
+                    </div>
                 </div>
             {/foreach}
         </div>

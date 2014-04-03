@@ -3,14 +3,10 @@ package com.mycomp.execspec.jiraplugin.dto;
 import com.mycomp.execspec.jiraplugin.ao.Scenario;
 import com.mycomp.execspec.jiraplugin.ao.Story;
 import com.mycomp.execspec.jiraplugin.dto.model.*;
-import com.mycomp.execspec.jiraplugin.dto.model.step.StepModel;
-import com.mycomp.execspec.jiraplugin.dto.model.step.Token;
-import com.mycomp.execspec.jiraplugin.dto.model.step.TokenKind;
-import com.mycomp.execspec.jiraplugin.dto.model.step.TypedTextToken;
+import com.mycomp.execspec.jiraplugin.dto.model.step.*;
+import org.apache.commons.lang.Validate;
 import org.jbehave.core.model.*;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.steps.Step;
-import org.jbehave.core.steps.StepCandidate;
 
 import java.util.*;
 
@@ -54,7 +50,6 @@ public class ModelUtils {
         RegexStoryParser parser = new RegexStoryParser();
         org.jbehave.core.model.Story jbehaveStory = parser.parseStory(strStory);
 
-
         NarrativeModel narrative = fromJBehaveNarrative(story.getNarrative(), jbehaveStory.getNarrative());
         MetaModel meta = fromJBehaveMeta(jbehaveStory.getMeta());
         GivenStoriesModel givenStories = fromJBehaveGivenStories(jbehaveStory.getGivenStories());
@@ -66,7 +61,71 @@ public class ModelUtils {
     }
 
     private static List<ScenarioModel> fromJBehaveScenarios(List<org.jbehave.core.model.Scenario> scenarios) {
-        throw new RuntimeException("Not implemented");
+
+        List<ScenarioModel> models = new ArrayList<ScenarioModel>(scenarios.size());
+
+        for (org.jbehave.core.model.Scenario scenario : scenarios) {
+
+            String asString = "[TODO]";
+            String title = scenario.getTitle();
+
+            // Meta
+            Meta meta = scenario.getMeta();
+            Properties properties = new Properties();
+            Set<String> propertyNames = meta.getPropertyNames();
+            for (String propertyName : propertyNames) {
+                String property = meta.getProperty(propertyName);
+                properties.put(propertyName, property);
+            }
+            MetaModel metaModel = new MetaModel(properties);
+
+            // GivenStories
+            GivenStories givenStories = scenario.getGivenStories();
+            List<GivenStory> stories = givenStories.getStories();
+            List<GivenStoryModel> storiesModel = new ArrayList<GivenStoryModel>(stories.size());
+            for (GivenStory story : stories) {
+                String givenStoryAsString = story.asString();
+                String path = story.getPath();
+                GivenStoryModel givenStoryModel = new GivenStoryModel(givenStoryAsString, path);
+                storiesModel.add(givenStoryModel);
+            }
+            GivenStoriesModel givenStoriesModel = new GivenStoriesModel(asString, storiesModel);
+
+            // Steps
+            List<String> steps = scenario.getSteps();
+            List<StepModel> stepsModel = new ArrayList<StepModel>(steps.size());
+            for (String step : steps) {
+                List<Token> tokens = parseStepIntoTokens(step);
+                StepModel stepModel = new StepModel(step, tokens);
+                stepsModel.add(stepModel);
+            }
+
+            ExamplesTable examplesTable = scenario.getExamplesTable();
+            String examplesTableAsString = examplesTable.asString();
+            String headerSeparator = examplesTable.getHeaderSeparator();
+            String valueSeparator = examplesTable.getValueSeparator();
+            String ignorableSeparator = "NONE";
+            List<String> headers = examplesTable.getHeaders();
+
+            List<Map<String, String>> data = examplesTable.getRows();
+            List<List<String>> dataAsList = new ArrayList<List<String>>(data.size());
+            for (Map<String, String> rowDataMap : data) {
+                List<String> rowDataList = new ArrayList<String>(rowDataMap.size());
+                for (String header : headers) {
+                    String value = rowDataMap.get(header);
+                    rowDataList.add(value);
+                }
+                dataAsList.add(rowDataList);
+            }
+
+            ExamplesTableModel examplesTableModel = new ExamplesTableModel(examplesTableAsString, headerSeparator, valueSeparator,
+                    ignorableSeparator, headers, dataAsList);
+
+            ScenarioModel scenarioModel = new ScenarioModel(asString, title, metaModel, givenStoriesModel, stepsModel, examplesTableModel);
+            models.add(scenarioModel);
+        }
+
+        return models;
     }
 
     private static LifecycleModel fromJBehaveLifeCycle(Lifecycle lifecycle) {
@@ -96,43 +155,89 @@ public class ModelUtils {
         return lifecycleModel;
     }
 
-    private static List<Token> parseStepIntoTokens(String jbehaveBeforeStep) {
+    private static List<Token> parseStepIntoTokens(String stepAsString) {
 
-        StepCandidate stepCandidate = null;
-        Map<String, String> parameters = new HashMap<String, String>();
-
-        stepCandidate.matches(jbehaveBeforeStep);
-        Step matchedStep = stepCandidate.createMatchedStep(jbehaveBeforeStep, parameters);
-
+//        Map<String, String> parameters = new HashMap<String, String>();
+//
+//        StepCandidate stepCandidate = null;
+//        boolean matches = stepCandidate.matches(jbehaveBeforeStep);
+//        Step matchedStep = stepCandidate.createMatchedStep(jbehaveBeforeStep, parameters);
 
         List<Token> tokens = new ArrayList<Token>();
-        {
-            String[] keywords = {"Given", "When", "Then"};
-            String[] lines = jbehaveBeforeStep.split("\\n");
-            for (String line : lines) {
-                boolean startsWithKeyword = false;
-                for (String keyword : keywords) {
-                    if (line.startsWith(keyword)) {
-                        startsWithKeyword = true;
-                        tokens.add(new TypedTextToken(TokenKind.keyword, keyword));
-                        String remainder = line.substring(keyword.length());
-                        String tokenText = remainder + "\n";
-                        tokens.add(new TypedTextToken(TokenKind.text, tokenText));
-                        break;
-                    }
-                }
-                if (!startsWithKeyword) {
-                    if (line.startsWith("!--")) {
-                        String tokenText = line + "\n";
-                        tokens.add(new TypedTextToken(TokenKind.comment, line));
-                    } else if (line.startsWith("")) {
-                    } else {
 
-                    }
-                }
+        String[] keywords = {"Given", "When", "Then", "And"};
+        for (String keyword : keywords) {
+            if (stepAsString.startsWith(keyword)) {
+                tokens.add(new TypedTextToken(TokenKind.keyword, keyword));
+                stepAsString = stepAsString.substring(keyword.length());
+                break;
             }
         }
+
+        String stepText = "";
+        List<String> tableLines = new ArrayList<String>();
+
+        // extract any table parameters
+        String[] lines = stepAsString.split("\\n");
+        for (String line : lines) {
+            if (line.startsWith("|")) {
+                if (!stepText.isEmpty()) {
+                    tokens.add(new TypedTextToken(TokenKind.text, stepText));
+                    stepText = "";
+                }
+                // found a table line
+                tableLines.add(line);
+            } else {
+                if (!tableLines.isEmpty()) {
+                    // table ended we need to parse it
+                    ExamplesTableToken tableToken = parseTableLinesIntoToken(tableLines);
+                    tokens.add(tableToken);
+                    tableLines.clear();
+                }
+                stepText += line + "\n";
+            }
+        }
+
+        if (!stepText.isEmpty()) {
+            tokens.add(new TypedTextToken(TokenKind.text, stepText));
+        } else if (!tableLines.isEmpty()) {
+            // last step line was a table line
+            ExamplesTableToken tableToken = parseTableLinesIntoToken(tableLines);
+            tokens.add(tableToken);
+        }
+
         return tokens;
+    }
+
+    private static ExamplesTableToken parseTableLinesIntoToken(List<String> tableLines) {
+
+        String asString = "TODO";
+
+        String headerSeparator = "|";
+        String valueSeparator = "|";
+        String ignorableSeparator = "NONE";
+
+        String headerLine = tableLines.get(0);
+        Validate.isTrue(headerLine.startsWith("|"));
+        Validate.isTrue(headerLine.length() > 1);
+        // trim the leading '|' so that it doesn't end up in tokens
+        headerLine = headerLine.substring(1);
+        List<String> headers = Arrays.asList(headerLine.split("\\" + headerSeparator));
+        List<List<String>> data = new ArrayList<List<String>>(tableLines.size() - 1);
+        for (int i = 1; i < tableLines.size(); i++) {
+            String tableRow = tableLines.get(i);
+            Validate.isTrue(tableRow.startsWith("|"));
+            Validate.isTrue(tableRow.length() > 1);
+            tableRow = tableRow.substring(1);
+            String[] values = tableRow.split("\\" + valueSeparator);
+            List<String> rowValues = Arrays.asList(values);
+            data.add(rowValues);
+        }
+
+        ExamplesTableModel exampleTablesModel = new ExamplesTableModel(asString, headerSeparator, valueSeparator, ignorableSeparator, headers, data);
+        ExamplesTableToken examplesTableToken = new ExamplesTableToken(asString, exampleTablesModel);
+
+        return examplesTableToken;
     }
 
     private static GivenStoriesModel fromJBehaveGivenStories(GivenStories givenStories) {

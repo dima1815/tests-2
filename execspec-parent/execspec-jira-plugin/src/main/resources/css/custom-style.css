@@ -32,9 +32,15 @@
     font-weight: bold;
 }
 
-.scenario {
+.scenarios {
     padding-top: 10px;
-    padding-left: 10px;
+    /*padding-left: 10px;*/
+    /*color: #008844;*/
+}
+
+.scenario {
+    /*padding-top: 10px;*/
+    /*padding-left: 10px;*/
     color: #008844;
 }
 
@@ -42,7 +48,7 @@
     font-size: 20px;
     font-weight: bold;
     color: #555;
-    padding-left: 0px;
+    /*padding-left: 0px;*/
 }
 
 .scenario .title {
@@ -51,12 +57,41 @@
     color: #555;
 }
 
-.scenario .table {
-    border-color: #006400;
-    border-style: solid;
-    border-width: 1px;
+.scenario .steps {
+    padding-left: 10px;
 }
 
-.scenario .table .label {
+.scenario .step {
+    /*font-size: 20px;*/
+    /*font-weight: bold;*/
+    /*color: #555;*/
+}
+
+.scenario .step .keyword {
+    font-weight: bold;
+}
+
+.scenario .table-parameter {
+    color: #cc6600;
+    /*border-color: #cc6600;*/
+    /*border-style: solid;*/
+    /*border-width: 1px;*/
+}
+
+.scenario .table-parameter .header {
     font-style: italic;
+    /*border-color: #cc6600;*/
+    /*border-left: solid;*/
+    /*border-width: 1px;*/
+    /*padding-left: 5px;*/
+    /*padding-right: 5px;*/
+}
+
+.scenario .table-parameter .value {
+    /*font-style: italic;*/
+    /*border-color: #cc6600;*/
+    /*border-left: solid;*/
+    /*border-width: 1px;*/
+    /*padding-left: 5px;*/
+    /*padding-right: 5px;*/
 }

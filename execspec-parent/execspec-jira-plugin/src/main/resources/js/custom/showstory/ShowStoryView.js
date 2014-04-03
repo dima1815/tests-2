@@ -36,9 +36,6 @@ function ShowStoryView(controller) {
 
     this.showStory = function (storyPayload) {
 
-//        var story = this.preprocess(storyPayload.story);
-//        storyPayload.story = story;
-
         console.log("showing story: \n" + JSON.stringify(storyPayload));
 
         AJS.$("#story-container").html(execspec.viewissuepage.showstory.renderStory(storyPayload));

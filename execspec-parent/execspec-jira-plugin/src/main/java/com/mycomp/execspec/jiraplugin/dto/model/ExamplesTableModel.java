@@ -3,7 +3,6 @@ package com.mycomp.execspec.jiraplugin.dto.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Dmytro on 3/6/14.
@@ -16,9 +15,9 @@ public class ExamplesTableModel {
     private final String valueSeparator;
     private final String ignorableSeparator;
     private final List<String> headers;
-    private final List<Map<String, String>> data;
+    private final List<List<String>> data;
 
-    public ExamplesTableModel(String asString, String headerSeparator, String valueSeparator, String ignorableSeparator, List<String> headers, List<Map<String, String>> data) {
+    public ExamplesTableModel(String asString, String headerSeparator, String valueSeparator, String ignorableSeparator, List<String> headers, List<List<String>> data) {
         this.asString = asString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
@@ -47,7 +46,7 @@ public class ExamplesTableModel {
         return headers;
     }
 
-    public List<Map<String, String>> getData() {
+    public List<List<String>> getData() {
         return data;
     }
 }
