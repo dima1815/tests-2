@@ -105,9 +105,9 @@
         <label key="viewIssuePage.storyPanel.label"/>
     </web-panel>
     <!-- ==================================================================================================== -->
-    <!--Custom fields-->
+    <!--Custom customfields-->
     <customfield-type name="Story Status Field" i18n-name-key="storySstatusField.name" key="story-status-field"
-                      class="com.mycomp.execspec.jiraplugin.fields.StoryStatusField">
+                      class="com.mycomp.execspec.jiraplugin.customfields.StoryStatusField">
         <description key="storySstatusField.description">The Story Status Field Plugin</description>
         <resource name="view" type="velocity" location="/templates/customfields/storystatus/view.vm"/>
         <resource name="edit" type="velocity" location="/templates/customfields/storystatus/edit.vm"/>
@@ -125,15 +125,24 @@
     </component>
     <!-- ==================================================================================================== -->
     <!-- Custom components -->
-    <component key="story-dao" name="Story DAO" class="com.mycomp.execspec.jiraplugin.ao.StoryDao"/>
-    <component key="scenario-dao" name="Scenario DAO" class="com.mycomp.execspec.jiraplugin.ao.ScenarioDao"/>
+    <!--DAOs-->
+    <component key="story-dao" name="Story DAO" class="com.mycomp.execspec.jiraplugin.ao.story.StoryDao"/>
+    <component key="scenario-dao" name="Scenario DAO" class="com.mycomp.execspec.jiraplugin.ao.story.ScenarioDao"/>
+    <component key="story-test-report-dao" name="Story Test Report DAO"
+               class="com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao"/>
+    <!--Services-->
     <component key="story-service" name="Story Service"
                class="com.mycomp.execspec.jiraplugin.service.StoryServiceImpl"/>
+    <component key="story-report-service" name="Story Report Service"
+               class="com.mycomp.execspec.jiraplugin.service.StoryReportServiceImpl"/>
     <!-- ==================================================================================================== -->
     <!--Active Objects-->
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
-        <entity>com.mycomp.execspec.jiraplugin.ao.Story</entity>
-        <entity>com.mycomp.execspec.jiraplugin.ao.Scenario</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.story.Scenario</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.story.Story</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StoryReport</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.ScenarioReport</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StepReport</entity>
     </ao>
 </atlassian-plugin>

@@ -10,3 +10,8 @@ When I send the following request:
 |Buy |100 |USD |
 |Sell |20 |GBP |
 Then something should happen
+
+Scenario: sad path
+Given something
+When I try a step that has not yet been implemented
+Then an error should be reported in the test report

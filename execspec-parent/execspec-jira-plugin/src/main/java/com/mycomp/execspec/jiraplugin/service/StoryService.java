@@ -1,23 +1,23 @@
 package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.activeobjects.tx.Transactional;
-import com.mycomp.execspec.jiraplugin.dto.model.StoryModel;
-import com.mycomp.execspec.jiraplugin.dto.payloads.SaveStoryModel;
+import com.mycomp.execspec.jiraplugin.dto.story.in.SaveStoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
 
 import java.util.List;
 
 @Transactional
 public interface StoryService {
 
-    void create(SaveStoryModel storyModel);
+    void create(SaveStoryDTO storyDTO);
 
-    void update(SaveStoryModel storyModel);
+    void update(SaveStoryDTO storyDTO);
 
-    List<StoryModel> all();
+    List<StoryDTO> all();
 
-    StoryModel findByProjectAndIssueKey(String projectKey, String issueKey);
+    StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey);
 
-    StoryModel findById(Long storyId);
+    StoryDTO findById(Long storyId);
 
     void delete(Long storyId);
 

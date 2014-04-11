@@ -20,6 +20,7 @@ function StoryService() {
         var jsonInput = JSON.stringify(storyModel);
 
         console.log("sending jsonData = \n" + jsonInput);
+        console.log("to post URL = \n" + urlString);
 
         AJS.$.ajax({
             type: "POST",

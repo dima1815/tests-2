@@ -24,7 +24,7 @@ public class MyStepsMain {
     @Then("something should happen")
     public void verify() {
         System.out.println("-> verify");
-        throw new UnsupportedOperationException("Not yet implemented");
+//        throw new UnsupportedOperationException("Not yet implemented");
     }
 
 

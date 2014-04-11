@@ -2,6 +2,7 @@ package com.mycomp.execspec.jiraplugin.ao;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.activeobjects.test.TestActiveObjects;
+import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import junit.framework.Assert;
 import net.java.ao.EntityManager;
@@ -41,9 +42,9 @@ public class StoryServiceImplTest {
     public void test() {
 
 
-//        List<StoryModel> all = storyService.all();
+//        List<StoryDTO> all = storyService.all();
 //        Assert.assertEquals(2, all.size());
-//        StoryModel storyModel = all.get(0);
+//        StoryDTO storyModel = all.get(0);
 //        Assert.assertEquals(new Integer(1), storyModel.getId());
 
     }

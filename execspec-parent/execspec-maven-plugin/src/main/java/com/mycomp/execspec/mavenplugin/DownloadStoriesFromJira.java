@@ -8,10 +8,10 @@ package com.mycomp.execspec.mavenplugin;
  */
 
 
-import com.mycomp.execspec.jiraplugin.dto.model.NarrativeModel;
-import com.mycomp.execspec.jiraplugin.dto.model.ScenarioModel;
-import com.mycomp.execspec.jiraplugin.dto.model.StoryModel;
-import com.mycomp.execspec.jiraplugin.dto.payloads.StoriesPayload;
+import com.mycomp.execspec.jiraplugin.dto.story.out.NarrativeDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.ScenarioDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoriesPayload;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -64,7 +64,7 @@ public class DownloadStoriesFromJira extends AbstractMojo {
         getLog().info("response - " + response);
         if (response.getStatus() == 200) {
             StoriesPayload storiesPayload = response.getEntity(StoriesPayload.class);
-            List<StoryModel> stories = storiesPayload.getStories();
+            List<StoryDTO> stories = storiesPayload.getStories();
             getLog().info("stories.size() = " + stories.size());
             getLog().info("stories:\n" + stories);
 
@@ -78,9 +78,9 @@ public class DownloadStoriesFromJira extends AbstractMojo {
 
     private void writeModelToFile(StoriesPayload storiesPayload) {
 
-        List<StoryModel> stories = storiesPayload.getStories();
+        List<StoryDTO> stories = storiesPayload.getStories();
 
-        for (StoryModel storyModel : stories) {
+        for (StoryDTO storyModel : stories) {
 
             PrintWriter pw = null;
             try {
@@ -92,13 +92,13 @@ public class DownloadStoriesFromJira extends AbstractMojo {
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
                 pw = new PrintWriter(fw);
 
-                NarrativeModel narrative = storyModel.getNarrative();
+                NarrativeDTO narrative = storyModel.getNarrative();
                 String narrativeText = narrative.getAsString();
                 pw.println(narrativeText);
 
                 pw.println();
-                List<ScenarioModel> scenarios = storyModel.getScenarios();
-                for (ScenarioModel scenario : scenarios) {
+                List<ScenarioDTO> scenarios = storyModel.getScenarios();
+                for (ScenarioDTO scenario : scenarios) {
                     String scenarioText = scenario.getAsString();
                     pw.println(scenarioText);
                     pw.println();

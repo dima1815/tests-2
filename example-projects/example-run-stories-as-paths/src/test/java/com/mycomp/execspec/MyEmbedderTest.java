@@ -5,7 +5,10 @@ import org.jbehave.core.context.ContextView;
 import org.jbehave.core.context.JFrameContextView;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.reporters.*;
+import org.jbehave.core.reporters.ContextOutput;
+import org.jbehave.core.reporters.CrossReference;
+import org.jbehave.core.reporters.Format;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -39,10 +42,11 @@ public class MyEmbedderTest extends JUnitStories {
         configuration().storyReporterBuilder().withCrossReference(crossReference);
 
         JiraStoryLoader jiraLoader = new JiraStoryLoader();
-        jiraLoader.setJiraBaseUrl(jiraBaseUrl + "/rest/story-res/1.0/story/find");
+        jiraLoader.setJiraBaseUrl(jiraBaseUrl);
         configuration().useStoryLoader(jiraLoader);
 
-        StoryReporter jiraStoryReporter = new JiraStoryReporter();
+        JiraStoryReporter jiraStoryReporter = new JiraStoryReporter();
+        jiraStoryReporter.setJiraBaseUrl(jiraBaseUrl);
         configuration().storyReporterBuilder().withReporters(jiraStoryReporter);
 
         JiraStepDocReporter stepDocReporter = new JiraStepDocReporter();

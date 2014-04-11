@@ -1,6 +1,6 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.payloads.StoryPathsModel;
+import com.mycomp.execspec.jiraplugin.dto.story.out.storypath.StoryPathsDTO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -30,7 +30,7 @@ public class JiraStoryFinder {
 
         URI jiraSearchUrl = null;
         try {
-            String fullPath = jiraBaseUrl + "/rest/story-res/1.0/story/list-story-paths/" + projectKey;
+            String fullPath = jiraBaseUrl + "/rest/story-res/1.0/find/story-paths/" + projectKey;
             fullPath += "?os_username=admin&os_password=admin";
             jiraSearchUrl = new URI(fullPath);
         } catch (URISyntaxException e) {
@@ -47,7 +47,7 @@ public class JiraStoryFinder {
 
             int length = response.getLength();
             MediaType type = response.getType();
-            StoryPathsModel storyPaths = response.getEntity(StoryPathsModel.class);
+            StoryPathsDTO storyPaths = response.getEntity(StoryPathsDTO.class);
 
             if (storyPaths.getPaths() != null && !storyPaths.getPaths().isEmpty()) {
                 paths = storyPaths.getPaths();

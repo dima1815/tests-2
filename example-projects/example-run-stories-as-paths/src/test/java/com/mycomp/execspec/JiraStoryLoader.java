@@ -1,13 +1,14 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.ModelUtils;
-import com.mycomp.execspec.jiraplugin.dto.model.NarrativeModel;
-import com.mycomp.execspec.jiraplugin.dto.model.ScenarioModel;
-import com.mycomp.execspec.jiraplugin.dto.model.StoryModel;
-import com.mycomp.execspec.jiraplugin.dto.payloads.StoryPayload;
+import com.mycomp.execspec.jiraplugin.dto.story.out.MetaDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.NarrativeDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.ScenarioDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryPayload;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.apache.commons.lang.Validate;
 import org.jbehave.core.io.StoryLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Dmytro on 2/25/14.
@@ -31,6 +33,9 @@ public class JiraStoryLoader implements StoryLoader {
 
     private String jiraBaseUrl;
 
+    //    private String loadStoryPath = "/rest/story-res/1.0/crud/as-string";
+    private String loadStoryPath = "/rest/story-res/1.0/find/for-issue";
+
     private String downloadedStoriesDir = "src/test/resources/jira_stories";
 
     @Override
@@ -38,7 +43,7 @@ public class JiraStoryLoader implements StoryLoader {
 
         URI jiraSearchUrl = null;
         try {
-            String fullPath = jiraBaseUrl + "/" + storyPath;
+            String fullPath = jiraBaseUrl + loadStoryPath + "/" + storyPath;
             fullPath += "?os_username=admin&os_password=admin";
             log.debug("full story path is - " + fullPath);
             jiraSearchUrl = new URI(fullPath);
@@ -48,24 +53,23 @@ public class JiraStoryLoader implements StoryLoader {
 
         Client client = Client.create();
         WebResource res = client.resource(jiraSearchUrl);
-        res.type(MediaType.APPLICATION_JSON);
-//        res.type(MediaType.TEXT_PLAIN);
-        ClientResponse response = res.get(ClientResponse.class);
+        ClientResponse response = res.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
         log.info("response - " + response);
+
         if (response.getStatus() == 200) {
 
-            int length = response.getLength();
-            MediaType type = response.getType();
             StoryPayload storyPayload = response.getEntity(StoryPayload.class);
 
-            StoryModel storyModel = storyPayload.getStory();
-            if (storyModel != null) {
-                this.writeModelToFile(storyModel);
-            } else {
-                log.warn("Failed to load story using path - " + storyPath);
-            }
+            // we add the jira version as a meta field so that we can access it later
+            // during story reporting
+            Long version = storyPayload.getStory().getVersion();
+            Validate.notNull(version);
+            MetaDTO meta = storyPayload.getStory().getMeta();
+            meta.getProperties().put("version-in-jira", version);
 
-            String storyAsString = ModelUtils.asTextStory(storyModel);
+            String storyAsString = asString(storyPayload);
+            this.writeModelToFile(storyPath + ".story", storyAsString);
             return storyAsString;
 
         } else {
@@ -77,31 +81,58 @@ public class JiraStoryLoader implements StoryLoader {
 
     }
 
-    private void writeModelToFile(StoryModel storyModel) {
+    private String asString(StoryPayload storyPayload) {
+
+        StoryDTO story = storyPayload.getStory();
+
+        StringBuilder sb = new StringBuilder();
+
+        // narrative
+        NarrativeDTO narrative = story.getNarrative();
+        String narrativeStr = narrative.getAsString();
+        sb.append(narrativeStr);
+        sb.append("\n\n");
+
+        // meta
+        sb.append("Meta:\n");
+        MetaDTO storyMeta = story.getMeta();
+        Properties storyMetaProp = storyMeta.getProperties();
+        for (Object o : storyMetaProp.keySet()) {
+            String key = (String) o;
+            String value = (String) storyMetaProp.get(key);
+            sb.append("@" + key + " " + value);
+            sb.append("\n");
+        }
+        sb.append("\n");
+
+        // scenarios
+        List<ScenarioDTO> scenarios = story.getScenarios();
+        for (ScenarioDTO scenario : scenarios) {
+            sb.append(scenario.getAsString());
+            sb.append("\n");
+            sb.append("\n");
+        }
+
+        String asString = sb.toString();
+        return asString;
+    }
+
+    private void writeModelToFile(String storyPath, String storyModel) {
 
         PrintWriter pw = null;
         try {
             File storiesDir = new File(downloadedStoriesDir);
-            storiesDir.mkdirs();
-            String issueKey = storyModel.getIssueKey();
-            String storyFileName = issueKey + ".story";
-            File outFile = new File(storiesDir, storyFileName);
+            File outFile = new File(storiesDir, storyPath);
+            outFile.getParentFile().mkdirs();
             FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
             pw = new PrintWriter(fw);
 
-            // narrative
-            NarrativeModel narrative = storyModel.getNarrative();
-            String narrativeText = narrative.getAsString();
-            pw.println(narrativeText);
+            // we need to insert jira story version as a meta tag into the story
+            // the meta section may exist - in this case we add an extra attribute
+            // if meta section doesn't exist - we create it and create one attribute containing our version
 
-            // scenarios
-            pw.println();
-            List<ScenarioModel> scenarios = storyModel.getScenarios();
-            for (ScenarioModel scenario : scenarios) {
-                String scenarioText = scenario.getAsString();
-                pw.println(scenarioText);
-                pw.println();
-            }
+
+            pw.print(storyModel);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

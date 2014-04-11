@@ -3,7 +3,7 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.payloads.SaveStoryModel;
+import com.mycomp.execspec.jiraplugin.dto.story.in.SaveStoryDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -42,11 +42,11 @@ public class StoryResourceCrud {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public SaveStoryModel create(String storyModelString) {
+    public SaveStoryDTO create(String storyModelString) {
         ObjectMapper mapper = new ObjectMapper();
-        SaveStoryModel storyModel = null;
+        SaveStoryDTO storyModel = null;
         try {
-            storyModel = mapper.readValue(storyModelString, SaveStoryModel.class);
+            storyModel = mapper.readValue(storyModelString, SaveStoryDTO.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -65,7 +65,7 @@ public class StoryResourceCrud {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public SaveStoryModel update(SaveStoryModel storyModel) {
+    public SaveStoryDTO update(SaveStoryDTO storyModel) {
         Validate.notNull(storyModel);
         Validate.notNull(storyModel.getIssueKey());
         System.out.println("### in update method, storyModel - " + storyModel);
@@ -90,6 +90,5 @@ public class StoryResourceCrud {
         storyService.delete(projectKey, issueKey);
         return Response.ok("Successful deletion from server!").build();
     }
-
 
 }

@@ -39,21 +39,21 @@
                                     <table class="table-parameter">
                                         // render table token as html table
                                         <tr>
-                                            {foreach $header in $token.examplesTableModel.headers}
-                                                <td>{$token.examplesTableModel.headerSeparator}</td>
+                                            {foreach $header in $token.examplesTableDTO.headers}
+                                                <td>{$token.examplesTableDTO.headerSeparator}</td>
                                                 <td class="header">{$header}</td>
                                                 {if isLast($header)}
-                                                    <td>{$token.examplesTableModel.headerSeparator}</td>
+                                                    <td>{$token.examplesTableDTO.headerSeparator}</td>
                                                 {/if}
                                             {/foreach}
                                         </tr>
-                                        {foreach $rowData in $token.examplesTableModel.data}
+                                        {foreach $rowData in $token.examplesTableDTO.data}
                                             <tr>
                                                 {foreach $cellData in $rowData}
-                                                    <td>{$token.examplesTableModel.valueSeparator}</td>
+                                                    <td>{$token.examplesTableDTO.valueSeparator}</td>
                                                     <td class="value">{$cellData}</td>
                                                     {if isLast($cellData)}
-                                                        <td>{$token.examplesTableModel.valueSeparator}</td>
+                                                        <td>{$token.examplesTableDTO.valueSeparator}</td>
                                                     {/if}
                                                 {/foreach}
                                             </tr>
