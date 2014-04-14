@@ -22,7 +22,7 @@ public class StepDTO {
         this.tokens = tokens;
     }
 
-    public String getAsString() {
+    public String asString() {
         return asString;
     }
 

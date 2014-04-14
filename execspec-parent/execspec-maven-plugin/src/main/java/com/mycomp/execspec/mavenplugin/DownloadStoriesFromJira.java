@@ -99,7 +99,7 @@ public class DownloadStoriesFromJira extends AbstractMojo {
                 pw.println();
                 List<ScenarioDTO> scenarios = storyModel.getScenarios();
                 for (ScenarioDTO scenario : scenarios) {
-                    String scenarioText = scenario.getAsString();
+                    String scenarioText = scenario.asString();
                     pw.println(scenarioText);
                     pw.println();
                 }

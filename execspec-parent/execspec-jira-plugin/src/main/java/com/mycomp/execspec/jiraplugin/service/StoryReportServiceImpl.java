@@ -65,6 +65,7 @@ public class StoryReportServiceImpl implements StoryReportService {
             storyTestReport.setEnvironment(reportedEnvironment);
             Long storyVersion = storyReportDTO.getStoryVersion();
             storyTestReport.setStoryVersion(storyVersion);
+            storyTestReport.setStatus(storyReportDTO.getStatus().name());
 
             // create scenario reports
             List<ScenarioReportDTO> scenarioTestReportModels = storyReportDTO.getScenarioTestReportDTOs();

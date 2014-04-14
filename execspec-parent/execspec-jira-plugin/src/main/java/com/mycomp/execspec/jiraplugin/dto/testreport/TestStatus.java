@@ -5,10 +5,16 @@ package com.mycomp.execspec.jiraplugin.dto.testreport;
  */
 public enum TestStatus {
 
-    PASSED,
-    FAILED,
-    PENDING,
-    NOT_PERFORMED,
+    PASSED("Passed"),
+    FAILED("Failed"),
+    PENDING("Pending"),
+    NOT_PERFORMED("Not Performed"),
     /*not sure if need this one - but some steps can be ignored in story reporter*/
-    IGNORED
+    IGNORED("Ignored");
+
+    public final String guiName;
+
+    TestStatus(String guiName) {
+        this.guiName = guiName;
+    }
 }

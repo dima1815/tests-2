@@ -3,6 +3,7 @@ package com.mycomp.execspec.jiraplugin.dto;
 import com.mycomp.execspec.jiraplugin.ao.story.Scenario;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.dto.story.out.*;
+import com.mycomp.execspec.jiraplugin.dto.story.out.step.BaseToken;
 import com.mycomp.execspec.jiraplugin.dto.story.out.step.ExamplesTableTokenDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.step.StepDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.step.TokenKind;
@@ -66,8 +67,9 @@ public class StoryDTOUtils {
 
         for (org.jbehave.core.model.Scenario scenario : scenarios) {
 
-            String asString = "[TODO]";
+            StringBuilder sb = new StringBuilder();
             String title = scenario.getTitle();
+            sb.append("Scenario: " + title + "\n");
 
             // Meta
             Meta meta = scenario.getMeta();
@@ -78,6 +80,11 @@ public class StoryDTOUtils {
                 properties.put(propertyName, property);
             }
             MetaDTO metaModel = new MetaDTO(properties);
+            String metaAsString = metaModel.asString();
+            if (!metaAsString.isEmpty()) {
+                sb.append("\n");
+                sb.append(metaAsString);
+            }
 
             // GivenStories
             GivenStories givenStories = scenario.getGivenStories();
@@ -86,27 +93,36 @@ public class StoryDTOUtils {
             for (GivenStory story : stories) {
                 String givenStoryAsString = story.asString();
                 String path = story.getPath();
-                GivenStoryDTO givenStoryModel = new GivenStoryDTO(givenStoryAsString, path);
+                GivenStoryDTO givenStoryModel = new GivenStoryDTO(path);
                 storiesModel.add(givenStoryModel);
             }
-            GivenStoriesDTO givenStoriesModel = new GivenStoriesDTO(asString, storiesModel);
+            GivenStoriesDTO givenStoriesModel = new GivenStoriesDTO(storiesModel);
+            String givenStoriesAsString = givenStoriesModel.asString();
+            if (!givenStoriesAsString.isEmpty()) {
+                sb.append("\n");
+                sb.append(givenStoriesAsString);
+            }
 
             // Steps
             List<String> steps = scenario.getSteps();
             List<StepDTO> stepsModel = new ArrayList<StepDTO>(steps.size());
             for (String step : steps) {
-                List<IToken> tokens = parseStepIntoTokens(step);
+                List<BaseToken> tokens = parseStepIntoTokens(step);
                 StepDTO stepModel = new StepDTO(step, tokens);
                 stepsModel.add(stepModel);
+                String stepAsString = stepModel.asString();
+                sb.append(stepAsString);
+                sb.append("\n");
             }
 
+            // scanario parameterization table
             ExamplesTable examplesTable = scenario.getExamplesTable();
             String examplesTableAsString = examplesTable.asString();
             String headerSeparator = examplesTable.getHeaderSeparator();
             String valueSeparator = examplesTable.getValueSeparator();
             String ignorableSeparator = "NONE";
             ArrayList<String> headers = new ArrayList<String>(examplesTable.getHeaders());
-
+            //
             List<Map<String, String>> data = examplesTable.getRows();
             ArrayList<ArrayList<String>> dataAsList = new ArrayList<ArrayList<String>>(data.size());
             for (Map<String, String> rowDataMap : data) {
@@ -117,10 +133,14 @@ public class StoryDTOUtils {
                 }
                 dataAsList.add(rowDataList);
             }
-
             ExamplesTableDTO examplesTableModel = new ExamplesTableDTO(examplesTableAsString, headerSeparator, valueSeparator,
                     ignorableSeparator, headers, dataAsList);
+            if (examplesTableAsString != null && !examplesTableAsString.isEmpty()) {
+                sb.append("\n");
+                sb.append(examplesTableAsString);
+            }
 
+            String asString = sb.toString();
             ScenarioDTO scenarioModel = new ScenarioDTO(asString, title, metaModel, givenStoriesModel, stepsModel, examplesTableModel);
             models.add(scenarioModel);
         }
@@ -135,7 +155,7 @@ public class StoryDTOUtils {
             beforeSteps = new ArrayList<StepDTO>(jbehaveBeforeSteps.size());
             for (String jbehaveBeforeStep : jbehaveBeforeSteps) {
                 String asString = jbehaveBeforeStep;
-                List<IToken> stepTokens = parseStepIntoTokens(jbehaveBeforeStep);
+                List<BaseToken> stepTokens = parseStepIntoTokens(jbehaveBeforeStep);
                 StepDTO stepModel = new StepDTO(asString, stepTokens);
                 beforeSteps.add(stepModel);
             }
@@ -146,7 +166,7 @@ public class StoryDTOUtils {
             afterSteps = new ArrayList<StepDTO>(jbehaveAfterSteps.size());
             for (String jbehaveAfterStep : jbehaveAfterSteps) {
                 String asString = jbehaveAfterStep;
-                List<IToken> stepTokens = parseStepIntoTokens(jbehaveAfterStep);
+                List<BaseToken> stepTokens = parseStepIntoTokens(jbehaveAfterStep);
                 StepDTO stepModel = new StepDTO(asString, stepTokens);
                 afterSteps.add(stepModel);
             }
@@ -155,7 +175,7 @@ public class StoryDTOUtils {
         return lifecycleModel;
     }
 
-    private static List<IToken> parseStepIntoTokens(String stepAsString) {
+    private static List<BaseToken> parseStepIntoTokens(String stepAsString) {
 
 //        Map<String, String> parameters = new HashMap<String, String>();
 //
@@ -163,12 +183,12 @@ public class StoryDTOUtils {
 //        boolean matches = stepCandidate.matches(jbehaveBeforeStep);
 //        Step matchedStep = stepCandidate.createMatchedStep(jbehaveBeforeStep, parameters);
 
-        List<IToken> tokens = new ArrayList<IToken>();
+        List<BaseToken> tokens = new ArrayList<BaseToken>();
 
         String[] keywords = {"Given", "When", "Then", "And"};
         for (String keyword : keywords) {
             if (stepAsString.startsWith(keyword)) {
-                tokens.add(new TypedTextTokenDTO(TokenKind.keyword, keyword));
+                tokens.add(new BaseToken(TokenKind.keyword, keyword));
                 stepAsString = stepAsString.substring(keyword.length());
                 break;
             }
@@ -182,7 +202,7 @@ public class StoryDTOUtils {
         for (String line : lines) {
             if (line.startsWith("|")) {
                 if (!stepText.isEmpty()) {
-                    tokens.add(new TypedTextTokenDTO(TokenKind.text, stepText));
+                    tokens.add(new BaseToken(TokenKind.text, stepText));
                     stepText = "";
                 }
                 // found a table line
@@ -199,7 +219,7 @@ public class StoryDTOUtils {
         }
 
         if (!stepText.isEmpty()) {
-            tokens.add(new TypedTextTokenDTO(TokenKind.text, stepText));
+            tokens.add(new BaseToken(TokenKind.text, stepText));
         } else if (!tableLines.isEmpty()) {
             // last step line was a table line
             ExamplesTableTokenDTO tableToken = parseTableLinesIntoToken(tableLines);
@@ -247,10 +267,10 @@ public class StoryDTOUtils {
         for (GivenStory story : stories) {
             String storyModelAsString = story.asString();
             String path = story.getPath();
-            GivenStoryDTO givenStoryModel = new GivenStoryDTO(storyModelAsString, path);
+            GivenStoryDTO givenStoryModel = new GivenStoryDTO(path);
             givenStoriesList.add(givenStoryModel);
         }
-        GivenStoriesDTO givenStoriesModel = new GivenStoriesDTO(asString, givenStoriesList);
+        GivenStoriesDTO givenStoriesModel = new GivenStoriesDTO(givenStoriesList);
         return givenStoriesModel;
     }
 
@@ -290,7 +310,7 @@ public class StoryDTOUtils {
         // scenarios
         List<ScenarioDTO> scenarios = storyModel.getScenarios();
         for (ScenarioDTO scenario : scenarios) {
-            String scenarioText = scenario.getAsString();
+            String scenarioText = scenario.asString();
             sb.append(scenarioText);
             sb.append(LINE_BREAK);
         }

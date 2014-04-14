@@ -7,6 +7,8 @@ import com.mycomp.execspec.jiraplugin.ao.story.Scenario;
 import com.mycomp.execspec.jiraplugin.ao.story.ScenarioDao;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
+import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReport;
+import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
 import com.mycomp.execspec.jiraplugin.dto.StoryDTOUtils;
 import com.mycomp.execspec.jiraplugin.dto.story.in.SaveStoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
@@ -23,10 +25,15 @@ public class StoryServiceImpl implements StoryService {
     private final JiraAuthenticationContext authenticationContext;
     private StoryDao storyDao;
     private ScenarioDao scenarioDao;
+    private StoryReportDao storyReportDao;
 
-    public StoryServiceImpl(StoryDao storyDao, ScenarioDao scenarioDao, IssueService is, JiraAuthenticationContext authenticationContext) {
+    public StoryServiceImpl(StoryDao storyDao, ScenarioDao scenarioDao,
+                            StoryReportDao storyReportDao,
+                            IssueService is,
+                            JiraAuthenticationContext authenticationContext) {
         this.storyDao = storyDao;
         this.scenarioDao = scenarioDao;
+        this.storyReportDao = storyReportDao;
         this.is = is;
         this.authenticationContext = authenticationContext;
     }
@@ -45,6 +52,7 @@ public class StoryServiceImpl implements StoryService {
         log.debug("$$$ Found issue key is - " + issue.getIssue().getKey());
 
         final Story story = storyDao.create();
+        story.setVersion(1L);
         story.setNarrative(storyDTO.getNarrative());
         story.setIssueKey(storyDTO.getIssueKey());
         story.setProjectKey(storyDTO.getProjectKey());
@@ -114,10 +122,19 @@ public class StoryServiceImpl implements StoryService {
     }
 
     private void deleteStory(Story story) {
+
+        // delete story reports
+        StoryReport[] storyTestReports = story.getStoryTestReports();
+        for (StoryReport storyTestReport : storyTestReports) {
+            storyReportDao.delete(storyTestReport);
+        }
+
+        // delete story scenarios
         Scenario[] scenarios = story.getScenarios();
         for (Scenario scenario : scenarios) {
             scenarioDao.delete(scenario);
         }
+
         storyDao.delete(story);
     }
 }

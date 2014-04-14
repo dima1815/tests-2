@@ -9,20 +9,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GivenStoryDTO {
 
-    private String asString;
     private String path;
 
     public GivenStoryDTO() {
 
     }
 
-    public GivenStoryDTO(String asString, String path) {
-        this.asString = asString;
+    public GivenStoryDTO(String path) {
         this.path = path;
     }
 
-    public String getAsString() {
-        return asString;
+    public String asString() {
+        return path;
     }
 
     public String getPath() {

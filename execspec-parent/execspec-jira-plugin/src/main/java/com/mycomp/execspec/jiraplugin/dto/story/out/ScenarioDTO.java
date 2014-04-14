@@ -32,7 +32,7 @@ public class ScenarioDTO {
         this.examplesTable = examplesTable;
     }
 
-    public String getAsString() {
+    public String asString() {
         return asString;
     }
 

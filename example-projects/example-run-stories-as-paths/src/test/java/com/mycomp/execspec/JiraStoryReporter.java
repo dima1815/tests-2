@@ -94,16 +94,26 @@ public class JiraStoryReporter implements StoryReporter {
 
         // set story test status, assume passed unless at least one of the scenarios is failed or pending
         storyReportDTO.setStatus(TestStatus.PASSED);
+        int totalFailed = 0;
+        int totalPending = 0;
         for (ScenarioReportDTO scenarioTestReportModel : scenarioTestReportModels) {
             TestStatus scenarioStatus = scenarioTestReportModel.getStatus();
             switch (scenarioStatus) {
                 case FAILED:
-                    storyReportDTO.setStatus(TestStatus.FAILED);
-                    return;
+                    totalFailed++;
+                    break;
                 case PENDING:
-                    storyReportDTO.setStatus(TestStatus.PENDING);
-                    return;
+                    totalPending++;
+                    break;
             }
+        }
+
+        if (totalFailed > 0) {
+            storyReportDTO.setStatus(TestStatus.FAILED);
+        } else if (totalPending > 0) {
+            storyReportDTO.setStatus(TestStatus.PENDING);
+        } else {
+            storyReportDTO.setStatus(TestStatus.PASSED);
         }
     }
 

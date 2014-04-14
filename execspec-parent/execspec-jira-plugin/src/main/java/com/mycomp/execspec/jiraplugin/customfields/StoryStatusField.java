@@ -7,7 +7,6 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.ScenarioReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
@@ -50,39 +49,17 @@ public class StoryStatusField extends CalculatedCFType<String, String> {
 
         List<StoryReportDTO> storyTestReports = storyReportService.findStoryTestReports(projectKey, issueKey);
         if (!storyTestReports.isEmpty()) {
-            boolean failed = false;
-            int totalFailedReports = 0;
-            int totalPendingReports = 0;
+
+            StringBuilder sb = new StringBuilder();
+
             for (StoryReportDTO storyTestReport : storyTestReports) {
-                List<ScenarioReportDTO> scenarioTestReportModels = storyTestReport.getScenarioTestReportDTOs();
-                for (ScenarioReportDTO scenarioTestReportModel : scenarioTestReportModels) {
-                    TestStatus scenarioStatus = scenarioTestReportModel.getStatus();
-                    if (scenarioStatus == TestStatus.FAILED) {
-                        totalFailedReports++;
-                        break;
-                    } else if (scenarioStatus == TestStatus.PENDING) {
-                        totalPendingReports++;
-                        break;
-                    }
-                }
-            }
-            StringBuilder testStatusString = new StringBuilder();
-            if (totalFailedReports > 0) {
-                testStatusString.append(totalFailedReports + " failed");
-            }
-            if (totalPendingReports > 0) {
-                if (testStatusString.length() > 0) {
-                    testStatusString.append(", ");
-                }
-                testStatusString.append(totalPendingReports + " pending");
-            }
-            if (totalFailedReports > 0 || totalPendingReports > 0) {
-                testStatusString.append(" of " + storyTestReports.size());
-            } else {
-                testStatusString.append(storyTestReports.size() + " of " + storyTestReports.size() + " passed");
+                TestStatus status = storyTestReport.getStatus();
+                String environment = storyTestReport.getEnvironment();
+                sb.append(environment + " - " + status.guiName);
             }
 
-            return testStatusString.toString();
+            return sb.toString();
+
         } else {
             return "None";
         }

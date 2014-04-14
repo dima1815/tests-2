@@ -16,9 +16,10 @@ import java.util.List;
  */
 public class StoryReportDTOUtils {
 
-    public static void fromDTOToModel(ScenarioReportDTO scenarioTestReportModel, ScenarioReport scenarioReport) {
+    public static void fromDTOToModel(ScenarioReportDTO scenarioTestReportDTO, ScenarioReport scenarioReport) {
 
-        String title = scenarioTestReportModel.getTitle();
+        String title = scenarioTestReportDTO.getTitle();
+        scenarioReport.setStatus(scenarioTestReportDTO.getStatus().name());
         scenarioReport.setScenarioTitle(title);
     }
 
@@ -36,7 +37,12 @@ public class StoryReportDTOUtils {
         Long storyVersion = storyTestReport.getStoryVersion();
         storyReportDTO.setStoryVersion(storyVersion);
         String status = storyTestReport.getStatus();
-        TestStatus storyReportStatus = TestStatus.valueOf(status);
+        TestStatus storyReportStatus;
+        if (status != null) {
+            storyReportStatus = TestStatus.valueOf(status);
+        } else {
+            storyReportStatus = null;
+        }
 
         storyReportDTO.setStatus(storyReportStatus);
         storyTestReport.setStoryVersion(storyTestReport.getStoryVersion());
@@ -57,7 +63,9 @@ public class StoryReportDTOUtils {
 
         ScenarioReportDTO scenarioReportDTO = new ScenarioReportDTO(scenarioTestReport.getScenarioTitle());
         String status = scenarioTestReport.getStatus();
-        scenarioReportDTO.setStatus(TestStatus.valueOf(status));
+        if (status != null) {
+            scenarioReportDTO.setStatus(TestStatus.valueOf(status));
+        }
 
         StepReport[] stepTestReports = scenarioTestReport.getStepReports();
         List<StepReportDTO> stepTestReportDTOs = new ArrayList<StepReportDTO>(stepTestReports.length);

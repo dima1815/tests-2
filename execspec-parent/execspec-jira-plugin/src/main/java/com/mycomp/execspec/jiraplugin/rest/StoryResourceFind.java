@@ -11,11 +11,10 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.atlassian.query.Query;
-import com.mycomp.execspec.jiraplugin.dto.story.out.ScenarioDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.out.MetaDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.storypath.StoryPathsDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoriesPayload;
-import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryAndVersionAsStringPayload;
 import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryPayload;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
@@ -26,6 +25,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Contains rest api methods related to processing of Story objects.
@@ -111,27 +111,20 @@ public class StoryResourceFind {
     @AnonymousAllowed
     @Path("/as-string/{projectKey}/{issueKey}")
     @Produces(MediaType.APPLICATION_JSON)
-    public StoryAndVersionAsStringPayload findAsStringForIssue(
+    public String findAsStringForIssue(
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
         StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(story.getNarrative());
-        sb.append("\n");
-        sb.append("\n");
-        List<ScenarioDTO> scenarios = story.getScenarios();
-        for (ScenarioDTO scenario : scenarios) {
-            sb.append(scenario.getAsString());
-            sb.append("\n");
-            sb.append("\n");
-        }
+        // append version as a field in Meta section so that clients can access it from a usual JBehave parsed Story object
+        MetaDTO meta = story.getMeta();
+        Properties properties = meta.getProperties();
+        Long version = story.getVersion();
+        properties.put("version-in-jira", version.toString());
 
-        String storyAsString = sb.toString();
-        Long storyVersion = story.getVersion();
-        StoryAndVersionAsStringPayload payload = new StoryAndVersionAsStringPayload(storyAsString, storyVersion);
-        return payload;
+        String asString = story.asString();
+        return asString;
     }
 
 }

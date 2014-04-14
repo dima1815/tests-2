@@ -8,7 +8,6 @@ import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryPayload
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.apache.commons.lang.Validate;
 import org.jbehave.core.io.StoryLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +32,8 @@ public class JiraStoryLoader implements StoryLoader {
 
     private String jiraBaseUrl;
 
-    //    private String loadStoryPath = "/rest/story-res/1.0/crud/as-string";
-    private String loadStoryPath = "/rest/story-res/1.0/find/for-issue";
+    private String loadStoryPath = "/rest/story-res/1.0/find/as-string";
+//    private String loadStoryPath = "/rest/story-res/1.0/find/for-issue";
 
     private String downloadedStoriesDir = "src/test/resources/jira_stories";
 
@@ -58,20 +57,9 @@ public class JiraStoryLoader implements StoryLoader {
         log.info("response - " + response);
 
         if (response.getStatus() == 200) {
-
-            StoryPayload storyPayload = response.getEntity(StoryPayload.class);
-
-            // we add the jira version as a meta field so that we can access it later
-            // during story reporting
-            Long version = storyPayload.getStory().getVersion();
-            Validate.notNull(version);
-            MetaDTO meta = storyPayload.getStory().getMeta();
-            meta.getProperties().put("version-in-jira", version);
-
-            String storyAsString = asString(storyPayload);
-            this.writeModelToFile(storyPath + ".story", storyAsString);
-            return storyAsString;
-
+            String storyPayload = response.getEntity(String.class);
+            this.writeModelToFile(storyPath + ".story", storyPayload);
+            return storyPayload;
         } else {
             int status = response.getStatus();
             Response.StatusType statusInfo = response.getStatusInfo();
@@ -108,7 +96,7 @@ public class JiraStoryLoader implements StoryLoader {
         // scenarios
         List<ScenarioDTO> scenarios = story.getScenarios();
         for (ScenarioDTO scenario : scenarios) {
-            sb.append(scenario.getAsString());
+            sb.append(scenario.asString());
             sb.append("\n");
             sb.append("\n");
         }

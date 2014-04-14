@@ -78,4 +78,33 @@ public class StoryDTO {
     }
 
 
+    public String asString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        String narrativeAsString = this.getNarrative().getAsString();
+        sb.append(narrativeAsString);
+        sb.append("\n\n");
+
+        String metaAsString = this.getMeta().asString();
+        if (!metaAsString.isEmpty()) {
+            sb.append(metaAsString);
+        }
+
+        String givenStoriesAsString = this.getGivenStories().asString();
+        sb.append(givenStoriesAsString);
+
+        String lifecycleAsString = this.getLifecycle().asString();
+        sb.append(lifecycleAsString);
+
+        List<ScenarioDTO> scenarios = this.getScenarios();
+        for (ScenarioDTO scenario : scenarios) {
+            sb.append("\n");
+            String scenarioAsString = scenario.asString();
+            sb.append(scenarioAsString);
+        }
+
+        String asString = sb.toString();
+        return asString;
+    }
 }

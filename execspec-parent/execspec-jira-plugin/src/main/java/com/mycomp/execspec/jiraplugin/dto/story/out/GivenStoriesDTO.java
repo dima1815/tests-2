@@ -10,19 +10,34 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GivenStoriesDTO {
 
-    private String asString;
     private List<GivenStoryDTO> givenStories;
 
     public GivenStoriesDTO() {
     }
 
-    public GivenStoriesDTO(String asString, List<GivenStoryDTO> givenStories) {
-        this.asString = asString;
+    public GivenStoriesDTO(List<GivenStoryDTO> givenStories) {
         this.givenStories = givenStories;
     }
 
-    public String getAsString() {
-        return asString;
+    public String asString() {
+
+        if (givenStories.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder sb = new StringBuilder("GivenStories: ");
+
+            String fixedAlignmentPrefix = "              ";
+            for (GivenStoryDTO givenStory : givenStories) {
+                String path = givenStory.getPath();
+                sb.append(path);
+                sb.append("\n");
+                sb.append(fixedAlignmentPrefix);
+            }
+            sb.append("\n");
+
+            String asString = sb.toString();
+            return asString;
+        }
     }
 
     public List<GivenStoryDTO> getGivenStories() {
