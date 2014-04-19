@@ -32,7 +32,9 @@ public class JiraStoryLoader implements StoryLoader {
 
     private String jiraBaseUrl;
 
-    private String loadStoryPath = "/rest/story-res/1.0/find/as-string";
+    private String jiraProject;
+
+    private String loadStoryPath = "rest/story-res/1.0/find/as-string";
 //    private String loadStoryPath = "/rest/story-res/1.0/find/for-issue";
 
     private String downloadedStoriesDir = "src/test/resources/jira_stories";
@@ -42,7 +44,7 @@ public class JiraStoryLoader implements StoryLoader {
 
         URI jiraSearchUrl = null;
         try {
-            String fullPath = jiraBaseUrl + loadStoryPath + "/" + storyPath;
+            String fullPath = jiraBaseUrl + "/" + loadStoryPath + "/" + jiraProject + "/" + storyPath;
             fullPath += "?os_username=admin&os_password=admin";
             log.debug("full story path is - " + fullPath);
             jiraSearchUrl = new URI(fullPath);
@@ -138,5 +140,13 @@ public class JiraStoryLoader implements StoryLoader {
 
     public void setJiraBaseUrl(String jiraBaseUrl) {
         this.jiraBaseUrl = jiraBaseUrl;
+    }
+
+    public void setJiraProject(String jiraProject) {
+        this.jiraProject = jiraProject;
+    }
+
+    public String getJiraProject() {
+        return jiraProject;
     }
 }

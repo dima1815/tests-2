@@ -1,13 +1,9 @@
 package com.mycomp.execspec;
 
-import org.jbehave.core.context.Context;
-import org.jbehave.core.context.ContextView;
-import org.jbehave.core.context.JFrameContextView;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.reporters.ContextOutput;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.Format;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -24,30 +20,68 @@ public class MyEmbedderTest extends JUnitStories {
 
     private final String jiraBaseUrl = "http://localhost:2990/jira";
 
+    private final String jiraProject = "TESTING";
+
     public MyEmbedderTest() {
-        Context context = new Context();
-        Format contextFormat = new ContextOutput(context);
-        ContextView contextView = new JFrameContextView().sized(640, 120);
 //        StepMonitor delegate = configuration().stepMonitor();
 //        ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, delegate);
 //        super.configuration().useStepMonitor(contextStepMonitor);
-        configuration().storyReporterBuilder().withFormats(
-                StoryReporterBuilder.Format.HTML,
-                StoryReporterBuilder.Format.TXT,
-                StoryReporterBuilder.Format.XML,
-                StoryReporterBuilder.Format.CONSOLE,
-                StoryReporterBuilder.Format.IDE_CONSOLE,
-                StoryReporterBuilder.Format.STATS);
-        CrossReference crossReference = new CrossReference();
-        configuration().storyReporterBuilder().withCrossReference(crossReference);
+
+        configuration().useStoryReporterBuilder(
+                new StoryReporterBuilder() {
+                    public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+                        if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
+                            return new JiraReporterHtmlOutput(jiraBaseUrl, jiraProject, "DEV");
+                        } else {
+                            return super.reporterFor(storyPath, format);
+                        }
+                    }
+                }
+//                        .withReporters(new JiraReporterHtmlOutput(configuration().keywords()))
+                        .withFailureTrace(true)
+//                .withCrossReference(xref)
+                        .withFormats(
+//                                Format.CONSOLE,
+                                Format.HTML
+//                                Format.TXT,
+//                                Format.XML,
+//                                Format.STATS
+                        )
+        );
+
+//        configuration().storyReporterBuilder().withFormats(
+//                StoryReporterBuilder.Format.HTML,
+//                StoryReporterBuilder.Format.TXT,
+//                StoryReporterBuilder.Format.XML,
+//                StoryReporterBuilder.Format.CONSOLE,
+//                StoryReporterBuilder.Format.IDE_CONSOLE,
+//                StoryReporterBuilder.Format.STATS);
+
+//        CrossReference crossReference = new CrossReference();
+//        configuration().storyReporterBuilder().withCrossReference(crossReference);
 
         JiraStoryLoader jiraLoader = new JiraStoryLoader();
         jiraLoader.setJiraBaseUrl(jiraBaseUrl);
+        jiraLoader.setJiraProject(jiraProject);
         configuration().useStoryLoader(jiraLoader);
 
-        JiraStoryReporter jiraStoryReporter = new JiraStoryReporter();
-        jiraStoryReporter.setJiraBaseUrl(jiraBaseUrl);
-        configuration().storyReporterBuilder().withReporters(jiraStoryReporter);
+
+//        configuration().vi
+//        JiraStoryReporter jiraStoryReporter = new JiraStoryReporter();
+//        jiraStoryReporter.setJiraBaseUrl(jiraBaseUrl);
+//        PrintStream printStream = null;
+//        try {
+//            printStream = new FilePrintStreamFactory.FilePrintStream(new File("story-report.txt"), false);
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+
+//        HtmlOutput htmlReporter = new HtmlOutput(printStream);
+//        DelegatingStoryReporter dsr = new DelegatingStoryReporter(
+//                htmlReporter,
+//                jiraStoryReporter);
+
+//        configuration().storyReporterBuilder().withReporters(dsr);
 
         JiraStepDocReporter stepDocReporter = new JiraStepDocReporter();
         configuration().useStepdocReporter(stepDocReporter);
