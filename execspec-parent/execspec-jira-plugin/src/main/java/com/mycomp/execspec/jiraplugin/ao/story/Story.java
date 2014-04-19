@@ -1,6 +1,6 @@
 package com.mycomp.execspec.jiraplugin.ao.story;
 
-import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReport;
+import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import net.java.ao.Entity;
 import net.java.ao.OneToMany;
 import net.java.ao.Preload;
@@ -35,6 +35,6 @@ public interface Story extends Entity {
     Scenario[] getScenarios();
 
     @OneToMany
-    StoryReport[] getStoryTestReports();
+    StoryHtmlReport[] getStoryHtmlReports();
 
 }

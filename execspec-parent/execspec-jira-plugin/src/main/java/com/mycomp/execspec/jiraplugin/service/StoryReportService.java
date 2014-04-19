@@ -1,7 +1,7 @@
 package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.activeobjects.tx.Transactional;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTO;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import java.util.List;
 @Transactional
 public interface StoryReportService {
 
-    void addStoryTestReport(String projectKey, String issueKey, StoryReportDTO storyReportDTO);
+    void addStoryTestReport(String projectKey, String issueKey, StoryHtmlReportDTO storyReportDTO);
 
-    List<StoryReportDTO> findStoryTestReports(String projectKey, String issueKey);
+    List<StoryHtmlReportDTO> findStoryReports(String projectKey, String issueKey);
 
     void deleteForIssue(String projectKey, String issueKey);
 }

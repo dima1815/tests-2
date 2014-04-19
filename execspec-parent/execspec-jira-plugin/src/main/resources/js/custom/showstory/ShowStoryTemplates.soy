@@ -1,6 +1,39 @@
 {namespace execspec.viewissuepage.showstory}
 
 /**
+ * Renders issue's story pane.
+ * @param story
+ */
+{template .renderStoryPanel}
+<div class="aui-tabs horizontal-tabs">
+    <ul class="tabs-menu">
+        <li class="menu-item active-tab">
+            <a href="#"><strong>Story</strong></a>
+        </li>
+        <li class="menu-item">
+            <a href="#" onclick="setStoryTabFunction('Tab2')"><strong>DEV</strong> <span class="aui-badge">14</span> <span class="aui-badge">3</span> <span class="aui-badge">6</span></a>
+        </li>
+        <li class="menu-item">
+            <a href="#" onclick="setStoryTabFunction('Tab2')"><strong>UAT 1</strong> <span class="aui-badge">14</span> <span class="aui-badge">3</span> <span class="aui-badge">6</span></a>
+        </li>
+        <li class="menu-item">
+            <a href="#" onclick="setStoryTabFunction('Tab2')"><strong>UAT 2</strong> <span class="aui-badge">14</span> <span class="aui-badge">3</span> <span class="aui-badge">6</span></a>
+        </li>
+    </ul>
+    <div class="tabs-pane active-pane" id="tabs-example-first">
+        {call .renderStory }
+          {param story: $story /}
+        {/call}
+    </div>
+    <div class="tabs-pane" id="tabs-example-second">
+        <h2>This is Tab 2</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+</div>
+{/template}
+
+
+/**
  * Renders issue's story.
  * @param story
  */

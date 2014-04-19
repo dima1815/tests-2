@@ -7,7 +7,7 @@ import com.mycomp.execspec.jiraplugin.ao.story.Scenario;
 import com.mycomp.execspec.jiraplugin.ao.story.ScenarioDao;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
-import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReport;
+import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
 import com.mycomp.execspec.jiraplugin.dto.StoryDTOUtils;
 import com.mycomp.execspec.jiraplugin.dto.story.in.SaveStoryDTO;
@@ -97,6 +97,13 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
+    public List<StoryDTO> findByProjectKey(String projectKey) {
+        List<Story> stories = storyDao.findByProjectKey(projectKey);
+        List<StoryDTO> storyDTOs = StoryDTOUtils.toDTO(stories);
+        return storyDTOs;
+    }
+
+    @Override
     public StoryDTO findById(Long storyId) {
         // safe downcast here
         if (storyId > new Long(Integer.MAX_VALUE)) {
@@ -124,8 +131,8 @@ public class StoryServiceImpl implements StoryService {
     private void deleteStory(Story story) {
 
         // delete story reports
-        StoryReport[] storyTestReports = story.getStoryTestReports();
-        for (StoryReport storyTestReport : storyTestReports) {
+        StoryHtmlReport[] storyTestReports = story.getStoryHtmlReports();
+        for (StoryHtmlReport storyTestReport : storyTestReports) {
             storyReportDao.delete(storyTestReport);
         }
 

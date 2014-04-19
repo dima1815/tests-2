@@ -2,14 +2,13 @@ package com.mycomp.execspec.jiraplugin.ao.testreport;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import net.java.ao.Entity;
-import net.java.ao.OneToMany;
 import net.java.ao.Preload;
 
 /**
  * Represents story test report, received as from the JBehave story run.
  */
 @Preload
-public interface StoryReport extends Entity {
+public interface StoryHtmlReport extends Entity {
 
     //    @NotNull
     Story getStory();
@@ -38,7 +37,8 @@ public interface StoryReport extends Entity {
 
     void setStoryVersion(Long storyVersion);
 
-    @OneToMany
-    ScenarioReport[] getScenarioReports();
+    String getHtmlReport();
+
+    void setHtmlReport(String htmlReport);
 
 }

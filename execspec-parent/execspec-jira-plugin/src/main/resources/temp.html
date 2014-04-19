@@ -1,96 +1,60 @@
-<div class="aui-popup aui-dialog" id="editStoryDialog"
-     style="margin-top: -250px; margin-left: -480px; width: 960px; height: 500px; z-index: 3002; display: block;">
-    <div class="dialog-components" style="display: block;"><h2 class="dialog-title">Add New Story</h2>
-        <ul class="dialog-page-menu" style="height: 393px;">
-            <li class="page-menu-item">
-                <button class="item-button">Narrative:</button>
+<div class="mod-content">
+
+    <div class="tabwrap tabs2">
+        <ul id="issue-tabs" class="tabs horizontal">
+
+            <li data-id="all-tabpanel" data-key="com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel"
+                data-label="All"
+                data-href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel">
+                <a class="ajax-activity-content" id="all-tabpanel"
+                   href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel"><strong>All</strong></a>
             </li>
-            <li class="page-menu-item">
-                <button class="item-button">Scenario 1:</button>
+
+            <li class="active" id="comment-tabpanel" data-id="comment-tabpanel"
+                data-key="com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel" data-label="Comments"
+                data-href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel">
+                <strong>Comments</strong>
             </li>
-            <li class="page-menu-item">
-                <button class="item-button">Scenario 2:</button>
+
+            <li data-id="worklog-tabpanel" data-key="com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"
+                data-label="Work Log"
+                data-href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel">
+                <a class="ajax-activity-content" id="worklog-tabpanel"
+                   href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:worklog-tabpanel"><strong>Work
+                    Log</strong></a>
             </li>
-            <li class="page-menu-item">
-                <button class="item-button">Scenario 3:</button>
+
+            <li data-id="changehistory-tabpanel"
+                data-key="com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel" data-label="History"
+                data-href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel">
+                <a class="ajax-activity-content" id="changehistory-tabpanel"
+                   href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel"><strong>History</strong></a>
             </li>
-            <li class="page-menu-item">
-                <button class="item-button">Scenario 4:</button>
+
+            <li data-id="activity-stream-issue-tab"
+                data-key="com.atlassian.streams.streams-jira-plugin:activity-stream-issue-tab" data-label="Activity"
+                data-href="/jira/browse/TESTING-1?page=com.atlassian.streams.streams-jira-plugin:activity-stream-issue-tab">
+                <a class="ajax-activity-content" id="activity-stream-issue-tab"
+                   href="/jira/browse/TESTING-1?page=com.atlassian.streams.streams-jira-plugin:activity-stream-issue-tab"><strong>Activity</strong></a>
             </li>
-            <li class="page-menu-item selected">
-                <button class="item-button">Scenario 5:</button>
+
+            <li data-id="dvcs-commits-tabpanel"
+                data-key="com.atlassian.jira.plugins.jira-bitbucket-connector-plugin:dvcs-commits-tabpanel"
+                data-label="Commits"
+                data-href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugins.jira-bitbucket-connector-plugin:dvcs-commits-tabpanel">
+                <a class="ajax-activity-content" id="dvcs-commits-tabpanel"
+                   href="/jira/browse/TESTING-1?page=com.atlassian.jira.plugins.jira-bitbucket-connector-plugin:dvcs-commits-tabpanel"><strong>Commits</strong></a>
             </li>
         </ul>
-        <div class="dialog-page-body">
-            <div class="dialog-panel-body narrativePanel" style="height: 393px; display: none;">
-                <form action="#" onsubmit="alert('in form submit'); return false;" class="aui top-label"
-                      style="height:100%" id="inputFormNarrative">
-                    <fieldset style="height:100%">
-                        <div style="height:100%" class="field-group"><textarea placeholder="Story narrative here..."
-                                                                               name="comment" style="height:100%"
-                                                                               class="textarea full-width-field"
-                                                                               id="inputNarrative"></textarea></div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="dialog-panel-body scenarioPanel1" style="height: 393px; display: none;">
-                <form style="height:100%" class="aui top-label">
-                    <fieldset style="height:100%">
-                        <div style="height:100%" class="field-group"><textarea
-                                placeholder="Enter scenario steps here ..." name="comment"
-                                class="textarea full-width-field" id="scenarioPanel1content.input"
-                                style="height:100%"></textarea></div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="dialog-panel-body scenarioPanel2" style="height: 393px; display: none;">
-                <form style="height:100%" class="aui top-label">
-                    <fieldset style="height:100%">
-                        <div style="height:100%" class="field-group"><textarea
-                                placeholder="Enter scenario steps here ..." name="comment"
-                                class="textarea full-width-field" id="scenarioPanel2content.input"
-                                style="height:100%"></textarea></div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="dialog-panel-body scenarioPanel3" style="height: 393px; display: none;">
-                <form style="height:100%" class="aui top-label">
-                    <fieldset style="height:100%">
-                        <div style="height:100%" class="field-group"><textarea
-                                placeholder="Enter scenario steps here ..." name="comment"
-                                class="textarea full-width-field" id="scenarioPanel3content.input"
-                                style="height:100%"></textarea></div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="dialog-panel-body scenarioPanel4" style="height: 393px; display: none;">
-                <form style="height:100%" class="aui top-label">
-                    <fieldset style="height:100%">
-                        <div style="height:100%" class="field-group"><textarea
-                                placeholder="Enter scenario steps here ..." name="comment"
-                                class="textarea full-width-field" id="scenarioPanel4content.input"
-                                style="height:100%"></textarea></div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="dialog-panel-body scenarioPanel5" style="height: 393px;">
-                <form style="height:100%" class="aui top-label">
-                    <fieldset style="height:100%">
-                        <div style="height:100%" class="field-group"><textarea
-                                placeholder="Enter scenario steps here ..." name="comment"
-                                class="textarea full-width-field" id="scenarioPanel5content.input"
-                                style="height:100%"></textarea></div>
-                    </fieldset>
-                </form>
+    </div>
+    <div class="issuePanelWrapper">
+        <div class="issuePanelProgress"></div>
+        <div style="height: auto;" class="issuePanelContainer" id="issue_actions_container">
+            <div style="height: auto;" class="issuePanelContainer" id="issue_actions_container">
+                <div class="message-container">
+                    There are no comments yet on this issue.
+                </div>
             </div>
         </div>
-        <div class="dialog-button-panel">
-            <button class="button-panel-button">Add</button>
-            <button class="button-panel-button">Remove</button>
-            <button class="button-panel-button">Up</button>
-            <button class="button-panel-button">Down</button>
-            <button class="button-panel-button">Edit</button>
-            <button class="button-panel-button">Save</button>
-            <a href="#" class="button-panel-link #">Cancel</a></div>
     </div>
 </div>

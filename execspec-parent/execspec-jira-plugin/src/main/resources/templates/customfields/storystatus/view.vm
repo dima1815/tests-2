@@ -1,3 +1,18 @@
 #if ($value)
-<span class="story-status-field">$value</span>
+    #foreach($environment in $value.getEnvironments())
+        #if($value.getStatus($environment).name() == "PASSED")
+            #set ($styleClass = "aui-lozenge aui-lozenge-success")
+        #elseif($value.getStatus($environment).name() == "FAILED")
+            #set ($styleClass = "aui-lozenge aui-lozenge-error")
+        #elseif($value.getStatus($environment).name() == "PENDING")
+            #set ($styleClass = "aui-lozenge aui-lozenge-moved")
+        #else
+            #set ($styleClass = "aui-lozenge")
+        #end
+    <div>
+        <span class="$styleClass">$environment - $value.getStatus($environment)</span>
+    </div>
+    #end
+#else
+<span class="aui-lozenge aui-lozenge-complete">na</span>
 #end

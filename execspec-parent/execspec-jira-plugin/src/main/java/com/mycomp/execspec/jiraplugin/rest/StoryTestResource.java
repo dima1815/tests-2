@@ -3,7 +3,7 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTO;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.wrapperpayloads.StoryTestReportsPayloadDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
@@ -55,9 +55,9 @@ public class StoryTestResource {
             String setPayloadString) {
 
         ObjectMapper mapper = new ObjectMapper();
-        StoryReportDTO storyReportDTO = null;
+        StoryHtmlReportDTO storyReportDTO = null;
         try {
-            storyReportDTO = mapper.readValue(setPayloadString, StoryReportDTO.class);
+            storyReportDTO = mapper.readValue(setPayloadString, StoryHtmlReportDTO.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +76,7 @@ public class StoryTestResource {
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        List<StoryReportDTO> storyTestReports = storyReportService.findStoryTestReports(projectKey, issueKey);
+        List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
 
         StoryTestReportsPayloadDTO storyTestReportsPayloadDTO = new StoryTestReportsPayloadDTO(storyTestReports);
         return storyTestReportsPayloadDTO;

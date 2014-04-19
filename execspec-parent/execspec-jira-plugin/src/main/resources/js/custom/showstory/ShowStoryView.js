@@ -1,3 +1,7 @@
+function setStoryTabFunction(tabName) {
+    alert("inside setStoryTabFunction, tabName - " + tabName);
+}
+
 function ShowStoryView(controller) {
 
     var $this = this;
@@ -38,7 +42,7 @@ function ShowStoryView(controller) {
 
         console.log("showing story: \n" + JSON.stringify(storyPayload));
 
-        AJS.$("#story-container").html(execspec.viewissuepage.showstory.renderStory(storyPayload));
+        AJS.$("#story-container").html(execspec.viewissuepage.showstory.renderStoryPanel(storyPayload));
 
     }
 }

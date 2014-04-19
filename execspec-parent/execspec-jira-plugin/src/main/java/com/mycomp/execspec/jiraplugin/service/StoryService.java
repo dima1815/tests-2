@@ -17,6 +17,8 @@ public interface StoryService {
 
     StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey);
 
+    List<StoryDTO> findByProjectKey(String projectKey);
+
     StoryDTO findById(Long storyId);
 
     void delete(Long storyId);

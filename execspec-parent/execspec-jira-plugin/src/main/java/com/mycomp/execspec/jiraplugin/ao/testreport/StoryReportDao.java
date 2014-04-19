@@ -19,40 +19,20 @@ public final class StoryReportDao {
         this.ao = checkNotNull(ao);
     }
 
-    public StoryReport createStoryReport() {
-        return ao.create(StoryReport.class);
+    public StoryHtmlReport createStoryHtmlReport() {
+        return ao.create(StoryHtmlReport.class);
     }
 
-    public ScenarioReport createScenarioReport(StoryReport storyTestReport) {
-        ScenarioReport scenarioReport = ao.create(ScenarioReport.class);
-        scenarioReport.setStoryReport(storyTestReport);
-        return scenarioReport;
+    public void delete(StoryHtmlReport storyHtmlReport) {
+        ao.delete(storyHtmlReport);
     }
 
-    public StepReport createStepReport(ScenarioReport scenarioReport) {
-        StepReport stepReport = ao.create(StepReport.class);
-        stepReport.setScenarioReport(scenarioReport);
-        return stepReport;
+    public StoryHtmlReport get(Integer id) {
+        return ao.get(StoryHtmlReport.class, id);
     }
 
-    public void delete(StoryReport storyTestReport) {
-        ScenarioReport[] scenarioTestReports = storyTestReport.getScenarioReports();
-        for (ScenarioReport scenarioTestReport : scenarioTestReports) {
-            StepReport[] stepTestReports = scenarioTestReport.getStepReports();
-            for (StepReport stepTestReport : stepTestReports) {
-                ao.delete(stepTestReport);
-            }
-            ao.delete(scenarioTestReport);
-        }
-        ao.delete(storyTestReport);
-    }
-
-    public StoryReport get(Integer id) {
-        return ao.get(StoryReport.class, id);
-    }
-
-    public List<StoryReport> findAll() {
-        return newArrayList(ao.find(StoryReport.class));
+    public List<StoryHtmlReport> findAll() {
+        return newArrayList(ao.find(StoryHtmlReport.class));
     }
 
 }

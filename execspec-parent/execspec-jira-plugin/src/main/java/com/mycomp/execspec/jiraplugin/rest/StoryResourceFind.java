@@ -1,16 +1,8 @@
 package com.mycomp.execspec.jiraplugin.rest;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.issue.search.SearchService;
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.search.SearchException;
-import com.atlassian.jira.issue.search.SearchResults;
-import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.atlassian.query.Query;
 import com.mycomp.execspec.jiraplugin.dto.story.out.MetaDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.storypath.StoryPathsDTO;
@@ -57,26 +49,11 @@ public class StoryResourceFind {
 
         Validate.notEmpty(projectKey);
 
-        List<String> paths = new ArrayList<String>();
-
-        final JqlQueryBuilder builder = JqlQueryBuilder.newBuilder();
-        builder.where().project(projectKey);
-        //        .and().customField(10490L).eq("xss");
-        Query query = builder.buildQuery();
-        try {
-            ApplicationUser appUser = authenticationContext.getUser();
-            User directoryUser = appUser.getDirectoryUser();
-            final SearchResults results = searchService.search(directoryUser, query, PagerFilter.getUnlimitedFilter());
-            final List<Issue> issues = results.getIssues();
-            for (Issue issue : issues) {
-                String issueKey = issue.getKey();
-                String path = projectKey + "/" + issueKey;
-                paths.add(path);
-            }
-        } catch (SearchException e) {
-            log.error("Error running search", e);
+        List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
+        List<String> paths = new ArrayList<String>(stories.size());
+        for (StoryDTO story : stories) {
+            paths.add(story.getPath());
         }
-
         StoryPathsDTO pathsModel = new StoryPathsDTO();
         pathsModel.setPaths(paths);
 
@@ -121,7 +98,7 @@ public class StoryResourceFind {
         MetaDTO meta = story.getMeta();
         Properties properties = meta.getProperties();
         Long version = story.getVersion();
-        properties.put("version-in-jira", version.toString());
+        properties.put("jira-version", version.toString());
 
         String asString = story.asString();
         return asString;

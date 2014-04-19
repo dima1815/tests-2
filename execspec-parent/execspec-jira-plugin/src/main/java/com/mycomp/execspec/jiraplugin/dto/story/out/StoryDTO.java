@@ -33,7 +33,7 @@ public class StoryDTO {
         this.projectKey = projectKey;
         this.issueKey = issueKey;
         this.version = version;
-        this.path = projectKey + "/" + issueKey;
+        this.path = issueKey;
         this.narrative = narrative;
         this.meta = meta;
         this.givenStories = givenStories;

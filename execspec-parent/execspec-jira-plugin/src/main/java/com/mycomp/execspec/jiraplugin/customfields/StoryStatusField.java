@@ -5,9 +5,9 @@ import com.atlassian.jira.issue.customfields.impl.CalculatedCFType;
 import com.atlassian.jira.issue.customfields.impl.FieldValidationException;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
+import com.atlassian.jira.issue.fields.config.FieldConfigItem;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTO;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
@@ -15,10 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StoryStatusField extends CalculatedCFType<String, String> {
+public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, String> {
 
     private static final Logger log = LoggerFactory.getLogger(StoryStatusField.class);
 
@@ -42,26 +43,27 @@ public class StoryStatusField extends CalculatedCFType<String, String> {
 
     @Nullable
     @Override
-    public String getValueFromIssue(CustomField customField, Issue issue) {
+    public EnvironmentTestStatuses getValueFromIssue(CustomField customField, Issue issue) {
+
         String projectKey = issue.getProjectObject().getKey();
         String issueKey = issue.getKey();
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
-        List<StoryReportDTO> storyTestReports = storyReportService.findStoryTestReports(projectKey, issueKey);
+        List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
         if (!storyTestReports.isEmpty()) {
 
-            StringBuilder sb = new StringBuilder();
+            Map<String, TestStatus> statusesByEnvironment = new HashMap<String, TestStatus>(storyTestReports.size());
 
-            for (StoryReportDTO storyTestReport : storyTestReports) {
+            for (StoryHtmlReportDTO storyTestReport : storyTestReports) {
                 TestStatus status = storyTestReport.getStatus();
                 String environment = storyTestReport.getEnvironment();
-                sb.append(environment + " - " + status.guiName);
+                statusesByEnvironment.put(environment, status);
             }
 
-            return sb.toString();
+            EnvironmentTestStatuses environmentTestStatuses = new EnvironmentTestStatuses(statusesByEnvironment);
+            return environmentTestStatuses;
 
         } else {
-            return "None";
+            return null;
         }
     }
 
@@ -80,7 +82,10 @@ public class StoryStatusField extends CalculatedCFType<String, String> {
 
         FieldConfig fieldConfig = field.getRelevantConfig(issue);
         //add what you need to the map here
+        CustomField customField = fieldConfig.getCustomField();
+        List<FieldConfigItem> configItems = fieldConfig.getConfigItems();
 
+        map.put("test", "hello world");
 
         return map;
     }

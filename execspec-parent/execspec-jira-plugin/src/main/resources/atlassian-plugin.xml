@@ -16,7 +16,7 @@
         </transformation>
         <!--common-->
         <resource type="download" name="StoryModel.js" location="/js/custom/StoryModel.js"/>
-        <resource type="download" name="ScenarioModel.js" location="/js/custom/ScenarioModel.js"/>
+        <!--<resource type="download" name="ScenarioModel.js" location="/js/custom/ScenarioModel.js"/>-->
         <resource type="download" name="StoryService.js" location="/js/custom/StoryService.js"/>
         <resource type="download" name="PageUtils.js" location="/js/custom/PageUtils.js"/>
         <!--edit story-->
@@ -141,8 +141,6 @@
         <description>The module configuring the Active Objects service used by this plugin</description>
         <entity>com.mycomp.execspec.jiraplugin.ao.story.Scenario</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.story.Story</entity>
-        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StoryReport</entity>
-        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.ScenarioReport</entity>
-        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StepReport</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport</entity>
     </ao>
 </atlassian-plugin>

@@ -1,92 +1,31 @@
 package com.mycomp.execspec.jiraplugin.dto;
 
-import com.mycomp.execspec.jiraplugin.ao.testreport.ScenarioReport;
-import com.mycomp.execspec.jiraplugin.ao.testreport.StepReport;
-import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReport;
-import com.mycomp.execspec.jiraplugin.dto.testreport.ScenarioReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StepReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTO;
+import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Dmytro on 4/8/2014.
  */
 public class StoryReportDTOUtils {
 
-    public static void fromDTOToModel(ScenarioReportDTO scenarioTestReportDTO, ScenarioReport scenarioReport) {
+    public static void fromDTOToModel(StoryHtmlReportDTO storyHtmlReportDTO, StoryHtmlReport storyHtmlReport) {
 
-        String title = scenarioTestReportDTO.getTitle();
-        scenarioReport.setStatus(scenarioTestReportDTO.getStatus().name());
-        scenarioReport.setScenarioTitle(title);
+        storyHtmlReport.setStatus(storyHtmlReportDTO.getStatus().name());
+        storyHtmlReport.setStoryVersion(storyHtmlReportDTO.getStoryVersion());
+        storyHtmlReport.setEnvironment(storyHtmlReportDTO.getEnvironment());
+        storyHtmlReport.setHtmlReport(storyHtmlReportDTO.getHtmlReport());
     }
 
-    public static void fromDTOtoModel(StepReportDTO stepReportDTO, StepReport stepReport) {
+    public static StoryHtmlReportDTO fromModelToDTO(StoryHtmlReport storyHtmlReport) {
 
-        stepReport.setStep(stepReportDTO.getStepAsString());
-        stepReport.setStatus(stepReportDTO.getStatus().name());
-        stepReport.setFailureTrace(stepReportDTO.getFailureTrace());
-    }
-
-    public static StoryReportDTO fromModelToDTO(StoryReport storyTestReport) {
-
-        String storyPath = storyTestReport.getStory().getProjectKey() + "/" + storyTestReport.getStory().getIssueKey();
-        StoryReportDTO storyReportDTO = new StoryReportDTO(storyPath, storyTestReport.getEnvironment());
-        Long storyVersion = storyTestReport.getStoryVersion();
-        storyReportDTO.setStoryVersion(storyVersion);
-        String status = storyTestReport.getStatus();
-        TestStatus storyReportStatus;
-        if (status != null) {
-            storyReportStatus = TestStatus.valueOf(status);
-        } else {
-            storyReportStatus = null;
-        }
-
-        storyReportDTO.setStatus(storyReportStatus);
-        storyTestReport.setStoryVersion(storyTestReport.getStoryVersion());
-
-        // set scenarios
-        ScenarioReport[] scenarioTestReports = storyTestReport.getScenarioReports();
-        List<ScenarioReportDTO> scenarioTestReportsDTOs = new ArrayList<ScenarioReportDTO>(scenarioTestReports.length);
-        for (ScenarioReport scenarioTestReport : scenarioTestReports) {
-            ScenarioReportDTO scenarioReportDTO = fromModelToDTO(scenarioTestReport);
-            scenarioTestReportsDTOs.add(scenarioReportDTO);
-        }
-        storyReportDTO.setScenarioTestReportDTOs(scenarioTestReportsDTOs);
-
+        String environment = storyHtmlReport.getEnvironment();
+        String storyPath = storyHtmlReport.getStory().getIssueKey();
+        Long storyVersion = storyHtmlReport.getStoryVersion();
+        TestStatus status = TestStatus.valueOf(storyHtmlReport.getStatus());
+        String htmlReport = storyHtmlReport.getHtmlReport();
+        StoryHtmlReportDTO storyReportDTO = new StoryHtmlReportDTO(environment, storyPath, storyVersion, status, htmlReport);
         return storyReportDTO;
     }
 
-    private static ScenarioReportDTO fromModelToDTO(ScenarioReport scenarioTestReport) {
-
-        ScenarioReportDTO scenarioReportDTO = new ScenarioReportDTO(scenarioTestReport.getScenarioTitle());
-        String status = scenarioTestReport.getStatus();
-        if (status != null) {
-            scenarioReportDTO.setStatus(TestStatus.valueOf(status));
-        }
-
-        StepReport[] stepTestReports = scenarioTestReport.getStepReports();
-        List<StepReportDTO> stepTestReportDTOs = new ArrayList<StepReportDTO>(stepTestReports.length);
-        for (StepReport stepTestReport : stepTestReports) {
-            StepReportDTO stepReportDTO = fromModelToDTO(stepTestReport);
-            stepTestReportDTOs.add(stepReportDTO);
-        }
-        scenarioReportDTO.setStepTestReportDTOs(stepTestReportDTOs);
-
-        return scenarioReportDTO;
-    }
-
-    private static StepReportDTO fromModelToDTO(StepReport stepTestReport) {
-
-        String stepAsString = stepTestReport.getStep();
-        TestStatus testStatus = TestStatus.valueOf(stepTestReport.getStatus());
-        StepReportDTO stepReportDTO = new StepReportDTO(stepAsString, testStatus);
-
-        String failureTrace = stepTestReport.getFailureTrace();
-        stepReportDTO.setFailureTrace(failureTrace);
-
-        return stepReportDTO;
-    }
 }

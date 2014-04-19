@@ -43,4 +43,11 @@ public final class StoryDao {
         Story[] result = ao.find(Story.class, query);
         return newArrayList(result);
     }
+
+    public List<Story> findByProjectKey(String projectKey) {
+        String[] params = new String[]{projectKey};
+        Query query = Query.select().where("PROJECT_KEY = ?", params);
+        Story[] result = ao.find(Story.class, query);
+        return newArrayList(result);
+    }
 }
