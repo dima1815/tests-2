@@ -1,4 +1,4 @@
-#if ($value)
+#if ($value.getEnvironments().size() > 0)
     #foreach($environment in $value.getEnvironments())
         #if($value.getStatus($environment).name() == "PASSED")
             #set ($styleClass = "aui-lozenge aui-lozenge-success")
@@ -14,5 +14,7 @@
     </div>
     #end
 #else
-<span class="aui-lozenge aui-lozenge-complete">na</span>
+<div>
+    <span class="aui-lozenge aui-lozenge-complete">na</span>
+</div>
 #end

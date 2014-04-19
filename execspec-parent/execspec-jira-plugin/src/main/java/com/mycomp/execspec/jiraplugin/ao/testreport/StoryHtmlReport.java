@@ -41,4 +41,27 @@ public interface StoryHtmlReport extends Entity {
 
     void setHtmlReport(String htmlReport);
 
+    Integer getTotalScenarios();
+
+    void setTotalScenarios(Integer totalScenarios);
+
+    Integer getTotalScenariosPassed();
+
+    void setTotalScenariosPassed(Integer totalScenariosPassed);
+
+    Integer getTotalScenariosFailed();
+
+    void setTotalScenariosFailed(Integer totalScenariosFailed);
+
+    Integer getTotalScenariosPending();
+
+    void setTotalScenariosPending(Integer totalScenariosPending);
+
+    Integer getTotalScenariosSkipped();
+
+    void setTotalScenariosSkipped(Integer totalScenariosSkipped);
+
+    Integer getTotalScenariosNotPerformed();
+
+    void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed);
 }

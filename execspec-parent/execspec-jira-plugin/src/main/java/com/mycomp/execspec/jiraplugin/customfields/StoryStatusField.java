@@ -7,6 +7,7 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.config.FieldConfigItem;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
@@ -48,10 +49,13 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
         String projectKey = issue.getProjectObject().getKey();
         String issueKey = issue.getKey();
 
-        List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
-        if (!storyTestReports.isEmpty()) {
+        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
+        if (story != null) {
+
+            List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
             Map<String, TestStatus> statusesByEnvironment = new HashMap<String, TestStatus>(storyTestReports.size());
+            EnvironmentTestStatuses environmentTestStatuses = new EnvironmentTestStatuses(statusesByEnvironment);
 
             for (StoryHtmlReportDTO storyTestReport : storyTestReports) {
                 TestStatus status = storyTestReport.getStatus();
@@ -59,7 +63,6 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
                 statusesByEnvironment.put(environment, status);
             }
 
-            EnvironmentTestStatuses environmentTestStatuses = new EnvironmentTestStatuses(statusesByEnvironment);
             return environmentTestStatuses;
 
         } else {

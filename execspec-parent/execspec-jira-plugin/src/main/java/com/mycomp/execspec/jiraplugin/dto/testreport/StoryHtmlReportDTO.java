@@ -23,6 +23,18 @@ public class StoryHtmlReportDTO {
 
     public TestStatus status;
 
+    private Integer totalScenarios;
+
+    private Integer totalScenariosPassed;
+
+    private Integer totalScenariosFailed;
+
+    private Integer totalScenariosPending;
+
+    private Integer totalScenariosSkipped;
+
+    private Integer totalScenariosNotPerformed;
+
     private String htmlReport;
 
     protected StoryHtmlReportDTO() {
@@ -75,6 +87,54 @@ public class StoryHtmlReportDTO {
 
     public void setHtmlReport(String htmlReport) {
         this.htmlReport = htmlReport;
+    }
+
+    public Integer getTotalScenarios() {
+        return totalScenarios;
+    }
+
+    public void setTotalScenarios(Integer totalScenarios) {
+        this.totalScenarios = totalScenarios;
+    }
+
+    public Integer getTotalScenariosPassed() {
+        return totalScenariosPassed;
+    }
+
+    public void setTotalScenariosPassed(Integer totalScenariosPassed) {
+        this.totalScenariosPassed = totalScenariosPassed;
+    }
+
+    public Integer getTotalScenariosFailed() {
+        return totalScenariosFailed;
+    }
+
+    public void setTotalScenariosFailed(Integer totalScenariosFailed) {
+        this.totalScenariosFailed = totalScenariosFailed;
+    }
+
+    public Integer getTotalScenariosPending() {
+        return totalScenariosPending;
+    }
+
+    public void setTotalScenariosPending(Integer totalScenariosPending) {
+        this.totalScenariosPending = totalScenariosPending;
+    }
+
+    public Integer getTotalScenariosSkipped() {
+        return totalScenariosSkipped;
+    }
+
+    public void setTotalScenariosSkipped(Integer totalScenariosSkipped) {
+        this.totalScenariosSkipped = totalScenariosSkipped;
+    }
+
+    public Integer getTotalScenariosNotPerformed() {
+        return totalScenariosNotPerformed;
+    }
+
+    public void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed) {
+        this.totalScenariosNotPerformed = totalScenariosNotPerformed;
     }
 }
 

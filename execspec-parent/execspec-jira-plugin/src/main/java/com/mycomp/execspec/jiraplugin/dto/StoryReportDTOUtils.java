@@ -15,6 +15,14 @@ public class StoryReportDTOUtils {
         storyHtmlReport.setStoryVersion(storyHtmlReportDTO.getStoryVersion());
         storyHtmlReport.setEnvironment(storyHtmlReportDTO.getEnvironment());
         storyHtmlReport.setHtmlReport(storyHtmlReportDTO.getHtmlReport());
+
+        storyHtmlReport.setTotalScenarios(storyHtmlReportDTO.getTotalScenarios());
+        storyHtmlReport.setTotalScenariosPassed(storyHtmlReportDTO.getTotalScenariosPassed());
+        storyHtmlReport.setTotalScenariosFailed(storyHtmlReportDTO.getTotalScenariosFailed());
+        storyHtmlReport.setTotalScenariosPending(storyHtmlReportDTO.getTotalScenariosPending());
+        storyHtmlReport.setTotalScenariosSkipped(storyHtmlReportDTO.getTotalScenariosSkipped());
+        storyHtmlReport.setTotalScenariosNotPerformed(storyHtmlReportDTO.getTotalScenariosNotPerformed());
+
     }
 
     public static StoryHtmlReportDTO fromModelToDTO(StoryHtmlReport storyHtmlReport) {
@@ -25,6 +33,14 @@ public class StoryReportDTOUtils {
         TestStatus status = TestStatus.valueOf(storyHtmlReport.getStatus());
         String htmlReport = storyHtmlReport.getHtmlReport();
         StoryHtmlReportDTO storyReportDTO = new StoryHtmlReportDTO(environment, storyPath, storyVersion, status, htmlReport);
+
+        storyReportDTO.setTotalScenarios(storyHtmlReport.getTotalScenarios());
+        storyReportDTO.setTotalScenariosPassed(storyHtmlReport.getTotalScenariosPassed());
+        storyReportDTO.setTotalScenariosFailed(storyHtmlReport.getTotalScenariosFailed());
+        storyReportDTO.setTotalScenariosPending(storyHtmlReport.getTotalScenariosPending());
+        storyReportDTO.setTotalScenariosSkipped(storyHtmlReport.getTotalScenariosSkipped());
+        storyReportDTO.setTotalScenariosNotPerformed(storyHtmlReport.getTotalScenariosNotPerformed());
+
         return storyReportDTO;
     }
 
