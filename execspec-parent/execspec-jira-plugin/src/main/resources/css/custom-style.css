@@ -96,3 +96,34 @@
     /*padding-left: 5px;*/
     /*padding-right: 5px;*/
 }
+
+/****************************************************************************************************/
+/* Story report */
+/****************************************************************************************************/
+
+.jbehave-story-tabs .aui-badge {
+    margin-left: 5px;
+    color: #FFF;
+}
+
+.jbehave-story-tabs .aui-badge.passed {
+    background-color: #14892C;
+}
+
+.jbehave-story-tabs .aui-badge.failed {
+    background-color: #ff0000;
+}
+
+.jbehave-story-tabs .aui-badge.pending {
+    background-color: #4A6785;
+}
+
+.jbehave-story-tabs .aui-badge.skipped {
+    background-color: #fffe54;
+}
+
+/* Story report */
+.jbehave-story-tabs .aui-badge.not-performed {
+    /*background-color: #fffe54;*/
+    /*apply default jira color scheme*/
+}

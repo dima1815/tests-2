@@ -1,6 +1,7 @@
-function setStoryTabFunction(tabName) {
-    alert("inside setStoryTabFunction, tabName - " + tabName);
-}
+//function setStoryTabFunction(tabName) {
+//    alert("inside setStoryTabFunction, tabName - " + tabName);
+////    AJS.tabs.change(AJS.$("a[href=#second-tab]"));
+//}
 
 function ShowStoryView(controller) {
 
@@ -43,6 +44,7 @@ function ShowStoryView(controller) {
         console.log("showing story: \n" + JSON.stringify(storyPayload));
 
         AJS.$("#story-container").html(execspec.viewissuepage.showstory.renderStoryPanel(storyPayload));
+        AJS.tabs.setup();
 
     }
 }

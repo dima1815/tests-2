@@ -1,11 +1,13 @@
 package com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads;
 
 import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  * Container for lists of StoryDTO objects.
@@ -18,19 +20,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StoryPayload {
 
-    @XmlElement
     private StoryDTO story;
+
+    @XmlElementWrapper(name = "storyReports")
+    private List<StoryHtmlReportDTO> storyReports;
 
     protected StoryPayload() {
 
     }
 
-    public StoryPayload(StoryDTO story) {
+    public StoryPayload(StoryDTO story, List<StoryHtmlReportDTO> storyReports) {
         this.story = story;
+        this.storyReports = storyReports;
     }
 
     public StoryDTO getStory() {
         return story;
+    }
+
+    public List<StoryHtmlReportDTO> getStoryReports() {
+        return storyReports;
     }
 
 }

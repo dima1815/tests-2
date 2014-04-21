@@ -3,35 +3,49 @@
 /**
  * Renders issue's story pane.
  * @param story
+ * @param storyReports
  */
 {template .renderStoryPanel}
-<div class="aui-tabs horizontal-tabs">
+<div class="aui-tabs horizontal-tabs jbehave-story-tabs">
     <ul class="tabs-menu">
         <li class="menu-item active-tab">
-            <a href="#"><strong>Story</strong></a>
+            <a href="#story-tab"><strong>Story</strong></a>
         </li>
-        <li class="menu-item">
-            <a href="#" onclick="setStoryTabFunction('Tab2')"><strong>DEV</strong> <span class="aui-badge">14</span> <span class="aui-badge">3</span> <span class="aui-badge">6</span></a>
-        </li>
-        <li class="menu-item">
-            <a href="#" onclick="setStoryTabFunction('Tab2')"><strong>UAT 1</strong> <span class="aui-badge">14</span> <span class="aui-badge">3</span> <span class="aui-badge">6</span></a>
-        </li>
-        <li class="menu-item">
-            <a href="#" onclick="setStoryTabFunction('Tab2')"><strong>UAT 2</strong> <span class="aui-badge">14</span> <span class="aui-badge">3</span> <span class="aui-badge">6</span></a>
-        </li>
+        {foreach $storyReport in $storyReports}
+            {call .renderStoryReportHeader}
+              {param storyReport: $storyReport /}
+              {param index: index($storyReport) /}
+            {/call}
+        {/foreach}
     </ul>
-    <div class="tabs-pane active-pane" id="tabs-example-first">
+    <div class="tabs-pane active-pane" id="story-tab">
         {call .renderStory }
           {param story: $story /}
         {/call}
     </div>
-    <div class="tabs-pane" id="tabs-example-second">
-        <h2>This is Tab 2</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
+    {foreach $storyReport in $storyReports}
+        <div class="tabs-pane" id="story-report-tab-{index($storyReport)}" environment="{$storyReport.environment}">
+            <h2>status = {$storyReport.status}</h2>
+        </div>
+    {/foreach}
 </div>
 {/template}
 
+/**
+ * Renders story report header.
+ * @param storyReport
+ * @param index
+ */
+{template .renderStoryReportHeader}
+    <li class="menu-item">
+        <a href="#story-report-tab-{$index}"><strong>{$storyReport.environment}</strong><span
+            class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{if $storyReport.totalScenariosFailed > 0}<span
+            class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
+            class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
+            class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
+            class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span></a>
+    </li>
+{/template}
 
 /**
  * Renders issue's story.
@@ -97,22 +111,6 @@
                                 {/if}
                             {/foreach}
                         </div>
-
-//                        {if $token.kind != 'table'}
-//                            <span class='{$token.kind}'>{$token.text|changeNewlineToBr}</span>
-//                        {else}
-////                            <div class='{$token.kind}'>{$token.text|changeNewlineToBr}
-//                                <table class='{$token.kind}'>
-//                                    {foreach $row in $token.rows}
-//                                        <tr>
-//                                            {foreach $token in $row.tokens}
-//                                                <td class='{$token.kind}'>{$token.text}</td>
-//                                            {/foreach}
-//                                        </tr>
-//                                    {/foreach}
-//                                </table>
-////                            </div>
-//                        {/if}
                     {/foreach}
                     </div>
                 </div>

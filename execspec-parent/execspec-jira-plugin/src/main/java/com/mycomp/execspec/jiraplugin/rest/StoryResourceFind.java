@@ -8,16 +8,19 @@ import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.storypath.StoryPathsDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoriesPayload;
 import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryPayload;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
+import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Contains rest api methods related to processing of Story objects.
@@ -32,11 +35,17 @@ public class StoryResourceFind {
 
     private final StoryService storyService;
 
+    private final StoryReportService storyReportService;
+
     private SearchService searchService;
     private JiraAuthenticationContext authenticationContext;
 
-    public StoryResourceFind(StoryService storyService, SearchService searchService, JiraAuthenticationContext authenticationContext) {
+    public StoryResourceFind(StoryService storyService,
+                             StoryReportService storyReportService,
+                             SearchService searchService,
+                             JiraAuthenticationContext authenticationContext) {
         this.storyService = storyService;
+        this.storyReportService = storyReportService;
         this.searchService = searchService;
         this.authenticationContext = authenticationContext;
     }
@@ -76,11 +85,20 @@ public class StoryResourceFind {
     @Produces(MediaType.APPLICATION_JSON)
     public StoryPayload findForIssue(
             @PathParam("projectKey") String projectKey,
-            @PathParam("issueKey") String issueKey,
-            @DefaultValue("false") @QueryParam("asString") boolean asString) {
+            @PathParam("issueKey") String issueKey) {
 
         StoryDTO byIssueKey = storyService.findByProjectAndIssueKey(projectKey, issueKey);
-        StoryPayload payload = new StoryPayload(byIssueKey);
+        List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
+
+        // sort storyReports by environment alphabetically
+        Collections.sort(storyReports, new Comparator<StoryHtmlReportDTO>() {
+            @Override
+            public int compare(StoryHtmlReportDTO o1, StoryHtmlReportDTO o2) {
+                return o1.getEnvironment().compareTo(o2.getEnvironment());
+            }
+        });
+
+        StoryPayload payload = new StoryPayload(byIssueKey, storyReports);
         return payload;
     }
 
