@@ -5,7 +5,7 @@
         #elseif($value.getStatus($environment).name() == "FAILED")
             #set ($styleClass = "aui-lozenge aui-lozenge-error")
         #elseif($value.getStatus($environment).name() == "PENDING")
-            #set ($styleClass = "aui-lozenge aui-lozenge-complete")
+            #set ($styleClass = "aui-lozenge aui-lozenge-current")
         #else
             #set ($styleClass = "aui-lozenge")
         #end

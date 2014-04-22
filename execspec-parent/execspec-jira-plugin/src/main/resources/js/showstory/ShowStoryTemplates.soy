@@ -12,7 +12,7 @@
             <a href="#story-tab"><strong>Story</strong></a>
         </li>
         {foreach $storyReport in $storyReports}
-            {call .renderStoryReportHeader}
+            {call .renderStoryReportTabHeader}
               {param storyReport: $storyReport /}
               {param index: index($storyReport) /}
             {/call}
@@ -24,9 +24,10 @@
         {/call}
     </div>
     {foreach $storyReport in $storyReports}
-        <div class="tabs-pane" id="story-report-tab-{index($storyReport)}" environment="{$storyReport.environment}">
-            <h2>status = {$storyReport.status}</h2>
-        </div>
+        {call .renderStoryReportTabPane}
+          {param storyReport: $storyReport /}
+          {param index: index($storyReport) /}
+        {/call}
     {/foreach}
 </div>
 {/template}
@@ -36,7 +37,19 @@
  * @param storyReport
  * @param index
  */
-{template .renderStoryReportHeader}
+{template .renderStoryReportTabPane autoescape="false"}
+    <div class="tabs-pane story-container" id="story-report-tab-{$index}" environment="{$storyReport.environment}">
+        {$storyReport.htmlReport}
+    </div>
+{/template}
+
+
+/**
+ * Renders story report header.
+ * @param storyReport
+ * @param index
+ */
+{template .renderStoryReportTabHeader}
     <li class="menu-item">
         <a href="#story-report-tab-{$index}"><strong>{$storyReport.environment}</strong><span
             class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{if $storyReport.totalScenariosFailed > 0}<span
@@ -63,7 +76,7 @@
                 <span class="keyword">As a</span> {$story.narrative.asA|changeNewlineToBr}
             </div>
             <div>
-                <span class="keyword">In want to</span> {$story.narrative.iWantTo|changeNewlineToBr}
+                <span class="keyword">I want to</span> {$story.narrative.iWantTo|changeNewlineToBr}
             </div>
             {if length($story.narrative.soThat) != 0}
             <div>

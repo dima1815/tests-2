@@ -15,26 +15,32 @@
             <transformer key="soyTransformer"/>
         </transformation>
         <!--common-->
-        <resource type="download" name="StoryModel.js" location="/js/custom/StoryModel.js"/>
-        <!--<resource type="download" name="ScenarioModel.js" location="/js/custom/ScenarioModel.js"/>-->
-        <resource type="download" name="StoryService.js" location="/js/custom/StoryService.js"/>
-        <resource type="download" name="PageUtils.js" location="/js/custom/PageUtils.js"/>
+        <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
+        <!--<resource type="download" name="ScenarioModel.js" location="/js/ScenarioModel.js"/>-->
+        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
+        <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
         <!--edit story-->
-        <resource type="download" name="EditStoryController.js" location="/js/custom/editstory/EditStoryController.js"/>
-        <resource type="download" name="EditStoryView.js" location="/js/custom/editstory/EditStoryView.js"/>
+        <resource type="download" name="EditStoryController.js" location="/js/editstory/EditStoryController.js"/>
+        <resource type="download" name="EditStoryView.js" location="/js/editstory/EditStoryView.js"/>
         <resource type="download" name="EditStoryTemplates.soy.js"
-                  location="js/custom/editstory/EditStoryTemplates.soy"/>
+                  location="js/editstory/EditStoryTemplates.soy"/>
         <!--delete story-->
         <resource type="download" name="DeleteStoryController.js"
-                  location="/js/custom/deletestory/DeleteStoryController.js"/>
+                  location="/js/deletestory/DeleteStoryController.js"/>
         <!--issue stories-->
         <resource type="download" name="ShowStoryTemplates.soy.js"
-                  location="/js/custom/showstory/ShowStoryTemplates.soy"/>
-        <resource type="download" name="ShowStoryController.js" location="/js/custom/showstory/ShowStoryController.js"/>
-        <resource type="download" name="ShowStoryModel.js" location="/js/custom/showstory/ShowStoryModel.js"/>
-        <resource type="download" name="ShowStoryView.js" location="/js/custom/showstory/ShowStoryView.js"/>
+                  location="/js/showstory/ShowStoryTemplates.soy"/>
+        <resource type="download" name="ShowStoryController.js" location="/js/showstory/ShowStoryController.js"/>
+        <resource type="download" name="ShowStoryModel.js" location="/js/showstory/ShowStoryModel.js"/>
+        <resource type="download" name="ShowStoryView.js" location="/js/showstory/ShowStoryView.js"/>
         <!-- CSS -->
-        <resource type="download" name="custom-style.css" location="css/custom-style.css">
+        <resource type="download" name="story.css" location="css/story.css">
+            <param name="content-type" value="text/css"/>
+        </resource>
+        <resource type="download" name="story-edit.css" location="css/story-edit.css">
+            <param name="content-type" value="text/css"/>
+        </resource>
+        <resource type="download" name="story-report.css" location="css/story-report.css">
             <param name="content-type" value="text/css"/>
         </resource>
         <context>jira.view.issue</context>

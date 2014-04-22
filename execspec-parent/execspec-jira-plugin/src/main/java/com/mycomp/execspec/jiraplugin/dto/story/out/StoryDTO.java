@@ -82,14 +82,15 @@ public class StoryDTO {
 
         StringBuilder sb = new StringBuilder();
 
-        String narrativeAsString = this.getNarrative().getAsString();
-        sb.append(narrativeAsString);
-        sb.append("\n\n");
-
         String metaAsString = this.getMeta().asString();
         if (!metaAsString.isEmpty()) {
             sb.append(metaAsString);
+            sb.append("\n");
         }
+
+        String narrativeAsString = this.getNarrative().getAsString();
+        sb.append(narrativeAsString);
+        sb.append("\n");
 
         String givenStoriesAsString = this.getGivenStories().asString();
         sb.append(givenStoriesAsString);

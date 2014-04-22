@@ -1,0 +1,57 @@
+.jbehave-story-tabs .aui-badge {
+    margin-left: 5px;
+    color: #FFF;
+}
+
+.jbehave-story-tabs .aui-badge.passed {
+    background-color: #14892C;
+}
+
+.jbehave-story-tabs .aui-badge.failed {
+    background-color: #D04437;
+}
+
+.jbehave-story-tabs .aui-badge.pending {
+    /*background-color: #4A6785;*/
+    background-color: #FFD351;
+}
+
+.jbehave-story-tabs .aui-badge.skipped {
+    background-color: #fffe54;
+}
+
+/* Story report */
+.jbehave-story-tabs .aui-badge.not-performed {
+    /*background-color: #fffe54;*/
+    /*apply default jira color scheme*/
+}
+
+/*.story-report-tab {*/
+/*color: #555;*/
+/*}*/
+
+/*.story-report-tab .story {*/
+/*text-align: left;*/
+/*margin-left: 10px;*/
+/*}*/
+
+/*.story-report-tab .path {*/
+/*color: #555;*/
+/*font-weight: bolder;*/
+/*font-size: 16px;*/
+/*opacity: 0.85;*/
+/*margin-bottom: 10px;*/
+/*padding: 5px 10px 5px 10px;*/
+/*}*/
+
+/*.story-report-tab .narrative {*/
+/*color: #00F;*/
+/*color: blue;*/
+/*text-align: left;*/
+/*}*/
+
+/*.story-report-tab .narrative .label {*/
+/*font-size: 20px;*/
+/*font-weight: bold;*/
+/*padding-bottom: 5px;*/
+/*}*/
