@@ -3,12 +3,10 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.story.out.MetaDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.storypath.StoryPathsDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoriesPayload;
-import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryPayload;
+import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.*;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
+import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
@@ -34,18 +32,19 @@ public class StoryResourceFind {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final StoryService storyService;
-
     private final StoryReportService storyReportService;
+    private final StepDocsSerivce stepDocsSerivce;
 
     private SearchService searchService;
     private JiraAuthenticationContext authenticationContext;
 
     public StoryResourceFind(StoryService storyService,
                              StoryReportService storyReportService,
-                             SearchService searchService,
+                             StepDocsSerivce stepDocsSerivce, SearchService searchService,
                              JiraAuthenticationContext authenticationContext) {
         this.storyService = storyService;
         this.storyReportService = storyReportService;
+        this.stepDocsSerivce = stepDocsSerivce;
         this.searchService = searchService;
         this.authenticationContext = authenticationContext;
     }
@@ -87,7 +86,9 @@ public class StoryResourceFind {
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        StoryDTO byIssueKey = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
+        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
+
         List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
 
         // sort storyReports by environment alphabetically
@@ -98,7 +99,7 @@ public class StoryResourceFind {
             }
         });
 
-        StoryPayload payload = new StoryPayload(byIssueKey, storyReports);
+        StoryPayload payload = new StoryPayload(story, storyReports);
         return payload;
     }
 
@@ -110,7 +111,8 @@ public class StoryResourceFind {
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
+        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
 
         // append version as a field in Meta section so that clients can access it from a usual JBehave parsed Story object
         MetaDTO meta = story.getMeta();

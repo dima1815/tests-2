@@ -1,8 +1,6 @@
-package com.mycomp.execspec.jiraplugin.dto;
+package com.mycomp.execspec.jiraplugin.dto.testreport;
 
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
 
 /**
  * Created by Dmytro on 4/8/2014.

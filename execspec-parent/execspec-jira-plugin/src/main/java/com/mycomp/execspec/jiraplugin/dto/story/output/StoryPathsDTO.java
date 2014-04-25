@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.out.storypath;
+package com.mycomp.execspec.jiraplugin.dto.story.output;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

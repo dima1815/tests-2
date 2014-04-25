@@ -4,7 +4,7 @@ import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.wrapperpayloads.StoryTestReportsPayloadDTO;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryTestReportsPayload;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -72,13 +72,13 @@ public class StoryTestResource {
     @Path("/find/{projectKey}/{issueKey}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public StoryTestReportsPayloadDTO findStoryTestReport(
+    public StoryTestReportsPayload findStoryTestReport(
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
         List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
 
-        StoryTestReportsPayloadDTO storyTestReportsPayloadDTO = new StoryTestReportsPayloadDTO(storyTestReports);
+        StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
         return storyTestReportsPayloadDTO;
     }
 

@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.out.step;
+package com.mycomp.execspec.jiraplugin.dto.story.output.step;
 
 /**
  * Created by Dmytro on 3/3/14.

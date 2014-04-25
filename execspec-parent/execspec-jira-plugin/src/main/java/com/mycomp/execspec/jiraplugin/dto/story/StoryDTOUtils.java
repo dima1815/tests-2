@@ -1,34 +1,38 @@
-package com.mycomp.execspec.jiraplugin.dto;
+package com.mycomp.execspec.jiraplugin.dto.story;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Scenario;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
-import com.mycomp.execspec.jiraplugin.dto.story.out.*;
-import com.mycomp.execspec.jiraplugin.dto.story.out.step.BaseToken;
-import com.mycomp.execspec.jiraplugin.dto.story.out.step.ExamplesTableTokenDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.step.StepDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.step.TokenKind;
+import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.*;
+import com.mycomp.execspec.jiraplugin.dto.story.output.step.BaseToken;
+import com.mycomp.execspec.jiraplugin.dto.story.output.step.ExamplesTableTokenDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.step.StepDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.step.TokenKind;
 import org.apache.commons.lang.Validate;
 import org.jbehave.core.model.*;
 import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.steps.StepCreator;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Dmytro on 4/8/2014.
  */
 public class StoryDTOUtils {
 
-    public static List<StoryDTO> toDTO(List<? extends Story> stories) {
+    public static List<StoryDTO> toDTO(List<? extends Story> stories, List<StepDocDTO> stepDocs) {
 
         List<StoryDTO> storyModels = new ArrayList<StoryDTO>(stories.size());
         for (Story story : stories) {
-            StoryDTO storyModel = toDTO(story);
+            StoryDTO storyModel = toDTO(story, stepDocs);
             storyModels.add(storyModel);
         }
         return storyModels;
     }
 
-    public static StoryDTO toDTO(Story story) {
+    public static StoryDTO toDTO(Story story, List<StepDocDTO> stepDocs) {
 
         String issueKey = story.getIssueKey();
         String projectKey = story.getProjectKey();
@@ -48,20 +52,146 @@ public class StoryDTOUtils {
         String strStory = storyAsString.toString();
 
         RegexStoryParser parser = new RegexStoryParser();
-        org.jbehave.core.model.Story jbehaveStory = parser.parseStory(strStory);
+        org.jbehave.core.model.Story jbehaveStory = parser.parseStory(strStory, story.getIssueKey());
 
         NarrativeDTO narrative = fromJBehaveNarrative(story.getNarrative(), jbehaveStory.getNarrative());
         MetaDTO meta = fromJBehaveMeta(jbehaveStory.getMeta());
         GivenStoriesDTO givenStories = fromJBehaveGivenStories(jbehaveStory.getGivenStories());
-        LifecycleDTO lifecycle = fromJBehaveLifeCycle(jbehaveStory.getLifecycle());
-        List<ScenarioDTO> scenarios = fromJBehaveScenarios(jbehaveStory.getScenarios());
+        LifecycleDTO lifecycle = fromJBehaveLifeCycle(jbehaveStory.getLifecycle(), stepDocs);
+        List<ScenarioDTO> scenarios = fromJBehaveScenarios(jbehaveStory.getScenarios(), stepDocs);
 
         StoryDTO storyModel = new StoryDTO(projectKey, issueKey, story.getVersion(), narrative, meta, givenStories, lifecycle, scenarios);
+
+        String asHTML = toHTML(jbehaveStory, stepDocs);
+        storyModel.setAsHTML(asHTML);
 
         return storyModel;
     }
 
-    private static List<ScenarioDTO> fromJBehaveScenarios(List<org.jbehave.core.model.Scenario> scenarios) {
+    private static String toHTML(org.jbehave.core.model.Story story, List<StepDocDTO> stepDocs) {
+
+        CustomHtmlReporter reporter = new CustomHtmlReporter();
+
+        reporter.beforeStory(story, false);
+        reporter.narrative(story.getNarrative());
+        reporter.lifecyle(story.getLifecycle());
+        List<String> givenStoriesPaths = story.getGivenStories().getPaths();
+        if (!givenStoriesPaths.isEmpty()) {
+            reporter.givenStories(givenStoriesPaths);
+        }
+
+        List<org.jbehave.core.model.Scenario> scenarios = story.getScenarios();
+        for (org.jbehave.core.model.Scenario scenario : scenarios) {
+
+            reporter.beforeScenario(scenario.getTitle());
+            reporter.scenarioMeta(scenario.getMeta());
+            GivenStories givenStories = scenario.getGivenStories();
+            List<String> givenPaths = givenStories.getPaths();
+            if (!givenPaths.isEmpty()) {
+                reporter.givenStories(givenPaths);
+            }
+
+            List<String> steps = scenario.getSteps();
+            for (String step : steps) {
+
+                boolean stepDocFound = false;
+                for (StepDocDTO stepDocDTO : stepDocs) {
+                    String startingWord = stepDocDTO.getStartingWord();
+                    String startingPrefix = startingWord + " ";
+                    if (step.startsWith(startingPrefix)) {
+                        String stepWithoutKeyword = step.substring(startingPrefix.length());
+                        String regExpPattern = stepDocDTO.getRegExpPattern();
+                        Pattern pattern = Pattern.compile(regExpPattern, Pattern.DOTALL);
+                        Matcher matcher = pattern.matcher(stepWithoutKeyword);
+                        boolean matches = matcher.matches();
+                        if (matches) {
+                            step = startingPrefix + insertParameterMarkers(stepWithoutKeyword, matcher);
+                            stepDocFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (stepDocFound) {
+                    reporter.successful(step);
+                } else {
+                    reporter.pending(step);
+                }
+
+            }
+
+            // TODO - implement examples table, i.e. scenarios parametrised with examples table
+            // should the steps be passed to the reporter individually like above or would it be enough to just call
+            // the beforeExamples method of the reporter
+//            ExamplesTable examplesTable = scenario.getExamplesTable();
+//            reporter.beforeExamples(steps, examplesTable);
+
+            reporter.afterScenario();
+        }
+
+        reporter.afterStory(false);
+
+        String storyAsHtml = reporter.getStoryReport().trim();
+        return storyAsHtml;
+    }
+
+    private static String insertParameterMarkers(String step, Matcher matcher) {
+
+        StringBuilder sb = new StringBuilder();
+
+        int totalGroups = matcher.groupCount();
+
+        if (totalGroups > 0) {
+
+            // has parameters, which are matcher's groups
+            int pos = 0;
+            for (int i = 1; i <= totalGroups; i++) {
+                int groupStart = matcher.start(i);
+                String group = matcher.group(i);
+                if (groupStart > pos) {
+                    // append the string up until the group start
+                    String str = step.substring(pos, groupStart);
+                    sb.append(str);
+                    // append the current group as a parameter
+                    appendParameter(sb, group);
+                    // update position
+                    pos = groupStart + group.length();
+                } else {
+                    // we are at the start of the group already
+                    appendParameter(sb, group);
+                    // update position
+                    pos = groupStart + group.length();
+                }
+            }
+            // append any characters which maybe after the last parameter and hence after the last matcher group
+            if (pos < step.length()) {
+                String str = step.substring(pos);
+                sb.append(str);
+            }
+
+        } else {
+            // doesn't have parameters
+            sb.append(step);
+        }
+
+        return sb.toString();
+    }
+
+    private static void appendParameter(StringBuilder sb, String group) {
+        String trimmedGroup = group.trim();
+        if (trimmedGroup.startsWith("|") && trimmedGroup.endsWith("|")) {
+            // is a table parameter
+            sb.append(StepCreator.PARAMETER_TABLE_START);
+            sb.append(group);
+            sb.append(StepCreator.PARAMETER_TABLE_END);
+        } else {
+            sb.append(StepCreator.PARAMETER_VALUE_START);
+            sb.append(group);
+            sb.append(StepCreator.PARAMETER_VALUE_END);
+        }
+    }
+
+    private static List<ScenarioDTO> fromJBehaveScenarios(List<org.jbehave.core.model.Scenario> scenarios, List<StepDocDTO> stepDocs) {
 
         List<ScenarioDTO> models = new ArrayList<ScenarioDTO>(scenarios.size());
 
@@ -107,7 +237,7 @@ public class StoryDTOUtils {
             List<String> steps = scenario.getSteps();
             List<StepDTO> stepsModel = new ArrayList<StepDTO>(steps.size());
             for (String step : steps) {
-                List<BaseToken> tokens = parseStepIntoTokens(step);
+                List<BaseToken> tokens = parseStepIntoTokens(step, stepDocs);
                 StepDTO stepModel = new StepDTO(step, tokens);
                 stepsModel.add(stepModel);
                 String stepAsString = stepModel.asString();
@@ -148,14 +278,14 @@ public class StoryDTOUtils {
         return models;
     }
 
-    private static LifecycleDTO fromJBehaveLifeCycle(Lifecycle lifecycle) {
+    private static LifecycleDTO fromJBehaveLifeCycle(Lifecycle lifecycle, List<StepDocDTO> stepDocDTOs) {
         List<StepDTO> beforeSteps;
         {
             List<String> jbehaveBeforeSteps = lifecycle.getBeforeSteps();
             beforeSteps = new ArrayList<StepDTO>(jbehaveBeforeSteps.size());
             for (String jbehaveBeforeStep : jbehaveBeforeSteps) {
                 String asString = jbehaveBeforeStep;
-                List<BaseToken> stepTokens = parseStepIntoTokens(jbehaveBeforeStep);
+                List<BaseToken> stepTokens = parseStepIntoTokens(jbehaveBeforeStep, stepDocDTOs);
                 StepDTO stepModel = new StepDTO(asString, stepTokens);
                 beforeSteps.add(stepModel);
             }
@@ -166,7 +296,7 @@ public class StoryDTOUtils {
             afterSteps = new ArrayList<StepDTO>(jbehaveAfterSteps.size());
             for (String jbehaveAfterStep : jbehaveAfterSteps) {
                 String asString = jbehaveAfterStep;
-                List<BaseToken> stepTokens = parseStepIntoTokens(jbehaveAfterStep);
+                List<BaseToken> stepTokens = parseStepIntoTokens(jbehaveAfterStep, stepDocDTOs);
                 StepDTO stepModel = new StepDTO(asString, stepTokens);
                 afterSteps.add(stepModel);
             }
@@ -175,7 +305,79 @@ public class StoryDTOUtils {
         return lifecycleModel;
     }
 
-    private static List<BaseToken> parseStepIntoTokens(String stepAsString) {
+    private static List<BaseToken> parseStepIntoTokens(String stepAsString, List<StepDocDTO> stepDocDTOs) {
+
+        List<BaseToken> tokens = new ArrayList<BaseToken>();
+
+        String[] keywords = {"Given ", "When ", "Then ", "And "};
+        String stepWithoutKeyword = null;
+        for (String keyword : keywords) {
+            if (stepAsString.startsWith(keyword)) {
+                tokens.add(new BaseToken(TokenKind.keyword, keyword));
+                stepWithoutKeyword = stepAsString.substring(keyword.length());
+                break;
+            }
+        }
+
+        // find matching stepDoc
+        boolean matchFound = false;
+        for (StepDocDTO stepDocDTO : stepDocDTOs) {
+            String startingWord = stepDocDTO.getStartingWord();
+            if (stepAsString.startsWith(startingWord)) {
+                String regExpPattern = stepDocDTO.getRegExpPattern();
+                Pattern pattern = Pattern.compile(regExpPattern, Pattern.DOTALL);
+                Matcher matcher = pattern.matcher(stepWithoutKeyword);
+                boolean matches = matcher.matches();
+                if (matches) {
+
+                    int totalGroups = matcher.groupCount();
+                    if (totalGroups > 0) {
+                        // has parameters, which are matcher's groups
+                        int pos = 0;
+                        for (int i = 1; i <= totalGroups; i++) {
+                            int groupStart = matcher.start(i);
+                            String group = matcher.group(i);
+                            if (groupStart > pos) {
+                                // append the string up until the group start
+                                String str = stepWithoutKeyword.substring(pos, groupStart);
+                                tokens.add(new BaseToken(TokenKind.text, str));
+                                // append the current group as a parameter
+                                tokens.add(new BaseToken(TokenKind.parameter, group));
+                                // update position
+                                pos = groupStart + group.length();
+                            } else {
+                                // we are at the start of the group already
+                                tokens.add(new BaseToken(TokenKind.parameter, group));
+                                // update position
+                                pos = groupStart + group.length();
+                            }
+                        }
+                        // append any characters which maybe after the last parameter and hence after the last matcher group
+                        if (pos < stepWithoutKeyword.length()) {
+                            String str = stepWithoutKeyword.substring(pos);
+                            tokens.add(new BaseToken(TokenKind.text, str));
+                        }
+
+                    } else {
+                        // doesn't have parameters
+                        tokens.add(new BaseToken(TokenKind.text, stepWithoutKeyword));
+                    }
+
+                    matchFound = true;
+                    break;
+                }
+            }
+        }
+
+        if (!matchFound) {
+            // we simply set the whole step as a string token
+            tokens.add(new BaseToken(TokenKind.text, stepAsString));
+        }
+
+        return tokens;
+    }
+
+    private static List<BaseToken> parseStepIntoTokens_OLD(String stepAsString, List<StepDocDTO> stepDocDTOs) {
 
 //        Map<String, String> parameters = new HashMap<String, String>();
 //

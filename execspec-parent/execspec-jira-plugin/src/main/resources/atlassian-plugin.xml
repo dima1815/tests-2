@@ -43,6 +43,9 @@
         <resource type="download" name="story-report.css" location="css/story-report.css">
             <param name="content-type" value="text/css"/>
         </resource>
+        <resource type="download" name="jbehave-core.css" location="css/jbehave-core.css">
+            <param name="content-type" value="text/css"/>
+        </resource>
         <context>jira.view.issue</context>
     </web-resource>
     <!-- ==================================================================================================== -->
@@ -136,11 +139,16 @@
     <component key="scenario-dao" name="Scenario DAO" class="com.mycomp.execspec.jiraplugin.ao.story.ScenarioDao"/>
     <component key="story-test-report-dao" name="Story Test Report DAO"
                class="com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao"/>
+    <component key="story-step-doc-dao" name="Story Step Doc DAO"
+               class="com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDocDao"/>
+
     <!--Services-->
     <component key="story-service" name="Story Service"
                class="com.mycomp.execspec.jiraplugin.service.StoryServiceImpl"/>
     <component key="story-report-service" name="Story Report Service"
                class="com.mycomp.execspec.jiraplugin.service.StoryReportServiceImpl"/>
+    <component key="step-doc-service" name="Step Doc Service"
+               class="com.mycomp.execspec.jiraplugin.service.StepDocsServiceImpl"/>
     <!-- ==================================================================================================== -->
     <!--Active Objects-->
     <ao key="ao-module">
@@ -148,5 +156,6 @@
         <entity>com.mycomp.execspec.jiraplugin.ao.story.Scenario</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.story.Story</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport</entity>
+        <entity>com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDoc</entity>
     </ao>
 </atlassian-plugin>

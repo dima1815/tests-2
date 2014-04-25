@@ -1,8 +1,9 @@
 package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.activeobjects.tx.Transactional;
-import com.mycomp.execspec.jiraplugin.dto.story.in.SaveStoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.input.SaveStoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 
 import java.util.List;
 
@@ -15,7 +16,8 @@ public interface StoryService {
 
     List<StoryDTO> all();
 
-    StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey);
+    StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey,
+                                      List<StepDocDTO> stepDocs);
 
     List<StoryDTO> findByProjectKey(String projectKey);
 

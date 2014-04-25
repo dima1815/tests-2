@@ -1,6 +1,6 @@
-package com.mycomp.execspec.jiraplugin.dto.story.out;
+package com.mycomp.execspec.jiraplugin.dto.story.output;
 
-import com.mycomp.execspec.jiraplugin.dto.story.out.step.StepDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.step.StepDTO;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

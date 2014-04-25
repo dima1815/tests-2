@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.in;
+package com.mycomp.execspec.jiraplugin.dto.story.input;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

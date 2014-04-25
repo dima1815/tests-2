@@ -7,9 +7,11 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.config.FieldConfigItem;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
+import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.slf4j.Logger;
@@ -24,12 +26,15 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
 
     private static final Logger log = LoggerFactory.getLogger(StoryStatusField.class);
 
-    private StoryService storyService;
-    private StoryReportService storyReportService;
+    private final StoryService storyService;
+    private final StoryReportService storyReportService;
+    private final StepDocsSerivce stepDocsSerivce;
 
-    public StoryStatusField(StoryService storyService, StoryReportService storyReportService) {
+    public StoryStatusField(StoryService storyService,
+                            StoryReportService storyReportService, StepDocsSerivce stepDocsSerivce) {
         this.storyService = storyService;
         this.storyReportService = storyReportService;
+        this.stepDocsSerivce = stepDocsSerivce;
     }
 
     @Override
@@ -49,7 +54,8 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
         String projectKey = issue.getProjectObject().getKey();
         String issueKey = issue.getKey();
 
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
+        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
 
         if (story != null) {
 
@@ -97,7 +103,4 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
         return storyService;
     }
 
-    public void setStoryService(StoryService storyService) {
-        this.storyService = storyService;
-    }
 }

@@ -1,6 +1,5 @@
-package com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads;
+package com.mycomp.execspec.jiraplugin.dto.story.output;
 
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 
 import javax.xml.bind.annotation.XmlAccessType;

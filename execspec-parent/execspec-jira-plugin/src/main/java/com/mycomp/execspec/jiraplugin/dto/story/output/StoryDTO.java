@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.out;
+package com.mycomp.execspec.jiraplugin.dto.story.output;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,6 +25,7 @@ public class StoryDTO {
     private GivenStoriesDTO givenStories;
     private LifecycleDTO lifecycle;
     private List<ScenarioDTO> scenarios;
+    private String asHTML;
 
     protected StoryDTO() {
     }
@@ -107,5 +108,13 @@ public class StoryDTO {
 
         String asString = sb.toString();
         return asString;
+    }
+
+    public String getAsHTML() {
+        return asHTML;
+    }
+
+    public void setAsHTML(String asHTML) {
+        this.asHTML = asHTML;
     }
 }

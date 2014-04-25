@@ -9,13 +9,15 @@ import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
-import com.mycomp.execspec.jiraplugin.dto.StoryDTOUtils;
-import com.mycomp.execspec.jiraplugin.dto.story.in.SaveStoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
+import com.mycomp.execspec.jiraplugin.dto.story.input.SaveStoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 public class StoryServiceImpl implements StoryService {
@@ -23,19 +25,22 @@ public class StoryServiceImpl implements StoryService {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final IssueService is;
     private final JiraAuthenticationContext authenticationContext;
-    private StoryDao storyDao;
-    private ScenarioDao scenarioDao;
-    private StoryReportDao storyReportDao;
+    private final StoryDao storyDao;
+    private final ScenarioDao scenarioDao;
+    private final StoryReportDao storyReportDao;
+    private final StepDocsSerivce stepDocsSerivce;
 
     public StoryServiceImpl(StoryDao storyDao, ScenarioDao scenarioDao,
                             StoryReportDao storyReportDao,
                             IssueService is,
-                            JiraAuthenticationContext authenticationContext) {
+                            JiraAuthenticationContext authenticationContext,
+                            StepDocsSerivce stepDocsSerivce) {
         this.storyDao = storyDao;
         this.scenarioDao = scenarioDao;
         this.storyReportDao = storyReportDao;
         this.is = is;
         this.authenticationContext = authenticationContext;
+        this.stepDocsSerivce = stepDocsSerivce;
     }
 
     @Override
@@ -78,12 +83,13 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDTO> all() {
         List<Story> all = storyDao.findAll();
-        List<StoryDTO> storyModels = StoryDTOUtils.toDTO(all);
+        List<StepDocDTO> stepDocs = Collections.emptyList(); // TODO - should not be empty here?
+        List<StoryDTO> storyModels = StoryDTOUtils.toDTO(all, stepDocs);
         return storyModels;
     }
 
     @Override
-    public StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey) {
+    public StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey, List<StepDocDTO> stepDocs) {
         List<Story> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
         if (byIssueKey.isEmpty()) {
             return null;
@@ -91,7 +97,7 @@ public class StoryServiceImpl implements StoryService {
             throw new RuntimeException("More than one story was found for issue key - " + issueKey);
         } else {
             Story story = byIssueKey.get(0);
-            StoryDTO storyModel = StoryDTOUtils.toDTO(story);
+            StoryDTO storyModel = StoryDTOUtils.toDTO(story, stepDocs);
             return storyModel;
         }
     }
@@ -99,7 +105,8 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDTO> findByProjectKey(String projectKey) {
         List<Story> stories = storyDao.findByProjectKey(projectKey);
-        List<StoryDTO> storyDTOs = StoryDTOUtils.toDTO(stories);
+        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
+        List<StoryDTO> storyDTOs = StoryDTOUtils.toDTO(stories, stepDocs);
         return storyDTOs;
     }
 
@@ -110,7 +117,8 @@ public class StoryServiceImpl implements StoryService {
             throw new RuntimeException("Story id value is greater than allowed");
         }
         Story story = storyDao.get(storyId.intValue());
-        StoryDTO storyModel = StoryDTOUtils.toDTO(story);
+        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(story.getProjectKey());
+        StoryDTO storyModel = StoryDTOUtils.toDTO(story, stepDocs);
         return storyModel;
     }
 

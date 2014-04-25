@@ -1,230 +1,229 @@
-/*body {*/
-/*margin: 0;*/
-/*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana",*/
-/*sans-serif;*/
-/*font-size: 0.84em;*/
-/*color: #555;*/
-/*text-align: left;*/
-/*padding: 0 0 10px 0;*/
-/*background-color: #fff;*/
-/*}*/
+#story-container {
+    margin: 0;
+    font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", sans-serif;
+    font-size: 0.84em;
+    color: #555;
+    text-align: left;
+    padding: 0 0 10px 0;
+    background-color: #fff;
+}
 
-/*h2 {*/
-/*background-color: #ffcd13;*/
-/*margin-bottom: 10px;*/
-/*padding: 5px 10px;*/
-/*}*/
+#story-container h2 {
+    background-color: #ffcd13;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+}
 
-/*body,td,select,input,li {*/
-/*font-size: 13px;*/
-/*}*/
+#story-container body, td, select, input, li {
+    font-size: 13px;
+}
 
-/*a {*/
-/*text-decoration: none;*/
-/*}*/
+#story-container a {
+    text-decoration: none;
+}
 
-/*a:link {*/
-/*color: #39912b;*/
-/*font-weight: bold;*/
-/*}*/
+#story-container a:link {
+    color: #39912b;
+    font-weight: bold;
+}
 
-/*a:visited {*/
-/*color: #39912b;*/
-/*}*/
+#story-container a:visited {
+    color: #39912b;
+}
 
-/*a:active,a:hover {*/
-/*color: #39912b;*/
-/*}*/
+#story-container a:active, a:hover {
+    color: #39912b;
+}
 
-/*b {*/
-/*color: #333;*/
-/*}*/
+#story-container b {
+    color: #333;
+}
 
-/*.logo {*/
-/*float: right;*/
-/*margin-right: 30px;*/
-/*}*/
+#story-container .logo {
+    float: right;
+    margin-right: 30px;
+}
 
-/*.clear {*/
-/*clear: both;*/
-/*}*/
+#story-container .clear {
+    clear: both;
+}
 
-/*.left {*/
-/*text-align: left;*/
-/*margin-left: 10px;*/
-/*}*/
-
-/*.right {*/
-/*text-align: right;*/
-/*margin-right: 10px;*/
-/*}*/
-
-/*.reports {*/
-/*margin-left: 30px;*/
-/*margin-top: 30px;*/
-/*text-align: left;*/
-/*}*/
-
-/*.reports h2 {*/
-/*opacity: 0.85;*/
-/*}*/
-
-/*table {*/
-/*border-collapse: collapse;*/
-/*}*/
-
-/*.stories {*/
-/*border: 1px solid #000;*/
-/*}*/
-
-/*.scenarios {*/
-/*border: 1px solid #000;*/
-/*}*/
-
-/*.steps {*/
-/*border: 1px solid #000;*/
-/*}*/
-
-/*.totals {*/
-/*border-top: 1px solid #000;*/
-/*padding-top: 10px;*/
-/*font-weight: bold;*/
-/*}	*/
-
-/*.reports table {*/
-/*border: solid;*/
-/*}*/
-
-/*.reports table th {*/
-/*border-bottom: 1px solid #000;*/
-/*text-align: center;*/
-/*font-weight: bold;*/
-/*padding: 10px;*/
-/*}*/
-
-/*.reports table td {*/
-/*text-align: center;*/
-/*padding: 5px;*/
-/*}*/
-
-/*.reports table td.story {*/
-/*text-align: left;*/
-/*padding: 5px;*/
-/*}*/
-
-/*.reports table td a {*/
-/*color: #555;*/
-/*}*/
-
-/*.lane {*/
-/*border-left: 1px solid #000;*/
-/*}*/
-
-/*.maps {*/
-/*margin-left: 30px;*/
-/*margin-top: 30px;*/
-/*text-align: left;*/
-/*}*/
-
-/*.maps h2 {*/
-/*opacity: 0.85;*/
-/*}*/
-
-/*.maps table {*/
-/*border: solid;*/
-/*}*/
-
-/*.maps table th {*/
-/*text-align: center;*/
-/*font-weight: bold;*/
-/*padding: 10px;*/
-/*}*/
-
-/*.maps table td {*/
-/*text-align: center;*/
-/*padding: 5px;*/
-/*}*/
-
-/*.maps table td.name {*/
-/*text-align: left;*/
-/*padding: 5px;*/
-/*}*/
-
-/*.views {*/
-/*margin-left: 30px;*/
-/*margin-top: 30px;*/
-/*text-align: left;*/
-/*}*/
-
-/*.views h2 {*/
-/*opacity: 0.85;*/
-/*}*/
-
-/*.views table {*/
-/*border: solid;*/
-/*}*/
-
-/*.views table th {*/
-/*text-align: center;*/
-/*font-weight: bold;*/
-/*padding: 10px;*/
-/*}*/
-
-/*.views table td {*/
-/*text-align: center;*/
-/*padding: 5px;*/
-/*}*/
-
-/*.views table td.name {*/
-/*text-align: left;*/
-/*padding: 5px;*/
-/*}*/
-
-.story {
+#story-container .left {
     text-align: left;
     margin-left: 10px;
 }
 
-.story h2 {
+#story-container .right {
+    text-align: right;
+    margin-right: 10px;
+}
+
+#story-container .reports {
+    margin-left: 30px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+#story-container .reports h2 {
+    opacity: 0.85;
+}
+
+#story-container table {
+    border-collapse: collapse;
+}
+
+#story-container .stories {
+    border: 1px solid #000;
+}
+
+#story-container .scenarios {
+    border: 1px solid #000;
+}
+
+#story-container .steps {
+    border: 1px solid #000;
+}
+
+#story-container .totals {
+    border-top: 1px solid #000;
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+#story-container .reports table {
+    border: solid;
+}
+
+#story-container .reports table th {
+    border-bottom: 1px solid #000;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#story-container .reports table td {
+    text-align: center;
+    padding: 5px;
+}
+
+#story-container .reports table td.story {
+    text-align: left;
+    padding: 5px;
+}
+
+#story-container .reports table td a {
+    color: #555;
+}
+
+#story-container .lane {
+    border-left: 1px solid #000;
+}
+
+#story-container .maps {
+    margin-left: 30px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+#story-container .maps h2 {
+    opacity: 0.85;
+}
+
+#story-container .maps table {
+    border: solid;
+}
+
+#story-container .maps table th {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#story-container .maps table td {
+    text-align: center;
+    padding: 5px;
+}
+
+#story-container .maps table td.name {
+    text-align: left;
+    padding: 5px;
+}
+
+#story-container .views {
+    margin-left: 30px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+#story-container .views h2 {
+    opacity: 0.85;
+}
+
+#story-container .views table {
+    border: solid;
+}
+
+#story-container .views table th {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#story-container .views table td {
+    text-align: center;
+    padding: 5px;
+}
+
+#story-container .views table td.name {
+    text-align: left;
+    padding: 5px;
+}
+
+#story-container .story {
+    text-align: left;
+    margin-left: 10px;
+}
+
+#story-container .story h2 {
     background-color: #fff;
     border-color: #ffcd13;
 }
 
-.meta {
+#story-container .meta {
     text-align: left;
     color: purple;
     margin-bottom: 10px;
 }
 
-.filter {
+#story-container .filter {
     text-align: left;
     color: red;
     margin-left: 10px;
     margin-bottom: 10px;
 }
 
-.keyword {
+#story-container .keyword {
     margin-left: 10px;
 }
 
-.property {
+#story-container .property {
     margin-left: 10px;
 }
 
-.narrative {
+#story-container .narrative {
     text-align: left;
     color: blue;
 }
 
-.element {
+#story-container .element {
     padding-left: 10px;
 }
 
-span.inOrderTo, span.asA, span.iWantTo {
+#story-container span.inOrderTo, span.asA, span.iWantTo {
     font-weight: bold;
 }
 
-.givenStories, .path {
+#story-container .givenStories, .path {
     font-weight: bolder;
     font-size: 16px;
     opacity: 0.85;
@@ -232,45 +231,45 @@ span.inOrderTo, span.asA, span.iWantTo {
     padding: 5px 10px;
 }
 
-.scenario {
+#story-container .scenario {
     text-align: left;
     padding-left: 1px;
 }
 
-.step {
+#story-container .step {
     color: black;
     padding: 2px 2px 2px 20px;
 }
 
-.successful {
+#story-container .successful {
     color: green;
 }
 
-.ignorable {
+#story-container .ignorable {
     color: blue;
 }
 
-.pending {
+#story-container .pending {
     color: olive;
 }
 
-.notPerformed {
+#story-container .notPerformed {
     color: brown;
 }
 
-.failed {
+#story-container .failed {
     color: red;
 }
 
-.cancelled {
+#story-container .cancelled {
     color: red;
 }
 
-.restarted {
+#story-container .restarted {
     color: orange;
 }
 
-.dryRun {
+#story-container .dryRun {
     border: solid;
     color: amber;
     background-color: yellow;
@@ -281,89 +280,89 @@ span.inOrderTo, span.asA, span.iWantTo {
     text-weight: bold;
 }
 
-.parameter {
+#story-container .parameter {
     color: purple;
     padding-left: 0px;
     text-weight: bold;
 }
 
-.keyword {
+#story-container .keyword {
     text-weight: bold;
 }
 
-.examples {
+#story-container .examples {
     margin-left: 10px;
     padding-bottom: 20px;
 }
 
-.examples h3 {
+#story-container .examples h3 {
     opacity: 0.85;
 }
 
-.examples table {
+#story-container .examples table {
     border: 1px solid;
     margin-top: 12px;
     margin-left: 12px;
 }
 
-.examples table th, td {
+#story-container .examples table th, td {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
     border-left: 1px solid;
 }
 
-.examples table th {
+#story-container .examples table th {
     font-weight: bold;
 }
 
-.outcomes table {
+#story-container .outcomes table {
     border: 1px solid;
     margin-top: 12px;
     margin-left: 12px;
 }
 
-.outcomes table th, td {
+#story-container .outcomes table th, td {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
     border-left: 1px solid;
 }
 
-.outcomes table th {
+#story-container .outcomes table th {
     font-weight: bold;
 }
 
-.outcomes table tr.notVerified {
+#story-container .outcomes table tr.notVerified {
     color: red;
 }
 
-.outcomes table tr.verified {
+#story-container .outcomes table tr.verified {
     color: green;
 }
 
-.outcomes {
+#story-container .outcomes {
     padding-bottom: 20px;
 }
 
-.parameter table {
+#story-container .parameter table {
     border: 1px solid;
     margin-top: 12px;
     margin-left: 12px;
 }
 
-.parameter table th, td {
+#story-container .parameter table th, td {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
     border-left: 1px solid;
 }
 
-.parameter table th {
+#story-container .parameter table th {
     font-weight: bold;
 }
 
-pre.failure {
+#story-container pre.failure {
     padding-left: 10px;
     color: red;
 }

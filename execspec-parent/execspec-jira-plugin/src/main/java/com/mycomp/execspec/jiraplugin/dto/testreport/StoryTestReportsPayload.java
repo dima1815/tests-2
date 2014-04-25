@@ -1,6 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.testreport.wrapperpayloads;
-
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
+package com.mycomp.execspec.jiraplugin.dto.testreport;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -12,14 +10,14 @@ import java.util.List;
  */
 @XmlRootElement(name = "stories_payload")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class StoryTestReportsPayloadDTO {
+public class StoryTestReportsPayload {
 
     private List<StoryHtmlReportDTO> storyTestReports;
 
-    protected StoryTestReportsPayloadDTO() {
+    protected StoryTestReportsPayload() {
     }
 
-    public StoryTestReportsPayloadDTO(List<StoryHtmlReportDTO> storyTestReports) {
+    public StoryTestReportsPayload(List<StoryHtmlReportDTO> storyTestReports) {
         this.storyTestReports = storyTestReports;
     }
 

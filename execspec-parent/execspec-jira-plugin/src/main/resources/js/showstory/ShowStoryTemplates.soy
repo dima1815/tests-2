@@ -19,7 +19,7 @@
         {/foreach}
     </ul>
     <div class="tabs-pane active-pane" id="story-tab">
-        {call .renderStory }
+        {call .renderStoryAsHTML }
           {param story: $story /}
         {/call}
     </div>
@@ -30,6 +30,16 @@
         {/call}
     {/foreach}
 </div>
+{/template}
+
+/**
+ * Renders story as html.
+ * @param story
+ */
+{template .renderStoryAsHTML autoescape="false"}
+    <div class="story-container">
+        {$story.asHTML}
+    </div>
 {/template}
 
 /**
