@@ -8,7 +8,6 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.StepCandidate;
 import org.junit.Test;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class MyEmbedderTest extends JUnitStories {
                         }
                     }
                 }
-//                        .withReporters(new JiraReporterHtmlOutput(configuration().keywords()))
+//                        .withReporters(new CustomHtmlReporter(configuration().keywords()))
                         .withFailureTrace(true)
 //                .withCrossReference(xref)
                         .withFormats(
@@ -83,7 +82,9 @@ public class MyEmbedderTest extends JUnitStories {
 
 //        configuration().storyReporterBuilder().withReporters(dsr);
 
-        JiraStepDocReporter stepDocReporter = new JiraStepDocReporter();
+//        configuration().useStepFinder(new ExtendedStepFinder());
+
+        JiraStepDocReporter stepDocReporter = new JiraStepDocReporter(jiraBaseUrl, jiraProject);
         configuration().useStepdocReporter(stepDocReporter);
 
     }
@@ -97,15 +98,10 @@ public class MyEmbedderTest extends JUnitStories {
             embedder.generateCrossReference();
 
             List<CandidateSteps> candidateSteps = embedder.stepsFactory().createCandidateSteps();
-            List<StepCandidate> stepCandidates = candidateSteps.get(0).listCandidates();
-            System.out.println("stepCandidates = " + stepCandidates);
-
-//            List<CandidateSteps> candidateSteps = embedder.stepsFactory().createCandidateSteps();
-//            embedder.reportStepdocs(configuration(), candidateSteps);
-//            embedder.reportStepdocs();
-//            embedder.reportMatchingStepdocs("Given *");
-//            embedder.reportMatchingStepdocs("When *");
-//            embedder.reportMatchingStepdocs("Then *");
+//            List<StepCandidate> stepCandidates = candidateSteps.get(0).listCandidates();
+//            StepCandidate stepCandidate = stepCandidates.get(0);
+//            stepCandidate.get
+            embedder.reportStepdocs(configuration(), candidateSteps);
         }
     }
 

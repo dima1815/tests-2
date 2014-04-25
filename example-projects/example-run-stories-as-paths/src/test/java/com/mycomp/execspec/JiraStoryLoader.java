@@ -1,10 +1,6 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.story.out.MetaDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.NarrativeDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.ScenarioDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.out.wrapperpayloads.StoryPayload;
+import com.mycomp.execspec.jiraplugin.dto.story.output.*;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;

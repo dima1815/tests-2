@@ -1,7 +1,9 @@
 package com.mycomp.execspec;
 
 import org.hamcrest.Matchers;
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
@@ -20,6 +22,13 @@ public class MyStepsMain {
     public void someStep() {
         System.out.println("throwing exception from 'Given something'");
     }
+
+    @Alias("some step with a parameter $myParam that is named but uses an alias")
+    @Given("some step with a parameter $myParam that is named")
+    public void someStepWithNamedParam(@Named("myParam") String myParam) {
+        System.out.println("throwing exception from 'Given something'");
+    }
+
 
     @Then("something should happen")
     public void verify() {
