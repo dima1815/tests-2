@@ -8,8 +8,6 @@ package com.mycomp.execspec.mavenplugin;
  */
 
 
-import com.mycomp.execspec.jiraplugin.dto.story.output.NarrativeDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.ScenarioDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoriesPayload;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 import com.sun.jersey.api.client.Client;
@@ -92,17 +90,17 @@ public class DownloadStoriesFromJira extends AbstractMojo {
                 FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
                 pw = new PrintWriter(fw);
 
-                NarrativeDTO narrative = storyModel.getNarrative();
-                String narrativeText = narrative.getAsString();
-                pw.println(narrativeText);
-
-                pw.println();
-                List<ScenarioDTO> scenarios = storyModel.getScenarios();
-                for (ScenarioDTO scenario : scenarios) {
-                    String scenarioText = scenario.asString();
-                    pw.println(scenarioText);
-                    pw.println();
-                }
+//                NarrativeDTO narrative = storyModel.getNarrative();
+//                String narrativeText = narrative.getAsString();
+//                pw.println(narrativeText);
+//
+//                pw.println();
+//                List<ScenarioDTO> scenarios = storyModel.getScenarios();
+//                for (ScenarioDTO scenario : scenarios) {
+//                    String scenarioText = scenario.asString();
+//                    pw.println(scenarioText);
+//                    pw.println();
+//                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {

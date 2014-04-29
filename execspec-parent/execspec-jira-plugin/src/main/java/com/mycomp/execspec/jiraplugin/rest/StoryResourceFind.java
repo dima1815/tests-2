@@ -4,7 +4,10 @@ import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoriesPayload;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPathsDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPayload;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
@@ -18,7 +21,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Contains rest api methods related to processing of Story objects.
@@ -115,12 +121,12 @@ public class StoryResourceFind {
         StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
 
         // append version as a field in Meta section so that clients can access it from a usual JBehave parsed Story object
-        MetaDTO meta = story.getMeta();
-        Properties properties = meta.getProperties();
-        Long version = story.getVersion();
-        properties.put("jira-version", version.toString());
+//        MetaDTO meta = story.getMeta();
+//        Properties properties = meta.getProperties();
+//        Long version = story.getVersion();
+//        properties.put("jira-version", version.toString());
 
-        String asString = story.asString();
+        String asString = story.getAsString();
         return asString;
     }
 

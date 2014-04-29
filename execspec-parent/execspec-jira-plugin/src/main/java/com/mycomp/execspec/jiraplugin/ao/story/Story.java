@@ -27,14 +27,10 @@ public interface Story extends Entity {
     void setProjectKey(String projectKey);
 
     //    @NotNull
-    String getNarrative();
+    String getAsString();
 
-    void setNarrative(String narrative);
-
-    @OneToMany
-    Scenario[] getScenarios();
+    void setAsString(String asString);
 
     @OneToMany
     StoryHtmlReport[] getStoryHtmlReports();
-
 }

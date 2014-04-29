@@ -31,10 +31,9 @@ function EditStoryController() {
         console.log("keyVal - " + keyVal);
 
         var model = new StoryModel();
-        model.narrative = narrative;
-        model.scenarios = scenarios;
         model.issueKey = issueKey;
         model.projectKey = projectKey;
+        model.asString = narrative;
 
         this.storyService.createNewStory(model);
 

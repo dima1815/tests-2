@@ -1,9 +1,8 @@
 function StoryModel() {
 
-    this.id = "";
+    this.projectKey = "";
     this.issueKey = "";
-    this.narrative = "";
-    this.scenarios = new Array();
+    this.asString = "";
 
     this.init = function () {
 

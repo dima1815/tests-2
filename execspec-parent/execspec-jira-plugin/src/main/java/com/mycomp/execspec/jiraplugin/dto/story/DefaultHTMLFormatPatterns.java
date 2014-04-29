@@ -1,88 +1,21 @@
 package com.mycomp.execspec.jiraplugin.dto.story;
 
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.reporters.PrintStreamOutput;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 
-import static org.jbehave.core.reporters.PrintStreamOutput.Format.HTML;
-
 /**
- * Created by Dmytro on 4/15/2014.
+ * Created by Dmytro on 4/29/2014.
  */
-public class CustomHtmlReporter extends PrintStreamOutput {
+public class DefaultHTMLFormatPatterns {
 
-    private final JiraUploadPrintStream printStream;
-
-    private String storyReport;
-
-    public CustomHtmlReporter() {
-        this(new Properties());
-    }
-
-    public CustomHtmlReporter(Properties outputPatterns) {
-        this(outputPatterns, new LocalizedKeywords());
-    }
-
-    public CustomHtmlReporter(Keywords keywords) {
-        this(new Properties(), keywords);
-    }
-
-    public CustomHtmlReporter(Properties outputPatterns, Keywords keywords) {
-        this(outputPatterns, keywords, false);
-    }
-
-    public CustomHtmlReporter(Properties outputPatterns,
-                              Keywords keywords, boolean reportFailureTrace) {
-        this(mergeWithDefault(outputPatterns), keywords, reportFailureTrace, false);
-    }
-
-    public CustomHtmlReporter(Properties outputPatterns,
-                              Keywords keywords, boolean reportFailureTrace,
-                              boolean compressFailureTrace) {
-        this(mergeWithDefault(outputPatterns), new JiraUploadPrintStream(), keywords, reportFailureTrace, false);
-    }
-
-    private CustomHtmlReporter(Properties outputPatterns, JiraUploadPrintStream printStream,
-                               Keywords keywords, boolean reportFailureTrace,
-                               boolean compressFailureTrace) {
-        super(HTML, printStream, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
-        this.printStream = printStream;
-    }
-
-    private static Properties mergeWithDefault(Properties outputPatterns) {
-        Properties patterns = customPatterns();
-        // override any default pattern
-        patterns.putAll(outputPatterns);
+    public Properties getPatterns() {
         return patterns;
     }
 
-    @Override
-    public void afterStory(boolean givenStory) {
+    private final Properties patterns;
 
-        super.afterStory(givenStory);
+    public DefaultHTMLFormatPatterns() {
 
-        // send the report to JIRA
-        List<Byte> writtenBytes = printStream.writtenBytes;
-        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
-        byte[] bytesArray = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            Byte aByte = bytes[i];
-            bytesArray[i] = aByte;
-        }
-
-        this.storyReport = new String(bytesArray);
-    }
-
-    public static Properties customPatterns() {
-
-        Properties patterns = new Properties();
+        patterns = new Properties();
         patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");
 
 //        patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
@@ -153,38 +86,5 @@ public class CustomHtmlReporter extends PrintStreamOutput {
         patterns.setProperty("parameterValueStart", "<span class=\"step parameter\">");
         patterns.setProperty("parameterValueEnd", "</span>");
         patterns.setProperty("parameterValueNewline", "<br/>");
-        return patterns;
-    }
-
-    protected static class JiraUploadPrintStream extends PrintStream {
-
-        List<Byte> writtenBytes;
-
-        JiraUploadPrintStream() {
-            this(new LinkedList<Byte>());
-        }
-
-        private JiraUploadPrintStream(final List<Byte> bytesList) {
-
-            super(new OutputStream() {
-
-                @Override
-                public void write(int b) throws IOException {
-                    bytesList.add((byte) b);
-                }
-
-            });
-
-            writtenBytes = bytesList;
-        }
-
-    }
-
-    protected String getStoryReport() {
-        return storyReport;
-    }
-
-    protected JiraUploadPrintStream getPrintStream() {
-        return printStream;
     }
 }

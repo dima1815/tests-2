@@ -54,13 +54,13 @@ public class StoryServiceImplTest {
         public void update(EntityManager em) throws Exception {
             em.migrate(Story.class);
 
-            final Story story = em.create(Story.class);
-            story.setNarrative("Story description");
-            story.save();
-
-            final Story story2 = em.create(Story.class);
-            story2.setNarrative("Story description 2");
-            story2.save();
+//            final Story story = em.create(Story.class);
+//            story.setNarrative("Story description");
+//            story.save();
+//
+//            final Story story2 = em.create(Story.class);
+//            story2.setNarrative("Story description 2");
+//            story2.save();
         }
     }
 }

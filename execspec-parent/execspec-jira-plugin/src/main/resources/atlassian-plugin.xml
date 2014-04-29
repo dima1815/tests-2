@@ -136,7 +136,6 @@
     <!-- Custom components -->
     <!--DAOs-->
     <component key="story-dao" name="Story DAO" class="com.mycomp.execspec.jiraplugin.ao.story.StoryDao"/>
-    <component key="scenario-dao" name="Scenario DAO" class="com.mycomp.execspec.jiraplugin.ao.story.ScenarioDao"/>
     <component key="story-test-report-dao" name="Story Test Report DAO"
                class="com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao"/>
     <component key="story-step-doc-dao" name="Story Step Doc DAO"
@@ -153,7 +152,6 @@
     <!--Active Objects-->
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
-        <entity>com.mycomp.execspec.jiraplugin.ao.story.Scenario</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.story.Story</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDoc</entity>

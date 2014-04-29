@@ -54,7 +54,7 @@ public class StoryResourceCrud {
         Validate.notNull(storyModel);
         Validate.notNull(storyModel.getProjectKey());
         Validate.notNull(storyModel.getIssueKey());
-        Validate.notEmpty(storyModel.getNarrative(), "story narrative parameter was empty");
+        Validate.notEmpty(storyModel.getAsString(), "story asString parameter was empty");
         System.out.println("### in add method, storyModel - " + storyModel);
         storyService.create(storyModel);
         return storyModel;

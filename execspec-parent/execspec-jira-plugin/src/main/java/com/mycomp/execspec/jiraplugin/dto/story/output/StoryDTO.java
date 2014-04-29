@@ -3,7 +3,6 @@ package com.mycomp.execspec.jiraplugin.dto.story.output;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
 /**
  * DTO class for Story instances.
@@ -20,26 +19,19 @@ public class StoryDTO {
     // combination of ('project key' + '/' + 'issueKey')
     private String path;
     private Long version;
-    private NarrativeDTO narrative;
-    private MetaDTO meta;
-    private GivenStoriesDTO givenStories;
-    private LifecycleDTO lifecycle;
-    private List<ScenarioDTO> scenarios;
+    private String asString;
     private String asHTML;
 
     protected StoryDTO() {
     }
 
-    public StoryDTO(String projectKey, String issueKey, Long version, NarrativeDTO narrative, MetaDTO meta, GivenStoriesDTO givenStories, LifecycleDTO lifecycle, List<ScenarioDTO> scenarios) {
+    public StoryDTO(String projectKey, String issueKey, Long version, String asString, String asHTML) {
         this.projectKey = projectKey;
         this.issueKey = issueKey;
         this.version = version;
         this.path = issueKey;
-        this.narrative = narrative;
-        this.meta = meta;
-        this.givenStories = givenStories;
-        this.lifecycle = lifecycle;
-        this.scenarios = scenarios;
+        this.asString = asString;
+        this.asHTML = asHTML;
     }
 
     public String getIssueKey() {
@@ -54,59 +46,11 @@ public class StoryDTO {
         return path;
     }
 
-    public NarrativeDTO getNarrative() {
-        return narrative;
-    }
-
-    public MetaDTO getMeta() {
-        return meta;
-    }
-
-    public GivenStoriesDTO getGivenStories() {
-        return givenStories;
-    }
-
-    public LifecycleDTO getLifecycle() {
-        return lifecycle;
-    }
-
-    public List<ScenarioDTO> getScenarios() {
-        return scenarios;
-    }
-
     public Long getVersion() {
         return version;
     }
 
-
-    public String asString() {
-
-        StringBuilder sb = new StringBuilder();
-
-        String metaAsString = this.getMeta().asString();
-        if (!metaAsString.isEmpty()) {
-            sb.append(metaAsString);
-            sb.append("\n");
-        }
-
-        String narrativeAsString = this.getNarrative().getAsString();
-        sb.append(narrativeAsString);
-        sb.append("\n");
-
-        String givenStoriesAsString = this.getGivenStories().asString();
-        sb.append(givenStoriesAsString);
-
-        String lifecycleAsString = this.getLifecycle().asString();
-        sb.append(lifecycleAsString);
-
-        List<ScenarioDTO> scenarios = this.getScenarios();
-        for (ScenarioDTO scenario : scenarios) {
-            sb.append("\n");
-            String scenarioAsString = scenario.asString();
-            sb.append(scenarioAsString);
-        }
-
-        String asString = sb.toString();
+    public String getAsString() {
         return asString;
     }
 
@@ -114,7 +58,4 @@ public class StoryDTO {
         return asHTML;
     }
 
-    public void setAsHTML(String asHTML) {
-        this.asHTML = asHTML;
-    }
 }

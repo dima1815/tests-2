@@ -3,8 +3,6 @@ package com.mycomp.execspec.jiraplugin.service;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.issue.IssueService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.mycomp.execspec.jiraplugin.ao.story.Scenario;
-import com.mycomp.execspec.jiraplugin.ao.story.ScenarioDao;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
@@ -26,17 +24,14 @@ public class StoryServiceImpl implements StoryService {
     private final IssueService is;
     private final JiraAuthenticationContext authenticationContext;
     private final StoryDao storyDao;
-    private final ScenarioDao scenarioDao;
     private final StoryReportDao storyReportDao;
     private final StepDocsSerivce stepDocsSerivce;
 
-    public StoryServiceImpl(StoryDao storyDao, ScenarioDao scenarioDao,
-                            StoryReportDao storyReportDao,
+    public StoryServiceImpl(StoryDao storyDao, StoryReportDao storyReportDao,
                             IssueService is,
                             JiraAuthenticationContext authenticationContext,
                             StepDocsSerivce stepDocsSerivce) {
         this.storyDao = storyDao;
-        this.scenarioDao = scenarioDao;
         this.storyReportDao = storyReportDao;
         this.is = is;
         this.authenticationContext = authenticationContext;
@@ -53,26 +48,13 @@ public class StoryServiceImpl implements StoryService {
     }
 
     private void createStory(SaveStoryDTO storyDTO, IssueService.IssueResult issue) {
-        log.debug("$$$ Found issue is - " + issue);
-        log.debug("$$$ Found issue key is - " + issue.getIssue().getKey());
 
         final Story story = storyDao.create();
         story.setVersion(1L);
-        story.setNarrative(storyDTO.getNarrative());
         story.setIssueKey(storyDTO.getIssueKey());
         story.setProjectKey(storyDTO.getProjectKey());
-
+        story.setAsString(storyDTO.getAsString());
         story.save();
-
-        // save the scenarios too
-        List<String> scenarios = storyDTO.getScenarios();
-        for (String strScenario : scenarios) {
-            Scenario scenario = scenarioDao.create();
-            scenario.setText(strScenario);
-            scenario.setStory(story);
-            scenario.save();
-        }
-
     }
 
     @Override
@@ -142,12 +124,6 @@ public class StoryServiceImpl implements StoryService {
         StoryHtmlReport[] storyTestReports = story.getStoryHtmlReports();
         for (StoryHtmlReport storyTestReport : storyTestReports) {
             storyReportDao.delete(storyTestReport);
-        }
-
-        // delete story scenarios
-        Scenario[] scenarios = story.getScenarios();
-        for (Scenario scenario : scenarios) {
-            scenarioDao.delete(scenario);
         }
 
         storyDao.delete(story);
