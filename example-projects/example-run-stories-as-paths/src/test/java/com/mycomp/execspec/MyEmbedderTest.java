@@ -1,5 +1,6 @@
 package com.mycomp.execspec;
 
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.Format;
@@ -25,6 +26,8 @@ public class MyEmbedderTest extends JUnitStories {
 //        StepMonitor delegate = configuration().stepMonitor();
 //        ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, delegate);
 //        super.configuration().useStepMonitor(contextStepMonitor);
+
+        useConfiguration(new MostUsefulConfiguration());
 
         configuration().useStoryReporterBuilder(
                 new StoryReporterBuilder() {

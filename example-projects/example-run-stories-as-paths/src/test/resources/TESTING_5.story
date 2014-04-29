@@ -1,5 +1,5 @@
 Meta:
-@jira-version 1
+@testMetaValue someValue
 
 Narrative:
 In order to communicate effectively to the business some functionality
