@@ -6,30 +6,77 @@
  * @param storyReports
  */
 {template .renderStoryPanel}
-<div class="aui-tabs horizontal-tabs jbehave-story-tabs">
-    <ul class="tabs-menu">
-        <li class="menu-item active-tab">
-            <a href="#story-tab"><strong>Story</strong></a>
-        </li>
-        {foreach $storyReport in $storyReports}
-            {call .renderStoryReportTabHeader}
-              {param storyReport: $storyReport /}
-              {param index: index($storyReport) /}
-            {/call}
-        {/foreach}
-    </ul>
-    <div class="tabs-pane active-pane" id="story-tab">
-        {call .renderStoryAsHTML }
-          {param story: $story /}
-        {/call}
+
+<div class="aui-toolbar2">
+    <div class="aui-toolbar2-inner">
+        <div class="aui-toolbar2-primary">
+            <div id="button-set-1" class="aui-buttons">
+                <button id="show-story-button" class="aui-button aui-button-subtle story-container-button selected-story-container-button" onclick="showStory(event)">{$story.path}.story</button>
+                <button class="aui-button aui-dropdown2-trigger aui-button-subtle" aria-owns="dropdown2-more"
+                aria-haspopup="true"><span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Configure</span></button>
+                <div id="dropdown2-more" class="aui-dropdown2 aui-style-default">
+                    <ul class="aui-list-truncate">
+                        <li><a href="http://example.com/">Edit</a></li>
+                        <li><a href="http://example.com/">Delete</a></li>
+//                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in DEV</a></li>
+//                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in UAT</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="aui-toolbar2-secondary">
+        <div id="button-set-3" class="aui-buttons">
+             {foreach $storyReport in $storyReports}
+//                {call .renderStoryReportTabPane}
+//                  {param storyReport: $storyReport /}
+//                  {param index: index($storyReport) /}
+//                {/call}
+                <button id="show-story-report-{index($storyReport)}"
+                        class="aui-button aui-button-subtle story-container-button"
+                        onclick="showStoryReport(event, '{$storyReport.environment}')">{$storyReport.environment}<span
+                      class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{if $storyReport.totalScenariosFailed > 0}<span
+                      class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
+                      class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
+                      class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
+                      class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
+                </button>
+            {/foreach}
+//                <button class="aui-button aui-button-subtle" onclick="showStoryReport('DEV')">DEV<span class="aui-badge passed">2</span><span class="aui-badge failed">1</span></button>
+//                <button class="aui-button aui-button-subtle" onclick="showStoryReport('UAT 1')">UAT 1<span class="aui-badge passed">2</span></button>
+//                <button class="aui-button aui-button-subtle" onclick="showStoryReport('UAT 2')">UAT 2<span class="aui-badge failed">1</span></button>
+            </div>
+        </div>
     </div>
-    {foreach $storyReport in $storyReports}
-        {call .renderStoryReportTabPane}
-          {param storyReport: $storyReport /}
-          {param index: index($storyReport) /}
-        {/call}
-    {/foreach}
 </div>
+
+<div id="story-container" class="story-container">
+    <p>Content area</p>
+</div>
+
+//<div class="aui-tabs horizontal-tabs jbehave-story-tabs">
+//    <ul class="tabs-menu">
+//        <li class="menu-item active-tab">
+//            <a href="#story-tab"><strong>Story</strong></a>
+//        </li>
+//        {foreach $storyReport in $storyReports}
+//            {call .renderStoryReportTabHeader}
+//              {param storyReport: $storyReport /}
+//              {param index: index($storyReport) /}
+//            {/call}
+//        {/foreach}
+//    </ul>
+//    <div class="tabs-pane active-pane" id="story-tab">
+//        {call .renderStoryAsHTML }
+//          {param story: $story /}
+//        {/call}
+//    </div>
+//    {foreach $storyReport in $storyReports}
+//        {call .renderStoryReportTabPane}
+//          {param storyReport: $storyReport /}
+//          {param index: index($storyReport) /}
+//        {/call}
+//    {/foreach}
+//</div>
 {/template}
 
 /**
@@ -37,22 +84,16 @@
  * @param story
  */
 {template .renderStoryAsHTML autoescape="false"}
-    <div class="story-container">
-        {$story.asHTML}
-    </div>
+    {$story.asHTML}
 {/template}
 
 /**
  * Renders story report header.
  * @param storyReport
- * @param index
  */
 {template .renderStoryReportTabPane autoescape="false"}
-    <div class="tabs-pane story-container" id="story-report-tab-{$index}" environment="{$storyReport.environment}">
         {$storyReport.htmlReport}
-    </div>
 {/template}
-
 
 /**
  * Renders story report header.

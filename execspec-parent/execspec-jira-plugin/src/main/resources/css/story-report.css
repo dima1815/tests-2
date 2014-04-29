@@ -1,13 +1,13 @@
-.jbehave-story-tabs .aui-badge {
+.aui-badge {
     margin-left: 5px;
     color: #FFF;
 }
 
-.jbehave-story-tabs .aui-badge.passed {
+.aui-badge.passed {
     background-color: #14892C;
 }
 
-.jbehave-story-tabs .aui-badge.failed {
+.aui-badge.failed {
     background-color: #D04437;
 }
 

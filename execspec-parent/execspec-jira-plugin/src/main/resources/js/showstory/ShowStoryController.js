@@ -16,7 +16,7 @@ function ShowStoryController() {
         var successFunction = function (storyPayload) {
             console.log("Request submitted successfully, receivedData: \n" + JSON.stringify(storyPayload));
             if (storyPayload.story !== undefined) {
-                $view.showStory(storyPayload);
+                $view.processStoryPayload(storyPayload);
             } else {
                 console.log("ReceivedData did not contain a valid story");
             }
