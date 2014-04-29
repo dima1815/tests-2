@@ -1,10 +1,19 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
+import com.mycomp.execspec.jiraplugin.dto.story.BytesListPrintStream;
+import com.mycomp.execspec.jiraplugin.dto.story.ReportingStoryWalker;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPayload;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.apache.commons.lang.Validate;
 import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.reporters.TxtOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +39,10 @@ public class JiraStoryLoader implements StoryLoader {
 
     private String jiraProject;
 
-    private String loadStoryPath = "rest/story-res/1.0/find/as-string";
-//    private String loadStoryPath = "/rest/story-res/1.0/find/for-issue";
-
     private String downloadedStoriesDir = "src/test/resources/jira_stories";
+
+    //    private String loadStoryPath = "rest/story-res/1.0/find/as-string";
+    private String loadStoryPath = "rest/story-res/1.0/find/for-issue";
 
     @Override
     public String loadStoryAsText(String storyPath) {
@@ -55,9 +64,45 @@ public class JiraStoryLoader implements StoryLoader {
         log.info("response - " + response);
 
         if (response.getStatus() == 200) {
-            String storyPayload = response.getEntity(String.class);
-            this.writeModelToFile(storyPath + ".story", storyPayload);
-            return storyPayload;
+            StoryPayload storyPayload = response.getEntity(StoryPayload.class);
+            StoryDTO story = storyPayload.getStory();
+            Long version = story.getVersion();
+            Validate.notNull(version);
+            String receivedAsString = story.getAsString();
+
+            RegexStoryParser parser = new RegexStoryParser();
+            org.jbehave.core.model.Story jBehaveStory = parser.parseStory(receivedAsString, storyPath);
+
+            // set jira-version property
+            Meta originalMeta = jBehaveStory.getMeta();
+            Properties properties = new Properties();
+            properties.put("jira-version", version.toString());
+            Meta overridenMeta = new Meta(properties);
+            overridenMeta.inheritFrom(originalMeta);
+
+            org.jbehave.core.model.Story overridenJBehaveStory = new Story(
+                    jBehaveStory.getPath(), jBehaveStory.getDescription(), overridenMeta,
+                    jBehaveStory.getNarrative(), jBehaveStory.getGivenStories(),
+                    jBehaveStory.getLifecycle(), jBehaveStory.getScenarios());
+
+            String jiraVersion = overridenJBehaveStory.getMeta().getProperty("jira-version");
+            Validate.notEmpty(jiraVersion);
+
+            BytesListPrintStream printStream = new BytesListPrintStream();
+            Properties customPatterns = new Properties();
+            customPatterns.setProperty("beforeStory", "");
+            customPatterns.setProperty("pending", "{0}\n");
+//            customPatterns.setProperty("examplesTableStart", "");
+//            customPatterns.setProperty("examplesTableRowEnd", "");
+
+            TxtOutput txtOutput = new TxtOutput(printStream, customPatterns);
+            ReportingStoryWalker walker = new ReportingStoryWalker();
+            walker.walkStory(overridenJBehaveStory, txtOutput);
+            List<Byte> writtenBytes = printStream.getWrittenBytes();
+            String asString = StoryDTOUtils.bytesListToString(writtenBytes);
+
+            this.writeModelToFile(storyPath + ".story", asString);
+            return asString;
         } else {
             int status = response.getStatus();
             Response.StatusType statusInfo = response.getStatusInfo();
@@ -65,42 +110,6 @@ public class JiraStoryLoader implements StoryLoader {
                     "Response status was - " + status + ", status info - " + statusInfo);
         }
 
-    }
-
-    private String asString(StoryPayload storyPayload) {
-
-        StoryDTO story = storyPayload.getStory();
-
-        StringBuilder sb = new StringBuilder();
-
-        // narrative
-        NarrativeDTO narrative = story.getNarrative();
-        String narrativeStr = narrative.getAsString();
-        sb.append(narrativeStr);
-        sb.append("\n\n");
-
-        // meta
-        sb.append("Meta:\n");
-        MetaDTO storyMeta = story.getMeta();
-        Properties storyMetaProp = storyMeta.getProperties();
-        for (Object o : storyMetaProp.keySet()) {
-            String key = (String) o;
-            String value = (String) storyMetaProp.get(key);
-            sb.append("@" + key + " " + value);
-            sb.append("\n");
-        }
-        sb.append("\n");
-
-        // scenarios
-        List<ScenarioDTO> scenarios = story.getScenarios();
-        for (ScenarioDTO scenario : scenarios) {
-            sb.append(scenario.asString());
-            sb.append("\n");
-            sb.append("\n");
-        }
-
-        String asString = sb.toString();
-        return asString;
     }
 
     private void writeModelToFile(String storyPath, String storyModel) {
