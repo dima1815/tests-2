@@ -19,7 +19,7 @@ public class DefaultHTMLFormatPatterns {
         patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");
 
 //        patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
-        patterns.setProperty("beforeStory", "");
+        patterns.setProperty("beforeStory", "<div class=\"story\">\n");
 
 //        patterns.setProperty("beforeStory", "<div class=\"story\">\n");
         patterns.setProperty("afterStory", "</div>\n");

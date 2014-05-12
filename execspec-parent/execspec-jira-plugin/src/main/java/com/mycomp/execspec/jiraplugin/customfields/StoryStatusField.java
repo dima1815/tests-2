@@ -7,7 +7,6 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.config.FieldConfigItem;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, String> {
+public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, Object> {
 
     private static final Logger log = LoggerFactory.getLogger(StoryStatusField.class);
 
@@ -38,13 +37,14 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
     }
 
     @Override
-    public String getStringFromSingularObject(String s) {
-        return s;
+    public String getStringFromSingularObject(Object s) {
+        return s.toString();
     }
 
     @Override
-    public String getSingularObjectFromString(String s) throws FieldValidationException {
-        return s;
+    public EnvironmentTestStatuses getSingularObjectFromString(String s) throws FieldValidationException {
+        EnvironmentTestStatuses environmentTestStatuses = new EnvironmentTestStatuses(new HashMap<String, TestStatus>());
+        return environmentTestStatuses;
     }
 
     @Nullable
@@ -54,8 +54,7 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
         String projectKey = issue.getProjectObject().getKey();
         String issueKey = issue.getKey();
 
-        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
+        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
         if (story != null) {
 

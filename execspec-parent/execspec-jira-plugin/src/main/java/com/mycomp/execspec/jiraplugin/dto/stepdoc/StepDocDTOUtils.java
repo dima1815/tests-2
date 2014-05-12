@@ -3,6 +3,9 @@ package com.mycomp.execspec.jiraplugin.dto.stepdoc;
 import com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDoc;
 import org.jbehave.core.steps.StepType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Dmytro on 4/8/2014.
  */
@@ -25,4 +28,14 @@ public class StepDocDTOUtils {
         return stepDocDTO;
     }
 
+    public static List<StepDocDTO> fromModelToDTO(List<StepDoc> stepDocs) {
+
+        List<StepDocDTO> results = new ArrayList<StepDocDTO>(stepDocs.size());
+        for (StepDoc stepDoc : stepDocs) {
+            StepDocDTO stepDocDTO = fromModelToDTO(stepDoc);
+            results.add(stepDocDTO);
+        }
+
+        return results;
+    }
 }

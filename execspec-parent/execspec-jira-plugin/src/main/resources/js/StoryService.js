@@ -1,69 +1,132 @@
 function StoryService() {
 
-    var baseUrl = "http://localhost:2990/jira/rest/story-res/1.0/";
+    var pathBase = "/jira/rest/story-res/1.0/";
+    var pathSave = pathBase + "crud/save/";
+    var pathFind = pathBase + "find/for-issue/";
+    var pathDelete = pathBase + "crud/delete/";
+    var pathDeleteReports = pathBase + "story-test/delete/";
 
     this.init = function () {
 
-        console.log("initializing StoryService");
+        console.log("> init");
+        console.log("urlPathBase - " + pathBase);
+        console.log("saveBaseUrl - " + pathSave);
+        console.log("# init");
     }
 
-    this.createNewStory = function (storyModel) {
+    this.saveOrUpdateStory = function (story, callBack) {
 
-        console.log("Saving story via ajax, storyModel =\n" + storyModel);
+        console.log("> StoryService.saveOrUpdateStory");
+        console.log("story - " + story);
+        var storyAsString = story.asString;
+        console.log("storyAsString - " + storyAsString);
 
-        var urlString = baseUrl + "crud/create";
+        var successCallback = function (data, status, xhr) {
+            console.log("> StoryService.saveOrUpdateStory.successCallback");
+            console.log("status - " + status);
+            console.log("xhr.status - " + xhr.status);
+            console.log("data - " + data);
+            var jsonData = JSON.stringify(data);
+            console.log("jsonData - " + jsonData);
+            callBack(data);
+            console.log("# StoryService.saveOrUpdateStory.successCallback");
+        }
 
-        var successFunction = new function (data) {
-            console.log("Request submitted successfully, receivedData: \n" + data);
-        };
-
-        var jsonInput = JSON.stringify(storyModel);
-
-        console.log("sending jsonData = \n" + jsonInput);
-        console.log("to post URL = \n" + urlString);
-
+        var saveUrl = pathSave + story.projectKey + "/" + story.issueKey;
+        console.log("saveUrl - " + saveUrl);
         AJS.$.ajax({
             type: "POST",
-            url: urlString,
-            contentType: "application/json; charset=utf-8",
-            success: successFunction,
-            data: jsonInput,
+            url: saveUrl,
+            contentType: "text/plain; charset=utf-8",
+            success: successCallback,
+            data: storyAsString,
             dataType: "json"
         });
 
+        jqxhr.done(successCallback);
+        jqxhr.fail(function (data, status, xhr) {
+            console.error("fail, received data - " + data);
+            console.error("xhr.status - " + xhr.status);
+        });
+
+        jqxhr.always(function (data, status, xhr) {
+            console.error("always, received data - " + data);
+            console.error("xhr.status - " + xhr.status);
+        });
+
+        console.log("# StoryService.saveOrUpdateStory");
     }
 
     this.find = function (projectKey, issueKey, callBack) {
 
-        console.log("Finding story for project key " + projectKey + " and issue key = " + issueKey);
-        var urlString = baseUrl + "find/for-issue/" + projectKey + "/" + issueKey;
-
+        console.log("> StoryService.find");
+        console.log("project key " + projectKey + ", issue key = " + issueKey);
+        var urlString = pathFind + projectKey + "/" + issueKey;
         var jqxhr = AJS.$.getJSON(urlString);
-        jqxhr.done(callBack);
-        jqxhr.fail(function (json) {
-            console.log("error occurred during ajax call - " + json);
+
+        var successCallback = function (data, status, xhr) {
+            console.log("> StoryService.find.successCallback");
+            console.log("status - " + status);
+            console.log("xhr.status - " + xhr.status);
+            console.log("data - " + data);
+            callBack(data);
+            console.log("# StoryService.find.successCallback");
+        }
+        jqxhr.done(successCallback);
+
+        jqxhr.fail(function (data, status, xhr) {
+            console.error("fail, received data - " + data);
+            console.error("xhr.status - " + xhr.status);
         });
-        jqxhr.always(function (json) {
-            console.log("ajax request completed successfully, json - " + json);
-        });
+        console.log("# StoryService.find");
     }
 
-    this.deleteStory = function (storyId) {
+    this.delete = function (projectKey, issueKey, callBack) {
 
-        console.log("calling delete story with id - " + storyId);
+        console.log("> StoryService.deleteStory");
+        console.log("projectKey - " + projectKey);
+        console.log("issueKey - " + issueKey);
 
-        var urlString = baseUrl + "/delete/" + storyId;
+        var urlString = pathDelete + projectKey + "/" + issueKey;
+        console.log("urlString - " + urlString);
 
-        var callBack = function () {
-            console.log("Story with id - " + storyId + " deleted successfully");
+        var successCallBack = function () {
+            console.log("Story deleted successfully");
+            callBack();
         };
 
         AJS.$.ajax({
             type: "DELETE",
             url: urlString,
-            success: callBack
+            success: successCallBack
         });
 
+        console.log("# StoryService.deleteStory");
+    }
+
+    this.deleteStoryReports = function (projectKey, issueKey, callBack) {
+
+        console.log("> StoryService.deleteStoryReports");
+        console.log("projectKey - " + projectKey);
+        console.log("issueKey - " + issueKey);
+
+        var urlString = pathDeleteReports + projectKey + "/" + issueKey;
+        console.log("urlString - " + urlString);
+
+        var successCallBack = function (data) {
+            console.log("story reports deleted successfully");
+            console.log("returned data - " + data);
+            callBack(data);
+        };
+
+        AJS.$.ajax({
+            type: "DELETE",
+            url: urlString,
+            success: successCallBack,
+            dataType: "json"
+        });
+
+        console.log("# StoryService.deleteStoryReports");
     }
 
 

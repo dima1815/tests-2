@@ -3,33 +3,21 @@ package com.mycomp.execspec.jiraplugin.dto.story;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
-import org.jbehave.core.model.GivenStories;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.StepCreator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Dmytro on 4/8/2014.
  */
 public class StoryDTOUtils {
 
-    public static List<StoryDTO> toDTO(List<? extends Story> stories, List<StepDocDTO> stepDocs) {
-
-        List<StoryDTO> storyModels = new ArrayList<StoryDTO>(stories.size());
-        for (Story story : stories) {
-            StoryDTO storyModel = toDTO(story, stepDocs);
-            storyModels.add(storyModel);
-        }
-        return storyModels;
-    }
-
-    public static StoryDTO toDTO(Story story, List<StepDocDTO> stepDocs) {
+    public static StoryDTO toDTO(Story story, List<StoryHtmlReportDTO> storyReports, List<StepDocDTO> stepDocs) {
 
         String issueKey = story.getIssueKey();
         String projectKey = story.getProjectKey();
@@ -49,7 +37,7 @@ public class StoryDTOUtils {
         String asHTML = bytesListToString(writtenBytes);
 //        String asHTML = toHTML(jbehaveStory, stepDocs);
 
-        StoryDTO storyModel = new StoryDTO(projectKey, issueKey, story.getVersion(), storyAsString, asHTML);
+        StoryDTO storyModel = new StoryDTO(projectKey, issueKey, story.getVersion(), storyAsString, asHTML, storyReports);
         return storyModel;
     }
 
@@ -64,85 +52,6 @@ public class StoryDTOUtils {
 
         String str = new String(bytesArray);
         return str;
-    }
-
-    private static String toHTML(org.jbehave.core.model.Story story, List<StepDocDTO> stepDocs) {
-
-        BytesListPrintStream printStream = new BytesListPrintStream();
-        Properties outputPatterns = new DefaultHTMLFormatPatterns().getPatterns();
-        outputPatterns.setProperty("pending", "<div class=\"step pending\">{0}</div>\n");
-
-        CustomHTMLOutput reporter = new CustomHTMLOutput(printStream, outputPatterns);
-
-        reporter.beforeStory(story, false);
-        reporter.narrative(story.getNarrative());
-        reporter.lifecyle(story.getLifecycle());
-        List<String> givenStoriesPaths = story.getGivenStories().getPaths();
-        if (!givenStoriesPaths.isEmpty()) {
-            reporter.givenStories(givenStoriesPaths);
-        }
-
-        List<org.jbehave.core.model.Scenario> scenarios = story.getScenarios();
-        for (org.jbehave.core.model.Scenario scenario : scenarios) {
-
-            reporter.beforeScenario(scenario.getTitle());
-            reporter.scenarioMeta(scenario.getMeta());
-            GivenStories givenStories = scenario.getGivenStories();
-            List<String> givenPaths = givenStories.getPaths();
-            if (!givenPaths.isEmpty()) {
-                reporter.givenStories(givenPaths);
-            }
-
-            List<String> steps = scenario.getSteps();
-            for (String step : steps) {
-
-                boolean stepDocFound = false;
-                for (StepDocDTO stepDocDTO : stepDocs) {
-                    String startingWord = stepDocDTO.getStartingWord();
-                    String startingPrefix = startingWord + " ";
-                    if (step.startsWith(startingPrefix)) {
-                        String stepWithoutKeyword = step.substring(startingPrefix.length());
-                        String regExpPattern = stepDocDTO.getRegExpPattern();
-                        Pattern pattern = Pattern.compile(regExpPattern, Pattern.DOTALL);
-                        Matcher matcher = pattern.matcher(stepWithoutKeyword);
-                        boolean matches = matcher.matches();
-                        if (matches) {
-                            step = startingPrefix + insertParameterMarkers(stepWithoutKeyword, matcher);
-                            stepDocFound = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (stepDocFound) {
-                    reporter.successful(step);
-                } else {
-                    String withTablesMarked = markTablesInPendingStep(step, reporter);
-                    reporter.pending(withTablesMarked);
-                }
-
-            }
-
-            // TODO - implement examples table, i.e. scenarios parametrised with examples table
-            // should the steps be passed to the reporter individually like above or would it be enough to just call
-            // the beforeExamples method of the reporter
-//            ExamplesTable examplesTable = scenario.getExamplesTable();
-//            reporter.beforeExamples(steps, examplesTable);
-
-            reporter.afterScenario();
-        }
-
-        reporter.afterStory(false);
-
-        List<Byte> writtenBytes = printStream.getWrittenBytes();
-        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
-        byte[] bytesArray = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            Byte aByte = bytes[i];
-            bytesArray[i] = aByte;
-        }
-        String storyAsHtml = new String(bytesArray);
-        return storyAsHtml;
     }
 
     private static String markTablesInPendingStep(String step, CustomHTMLOutput reporter) {

@@ -31,6 +31,10 @@ public interface Story extends Entity {
 
     void setAsString(String asString);
 
+    String getLastEditedBy();
+
+    void setLastEditedBy(String lastEditedBy);
+
     @OneToMany
     StoryHtmlReport[] getStoryHtmlReports();
 }

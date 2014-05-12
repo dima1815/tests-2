@@ -2,13 +2,9 @@ package com.mycomp.execspec.jiraplugin.rest;
 
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoriesPayload;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPathsDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPayload;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
@@ -21,9 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -56,7 +51,6 @@ public class StoryResourceFind {
     }
 
     @GET
-    @AnonymousAllowed
     @Path("/story-paths/{projectKey}")
     @Produces({MediaType.APPLICATION_JSON})
     public StoryPathsDTO listStoryPaths(@PathParam("projectKey") String projectKey) {
@@ -75,59 +69,29 @@ public class StoryResourceFind {
     }
 
     @GET
-    @AnonymousAllowed
-    @Path("/all")
+    @Path("/for-project/{projectKey}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public StoriesPayload listAll() {
-        List<StoryDTO> all = storyService.all();
-        StoriesPayload payload = new StoriesPayload(all);
+    public StoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
+        List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
+        StoriesPayload payload = new StoriesPayload(stories);
         return payload;
     }
 
     @GET
-    @AnonymousAllowed
     @Path("/for-issue/{projectKey}/{issueKey}")
     @Produces(MediaType.APPLICATION_JSON)
-    public StoryPayload findForIssue(
+    public Response findForIssue(
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
-
-        List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
-
-        // sort storyReports by environment alphabetically
-        Collections.sort(storyReports, new Comparator<StoryHtmlReportDTO>() {
-            @Override
-            public int compare(StoryHtmlReportDTO o1, StoryHtmlReportDTO o2) {
-                return o1.getEnvironment().compareTo(o2.getEnvironment());
-            }
-        });
-
-        StoryPayload payload = new StoryPayload(story, storyReports);
-        return payload;
-    }
-
-    @GET
-    @AnonymousAllowed
-    @Path("/as-string/{projectKey}/{issueKey}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String findAsStringForIssue(
-            @PathParam("projectKey") String projectKey,
-            @PathParam("issueKey") String issueKey) {
-
-        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey, stepDocs);
-
-        // append version as a field in Meta section so that clients can access it from a usual JBehave parsed Story object
-//        MetaDTO meta = story.getMeta();
-//        Properties properties = meta.getProperties();
-//        Long version = story.getVersion();
-//        properties.put("jira-version", version.toString());
-
-        String asString = story.getAsString();
-        return asString;
+        StoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        Response response;
+        if (storyDTO != null) {
+            response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+        } else {
+            response = Response.noContent().build();
+        }
+        return response;
     }
 
 }

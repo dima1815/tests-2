@@ -26,3 +26,22 @@ function PageUtils() {
     };
 
 }
+
+AJS.$(function () {
+    JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, context, reason) {
+        var $context = AJS.$(context);
+
+        // Find our web panel. Handles the pageLoad and panelRefreshed reasons.
+        var $webPanel = $context.find("*").andSelf().filter("#story-panel");
+        if ($webPanel.length > 0) {
+            console.log("processing - NEW_CONTENT_ADDED event for jbehave panel");
+            jBehaveStoryView.processStoryPayload(jBehaveStoryView.$storyPayload);
+        }
+
+        // Find our custom fields. There may be multiple!
+//        $context.find(".my-custom-field").each(function() {
+//            var $customField = AJS.$(this);
+//            // ...
+//        });
+    });
+});

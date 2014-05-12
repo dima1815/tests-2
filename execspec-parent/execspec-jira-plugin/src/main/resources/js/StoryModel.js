@@ -2,11 +2,10 @@ function StoryModel() {
 
     this.projectKey = "";
     this.issueKey = "";
+    this.path = "";
+    this.version = "";
     this.asString = "";
-
-    this.init = function () {
-
-        console.log("initializing EditStoryModel");
-    }
+    this.asHTML = "";
+    this.storyReports = [];
 
 }

@@ -11,17 +11,17 @@
     background-color: #D04437;
 }
 
-.jbehave-story-tabs .aui-badge.pending {
+.aui-badge.pending {
     /*background-color: #4A6785;*/
     background-color: #FFD351;
 }
 
-.jbehave-story-tabs .aui-badge.skipped {
+.aui-badge.skipped {
     background-color: #fffe54;
 }
 
 /* Story report */
-.jbehave-story-tabs .aui-badge.not-performed {
+.aui-badge.not-performed {
     /*background-color: #fffe54;*/
     /*apply default jira color scheme*/
 }

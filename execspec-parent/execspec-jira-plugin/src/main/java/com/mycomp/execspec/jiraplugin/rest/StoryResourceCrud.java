@@ -3,17 +3,18 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.story.input.SaveStoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains rest api methods related to processing of Story objects.
@@ -39,38 +40,31 @@ public class StoryResourceCrud {
 
     @POST
     @AnonymousAllowed
-    @Path("/create")
+    @Path("/save/{projectKey}/{issueKey}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public SaveStoryDTO create(String storyModelString) {
-        ObjectMapper mapper = new ObjectMapper();
-        SaveStoryDTO storyModel = null;
-        try {
-            storyModel = mapper.readValue(storyModelString, SaveStoryDTO.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        log.debug("adding storyModel: \n" + storyModel);
-        Validate.notNull(storyModel);
-        Validate.notNull(storyModel.getProjectKey());
-        Validate.notNull(storyModel.getIssueKey());
-        Validate.notEmpty(storyModel.getAsString(), "story asString parameter was empty");
-        System.out.println("### in add method, storyModel - " + storyModel);
-        storyService.create(storyModel);
-        return storyModel;
-    }
+//    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public StoryDTO save(@PathParam("projectKey") String projectKey,
+                         @PathParam("issueKey") String issueKey,
+                         @QueryParam("version") String versionParam,
+                         String asString) {
 
-    @POST
-    @AnonymousAllowed
-    @Path("/update")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public SaveStoryDTO update(SaveStoryDTO storyModel) {
-        Validate.notNull(storyModel);
-        Validate.notNull(storyModel.getIssueKey());
-        System.out.println("### in update method, storyModel - " + storyModel);
-        storyService.update(storyModel);
-        return storyModel;
+        Validate.notNull(projectKey);
+        Validate.notNull(issueKey);
+        Validate.notEmpty(asString, "story asString parameter was empty");
+
+        Long version;
+        if (versionParam != null && !versionParam.isEmpty()) {
+            version = Long.parseLong(versionParam);
+        } else {
+            version = null;
+        }
+        List<StoryHtmlReportDTO> storyReports = new ArrayList<StoryHtmlReportDTO>();
+        StoryDTO storyDTO = new StoryDTO(projectKey, issueKey, version, asString, null, storyReports);
+        log.debug("saving story:\n" + storyDTO);
+
+        StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+        return savedStoryDTO;
     }
 
     @DELETE

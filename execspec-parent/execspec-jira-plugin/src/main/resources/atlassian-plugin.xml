@@ -8,36 +8,28 @@
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
     </plugin-info>
     <!-- ==================================================================================================== -->
+    <!--3rd party scripts-->
+    <web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">
+        <context>jira.view.issue</context>
+        <dependency>jira.webresources:jira-global</dependency>
+        <resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>
+    </web-resource>
     <!--Custom javascript and css-->
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <transformation extension="soy">
             <transformer key="soyTransformer"/>
         </transformation>
-        <!--common-->
-        <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
-        <!--<resource type="download" name="ScenarioModel.js" location="/js/ScenarioModel.js"/>-->
-        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
+        <!--js-->
         <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
-        <!--edit story-->
-        <resource type="download" name="EditStoryController.js" location="/js/editstory/EditStoryController.js"/>
-        <resource type="download" name="EditStoryView.js" location="/js/editstory/EditStoryView.js"/>
-        <resource type="download" name="EditStoryTemplates.soy.js"
-                  location="js/editstory/EditStoryTemplates.soy"/>
-        <!--delete story-->
-        <resource type="download" name="DeleteStoryController.js"
-                  location="/js/deletestory/DeleteStoryController.js"/>
-        <!--issue stories-->
-        <resource type="download" name="ShowStoryTemplates.soy.js"
-                  location="/js/showstory/ShowStoryTemplates.soy"/>
-        <resource type="download" name="ShowStoryController.js" location="/js/showstory/ShowStoryController.js"/>
-        <resource type="download" name="ShowStoryModel.js" location="/js/showstory/ShowStoryModel.js"/>
-        <resource type="download" name="ShowStoryView.js" location="/js/showstory/ShowStoryView.js"/>
+        <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
+        <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
+        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
+        <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
+        <!--soy-->
+        <resource type="download" name="StoryTemplates.soy.js" location="js/StoryTemplates.soy"/>
         <!-- CSS -->
         <resource type="download" name="story.css" location="css/story.css">
-            <param name="content-type" value="text/css"/>
-        </resource>
-        <resource type="download" name="story-edit.css" location="css/story-edit.css">
             <param name="content-type" value="text/css"/>
         </resource>
         <resource type="download" name="story-report.css" location="css/story-report.css">
@@ -59,11 +51,11 @@
     <resource type="i18n" name="plugin-properties" location="i18n/plugin"/>
     <!-- ==================================================================================================== -->
     <!--View Issue page - tool bar links-->
-    <web-section key="viewIssuePage.webSection.jbehaveStory" name="JBehave Story" location="opsbar-operations"
-                 weight="20">
-        <label key="viewIssuePage.webSection.jbehaveStory.label"/>
+    <web-section key="viewIssuePage.webSection.jbehaveStory" name="JBehave Story"
+                 location="opsbar-operations" weight="20">
+    <label key="viewIssuePage.webSection.jbehaveStory.label"/>
     </web-section>
-    <web-item name="Create Story Item" i18n-name-key="viewIssuePage.webItem.createStory.name"
+    <web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
               key="viewIssuePage.webItem.createStory.key"
               section="viewIssuePage.webSection.jbehaveStory" weight="10">
         <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
@@ -72,36 +64,59 @@
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
                 <param name="permission" value="edit"/>
             </condition>
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsFieldHiddenCondition" invert="true">
-                <param name="field" value="fixVersions"/>
+            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition" invert="true">
             </condition>
         </conditions>
         <label key="viewIssuePage.webItem.createStory.label"/>
-        <link linkId="add-new-story-web-item-link">/#</link>
+        <link linkId="add-jbehave-story-link">/add-jbehave-story</link>
         <styleClass>add-new-story-button</styleClass>
     </web-item>
-    <web-item name="Edit Story Item" i18n-name-key="viewIssuePage.webItem.editStory.name"
+    <web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"
               key="viewIssuePage.webItem.editStory.key"
               section="viewIssuePage.webSection.jbehaveStory" weight="20">
         <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
+        <conditions type="and">
+            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
+            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                <param name="permission" value="edit"/>
+            </condition>
+            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">
+            </condition>
+        </conditions>
         <label key="viewIssuePage.webItem.editStory.label"/>
-        <link linkId="edit-story-web-item-link">/#</link>
+        <link linkId="edit-jbehave-story-link">/edit-jbehave-story</link>
         <styleClass>edit-story-button</styleClass>
     </web-item>
-    <web-item name="Delete Story Item" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
+    <web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
               key="viewIssuePage.webItem.deleteStory.key"
               section="viewIssuePage.webSection.jbehaveStory" weight="30">
         <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
+        <conditions type="and">
+            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
+            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                <param name="permission" value="edit"/>
+            </condition>
+            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">
+            </condition>
+        </conditions>
         <label key="viewIssuePage.webItem.deleteStory.label"/>
-        <link linkId="delete-story-web-item-link">/#</link>
+        <link linkId="delete-jbehave-story-link">/delete-jbehave-story</link>
         <styleClass>delete-story-button</styleClass>
     </web-item>
-    <web-item name="Clear Story Test" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
+    <web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
               key="viewIssuePage.webItem.clearStoryTest.key"
               section="viewIssuePage.webSection.jbehaveStory" weight="30">
         <description key="viewIssuePage.webItem.clearStoryTest.description">The Clear Story Test Web Item</description>
+        <conditions type="and">
+            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
+            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                <param name="permission" value="edit"/>
+            </condition>
+            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryReportsCondition">
+            </condition>
+        </conditions>
         <label key="viewIssuePage.webItem.clearStoryTest.label"/>
-        <link linkId="clear-story-test-web-item-link">/#</link>
+        <link linkId="clear-jbehave-story-tests-link">/clear-jbehave-story-tests</link>
         <styleClass>clear-story-test-button</styleClass>
     </web-item>
     <!-- ==================================================================================================== -->
@@ -110,7 +125,8 @@
                key="viewIssuePage.storyPanel.key"
                location="atl.jira.view.issue.left.context" weight="211">
         <description key="viewIssuePage.storyPanel.description">JBehave Story Panel</description>
-        <resource name="view" type="static" location="templates/static/stories_panel.html"/>
+        <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryPanelContextProvider"/>
+        <resource name="view" type="velocity" location="templates/storypanel/stories_panel.vm"/>
         <label key="viewIssuePage.storyPanel.label"/>
     </web-panel>
     <!-- ==================================================================================================== -->
@@ -118,8 +134,8 @@
     <customfield-type name="Story Status Field" i18n-name-key="storySstatusField.name" key="story-status-field"
                       class="com.mycomp.execspec.jiraplugin.customfields.StoryStatusField">
         <description key="storySstatusField.description">The Story Status Field Plugin</description>
-        <resource name="view" type="velocity" location="/templates/customfields/storystatus/view.vm"/>
-        <resource name="edit" type="velocity" location="/templates/customfields/storystatus/edit.vm"/>
+        <resource name="view" type="velocity" location="/templates/storystatusfield/view.vm"/>
+        <resource name="edit" type="velocity" location="/templates/storystatusfield/edit.vm"/>
     </customfield-type>
     <!-- ==================================================================================================== -->
     <!--Imported components-->
