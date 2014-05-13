@@ -26,6 +26,10 @@
     /*apply default jira color scheme*/
 }
 
+pre.pending {
+    padding-left: 20px;
+}
+
 /*.story-report-tab {*/
 /*color: #555;*/
 /*}*/

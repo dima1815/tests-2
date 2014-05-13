@@ -134,6 +134,10 @@
     font-weight: bold;
 }
 
+#storyMessageContainer {
+    margin-top: 10px;
+    padding-left: 10px;
+}
 
 /*.scenario .steps {*/
 /*padding-left: 10px;*/

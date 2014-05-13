@@ -16,7 +16,10 @@ function StoryController() {
     pageUtils = new PageUtils();
     pageUtils.init();
 
-    this.showStory = function () {
+    this.currentStory = new StoryModel();
+    this.editMode = false;
+
+    this.loadStory = function () {
 
         console.log("> StoryController.showStory");
         var issueKey = pageUtils.getIssueKey();
@@ -24,13 +27,41 @@ function StoryController() {
         storyService.find(projectKey, issueKey,
             function (story) {
                 if (story != undefined) {
-                    storyView.showStory(story);
+                    storyView.showStory(story, storyController.editMode);
+                    storyView.showStoryReportButtons(story);
+                    storyController.currentStory = story;
                 } else {
                     console.log("no story found for project - " + projectKey + ", issue - " + issueKey);
                 }
             }
         );
         console.log("# StoryController.showStory");
+    }
+
+    this.showStoryHandler = function () {
+
+        console.log("> StoryController.showStoryHandler");
+        storyView.showStory(this.currentStory, this.editMode);
+        console.log("# StoryController.showStoryHandler");
+    }
+
+    this.showStoryReport = function (environment) {
+
+        console.log("> StoryController.showStoryReport");
+        console.log("environment - " + environment);
+
+        // find the report for environment
+        var reportForEnvironment = undefined;
+        for (var i = 0; i < this.currentStory.storyReports.length; i++) {
+            var storyReport = this.currentStory.storyReports[i];
+            if (storyReport.environment == environment) {
+                reportForEnvironment = storyReport;
+                break;
+            }
+        }
+        storyView.showStoryReport(reportForEnvironment, this.currentStory.version);
+
+        console.log("# StoryController.showStoryReport");
     }
 
     this.addStory = function () {
@@ -51,11 +82,22 @@ function StoryController() {
 
         storyService.saveOrUpdateStory(story,
             function (story) {
-                storyView.showStory(story);
+                storyController.currentStory = story;
+                storyView.showStory(story, storyController.editMode);
+                storyView.showStoryReportButtons(story);
                 // TODO remove the add story button from the menu
             });
 
         console.log("# StoryController.addStory");
+    }
+
+    this.editStory = function () {
+
+        console.log("> StoryController.editStory");
+        console.log("current story as string - " + this.currentStory.asString);
+        this.editMode = true;
+        storyView.showStory(this.currentStory, this.editMode);
+        console.log("# StoryController.editStory");
     }
 
     this.clearStoryTests = function () {
@@ -66,11 +108,12 @@ function StoryController() {
         var issueKey = pageUtils.getIssueKey();
 
         storyService.deleteStoryReports(projectKey, issueKey,
-            function (story) {
+            function () {
                 console.log("story reports successfully deleted");
                 // TODO remove the delete story button from the menu
-                storyView.removeStoryTests();
-                storyView.showStory(story);
+                storyController.currentStory.storyReports = [];
+                storyView.showStory(storyController.currentStory);
+                storyView.showStoryReportButtons(storyController.currentStory);
             });
 
         console.log("# StoryController.clearStoryTests");
@@ -83,7 +126,7 @@ function StoryController() {
         var projectKey = pageUtils.getProjectKey();
         var issueKey = pageUtils.getIssueKey();
 
-        storyService.delete(projectKey, issueKey,
+        storyService.deleteStory(projectKey, issueKey,
             function () {
                 console.log("story successfully deleted");
                 // TODO remove the delete story button from the menu
@@ -93,26 +136,47 @@ function StoryController() {
         console.log("# StoryController.deleteStory");
     }
 
-    this.saveStory = function () {
+    this.saveStory = function (event) {
 
         console.log("> StoryController.saveStory");
+        event.preventDefault();
+
         var model = new StoryModel();
         var issueKey = pageUtils.getIssueKey();
         model.issueKey = issueKey;
         var projectKey = pageUtils.getProjectKey();
         model.projectKey = projectKey;
-        var storyInput = storyView.getStoryAsString();
+        var storyInput = storyView.getStoryInputAsString();
         model.asString = storyInput;
+        model.version = this.currentStory.version;
 
-        var savedStory = this.storyService.saveOrUpdateStory(model);
+        storyService.saveOrUpdateStory(model, function (savedStory) {
+            console.log("> StoryController.saveStory.saveOrUpdateStory callback");
+            storyController.editMode = false;
+            storyView.showStory(savedStory, storyController.editMode);
+            storyView.showStoryReportButtons(savedStory);
+            storyController.currentStory = savedStory;
+            console.log("# StoryController.saveStory.saveOrUpdateStory callback");
+        });
 
         console.log("# StoryController.saveStory");
+    }
+
+    this.cancelEditingStory = function (event) {
+
+        console.log("> StoryController.cancelEditingStory");
+        event.preventDefault();
+
+        this.editMode = false;
+        storyView.showStory(this.currentStory, this.editMode);
+
+        console.log("# StoryController.cancelEditingStory");
     }
 }
 
 AJS.$(function () {
     var ctr = new StoryController()
-    ctr.showStory();
+    ctr.loadStory();
 })
 
 

@@ -5,24 +5,24 @@
  */
 {template .renderStoryPanel}
 <div class="aui-toolbar2">
-        <div class="aui-toolbar2-inner">
-            <div class="aui-toolbar2-primary">
-                <div id="story-buttons" class="aui-buttons">
-                    //<button id="show-story-button" class="aui-button aui-button-subtle story-container-button selected-story-container-button" onclick="showStory(event)">{$story.path}.story</button>
-                    //                <button class="aui-button aui-dropdown2-trigger aui-button-subtle" aria-owns="dropdown2-more"
-                    //                aria-haspopup="true"><span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Configure</span></button>
-                    //                <div id="dropdown2-more" class="aui-dropdown2 aui-style-default">
-                    //                    <ul class="aui-list-truncate">
-                    //                        <li><a href="#" onclick="editStory(event)">Edit</a></li>
-                    //                        <li><a href="http://example.com/">Delete</a></li>
-                    //                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in DEV</a></li>
-                    //                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in UAT</a></li>
-                    //                    </ul>
-                    //                </div>
-                </div>
+    <div class="aui-toolbar2-inner">
+        <div class="aui-toolbar2-primary">
+            <div id="storyButtons" class="aui-buttons">
+                //<button id="show-story-button" class="aui-button aui-button-subtle story-container-button selected-story-container-button" onclick="showStory(event)">{$story.path}.story</button>
+                //                <button class="aui-button aui-dropdown2-trigger aui-button-subtle" aria-owns="dropdown2-more"
+                //                aria-haspopup="true"><span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Configure</span></button>
+                //                <div id="dropdown2-more" class="aui-dropdown2 aui-style-default">
+                //                    <ul class="aui-list-truncate">
+                //                        <li><a href="#" onclick="editStory(event)">Edit</a></li>
+                //                        <li><a href="http://example.com/">Delete</a></li>
+                //                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in DEV</a></li>
+                //                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in UAT</a></li>
+                //                    </ul>
+                //                </div>
             </div>
-            <div class="aui-toolbar2-secondary">
-                <div id="story-report-buttons" class="aui-buttons">
+        </div>
+        <div class="aui-toolbar2-secondary">
+            <div id="storyReportButtons" class="aui-buttons">
 //                    {foreach $storyReport in $storyReports}
 //                    <button id="show-story-report-{index($storyReport)}"
 //                            class="aui-button aui-button-subtle story-container-button"
@@ -34,11 +34,12 @@
 //                            class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
 //                    </button>
 //                    {/foreach}
-                </div>
             </div>
         </div>
     </div>
-    <div id="story-view-container" class="story-container"></div>
+</div>
+<div id="storyMessageContainer" class="story-message-container"/>
+<div id="storyViewContainer" class="story-container"></div>
 {/template}
 
 /**
@@ -57,6 +58,7 @@
 {template .renderStoryReportButtons}
     {foreach $storyReport in $storyReports}
         <button id="show-story-report-{$storyReport.environment}"
+                environment="{$storyReport.environment}"
                 class="aui-button aui-button-subtle story-container-button">{$storyReport.environment}{if $storyReport.totalScenariosPassed > 0}<span
                 class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{/if}{if $storyReport.totalScenariosFailed > 0}<span
                 class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
@@ -65,6 +67,22 @@
                 class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
         </button>
     {/foreach}
+{/template}
+
+/**
+ * Render story report
+ * @param storyReport
+ */
+{template .renderStoryReport autoescape="false"}
+//    <div class="aui-message aui-message-warning">
+//        <p class="title">
+//            <strong>Error!</strong>
+//        </p>
+//        <p>And this is just content in a Default message.</p>
+//    </div>
+    <div class="story-report">
+        {$storyReport.htmlReport}
+    </div>
 {/template}
 
 /**
@@ -80,7 +98,7 @@
  * @param story
  * @param lineCount
  */
-{template .renderStoryAsString}
+{template .renderEditStory}
 <div class="mod-content">
     <div class="field-ignore-highlight editable-field active" id="description-val">
         <form action="#" class="ajs-dirty-warning-exempt aui" id="description-form">
@@ -101,15 +119,15 @@
             <span class="overlay-icon throbber"></span>
 
             <div class="save-options" tabindex="1">
-                <div class="field-tools">
-                    <a title="preview" id="description-preview_link" onclick="showStoryPreview(event)" href="#" class="fullscreen"><span
-                            class="aui-icon wiki-renderer-icon"></span></a>
-                    <a onclick="showStoryEditHelp(event)" title="Get local help about wiki markup help"
-                       href="#" ><span class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
-                </div>
-                <button title="Press Alt+s to submit this form" accesskey="s" onclick="saveStory(event)" class="aui-button submit" type="submit">
+//                <div class="field-tools">
+//                    <a title="preview" id="description-preview_link" onclick="showStoryPreview(event)" href="#" class="fullscreen"><span
+//                            class="aui-icon wiki-renderer-icon"></span></a>
+//                    <a onclick="showStoryEditHelp(event)" title="Get local help about wiki markup help"
+//                       href="#" ><span class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
+//                </div>
+                <button title="Press Alt+s to submit this form" accesskey="s" onclick="storyController.saveStory(event)" class="aui-button submit" type="submit">
                     <span class="icon icon-save">Save</span></button>
-                <button title="Press Alt+` to cancel" accesskey="`" onclick="cancelEditingStory(event)" class="aui-button cancel" type="cancel"><span
+                <button title="Press Alt+` to cancel" accesskey="`" onclick="storyController.cancelEditingStory(event)" class="aui-button cancel" type="cancel"><span
                         class="icon icon-cancel">Cancel</span></button>
             </div>
         </form>

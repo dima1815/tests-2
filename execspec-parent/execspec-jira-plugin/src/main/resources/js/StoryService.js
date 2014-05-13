@@ -33,7 +33,11 @@ function StoryService() {
         }
 
         var saveUrl = pathSave + story.projectKey + "/" + story.issueKey;
+        if (story.version != undefined && story.version != "") {
+            saveUrl += "?version=" + story.version;
+        }
         console.log("saveUrl - " + saveUrl);
+
         AJS.$.ajax({
             type: "POST",
             url: saveUrl,
@@ -43,16 +47,16 @@ function StoryService() {
             dataType: "json"
         });
 
-        jqxhr.done(successCallback);
-        jqxhr.fail(function (data, status, xhr) {
-            console.error("fail, received data - " + data);
-            console.error("xhr.status - " + xhr.status);
-        });
+//        jqxhr.done(successCallback);
+//        jqxhr.fail(function (data, status, xhr) {
+//            console.error("fail, received data - " + data);
+//            console.error("xhr.status - " + xhr.status);
+//        });
 
-        jqxhr.always(function (data, status, xhr) {
-            console.error("always, received data - " + data);
-            console.error("xhr.status - " + xhr.status);
-        });
+//        jqxhr.always(function (data, status, xhr) {
+//            console.error("always, received data - " + data);
+//            console.error("xhr.status - " + xhr.status);
+//        });
 
         console.log("# StoryService.saveOrUpdateStory");
     }
@@ -81,9 +85,10 @@ function StoryService() {
         console.log("# StoryService.find");
     }
 
-    this.delete = function (projectKey, issueKey, callBack) {
+    this.deleteStory = function (projectKey, issueKey, callBack) {
 
         console.log("> StoryService.deleteStory");
+        console.log("haha");
         console.log("projectKey - " + projectKey);
         console.log("issueKey - " + issueKey);
 
@@ -113,17 +118,15 @@ function StoryService() {
         var urlString = pathDeleteReports + projectKey + "/" + issueKey;
         console.log("urlString - " + urlString);
 
-        var successCallBack = function (data) {
+        var successCallback = function () {
             console.log("story reports deleted successfully");
-            console.log("returned data - " + data);
-            callBack(data);
+            callBack();
         };
 
         AJS.$.ajax({
             type: "DELETE",
             url: urlString,
-            success: successCallBack,
-            dataType: "json"
+            success: successCallback
         });
 
         console.log("# StoryService.deleteStoryReports");

@@ -42,7 +42,6 @@ public class StoryResourceCrud {
     @AnonymousAllowed
     @Path("/save/{projectKey}/{issueKey}")
     @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.TEXT_PLAIN)
     public StoryDTO save(@PathParam("projectKey") String projectKey,
                          @PathParam("issueKey") String issueKey,

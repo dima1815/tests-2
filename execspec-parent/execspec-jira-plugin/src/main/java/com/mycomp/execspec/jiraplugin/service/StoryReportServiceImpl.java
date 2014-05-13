@@ -2,19 +2,12 @@ package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.jira.bc.issue.IssueService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDoc;
-import com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDocDao;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTOUtils;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTOUtils;
-import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,18 +19,15 @@ import java.util.List;
 public class StoryReportServiceImpl implements StoryReportService {
 
     private StoryReportDao storyReportDao;
-    private StepDocDao stepDocDao;
 
     private StoryDao storyDao;
 
     public StoryReportServiceImpl(IssueService is,
                                   JiraAuthenticationContext authenticationContext,
                                   StoryDao storyDao,
-                                  StoryReportDao storyReportDao,
-                                  StepDocDao stepDocDao) {
+                                  StoryReportDao storyReportDao) {
         this.storyDao = storyDao;
         this.storyReportDao = storyReportDao;
-        this.stepDocDao = stepDocDao;
     }
 
     public void addStoryTestReport(String projectKey, String issueKey, StoryHtmlReportDTO storyReportDTO) {
@@ -101,7 +91,7 @@ public class StoryReportServiceImpl implements StoryReportService {
     }
 
     @Override
-    public StoryDTO deleteForIssue(String projectKey, String issueKey) {
+    public void deleteForIssue(String projectKey, String issueKey) {
 
         List<Story> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
         if (byIssueKey.isEmpty()) {
@@ -117,14 +107,6 @@ public class StoryReportServiceImpl implements StoryReportService {
                     storyReportDao.delete(storyTestReport);
                 }
             }
-            byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
-            Validate.isTrue(byIssueKey.size() == 1);
-            story = byIssueKey.get(0);
-            Validate.isTrue(story.getStoryHtmlReports().length == 0);
-            List<StepDoc> stepDocs = stepDocDao.findAllForProject(projectKey);
-            List<StepDocDTO> stepsForProject = StepDocDTOUtils.fromModelToDTO(stepDocs);
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, new ArrayList<StoryHtmlReportDTO>(0), stepsForProject);
-            return storyDTO;
         }
     }
 }
