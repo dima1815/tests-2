@@ -4,7 +4,6 @@ import com.mycomp.execspec.jiraplugin.dto.story.BytesListPrintStream;
 import com.mycomp.execspec.jiraplugin.dto.story.ReportingStoryWalker;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPayload;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -64,11 +63,10 @@ public class JiraStoryLoader implements StoryLoader {
         log.info("response - " + response);
 
         if (response.getStatus() == 200) {
-            StoryPayload storyPayload = response.getEntity(StoryPayload.class);
-            StoryDTO story = storyPayload.getStory();
-            Long version = story.getVersion();
+            StoryDTO storyDTO = response.getEntity(StoryDTO.class);
+            Long version = storyDTO.getVersion();
             Validate.notNull(version);
-            String receivedAsString = story.getAsString();
+            String receivedAsString = storyDTO.getAsString();
 
             RegexStoryParser parser = new RegexStoryParser();
             org.jbehave.core.model.Story jBehaveStory = parser.parseStory(receivedAsString, storyPath);

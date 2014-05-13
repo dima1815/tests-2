@@ -33,7 +33,7 @@ public class MyEmbedderTest extends JUnitStories {
                 new StoryReporterBuilder() {
                     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
                         if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
-                            return new JiraHtmlOutput(jiraBaseUrl, jiraProject, "DEV");
+                            return new JiraHtmlOutput(jiraBaseUrl, jiraProject, "UAT");
                         } else {
                             return super.reporterFor(storyPath, format);
                         }

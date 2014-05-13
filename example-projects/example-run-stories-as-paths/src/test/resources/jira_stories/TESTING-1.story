@@ -1,27 +1,17 @@
 Meta:
-@jira-version 1
+@jira-version 23
 
 Narrative:
-In order to communicate effectively to the business some functionality
-As a development team
-I want to use Behaviour-Driven Development
-Scenario: my test scenario 1
+As a 
+I want to 
+So that 
+Scenario: test scenario
 Given something
-When I send the following request:
+Given test parameter value - 20 units
+Given something none existent again 9 - hahah a4
 
-|action|value|currency|
-|Buy|100|USD|
-|Sell|20|GBP|
-
-Then something should happen
-
-Scenario: my test scenario 2
-Given something else:
-
-|action|value|currency|
-|Buy|100|USD|
-|Sell|20|GBP|
-
-Then something should happen
+Scenario: another scenario
+Given something
+And non existent step again
 
 

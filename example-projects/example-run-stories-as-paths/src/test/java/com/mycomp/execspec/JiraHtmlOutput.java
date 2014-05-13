@@ -122,7 +122,9 @@ public class JiraHtmlOutput extends HtmlOutput {
     public void scenarioNotAllowed(Scenario scenario, String filter) {
 
         super.scenarioNotAllowed(scenario, filter);
-        this.currentScenarioStatus = TestStatus.IGNORED;
+        if (this.currentScenarioStatus == TestStatus.PASSED /*i.e. if it has not been set to some other status yet*/) {
+            this.currentScenarioStatus = TestStatus.IGNORED;
+        }
     }
 
     @Override
@@ -142,7 +144,9 @@ public class JiraHtmlOutput extends HtmlOutput {
     public void pending(String step) {
 
         super.pending(step);
-        this.currentScenarioStatus = TestStatus.PENDING;
+        if (this.currentScenarioStatus != TestStatus.FAILED) { // fail status has priority over pending
+            this.currentScenarioStatus = TestStatus.PENDING;
+        }
     }
 
 
@@ -311,6 +315,8 @@ public class JiraHtmlOutput extends HtmlOutput {
         patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
         patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
         patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
+
+        patterns.setProperty("pendingMethod", "");
 
         return patterns;
     }

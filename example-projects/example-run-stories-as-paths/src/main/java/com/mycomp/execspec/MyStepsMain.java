@@ -29,6 +29,12 @@ public class MyStepsMain {
         System.out.println("throwing exception from 'Given something'");
     }
 
+    @Given("test parameter value - $paramValue units")
+    public void testing(String paramValue) {
+        System.out.println("-> something");
+//        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
 
     @Then("something should happen")
     public void verify() {
