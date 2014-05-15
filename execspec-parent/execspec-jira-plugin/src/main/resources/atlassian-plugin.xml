@@ -9,11 +9,11 @@
     </plugin-info>
     <!-- ==================================================================================================== -->
     <!--3rd party scripts-->
-    <web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">
-        <context>jira.view.issue</context>
-        <dependency>jira.webresources:jira-global</dependency>
-        <resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>
-    </web-resource>
+    <!--<web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">-->
+    <!--<context>jira.view.issue</context>-->
+    <!--<dependency>jira.webresources:jira-global</dependency>-->
+    <!--<resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>-->
+    <!--</web-resource>-->
     <!--Custom javascript and css-->
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
@@ -24,6 +24,8 @@
         <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
         <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
         <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
+        <resource type="download" name="StoryReportModel.js" location="/js/StoryReportModel.js"/>
+        <resource type="download" name="AutoCompleteEntryModel.js" location="/js/AutoCompleteEntryModel.js"/>
         <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
         <!--soy-->
@@ -164,6 +166,9 @@
                class="com.mycomp.execspec.jiraplugin.service.StoryReportServiceImpl"/>
     <component key="step-doc-service" name="Step Doc Service"
                class="com.mycomp.execspec.jiraplugin.service.StepDocsServiceImpl"/>
+    <component key="auto-complete-service" name="Auto Complete Service"
+               class="com.mycomp.execspec.jiraplugin.service.AutoCompleteServiceImpl"/>
+
     <!-- ==================================================================================================== -->
     <!--Active Objects-->
     <ao key="ao-module">

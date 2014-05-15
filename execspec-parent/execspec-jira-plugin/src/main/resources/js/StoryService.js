@@ -5,6 +5,7 @@ function StoryService() {
     var pathFind = pathBase + "find/for-issue/";
     var pathDelete = pathBase + "crud/delete/";
     var pathDeleteReports = pathBase + "story-test/delete/";
+    var pathAutoComplete = pathBase + "autocomplete/";
 
     this.init = function () {
 
@@ -130,6 +131,36 @@ function StoryService() {
         });
 
         console.log("# StoryService.deleteStoryReports");
+    }
+
+    this.autoComplete = function (projectKey, input, callBack) {
+
+        console.log("> StoryService.autoComplete");
+        console.log("projectKey - " + projectKey);
+        console.log("input - " + input);
+
+        var urlString = pathAutoComplete + projectKey;
+        console.log("urlString - " + urlString);
+
+        var successCallback = function (data, status, xhr) {
+            console.log("> StoryService.autoComplete.successCallback");
+            console.log("status - " + status);
+            console.log("xhr.status - " + xhr.status);
+            console.log("data - " + data);
+            callBack(data);
+            console.log("# StoryService.autoComplete.successCallback");
+        };
+
+        AJS.$.ajax({
+            type: "POST",
+            url: urlString,
+            contentType: "text/plain; charset=utf-8",
+            success: successCallback,
+            data: input,
+            dataType: "json"
+        });
+
+        console.log("# StoryService.autoComplete");
     }
 
 

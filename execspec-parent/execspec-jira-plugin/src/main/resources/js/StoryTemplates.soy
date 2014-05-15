@@ -7,39 +7,16 @@
 <div class="aui-toolbar2">
     <div class="aui-toolbar2-inner">
         <div class="aui-toolbar2-primary">
-            <div id="storyButtons" class="aui-buttons">
-                //<button id="show-story-button" class="aui-button aui-button-subtle story-container-button selected-story-container-button" onclick="showStory(event)">{$story.path}.story</button>
-                //                <button class="aui-button aui-dropdown2-trigger aui-button-subtle" aria-owns="dropdown2-more"
-                //                aria-haspopup="true"><span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Configure</span></button>
-                //                <div id="dropdown2-more" class="aui-dropdown2 aui-style-default">
-                //                    <ul class="aui-list-truncate">
-                //                        <li><a href="#" onclick="editStory(event)">Edit</a></li>
-                //                        <li><a href="http://example.com/">Delete</a></li>
-                //                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in DEV</a></li>
-                //                        <li><a href="http://example.com/"><span class="aui-icon aui-icon-small aui-iconfont-configure">Configure </span> Run in UAT</a></li>
-                //                    </ul>
-                //                </div>
-            </div>
+            <div id="storyButtons" class="aui-buttons"></div>
         </div>
         <div class="aui-toolbar2-secondary">
-            <div id="storyReportButtons" class="aui-buttons">
-//                    {foreach $storyReport in $storyReports}
-//                    <button id="show-story-report-{index($storyReport)}"
-//                            class="aui-button aui-button-subtle story-container-button"
-//                            onclick="showStoryReport(event, '{$storyReport.environment}')">{$storyReport.environment}<span
-//                            class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{if $storyReport.totalScenariosFailed > 0}<span
-//                            class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
-//                            class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
-//                            class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
-//                            class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
-//                    </button>
-//                    {/foreach}
-            </div>
+            <div id="storyReportButtons" class="aui-buttons"></div>
         </div>
     </div>
 </div>
-<div id="storyMessageContainer" class="story-message-container"/>
-<div id="storyViewContainer" class="story-container"></div>
+<div id="storyContainer" class="story-container" style="display: none;"></div>
+<div id="storyReportContainer" class="story-container" style="display: none;"></div>
+<div id="storyEditContainer" class="story-container" style="display: none;"></div>
 {/template}
 
 /**
@@ -74,12 +51,7 @@
  * @param storyReport
  */
 {template .renderStoryReport autoescape="false"}
-//    <div class="aui-message aui-message-warning">
-//        <p class="title">
-//            <strong>Error!</strong>
-//        </p>
-//        <p>And this is just content in a Default message.</p>
-//    </div>
+    <div id="reportMessageContainer"></div>
     <div class="story-report">
         {$storyReport.htmlReport}
     </div>
@@ -94,6 +66,43 @@
 {/template}
 
 /**
+ * Renders story edit area.
+ */
+{template .renderEditStoryArea}
+// hidden by default
+<div id="storyEditArea">
+    <div class="mod-content">
+        <div class="field-ignore-highlight editable-field active" id="description-val">
+            <form action="#" class="ajs-dirty-warning-exempt aui" id="description-form">
+                <div class="inline-edit-fields" tabindex="1">
+                    <div class="field-group">
+                        <div class="wiki-edit">
+                            <div class="wiki-edit-content ui-front" id="storyEditTextAreaContainer">
+                                <textarea rows="10"
+                                          id="story-edit-text-area"
+                                          class="textarea long-field wiki-textfield long-field full-width-field mentionable"
+                                          name="nowrap" wrap="off"></textarea>
+                                <div class="content-inner">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span class="overlay-icon throbber"></span>
+
+                <div class="save-options" tabindex="1">
+                    <button title="Press Alt+s to submit this form" accesskey="s" onclick="storyController.saveStory(event)" class="aui-button submit" type="submit">
+                        <span class="icon icon-save">Save</span></button>
+                    <button title="Press Alt+` to cancel" accesskey="`" onclick="storyController.cancelEditingStory(event)" class="aui-button cancel" type="cancel"><span
+                            class="icon icon-cancel">Cancel</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/template}
+
+/**
  * Renders story as string.
  * @param story
  * @param lineCount
@@ -105,7 +114,7 @@
             <div class="inline-edit-fields" tabindex="1">
                 <div class="field-group">
                     <div class="wiki-edit">
-                        <div class="wiki-edit-content" id="description-wiki-edit">
+                        <div class="wiki-edit-content ui-front" id="description-wiki-edit">
                             <textarea rows="{$lineCount}"
                                       id="story-edit-text-area"
                                       class="textarea long-field wiki-textfield long-field full-width-field mentionable"
@@ -119,12 +128,6 @@
             <span class="overlay-icon throbber"></span>
 
             <div class="save-options" tabindex="1">
-//                <div class="field-tools">
-//                    <a title="preview" id="description-preview_link" onclick="showStoryPreview(event)" href="#" class="fullscreen"><span
-//                            class="aui-icon wiki-renderer-icon"></span></a>
-//                    <a onclick="showStoryEditHelp(event)" title="Get local help about wiki markup help"
-//                       href="#" ><span class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
-//                </div>
                 <button title="Press Alt+s to submit this form" accesskey="s" onclick="storyController.saveStory(event)" class="aui-button submit" type="submit">
                     <span class="icon icon-save">Save</span></button>
                 <button title="Press Alt+` to cancel" accesskey="`" onclick="storyController.cancelEditingStory(event)" class="aui-button cancel" type="cancel"><span
