@@ -14,7 +14,7 @@
     <!--<dependency>jira.webresources:jira-global</dependency>-->
     <!--<resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>-->
     <!--</web-resource>-->
-    <!--Custom javascript and css-->
+    Custom javascript and css
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <transformation extension="soy">

@@ -2,7 +2,9 @@ package com.mycomp.execspec.jiraplugin.service;
 
 import com.mycomp.execspec.jiraplugin.dto.autocomplete.AutoCompleteDTO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +17,8 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 
         List<AutoCompleteDTO> results = new ArrayList<AutoCompleteDTO>();
 
-        AutoCompleteDTO entry = new AutoCompleteDTO("stubbed server response", 0);
+        AutoCompleteDTO entry = new AutoCompleteDTO("WWWW W WWWW WWWW WWWW WWWW WWWW WWWW WWWW WWWW WWWW WWWW WWWW WWWW \nstubbed server response - "
+                + new SimpleDateFormat().format(new Date()), 0);
         results.add(entry);
 
         return results;

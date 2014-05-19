@@ -70,6 +70,8 @@ function StoryView(storyController) {
         }
 
         // prepare auto complete area
+        var storyPanelWidth = AJS.$("#story-panel").width();
+
         this.autoCompleteDialog = AJS.InlineDialog(AJS.$("#story-edit-text-area"),
             "autoCompleteDialog",
             function (content, trigger, showPopup) {
@@ -88,12 +90,70 @@ function StoryView(storyController) {
                 return false;
             },
             {
-                noBind: true
-//                container: AJS.$("#storyEditTextAreaContainer")
+                noBind: true,
+                cacheContent: false,
+                displayShadow: false,
+                width: AJS.$("#story-panel").width() - 90,
+//                width: AJS.$("#story-edit-text-area").css("width") + 75,
+                container: AJS.$("#autoCompleteContainer1"),
+//                arrowOffsetX: 100,
+//                arrowOffsetY: 100,
+//                persistent: true,
+//                gravity: 'n',
+//                initCallback: function () {
+////                    alert("Hello World");
+//                    AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+//                },
+                calculatePositions: function getPosition(popup, targetPosition, mousePosition, opts) {
+                    return {
+                        displayAbove: true,
+                        popupCss: {
+//                            left: mousePosition.x,
+//                            top: mousePosition.y + 20,
+//                            right: mousePosition.y + 100
+                            left: 10,
+                            top: storyView.getAutoCompleteYPos(),
+                            right: 100
+                        },
+                        arrowCss: {
+                            left: 20,
+                            top: -16
+                        }
+                    }
+                }
             }
         );
 
         console.log("# StoryView.init");
+    }
+
+    this.getAutoCompleteYPos = function () {
+
+        console.log("> StoryView.getAutoCompleteYPos");
+
+        var storyInputAsString = storyView.getStoryInputAsString();
+        var caretPosition = storyView.getStoryInputCaretPosition();
+        console.log("caretPosition - " + caretPosition);
+        var substring = storyInputAsString.substr(0, caretPosition);
+        console.log("substring - " + substring);
+        var lines = substring.split("\n");
+        var lineNumber = lines.length;
+        console.log("lineNumber - " + lineNumber);
+
+        var scrollTop = AJS.$("#story-edit-text-area").prop("scrollTop");
+        console.log("scrollTop - " + scrollTop);
+
+//        var position = 8; // with the arrow present
+        var position = 2; // without the arrow present
+        position += (lineNumber * 6) + lineNumber * (parseInt(AJS.$("#story-edit-text-area").css('font-size')));
+        if (scrollTop != undefined && scrollTop > 0) {
+            position = position - scrollTop;
+        }
+
+        console.log("position - " + position);
+        console.log("# StoryView.getAutoCompleteYPos");
+
+        return  position;
     }
 
     this.getStoryInputAsString = function () {
@@ -228,6 +288,7 @@ function StoryView(storyController) {
 
             AJS.$("#storyContainer").html(story.asHTML);
             AJS.$("#storyContainer").show();
+
         }
 
         this.updateSelectedButton("show-story-button");
@@ -302,7 +363,20 @@ function StoryView(storyController) {
         this.autoCompleteEntries = entries;
 
         this.autoCompleteDialog.refresh();
+//        AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+//        AJS.$("#arrow-autoCompleteDialog").addClass("aui-css-arrow");
         this.autoCompleteDialog.show();
+//        AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+//        AJS.$("#arrow-autoCompleteDialog").addClass("aui-css-arrow");
+//        AJS.$("#arrow-autoCompleteDialog").addClass("aui-top-arrow");
+//        AJS.$("#arrow-autoCompleteDialog").rotate(90);
+
+
+        var autoCompleteHtml = storyView.autoCompleteDialog.html();
+        console.log("autoCompleteHtml - " + autoCompleteHtml);
+
+//        AJS.$("#autoCompleteHtml").html(autoCompleteHtml);
+//        AJS.$("#arrow-autoCompleteDialog")
 
         console.log("# StoryView.showAutoComplete");
     }
