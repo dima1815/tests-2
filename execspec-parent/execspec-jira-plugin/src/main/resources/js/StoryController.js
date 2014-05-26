@@ -311,6 +311,9 @@ AJS.$(function () {
         //Focusing the Editor when the frame is ready..
         editor.on('frame:ready', function () {
             this.focus();
+            var height = AJS.$("iframe").contents().height() + 40;
+            console.log("setting editor height to - " + height);
+            AJS.$("#yuiEditorPanel").height(height);
         });
 
         //Rendering the Editor.
