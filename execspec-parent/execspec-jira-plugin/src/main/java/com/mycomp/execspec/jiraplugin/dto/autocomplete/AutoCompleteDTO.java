@@ -13,21 +13,21 @@ public class AutoCompleteDTO {
 
     private String suggestion;
 
-    private int insertPosition;
+    private String completePart;
 
     protected AutoCompleteDTO() {
     }
 
-    public AutoCompleteDTO(String suggestion, int insertPosition) {
-        this.insertPosition = insertPosition;
+    public AutoCompleteDTO(String suggestion, String completePart) {
         this.suggestion = suggestion;
-    }
-
-    public int getInsertPosition() {
-        return insertPosition;
+        this.completePart = completePart;
     }
 
     public String getSuggestion() {
         return suggestion;
+    }
+
+    public String getCompletePart() {
+        return completePart;
     }
 }

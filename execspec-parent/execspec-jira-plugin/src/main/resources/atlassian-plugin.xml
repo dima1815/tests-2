@@ -9,12 +9,13 @@
     </plugin-info>
     <!-- ==================================================================================================== -->
     <!--3rd party scripts-->
-    <!--<web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">-->
-    <!--<context>jira.view.issue</context>-->
-    <!--<dependency>jira.webresources:jira-global</dependency>-->
-    <!--<resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>-->
-    <!--</web-resource>-->
-    Custom javascript and css
+    <web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">
+        <context>jira.view.issue</context>
+        <!--<dependency>jira.webresources:jira-global</dependency>-->
+        <!--<resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>-->
+        <resource type="download" name="yui-3.17.1-min.js" location="/js/3rdparty/yui-3.17.1-min.js"/>
+    </web-resource>
+    <!--Custom javascript and css-->
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <transformation extension="soy">
@@ -53,14 +54,16 @@
     <resource type="i18n" name="plugin-properties" location="i18n/plugin"/>
     <!-- ==================================================================================================== -->
     <!--View Issue page - tool bar links-->
-    <web-section key="viewIssuePage.webSection.jbehaveStory" name="JBehave Story"
+    <!--<web-section key="jbehave-links-toolbar" name="My Links Main Section" location="view.issue.opsbar" weight="20"/>-->
+    <!--<web-section key="jbehave-links-section" name="My Links Main Section" location="jbehave-links-toolbar" weight="1"/>-->
+    <web-section key="jbehave-links-section" name="JBehave Story"
                  location="opsbar-operations" weight="20">
         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
     </web-section>
     <web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
               key="viewIssuePage.webItem.createStory.key"
-              section="viewIssuePage.webSection.jbehaveStory" weight="10">
-        <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
+              section="jbehave-links-section" weight="10">
+    <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
@@ -75,8 +78,8 @@
     </web-item>
     <web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"
               key="viewIssuePage.webItem.editStory.key"
-              section="viewIssuePage.webSection.jbehaveStory" weight="20">
-        <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
+              section="jbehave-links-section" weight="20">
+    <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
@@ -91,8 +94,8 @@
     </web-item>
     <web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
               key="viewIssuePage.webItem.deleteStory.key"
-              section="viewIssuePage.webSection.jbehaveStory" weight="30">
-        <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
+              section="jbehave-links-section" weight="30">
+    <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
@@ -107,8 +110,8 @@
     </web-item>
     <web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
               key="viewIssuePage.webItem.clearStoryTest.key"
-              section="viewIssuePage.webSection.jbehaveStory" weight="30">
-        <description key="viewIssuePage.webItem.clearStoryTest.description">The Clear Story Test Web Item</description>
+              section="jbehave-links-section" weight="30">
+    <description key="viewIssuePage.webItem.clearStoryTest.description">The Clear Story Test Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">

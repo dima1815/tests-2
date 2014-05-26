@@ -76,17 +76,13 @@ function StoryView(storyController) {
             "autoCompleteDialog",
             function (content, trigger, showPopup) {
 
-                var autoCompleteHtml = "<ul class='autoCompleteEntries'>";
-                for (var i = 0; i < storyView.autoCompleteEntries.length; i++) {
-                    var entry = storyView.autoCompleteEntries[i];
-                    autoCompleteHtml += "<li class='autoCompleteEntry'>";
-                    autoCompleteHtml += entry.suggestion;
-                    autoCompleteHtml += "</li>";
-                }
-                autoCompleteHtml += "</ul>";
-
-                content.css({"padding": "20px"}).html(autoCompleteHtml);
+                console.log("> StoryView.autoCompleteDialog.contentProvider");
+                var autoCompleteHtml = storyView.fetchAutoCompleteContent();
+                content
+//                    .css({"padding-left": "10px", "padding-top": "2px", "padding-right": "10px", "padding-bottom": "2px"})
+                    .html(autoCompleteHtml);
                 showPopup();
+                console.log("# StoryView.autoCompleteDialog.contentProvider");
                 return false;
             },
             {
@@ -125,6 +121,29 @@ function StoryView(storyController) {
         );
 
         console.log("# StoryView.init");
+    }
+
+    this.fetchAutoCompleteContent = function () {
+
+        console.log("> StoryView.fetchAutoCompleteContent");
+
+        var templateObject = new Object();
+        templateObject.entries = this.autoCompleteEntries;
+        var autoCompleteHtml = execspec.viewissuepage.showstory.renderAutoComplete(templateObject);
+
+//        var autoCompleteHtml = "<ul class='autoCompleteEntries'>";
+//        for (var i = 0; i < this.autoCompleteEntries.length; i++) {
+//            var entry = this.autoCompleteEntries[i];
+//            autoCompleteHtml += "<li class='autoCompleteEntry'>";
+//            autoCompleteHtml += entry.suggestion;
+//            autoCompleteHtml += "</li>";
+//        }
+//        autoCompleteHtml += "</ul>";
+
+        console.log("autoCompleteHtml - " + autoCompleteHtml);
+        console.log("# StoryView.fetchAutoCompleteContent");
+
+        return autoCompleteHtml;
     }
 
     this.getAutoCompleteYPos = function () {

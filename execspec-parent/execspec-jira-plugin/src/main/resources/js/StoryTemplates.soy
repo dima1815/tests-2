@@ -1,5 +1,34 @@
 {namespace execspec.viewissuepage.showstory}
 
+
+/**
+ * Render rich text area.
+ * @param range
+ */
+{template .renderRichTextArea}
+    <div>This is a test rich text area</div>
+    <div>
+        <table style="border-style: solid; border-width: 1px; border-color: blue">
+            <tr>
+                {foreach $i in $range}
+                    <th>column {$i}</th>
+                {/foreach}
+            </tr>
+            <tr>
+                {foreach $i in $range}
+                    <td>cell {$i}</td>
+                {/foreach}
+            </tr>
+        </table>
+        {foreach $i in $range}
+            <div>
+                test {$i}
+            </div>
+        {/foreach}
+
+    </div>
+{/template}
+
 /**
  * Render story panel
  */
@@ -141,4 +170,20 @@
     </div>
 </div>
 {/template}
+
+
+/**
+ * Renders auto complete suggestion box.
+ * @param entries
+ */
+{template .renderAutoComplete}
+    <div id="autoCompleteEntries">
+        {foreach $entry in $entries}
+        <div class="auto-complete-entry">
+            {$entry.suggestion} ({$entry.completePart})
+        </div>
+        {/foreach}
+    </div>
+{/template}
+
 

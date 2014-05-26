@@ -275,4 +275,48 @@ AJS.$(function () {
     ctr.loadStory();
 });
 
+AJS.$(function () {
+//    YUI().use('editor-inline', function(Y) {
+//
+//        var editor = new Y.InlineEditor({
+//            content: '<strong>This is <em>a test</em></strong> <strong>This is <em>a test</em></strong> '
+//        });
+//
+//        //Add the BiDi plugin
+//        editor.plug(Y.Plugin.EditorBidi);
+//
+//        //Focusing the Editor when ready
+//        editor.on('ready', function() {
+//            editor.focus();
+//        });
+//
+//        //Rendering the Editor.
+//        editor.render('#yuiEditorPanel');
+//
+//    });
+    YUI().use('editor', function (Y) {
+
+        var rangeObject = new Object();
+        rangeObject.range = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+        var content = execspec.viewissuepage.showstory.renderRichTextArea(rangeObject);
+//        var content = "test";
+
+        var editor = new Y.EditorBase({
+            content: content
+        });
+
+        //Add the BiDi plugin
+        editor.plug(Y.Plugin.EditorBidi);
+
+        //Focusing the Editor when the frame is ready..
+        editor.on('frame:ready', function () {
+            this.focus();
+        });
+
+        //Rendering the Editor.
+        editor.render('#yuiEditorPanel');
+
+    });
+});
+
 

@@ -33,8 +33,7 @@ public class AutoCompleteResource {
 //    @Consumes(MediaType.APPLICATION_JSON)
     public Response autoComplete(@PathParam("projectKey") String projectKey, String input) {
 
-        Validate.notEmpty(input);
-        Validate.notNull(input); // we can install auto complete for empty input
+        Validate.notNull(input); // we can actually do auto complete for empty input but not null
 
         List<AutoCompleteDTO> autoCompleteDTOs = autoCompleteService.autoComplete(projectKey, input);
 

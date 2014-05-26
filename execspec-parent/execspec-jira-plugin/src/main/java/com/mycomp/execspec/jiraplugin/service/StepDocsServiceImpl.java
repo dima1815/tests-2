@@ -5,6 +5,7 @@ import com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDocDao;
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTOUtils;
 import org.apache.commons.lang.Validate;
+import org.jbehave.core.steps.StepType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,16 @@ public class StepDocsServiceImpl implements StepDocsSerivce {
     public List<StepDocDTO> findForProject(String projectKey) {
 
         List<StepDoc> allForProject = this.stepDocDao.findAllForProject(projectKey);
+        return toDTOs(allForProject);
+    }
+
+    @Override
+    public List<StepDocDTO> findForProject(String projectKey, StepType stepType) {
+        List<StepDoc> allForProject = this.stepDocDao.findAllForProject(projectKey, stepType);
+        return toDTOs(allForProject);
+    }
+
+    private List<StepDocDTO> toDTOs(List<StepDoc> allForProject) {
         List<StepDocDTO> stepDocDTOs = new ArrayList<StepDocDTO>(allForProject.size());
 
         for (StepDoc stepDoc : allForProject) {
