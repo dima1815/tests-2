@@ -1,5 +1,46 @@
 {namespace execspec.viewissuepage.showstory}
 
+/**
+ * Renders story edit area.
+ */
+{template .renderEditStoryArea2}
+<div class="story-panel">
+    Rich Text Edit Area - Default content
+//    <div class="mod-content">
+//        <div class="field-ignore-highlight editable-field active" id="description-val">
+//            <form action="#" class="ajs-dirty-warning-exempt aui" id="description-form">
+//                <div class="inline-edit-fields" tabindex="1">
+//                    <div class="field-group">
+//                        <div class="wiki-edit">
+//                            <div class="wiki-edit-content ui-front" id="storyEditTextAreaContainer">
+//                                <div id="autoCompleteContainer1"></div>
+//                                <div id="autoCompleteContainer2">
+//                                    <textarea rows="10"
+//                                          id="story-edit-text-area"
+//                                          class="textarea long-field wiki-textfield long-field full-width-field mentionable"
+//                                          name="nowrap" wrap="off"></textarea>
+//                                </div>
+//                                <div id="autoCompleteContainer3"></div>
+//                                <div class="content-inner">
+//                                </div>
+//                            </div>
+//                        </div>
+//                    </div>
+//                </div>
+//                <span class="overlay-icon throbber"></span>
+//
+//                <div class="save-options" tabindex="1">
+//                    <button title="Press Alt+s to submit this form" accesskey="s" onclick="storyController.saveStory(event)" class="aui-button submit" type="submit">
+//                        <span class="icon icon-save">Save</span></button>
+//                    <button title="Press Alt+` to cancel" accesskey="`" onclick="storyController.cancelEditingStory(event)" class="aui-button cancel" type="cancel"><span
+//                            class="icon icon-cancel">Cancel</span></button>
+//                </div>
+//            </form>
+//        </div>
+//    </div>
+</div>
+{/template}
+
 
 /**
  * Render rich text area.
@@ -33,6 +74,9 @@
  * Render story panel
  */
 {template .renderStoryPanel}
+<div id="testMouseOver">
+    Some text for testing mouse over events
+</div>
 <div class="aui-toolbar2">
     <div class="aui-toolbar2-inner">
         <div class="aui-toolbar2-primary">

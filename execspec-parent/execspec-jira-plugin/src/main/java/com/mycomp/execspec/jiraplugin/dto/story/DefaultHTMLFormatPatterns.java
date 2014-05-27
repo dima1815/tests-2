@@ -32,7 +32,8 @@ public class DefaultHTMLFormatPatterns {
         patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");
 
 //        patterns.setProperty("narrative", "<div class=\"narrative\"><h2>{0}</h2>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
-        patterns.setProperty("narrative", "<div class=\"narrative\"><div class=\"label\">{0}</div>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
+        patterns.setProperty("narrative",
+                "<div class=\"narrative\"><div class=\"label\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0}</div>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
 
         patterns.setProperty("lifecycleStart", "<div class=\"lifecycle\"><h2>{0}</h2>");
         patterns.setProperty("lifecycleEnd", "</div>");
@@ -43,7 +44,7 @@ public class DefaultHTMLFormatPatterns {
         patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");
 
 //        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
-        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
+        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"scenario-plus aui-icon aui-icon-small aui-iconfont-add\"></span><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
 
         patterns.setProperty("afterScenario", "</div>\n");
         patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
@@ -54,7 +55,7 @@ public class DefaultHTMLFormatPatterns {
 
         patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
-        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
+        patterns.setProperty("pending", "<div class=\"step pending\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0} <span class=\"keyword pending\">({1})</span></div>\n");
         patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
         patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
         patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");

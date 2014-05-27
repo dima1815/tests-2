@@ -31,6 +31,7 @@
         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
         <!--soy-->
         <resource type="download" name="StoryTemplates.soy.js" location="js/StoryTemplates.soy"/>
+        <resource type="download" name="StoryEditTemplates.soy.js" location="js/StoryEditTemplates.soy"/>
         <!-- CSS -->
         <resource type="download" name="story.css" location="css/story.css">
             <param name="content-type" value="text/css"/>
@@ -63,7 +64,7 @@
     <web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
               key="viewIssuePage.webItem.createStory.key"
               section="jbehave-links-section" weight="10">
-    <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
+        <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
@@ -79,7 +80,7 @@
     <web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"
               key="viewIssuePage.webItem.editStory.key"
               section="jbehave-links-section" weight="20">
-    <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
+        <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
@@ -95,7 +96,7 @@
     <web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
               key="viewIssuePage.webItem.deleteStory.key"
               section="jbehave-links-section" weight="30">
-    <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
+        <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
@@ -111,7 +112,7 @@
     <web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
               key="viewIssuePage.webItem.clearStoryTest.key"
               section="jbehave-links-section" weight="30">
-    <description key="viewIssuePage.webItem.clearStoryTest.description">The Clear Story Test Web Item</description>
+        <description key="viewIssuePage.webItem.clearStoryTest.description">The Clear Story Test Web Item</description>
         <conditions type="and">
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">

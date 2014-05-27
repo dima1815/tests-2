@@ -44,81 +44,156 @@ function StoryView(storyController) {
         AJS.$("#story-panel").html(execspec.viewissuepage.showstory.renderStoryPanel());
 
         console.log("rendering story edit area");
-        var storyEditArea = execspec.viewissuepage.showstory.renderEditStoryArea();
-        AJS.$("#storyEditContainer").html(storyEditArea);
 
-        {
-            // keyboard events handling
-            storyView.isCtrDown = false;
+        this.editor = null;
 
-            AJS.$("#story-edit-text-area").keydown(function (event) {
-                console.log("keydown, event.keyCode - " + event.keyCode);
-                if (event.keyCode == 17) {
-                    storyView.isCtrDown = true;
+//        AJS.$("#testMouseOver").mouseover(function() {
+//            console.log("Mouse over event fired!");
+//        });
+
+        YUI().use('editor-base', function (Y) {
+
+            var content = execspec.viewissuepage.showstory.renderEditStoryArea2();
+            var extraCss = execspec.viewissuepage.editstory.renderExtraCss();
+
+            var editor = new Y.EditorBase({
+                content: content,
+                extracss: extraCss
+            });
+            storyView.editor = editor;
+
+            //Add the BiDi plugin
+            editor.plug(Y.Plugin.EditorBidi);
+
+            Y.mix(Y.Plugin.ExecCommand.COMMANDS, {
+                foo: function (cmd, val) {
+                    console.log('You clicked on Foo');
+                    var inst = this.getInstance();
+                    inst.one('body').setStyle('backgroundColor', 'yellow');
+                },
+                setContent: function (cmd, val) {
+                    console.log('You clicked on setContent');
+                    console.log('cmd - ' + cmd);
+                    console.log('val - ' + val);
+                    var inst = this.getInstance();
+
+                    var editorNode = inst.one('.story-panel');
+                    editorNode.setContent(val);
+//                    inst.one('#storyRichTextEditArea').html('HAHA');
+//                    inst.one('body').setStyle('backgroundColor', 'yellow');
+
+//                    AJS.$(".narrative").mouseover(function() {
+//                        console.log('mouseOver event from JQuery fired');
+//                    });
+
+                    inst.one('.inOrderTo').on('mouseover', function () {
+                        console.log("mouse over fired on .inOrderTo");
+                        inst.one('.scenario-plus').show();
+                    });
+                    inst.one('.inOrderTo').on('mouseleave', function () {
+                        console.log("mouse leave fired on .inOrderTo");
+                        inst.one('.scenario-plus').hide();
+                    });
+
                 }
             });
 
-            AJS.$("#story-edit-text-area").keyup(function (event) {
-                console.log("keyup, event.keyCode - " + event.keyCode);
-                if (event.keyCode == 17) {
-                    storyView.isCtrDown = false;
-                } else if (event.keyCode == 32 /*space key*/ && storyView.isCtrDown) {
-                    storyController.showAutoCompleteHandler();
-                    storyView.isCtrDown = false;
-                }
+            Y.each(Y.Frame.DOM_EVENTS, function (v, k) {
+                editor.on('dom:' + k, function (e) {
+                    var tag = e.frameTarget.get('tagName').toLowerCase();
+                    console.log('Event: ' + e.type + ' on element (' + tag + ')');
+                });
             });
-        }
+
+
+            //Focusing the Editor when the frame is ready..
+//            editor.on('frame:ready', function () {
+//                this.focus();
+//                var height = AJS.$("iframe").contents().height() + 40;
+//                console.log("setting editor height to - " + height);
+//                AJS.$("#storyEditContainer").height(height);
+//            });
+
+            //Rendering the Editor.
+            editor.render('#storyEditContainer');
+
+        });
+
+//        var storyEditArea = execspec.viewissuepage.showstory.renderEditStoryArea2();
+//        AJS.$("#storyEditContainer").html(storyEditArea);
+
+//        {
+//            // keyboard events handling
+//            storyView.isCtrDown = false;
+//
+//            AJS.$("#story-edit-text-area").keydown(function (event) {
+//                console.log("keydown, event.keyCode - " + event.keyCode);
+//                if (event.keyCode == 17) {
+//                    storyView.isCtrDown = true;
+//                }
+//            });
+//
+//            AJS.$("#story-edit-text-area").keyup(function (event) {
+//                console.log("keyup, event.keyCode - " + event.keyCode);
+//                if (event.keyCode == 17) {
+//                    storyView.isCtrDown = false;
+//                } else if (event.keyCode == 32 /*space key*/ && storyView.isCtrDown) {
+//                    storyController.showAutoCompleteHandler();
+//                    storyView.isCtrDown = false;
+//                }
+//            });
+//        }
 
         // prepare auto complete area
-        var storyPanelWidth = AJS.$("#story-panel").width();
-
-        this.autoCompleteDialog = AJS.InlineDialog(AJS.$("#story-edit-text-area"),
-            "autoCompleteDialog",
-            function (content, trigger, showPopup) {
-
-                console.log("> StoryView.autoCompleteDialog.contentProvider");
-                var autoCompleteHtml = storyView.fetchAutoCompleteContent();
-                content
-//                    .css({"padding-left": "10px", "padding-top": "2px", "padding-right": "10px", "padding-bottom": "2px"})
-                    .html(autoCompleteHtml);
-                showPopup();
-                console.log("# StoryView.autoCompleteDialog.contentProvider");
-                return false;
-            },
-            {
-                noBind: true,
-                cacheContent: false,
-                displayShadow: false,
-                width: AJS.$("#story-panel").width() - 90,
-//                width: AJS.$("#story-edit-text-area").css("width") + 75,
-                container: AJS.$("#autoCompleteContainer1"),
-//                arrowOffsetX: 100,
-//                arrowOffsetY: 100,
-//                persistent: true,
-//                gravity: 'n',
-//                initCallback: function () {
-////                    alert("Hello World");
-//                    AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
-//                },
-                calculatePositions: function getPosition(popup, targetPosition, mousePosition, opts) {
-                    return {
-                        displayAbove: true,
-                        popupCss: {
-//                            left: mousePosition.x,
-//                            top: mousePosition.y + 20,
-//                            right: mousePosition.y + 100
-                            left: 10,
-                            top: storyView.getAutoCompleteYPos(),
-                            right: 100
-                        },
-                        arrowCss: {
-                            left: 20,
-                            top: -16
-                        }
-                    }
-                }
-            }
-        );
+//        var storyPanelWidth = AJS.$("#story-panel").width();
+//
+//        this.autoCompleteDialog = AJS.InlineDialog(AJS.$("#story-edit-text-area"),
+//            "autoCompleteDialog",
+//            function (content, trigger, showPopup) {
+//
+//                console.log("> StoryView.autoCompleteDialog.contentProvider");
+//                var autoCompleteHtml = storyView.fetchAutoCompleteContent();
+//                content
+////                    .css({"padding-left": "10px", "padding-top": "2px", "padding-right": "10px", "padding-bottom": "2px"})
+//                    .html(autoCompleteHtml);
+//                showPopup();
+//                console.log("# StoryView.autoCompleteDialog.contentProvider");
+//                return false;
+//            },
+//            {
+//                noBind: true,
+//                cacheContent: false,
+//                displayShadow: false,
+//                width: AJS.$("#story-panel").width() - 90,
+////                width: AJS.$("#story-edit-text-area").css("width") + 75,
+//                container: AJS.$("#autoCompleteContainer1"),
+////                arrowOffsetX: 100,
+////                arrowOffsetY: 100,
+////                persistent: true,
+////                gravity: 'n',
+////                initCallback: function () {
+//////                    alert("Hello World");
+////                    AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+////                },
+//                calculatePositions: function getPosition(popup, targetPosition, mousePosition, opts) {
+//                    return {
+//                        displayAbove: true,
+//                        popupCss: {
+////                            left: mousePosition.x,
+////                            top: mousePosition.y + 20,
+////                            right: mousePosition.y + 100
+//                            left: 10,
+//                            top: storyView.getAutoCompleteYPos(),
+//                            right: 100
+//                        },
+//                        arrowCss: {
+//                            left: 20,
+//                            top: -16
+//                        }
+//                    }
+//                }
+//            }
+//        );
 
         console.log("# StoryView.init");
     }
@@ -233,15 +308,39 @@ function StoryView(storyController) {
             var lines = story.asString.split("\n");
             var lineCount = lines.length;
             var storyAsString = story.asString;
+            var storyAsHTML = story.asHTML;
 
             // hide story and story reports view
             AJS.$("#storyContainer").hide();
             AJS.$("#storyReportContainer").hide();
 
             // show edit area
-            AJS.$("#story-edit-text-area").val(storyAsString);
-            AJS.$("#story-edit-text-area").attr("rows", lineCount);
+//            AJS.$("#story-edit-text-area").val(storyAsString);
+//            AJS.$("#story-edit-text-area").attr("rows", lineCount);
+
+
+//            AJS.$("#storyRichTextEditArea").html(storyAsString);
+//            var editorContainer = this.editor.one('storyRichTextEditArea');
+//            editorContainer.html(storyAsString);
+            this.editor.execCommand("setContent", storyAsHTML);
+
+            var height = AJS.$("iframe").contents().height() + 40;
+            console.log("setting editor height to - " + height);
+            AJS.$("#storyEditContainer").height(height);
+
             AJS.$("#storyEditContainer").show();
+
+            var height = AJS.$("iframe").contents().height() + 40;
+            console.log("setting editor height to - " + height);
+            AJS.$("#storyEditContainer").height(height);
+
+            AJS.$("#testMouseOver").mouseover(function () {
+                console.log("Mouse over event fired on test container!");
+            });
+
+//            AJS.$("#inOrderTo").mouseover(function() {
+//                console.log("Mouse over event fired on inOrderTo!");
+//            });
 
 //            AJS.$("#story-edit-text-area").keyup(function (event) {
 //
