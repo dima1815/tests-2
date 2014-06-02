@@ -5,6 +5,7 @@ import java.util.Properties;
 /**
  * Created by Dmytro on 4/29/2014.
  */
+@Deprecated
 public class DefaultHTMLFormatPatterns {
 
     public Properties getPatterns() {
@@ -33,7 +34,18 @@ public class DefaultHTMLFormatPatterns {
 
 //        patterns.setProperty("narrative", "<div class=\"narrative\"><h2>{0}</h2>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
         patterns.setProperty("narrative",
-                "<div class=\"narrative\"><div class=\"label\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0}</div>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
+                "<div class=\"beforeNarrative\"><span>&nbsp;</span><span style=\"display: none;\" class=\"beforeNarrativeHint\">+<span></div>" +
+                        "<div class=\"narrative\">" +
+                        "<div class=\"label\">" +
+                        "{0}</div>\n" +
+                        "<div contentEditable=\"false\" class=\"element inOrderTo\">" +
+                        "<div style=\"display: none;\" class=\"add-icon\">+</div>" +
+                        "<span contentEditable=\"false\" class=\"keyword inOrderTo inOrderToSpan\">{1}</span> <span></span></div>\n" +
+
+                        "<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n" +
+                        "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n" +
+                        "</div>\n"
+        );
 
         patterns.setProperty("lifecycleStart", "<div class=\"lifecycle\"><h2>{0}</h2>");
         patterns.setProperty("lifecycleEnd", "</div>");

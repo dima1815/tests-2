@@ -47,6 +47,7 @@ function StoryView(storyController) {
 
         this.editor = null;
 
+
 //        AJS.$("#testMouseOver").mouseover(function() {
 //            console.log("Mouse over event fired!");
 //        });
@@ -88,11 +89,19 @@ function StoryView(storyController) {
 
                     inst.one('.inOrderTo').on('mouseover', function () {
                         console.log("mouse over fired on .inOrderTo");
-                        inst.one('.scenario-plus').show();
+//                        inst.one('.scenario-plus').show();
+                        inst.one('.add-icon').show();
+
                     });
                     inst.one('.inOrderTo').on('mouseleave', function () {
                         console.log("mouse leave fired on .inOrderTo");
-                        inst.one('.scenario-plus').hide();
+                        var attr = inst.one('.inOrderTo').get("contentEditable");
+                        console.log("attr - " + attr);
+                        inst.one('.add-icon').hide();
+                    });
+
+                    inst.one('.inOrderToSpan').on('focus', function () {
+                        console.log("on focus fired on .inOrderToSpan");
                     });
 
                 }
@@ -105,14 +114,13 @@ function StoryView(storyController) {
                 });
             });
 
-
             //Focusing the Editor when the frame is ready..
-//            editor.on('frame:ready', function () {
-//                this.focus();
+            editor.on('frame:ready', function () {
+                this.focus();
 //                var height = AJS.$("iframe").contents().height() + 40;
 //                console.log("setting editor height to - " + height);
 //                AJS.$("#storyEditContainer").height(height);
-//            });
+            });
 
             //Rendering the Editor.
             editor.render('#storyEditContainer');
@@ -404,8 +412,24 @@ function StoryView(storyController) {
             AJS.$("#storyReportContainer").hide();
             AJS.$("#storyEditContainer").hide();
 
-            AJS.$("#storyContainer").html(story.asHTML);
+//            AJS.$("#storyContainer").html(story.asHTML);
+            var templateObject = new Object();
+            templateObject.story = story;
+            templateObject.story.asJson = JSON.stringify(story);
+            var storyHtml = execspec.viewissuepage.showstory.renderStory(templateObject);
+            AJS.$("#storyContainer").html(storyHtml);
+
             AJS.$("#storyContainer").show();
+
+            AJS.$(".beforeNarrative").mouseover(function () {
+                console.log("mouse over on - beforeNarrative")
+                AJS.$(".beforeNarrativeHint").show();
+            });
+
+            AJS.$(".beforeNarrative").mouseout(function () {
+                console.log("mouse out on - beforeNarrative")
+                AJS.$(".beforeNarrativeHint").hide();
+            });
 
         }
 

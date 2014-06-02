@@ -9,6 +9,7 @@ import java.util.Properties;
 /**
  * Created by Dmytro on 4/29/2014.
  */
+@Deprecated
 public class CustomHTMLOutput extends HtmlOutput {
 
     public CustomHTMLOutput(PrintStream output) {

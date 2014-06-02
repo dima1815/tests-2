@@ -73,7 +73,7 @@ function StoryController() {
         story.projectKey = pageUtils.getProjectKey();
         story.issueKey = pageUtils.getIssueKey();
 
-        var newStoryAsString = "Narrative:";
+        var newStoryAsString = "narrative:";
         newStoryAsString += "\nIn order to ";
         newStoryAsString += "\nAs a ";
         newStoryAsString += "\nI want to ";

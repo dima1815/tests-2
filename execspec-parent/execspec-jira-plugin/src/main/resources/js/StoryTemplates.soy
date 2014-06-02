@@ -1,6 +1,35 @@
 {namespace execspec.viewissuepage.showstory}
 
 /**
+ * Renders story.
+ * @param story
+ */
+{template .renderStory}
+    {if $story.narrative != null}
+        <div class="narrative">
+            <div class="title">{$story.narrative.keyword}:</div>
+            <div class="inOrderTo">
+                <span class="keyword">{$story.narrative.inOrderTo}</span>
+            </div>
+        </div>
+    {/if}
+
+    <div>
+        <br/>
+        {$story.asJson}
+    </div>
+{/template}
+
+/**
+ * Renders story as html.
+ * @param story
+ */
+{template .renderStoryAsHtml}
+    TEST<br><br>
+    {$story.asString}
+{/template}
+
+/**
  * Renders story edit area.
  */
 {template .renderEditStoryArea2}
@@ -74,9 +103,9 @@
  * Render story panel
  */
 {template .renderStoryPanel}
-<div id="testMouseOver">
-    Some text for testing mouse over events
-</div>
+//<div id="testMouseOver">
+//    Some text for testing mouse over events
+//</div>
 <div class="aui-toolbar2">
     <div class="aui-toolbar2-inner">
         <div class="aui-toolbar2-primary">

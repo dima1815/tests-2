@@ -33,15 +33,15 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 
     private static enum AutoCompleteEntry {
 
-        Meta("Meta:\n"),
+        Meta("meta:\n"),
         MetaSkip("@skip\n"),
         MetaIgnored("@ignored true\n"),
         MetaAuthor("@author "),
 
-        Narrative("Narrative:\n"),
-        GivenStories("GivenStories: "),
-        Lifecycle("Lifecycle:\n"),
-        Scenario("Scenario: "),
+        Narrative("narrative:\n"),
+        GivenStories("givenStories: "),
+        Lifecycle("lifecycle:\n"),
+        Scenario("scenario: "),
         InOrderTo("In order to "),
         AsA("As a "),
         IWantTo("I want to "),
@@ -316,7 +316,7 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
                 autoCompleteEntry(AutoCompleteEntry.GivenStories, lastLine, results);
             }
         } else {
-            // TODO - implement auto complete on story names used in GivenStories
+            // TODO - implement auto complete on story names used in givenStories
         }
     }
 

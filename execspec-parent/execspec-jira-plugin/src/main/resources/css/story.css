@@ -163,6 +163,16 @@
     padding-bottom: 2px;
 }
 
+.beforeNarrative {
+    position: relative;
+}
+
+.beforeNarrativeHint {
+    position: absolute;
+    top: 0px;
+    left: -5px;
+}
+
 /*.scenario .steps {*/
 /*padding-left: 10px;*/
 /*}*/

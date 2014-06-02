@@ -2,12 +2,15 @@ package com.mycomp.execspec.jiraplugin.dto.story;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.*;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Narrative;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.StepCreator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -37,7 +40,37 @@ public class StoryDTOUtils {
         String asHTML = bytesListToString(writtenBytes);
 //        String asHTML = toHTML(jbehaveStory, stepDocs);
 
-        StoryDTO storyModel = new StoryDTO(projectKey, issueKey, story.getVersion(), storyAsString, asHTML, storyReports);
+        String desription = "default description";
+
+        GivenStoriesDTO givenStories = new GivenStoriesDTO();
+        givenStories.setPaths(jbehaveStory.getGivenStories().getPaths());
+
+        Lifecycle jbLifecycle = jbehaveStory.getLifecycle();
+        LifecycleDTO lifecycle;
+        if (jbLifecycle != null) {
+            List<String> beforeSteps = jbLifecycle.getBeforeSteps();
+            List<String> afterSteps = jbLifecycle.getAfterSteps();
+            lifecycle = new LifecycleDTO();
+            lifecycle.setBeforeSteps(beforeSteps);
+            lifecycle.setAfterSteps(afterSteps);
+        } else {
+            lifecycle = null;
+        }
+
+        MetaDTO meta = new MetaDTO(); // TODO - use actual properties here
+        Narrative jbNarrative = jbehaveStory.getNarrative();
+        NarrativeDTO narrative = new NarrativeDTO();
+//        narrative.setInOrderTo(jbNarrative.inOrderTo());
+//        narrative.setAsA(jbNarrative.asA());
+//        narrative.setiWantTo(jbNarrative.iWantTo());
+//        narrative.setSoThat(jbNarrative.soThat());
+        List<ScenarioDTO> scenarioDTOs = new ArrayList<ScenarioDTO>();
+
+        StoryDTO storyModel = null;
+//                new StoryDTO(
+//                projectKey, issueKey, story.getVersion(), storyAsString, asHTML, storyReports,
+//                desription, givenStories, lifecycle, meta, narrative, scenarioDTOs);
+
         return storyModel;
     }
 

@@ -59,7 +59,12 @@ public class StoryResourceCrud {
             version = null;
         }
         List<StoryHtmlReportDTO> storyReports = new ArrayList<StoryHtmlReportDTO>();
-        StoryDTO storyDTO = new StoryDTO(projectKey, issueKey, version, asString, null, storyReports);
+
+        // TODO - decide what to do about the null parameters below?
+        StoryDTO storyDTO = null;
+//                new StoryDTO(
+//                projectKey, issueKey, version, asString, null, storyReports,
+//                null, null, null, null, null, null);
         log.debug("saving story:\n" + storyDTO);
 
         StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);

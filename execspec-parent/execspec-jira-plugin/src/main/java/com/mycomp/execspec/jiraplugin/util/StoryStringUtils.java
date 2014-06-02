@@ -3,6 +3,7 @@ package com.mycomp.execspec.jiraplugin.util;
 /**
  * Created by Dmytro on 5/19/2014.
  */
+@Deprecated
 public class StoryStringUtils {
 
     private StoryStringUtils() {

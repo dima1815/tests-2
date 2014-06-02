@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Dmytro on 4/29/2014.
  */
+@Deprecated
 public class ReportingStoryWalker {
 
     private final List<StepDocDTO> stepDocs;
