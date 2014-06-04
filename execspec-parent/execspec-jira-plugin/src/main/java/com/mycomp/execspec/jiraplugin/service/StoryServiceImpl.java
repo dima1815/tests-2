@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class StoryServiceImpl implements StoryService {
@@ -120,18 +118,8 @@ public class StoryServiceImpl implements StoryService {
 
             Story story = byIssueKey.get(0);
 
-            List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
-            // sort storyReports by environment alphabetically
-            Collections.sort(storyReports, new Comparator<StoryHtmlReportDTO>() {
-                @Override
-                public int compare(StoryHtmlReportDTO o1, StoryHtmlReportDTO o2) {
-                    return o1.getEnvironment().compareTo(o2.getEnvironment());
-                }
-            });
-
             List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
-
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, storyReports, stepDocs);
+            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, stepDocs);
             return storyDTO;
         }
     }
@@ -145,9 +133,7 @@ public class StoryServiceImpl implements StoryService {
 
         List<StoryDTO> storyDTOs = new ArrayList<StoryDTO>(stories.size());
         for (Story story : stories) {
-            String issueKey = story.getIssueKey();
-            List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, storyReports, stepDocs);
+            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, stepDocs);
             storyDTOs.add(storyDTO);
         }
 
@@ -161,7 +147,7 @@ public class StoryServiceImpl implements StoryService {
 
         List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(story.getProjectKey());
         List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(story.getProjectKey(), story.getIssueKey());
-        StoryDTO storyModel = StoryDTOUtils.toDTO(story, storyReports, stepDocs);
+        StoryDTO storyModel = StoryDTOUtils.toDTO(story, stepDocs);
         return storyModel;
     }
 

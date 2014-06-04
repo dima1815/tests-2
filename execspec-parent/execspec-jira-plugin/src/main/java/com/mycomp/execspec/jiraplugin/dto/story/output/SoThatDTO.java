@@ -15,6 +15,13 @@ public class SoThatDTO {
 
     private String value;
 
+    public SoThatDTO() {
+    }
+
+    public SoThatDTO(String keyword, String value) {
+        this.keyword = keyword;
+        this.value = value;
+    }
 
     public String getKeyword() {
         return keyword;

@@ -15,6 +15,13 @@ public class InOrderToDTO {
 
     private String value;
 
+    public InOrderToDTO() {
+    }
+
+    public InOrderToDTO(String keyword, String value) {
+        this.keyword = keyword;
+        this.value = value;
+    }
 
     public String getKeyword() {
         return keyword;

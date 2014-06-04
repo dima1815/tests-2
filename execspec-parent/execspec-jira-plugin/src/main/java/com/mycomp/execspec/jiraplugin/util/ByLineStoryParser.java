@@ -83,7 +83,9 @@ public class ByLineStoryParser {
                         throw new StoryParseException("Found a duplicate " + keywords.narrative()
                                 + " (narrative) keyword declaration on line " + lineNumber);
                     } else {
-                        storyDTO.setNarrative(new NarrativeDTO());
+                        NarrativeDTO narrativeDTO = new NarrativeDTO();
+                        narrativeDTO.setKeyword(keywords.narrative());
+                        storyDTO.setNarrative(narrativeDTO);
                         lastElement = CompositeElement.narrative;
                     }
                 } else if (line.startsWith(keywords.inOrderTo())) {
@@ -188,7 +190,7 @@ public class ByLineStoryParser {
                 else if (line.startsWith(keywords.scenario())) {
                     ScenarioDTO scenarioDto = new ScenarioDTO();
                     scenarioDto.setKeyword(keywords.scenario());
-                    String title = line.substring(keywords.scenario().length()).trim();
+                    String title = line.substring(keywords.scenario().length());
                     if (!title.isEmpty()) {
                         scenarioDto.setTitle(title);
                     }
@@ -206,6 +208,10 @@ public class ByLineStoryParser {
 
                     ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
                     List<String> steps = scenario.getSteps();
+                    if (steps == null) {
+                        steps = new ArrayList<String>();
+                        scenario.setSteps(steps);
+                    }
                     steps.add(line);
                     lastElement = CompositeElement.given;
                 } else if (line.startsWith(keywords.when())) {
@@ -217,6 +223,10 @@ public class ByLineStoryParser {
 
                     ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
                     List<String> steps = scenario.getSteps();
+                    if (steps == null) {
+                        steps = new ArrayList<String>();
+                        scenario.setSteps(steps);
+                    }
                     steps.add(line);
                     lastElement = CompositeElement.when;
                 } else if (line.startsWith(keywords.then())) {
@@ -228,6 +238,10 @@ public class ByLineStoryParser {
 
                     ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
                     List<String> steps = scenario.getSteps();
+                    if (steps == null) {
+                        steps = new ArrayList<String>();
+                        scenario.setSteps(steps);
+                    }
                     steps.add(line);
                     lastElement = CompositeElement.then;
                 } else if (line.startsWith(keywords.and())) {
@@ -239,6 +253,10 @@ public class ByLineStoryParser {
 
                     ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
                     List<String> steps = scenario.getSteps();
+                    if (steps == null) {
+                        throw new StoryParseException("Found an out of order " + keywords.and() + " (And) keyword " +
+                                "declaration on line " + lineNumber);
+                    }
                     steps.add(line);
                     lastElement = CompositeElement.and;
                 } else {

@@ -5,6 +5,8 @@ var pageUtils;
 
 function StoryController() {
 
+    this.debugOn = true;
+
     storyController = this;
 
     storyView = new StoryView(this);
@@ -19,37 +21,64 @@ function StoryController() {
     this.currentStory = new StoryModel();
     this.editMode = false;
 
+    this.debug = function (msg) {
+        if (this.debugOn) {
+            console.log("[DEBUG StoryController] " + msg);
+        }
+    }
+
     this.loadStory = function () {
 
-        console.log("> StoryController.showStory");
+        this.debug("> showStory");
         var issueKey = pageUtils.getIssueKey();
         var projectKey = pageUtils.getProjectKey();
         storyService.find(projectKey, issueKey,
             function (story) {
                 if (story != undefined) {
                     storyView.showStoryButton(story);
-                    storyView.showStoryReportButtons(story);
+//                    storyView.showStoryReportButtons(story); // TODO
                     storyView.showStory(story, storyController.editMode);
                     storyController.currentStory = story;
                 } else {
-                    console.log("no story found for project - " + projectKey + ", issue - " + issueKey);
+                    storyController.debug("no story found for project - " + projectKey + ", issue - " + issueKey);
+                    storyView.showAddStory();
                 }
             }
         );
-        console.log("# StoryController.showStory");
+        this.debug("# showStory");
+    }
+
+    this.addStoryHandler = function (event) {
+
+        this.debug("> addStoryHandler");
+
+        var projectKey = pageUtils.getProjectKey();
+        storyService.fetchNewStoryTemplate(projectKey, function (story) {
+            storyController.debug("> addStoryHandler.callback");
+
+            story.issueKey = pageUtils.getIssueKey();
+            story.path = pageUtils.getIssueKey() + ".story";
+            storyView.editStory(story, true);
+            storyController.currentStory = story;
+
+            storyController.debug("# addStoryHandler.callback");
+        });
+
+        event.preventDefault();
+        this.debug("# addStoryHandler");
     }
 
     this.showStoryHandler = function () {
 
-        console.log("> StoryController.showStoryHandler");
+        this.debug("> showStoryHandler");
         storyView.showStory(this.currentStory, this.editMode);
-        console.log("# StoryController.showStoryHandler");
+        this.debug("# showStoryHandler");
     }
 
     this.showStoryReport = function (environment) {
 
-        console.log("> StoryController.showStoryReport");
-        console.log("environment - " + environment);
+        this.debug("> showStoryReport");
+        this.debug("environment - " + environment);
 
         // find the report for environment
         var reportForEnvironment = undefined;
@@ -62,12 +91,12 @@ function StoryController() {
         }
         storyView.showStoryReport(reportForEnvironment, this.currentStory.version);
 
-        console.log("# StoryController.showStoryReport");
+        this.debug("# showStoryReport");
     }
 
     this.addStory = function () {
 
-        console.log("> StoryController.addStory");
+        this.debug("> addStory");
 
         var story = new StoryModel();
         story.projectKey = pageUtils.getProjectKey();
@@ -89,57 +118,57 @@ function StoryController() {
                 // TODO remove the add story button from the menu
             });
 
-        console.log("# StoryController.addStory");
+        this.debug("# addStory");
     }
 
     this.editStoryHandler = function () {
 
-        console.log("> StoryController.editStoryHandler");
-        console.log("current story as string - " + this.currentStory.asString);
+        this.debug("> editStoryHandler");
+        this.debug("current story as string - " + this.currentStory.asString);
         this.editMode = true;
         storyView.showStory(this.currentStory, this.editMode);
-        console.log("# StoryController.editStoryHandler");
+        this.debug("# editStoryHandler");
     }
 
     this.clearStoryTests = function () {
 
-        console.log("> StoryController.clearStoryTests");
+        this.debug("> clearStoryTests");
 
         var projectKey = pageUtils.getProjectKey();
         var issueKey = pageUtils.getIssueKey();
 
         storyService.deleteStoryReports(projectKey, issueKey,
             function () {
-                console.log("story reports successfully deleted");
+                storyController.debug("story reports successfully deleted");
                 // TODO remove the delete story button from the menu
                 storyController.currentStory.storyReports = [];
                 storyView.showStory(storyController.currentStory);
                 storyView.showStoryReportButtons(storyController.currentStory);
             });
 
-        console.log("# StoryController.clearStoryTests");
+        this.debug("# clearStoryTests");
     }
 
     this.deleteStory = function () {
 
-        console.log("> StoryController.deleteStory");
+        this.debug("> deleteStory");
 
         var projectKey = pageUtils.getProjectKey();
         var issueKey = pageUtils.getIssueKey();
 
         storyService.deleteStory(projectKey, issueKey,
             function () {
-                console.log("story successfully deleted");
+                storyController.debug("story successfully deleted");
                 // TODO remove the delete story button from the menu
                 storyView.removeStory();
             });
 
-        console.log("# StoryController.deleteStory");
+        this.debug("# deleteStory");
     }
 
     this.saveStory = function (event) {
 
-        console.log("> StoryController.saveStory");
+        this.debug("> saveStory");
         event.preventDefault();
 
         var model = new StoryModel();
@@ -152,37 +181,37 @@ function StoryController() {
         model.version = this.currentStory.version;
 
         storyService.saveOrUpdateStory(model, function (savedStory) {
-            console.log("> StoryController.saveStory.saveOrUpdateStory callback");
+            storyController.debug("> saveStory.saveOrUpdateStory callback");
             storyController.editMode = false;
             storyView.showStory(savedStory, storyController.editMode);
             storyView.showStoryReportButtons(savedStory);
             storyController.currentStory = savedStory;
-            console.log("# StoryController.saveStory.saveOrUpdateStory callback");
+            storyController.debug("# saveStory.saveOrUpdateStory callback");
         });
 
-        console.log("# StoryController.saveStory");
+        this.debug("# saveStory");
     }
 
     this.cancelEditingStory = function (event) {
 
-        console.log("> StoryController.cancelEditingStory");
+        this.debug("> cancelEditingStory");
         event.preventDefault();
 
         this.editMode = false;
         storyView.showStory(this.currentStory, this.editMode);
 
-        console.log("# StoryController.cancelEditingStory");
+        this.debug("# cancelEditingStory");
     }
 
     this.showAutoCompleteHandler = function () {
 
-        console.log("> StoryController.showAutoComplete");
+        this.debug("> showAutoComplete");
 
         var storyInputAsString = storyView.getStoryInputAsString();
         var caretPosition = storyView.getStoryInputCaretPosition();
-        console.log("caretPosition - " + caretPosition);
+        this.debug("caretPosition - " + caretPosition);
         var substring = storyInputAsString.substr(0, caretPosition);
-        console.log("substring - " + substring);
+        this.debug("substring - " + substring);
 
 //        var lines = substring.split("\n");
         var projectKey = pageUtils.getProjectKey();
@@ -193,7 +222,7 @@ function StoryController() {
             }
         );
 
-        console.log("# StoryController.showAutoComplete");
+        this.debug("# showAutoComplete");
     }
 }
 
@@ -312,7 +341,7 @@ AJS.$(function () {
 //        editor.on('frame:ready', function () {
 //            this.focus();
 //            var height = AJS.$("iframe").contents().height() + 40;
-//            console.log("setting editor height to - " + height);
+//            this.debug("setting editor height to - " + height);
 //            AJS.$("#yuiEditorPanel").height(height);
 //        });
 //

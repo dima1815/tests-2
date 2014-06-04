@@ -18,6 +18,7 @@
     <!--Custom javascript and css-->
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
         <transformation extension="soy">
             <transformer key="soyTransformer"/>
         </transformation>
@@ -29,11 +30,17 @@
         <resource type="download" name="AutoCompleteEntryModel.js" location="/js/AutoCompleteEntryModel.js"/>
         <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
+        <resource type="download" name="StoryEditHandler.js" location="/js/StoryEditHandler.js"/>
         <!--soy-->
-        <resource type="download" name="StoryTemplates.soy.js" location="js/StoryTemplates.soy"/>
-        <resource type="download" name="StoryEditTemplates.soy.js" location="js/StoryEditTemplates.soy"/>
+        <resource type="download" name="TemplatesShowStory.soy.js" location="js/TemplatesShowStory.soy"/>
+        <resource type="download" name="TemplatesEditStory.soy.js" location="js/TemplatesEditStory.soy"/>
+        <resource type="download" name="TemplatesShowStoryReports.soy.js" location="js/TemplatesShowStoryReports.soy"/>
+        <resource type="download" name="TemplatesStoryToolbar.soy.js" location="js/TemplatesStoryToolbar.soy"/>
         <!-- CSS -->
         <resource type="download" name="story.css" location="css/story.css">
+            <param name="content-type" value="text/css"/>
+        </resource>
+        <resource type="download" name="edit-story.css" location="css/edit-story.css">
             <param name="content-type" value="text/css"/>
         </resource>
         <resource type="download" name="story-report.css" location="css/story-report.css">

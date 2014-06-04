@@ -1,131 +1,140 @@
 function StoryView(storyController) {
 
+    this.debugOn = false;
+
     this.autoCompleteEntries = AutoCompleteEntryModel[0];
+
+    this.storyEditHandler = new StoryEditHandler();
+    this.storyEditHandler.init();
+
+    this.debug = function (msg) {
+        if (this.debugOn) {
+            console.log("[DEBUG StoryView] " + msg);
+        }
+    }
 
     this.init = function () {
 
-        console.log("> StoryView.init");
+        this.debug("> StoryView.init");
 
         // update button menu links
         AJS.$("#add-jbehave-story-link").click(
             function (event) {
                 event.preventDefault();
-                console.log("> add-jbehave-story-link clicked");
+                storyView.debug("> add-jbehave-story-link clicked");
                 storyController.addStory();
-                console.log("# add-jbehave-story-link clicked");
+                storyView.debug("# add-jbehave-story-link clicked");
             }
         );
         AJS.$("#edit-jbehave-story-link").click(
             function (event) {
                 event.preventDefault();
-                console.log("> edit-jbehave-story-link clicked");
+                storyView.debug("> edit-jbehave-story-link clicked");
                 storyController.editStoryHandler();
-                console.log("# edit-jbehave-story-link clicked");
+                storyView.debug("# edit-jbehave-story-link clicked");
             }
         )
         AJS.$("#delete-jbehave-story-link").click(
             function (event) {
                 event.preventDefault();
-                console.log("> delete-jbehave-story-link clicked");
+                storyView.debug("> delete-jbehave-story-link clicked");
                 storyController.deleteStory();
-                console.log("# delete-jbehave-story-link clicked");
+                storyView.debug("# delete-jbehave-story-link clicked");
             }
         );
         AJS.$("#clear-jbehave-story-tests-link").click(
             function (event) {
                 event.preventDefault();
-                console.log("> clear-jbehave-story-tests-link clicked");
+                storyView.debug("> clear-jbehave-story-tests-link clicked");
                 storyController.clearStoryTests();
-                console.log("# clear-jbehave-story-tests-link clicked");
+                storyView.debug("# clear-jbehave-story-tests-link clicked");
             }
         );
 
-        console.log("rendering story panel");
-        AJS.$("#story-panel").html(execspec.viewissuepage.showstory.renderStoryPanel());
+        AJS.$("#story-panel").html(execspec.viewissuepage.storytoolbar.renderStoryToolbar());
 
-        console.log("rendering story edit area");
 
-        this.editor = null;
+//        this.editor = null;
 
 
 //        AJS.$("#testMouseOver").mouseover(function() {
-//            console.log("Mouse over event fired!");
+//            storyView.debug("Mouse over event fired!");
 //        });
 
-        YUI().use('editor-base', function (Y) {
-
-            var content = execspec.viewissuepage.showstory.renderEditStoryArea2();
-            var extraCss = execspec.viewissuepage.editstory.renderExtraCss();
-
-            var editor = new Y.EditorBase({
-                content: content,
-                extracss: extraCss
-            });
-            storyView.editor = editor;
-
-            //Add the BiDi plugin
-            editor.plug(Y.Plugin.EditorBidi);
-
-            Y.mix(Y.Plugin.ExecCommand.COMMANDS, {
-                foo: function (cmd, val) {
-                    console.log('You clicked on Foo');
-                    var inst = this.getInstance();
-                    inst.one('body').setStyle('backgroundColor', 'yellow');
-                },
-                setContent: function (cmd, val) {
-                    console.log('You clicked on setContent');
-                    console.log('cmd - ' + cmd);
-                    console.log('val - ' + val);
-                    var inst = this.getInstance();
-
-                    var editorNode = inst.one('.story-panel');
-                    editorNode.setContent(val);
-//                    inst.one('#storyRichTextEditArea').html('HAHA');
+//        YUI().use('editor-base', function (Y) {
+//
+//            var content = execspec.viewissuepage.showstory.renderEditStoryArea2();
+////            var extraCss = execspec.viewissuepage.editstory.renderExtraCss();
+//
+//            var editor = new Y.EditorBase({
+//                content: content
+////                extracss: extraCss
+//            });
+//            storyView.editor = editor;
+//
+//            //Add the BiDi plugin
+//            editor.plug(Y.Plugin.EditorBidi);
+//
+//            Y.mix(Y.Plugin.ExecCommand.COMMANDS, {
+//                foo: function (cmd, val) {
+//                    storyView.debug('You clicked on Foo');
+//                    var inst = this.getInstance();
 //                    inst.one('body').setStyle('backgroundColor', 'yellow');
-
-//                    AJS.$(".narrative").mouseover(function() {
-//                        console.log('mouseOver event from JQuery fired');
+//                },
+//                setContent: function (cmd, val) {
+//                    storyView.debug('You clicked on setContent');
+//                    storyView.debug('cmd - ' + cmd);
+//                    storyView.debug('val - ' + val);
+//                    var inst = this.getInstance();
+//
+//                    var editorNode = inst.one('.story-panel');
+//                    editorNode.setContent(val);
+////                    inst.one('#storyRichTextEditArea').html('HAHA');
+////                    inst.one('body').setStyle('backgroundColor', 'yellow');
+//
+////                    AJS.$(".narrative").mouseover(function() {
+////                        storyView.debug('mouseOver event from JQuery fired');
+////                    });
+//
+//                    inst.one('.inOrderTo').on('mouseover', function () {
+//                        storyView.debug("mouse over fired on .inOrderTo");
+////                        inst.one('.scenario-plus').show();
+//                        inst.one('.add-icon').show();
+//
 //                    });
-
-                    inst.one('.inOrderTo').on('mouseover', function () {
-                        console.log("mouse over fired on .inOrderTo");
-//                        inst.one('.scenario-plus').show();
-                        inst.one('.add-icon').show();
-
-                    });
-                    inst.one('.inOrderTo').on('mouseleave', function () {
-                        console.log("mouse leave fired on .inOrderTo");
-                        var attr = inst.one('.inOrderTo').get("contentEditable");
-                        console.log("attr - " + attr);
-                        inst.one('.add-icon').hide();
-                    });
-
-                    inst.one('.inOrderToSpan').on('focus', function () {
-                        console.log("on focus fired on .inOrderToSpan");
-                    });
-
-                }
-            });
-
-            Y.each(Y.Frame.DOM_EVENTS, function (v, k) {
-                editor.on('dom:' + k, function (e) {
-                    var tag = e.frameTarget.get('tagName').toLowerCase();
-                    console.log('Event: ' + e.type + ' on element (' + tag + ')');
-                });
-            });
-
-            //Focusing the Editor when the frame is ready..
-            editor.on('frame:ready', function () {
-                this.focus();
-//                var height = AJS.$("iframe").contents().height() + 40;
-//                console.log("setting editor height to - " + height);
-//                AJS.$("#storyEditContainer").height(height);
-            });
-
-            //Rendering the Editor.
-            editor.render('#storyEditContainer');
-
-        });
+//                    inst.one('.inOrderTo').on('mouseleave', function () {
+//                        storyView.debug("mouse leave fired on .inOrderTo");
+//                        var attr = inst.one('.inOrderTo').get("contentEditable");
+//                        storyView.debug("attr - " + attr);
+//                        inst.one('.add-icon').hide();
+//                    });
+//
+//                    inst.one('.inOrderToSpan').on('focus', function () {
+//                        storyView.debug("on focus fired on .inOrderToSpan");
+//                    });
+//
+//                }
+//            });
+//
+//            Y.each(Y.Frame.DOM_EVENTS, function (v, k) {
+//                editor.on('dom:' + k, function (e) {
+//                    var tag = e.frameTarget.get('tagName').toLowerCase();
+//                    storyView.debug('Event: ' + e.type + ' on element (' + tag + ')');
+//                });
+//            });
+//
+//            //Focusing the Editor when the frame is ready..
+//            editor.on('frame:ready', function () {
+//                this.focus();
+////                var height = AJS.$("iframe").contents().height() + 40;
+////                storyView.debug("setting editor height to - " + height);
+////                AJS.$("#storyEditContainer").height(height);
+//            });
+//
+//            //Rendering the Editor.
+//            editor.render('#storyEditContainer');
+//
+//        });
 
 //        var storyEditArea = execspec.viewissuepage.showstory.renderEditStoryArea2();
 //        AJS.$("#storyEditContainer").html(storyEditArea);
@@ -135,14 +144,14 @@ function StoryView(storyController) {
 //            storyView.isCtrDown = false;
 //
 //            AJS.$("#story-edit-text-area").keydown(function (event) {
-//                console.log("keydown, event.keyCode - " + event.keyCode);
+//                storyView.debug("keydown, event.keyCode - " + event.keyCode);
 //                if (event.keyCode == 17) {
 //                    storyView.isCtrDown = true;
 //                }
 //            });
 //
 //            AJS.$("#story-edit-text-area").keyup(function (event) {
-//                console.log("keyup, event.keyCode - " + event.keyCode);
+//                storyView.debug("keyup, event.keyCode - " + event.keyCode);
 //                if (event.keyCode == 17) {
 //                    storyView.isCtrDown = false;
 //                } else if (event.keyCode == 32 /*space key*/ && storyView.isCtrDown) {
@@ -159,13 +168,13 @@ function StoryView(storyController) {
 //            "autoCompleteDialog",
 //            function (content, trigger, showPopup) {
 //
-//                console.log("> StoryView.autoCompleteDialog.contentProvider");
+//                storyView.debug("> StoryView.autoCompleteDialog.contentProvider");
 //                var autoCompleteHtml = storyView.fetchAutoCompleteContent();
 //                content
 ////                    .css({"padding-left": "10px", "padding-top": "2px", "padding-right": "10px", "padding-bottom": "2px"})
 //                    .html(autoCompleteHtml);
 //                showPopup();
-//                console.log("# StoryView.autoCompleteDialog.contentProvider");
+//                storyView.debug("# StoryView.autoCompleteDialog.contentProvider");
 //                return false;
 //            },
 //            {
@@ -203,12 +212,55 @@ function StoryView(storyController) {
 //            }
 //        );
 
-        console.log("# StoryView.init");
+        storyView.debug("# StoryView.init");
+    }
+
+    this.showAddStory = function () {
+
+        storyView.debug("> showAddStory");
+
+        var buttonsForAddStory = execspec.viewissuepage.storytoolbar.renderButtonsForAddStory();
+        AJS.$("#storyButtons").html(buttonsForAddStory);
+
+        storyView.debug("# showAddStory");
+    }
+
+    this.editStory = function (story) {
+
+        this.debug("> editStory");
+
+        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
+        AJS.$("#storyButtons").html(buttonsForStory);
+        AJS.$("#editStoryButton").attr("aria-pressed", "true");
+
+        var editContainerContent = execspec.viewissuepage.editstory.renderEditStoryContainer();
+        AJS.$("#storyEditContainer").html(editContainerContent);
+
+        // set content for rich editor as well as raw editor
+        var templateObj = new Object();
+        templateObj.story = story;
+        var richEditStoryContent = execspec.viewissuepage.editstory.renderRichEditStoryContent(templateObj);
+        AJS.$("#richEditStoryContainer").html(richEditStoryContent);
+
+        editButtonHandler.assignRichEditorHandlers();
+
+        AJS.$("#richTextEditorButton").click();
+
+//        if (richEditor) {
+
+//        } else {
+//            var rawEditButtons = execspec.viewissuepage.editstory.renderRawEditStoryButtons();
+//            AJS.$("#editStoryButtons").html(rawEditButtons);
+//            AJS.$("#rawTextEditorButton").attr("aria-pressed", "true");
+//        }
+
+        AJS.$("#storyEditContainer").show();
+        this.debug("# editStory");
     }
 
     this.fetchAutoCompleteContent = function () {
 
-        console.log("> StoryView.fetchAutoCompleteContent");
+        storyView.debug("> StoryView.fetchAutoCompleteContent");
 
         var templateObject = new Object();
         templateObject.entries = this.autoCompleteEntries;
@@ -223,27 +275,27 @@ function StoryView(storyController) {
 //        }
 //        autoCompleteHtml += "</ul>";
 
-        console.log("autoCompleteHtml - " + autoCompleteHtml);
-        console.log("# StoryView.fetchAutoCompleteContent");
+        storyView.debug("autoCompleteHtml - " + autoCompleteHtml);
+        storyView.debug("# StoryView.fetchAutoCompleteContent");
 
         return autoCompleteHtml;
     }
 
     this.getAutoCompleteYPos = function () {
 
-        console.log("> StoryView.getAutoCompleteYPos");
+        storyView.debug("> StoryView.getAutoCompleteYPos");
 
         var storyInputAsString = storyView.getStoryInputAsString();
         var caretPosition = storyView.getStoryInputCaretPosition();
-        console.log("caretPosition - " + caretPosition);
+        storyView.debug("caretPosition - " + caretPosition);
         var substring = storyInputAsString.substr(0, caretPosition);
-        console.log("substring - " + substring);
+        storyView.debug("substring - " + substring);
         var lines = substring.split("\n");
         var lineNumber = lines.length;
-        console.log("lineNumber - " + lineNumber);
+        storyView.debug("lineNumber - " + lineNumber);
 
         var scrollTop = AJS.$("#story-edit-text-area").prop("scrollTop");
-        console.log("scrollTop - " + scrollTop);
+        storyView.debug("scrollTop - " + scrollTop);
 
 //        var position = 8; // with the arrow present
         var position = 2; // without the arrow present
@@ -252,21 +304,21 @@ function StoryView(storyController) {
             position = position - scrollTop;
         }
 
-        console.log("position - " + position);
-        console.log("# StoryView.getAutoCompleteYPos");
+        storyView.debug("position - " + position);
+        storyView.debug("# StoryView.getAutoCompleteYPos");
 
         return  position;
     }
 
     this.getStoryInputAsString = function () {
 
-        console.log("> StoryView.getStoryInputAsString");
+        storyView.debug("> StoryView.getStoryInputAsString");
 
         var asString = AJS.$("#story-edit-text-area").val();
-        console.log("asString - " + asString);
+        storyView.debug("asString - " + asString);
         return asString;
 
-        console.log("# StoryView.getStoryInputAsString");
+        storyView.debug("# StoryView.getStoryInputAsString");
     }
 
     this.getStoryInputCaretPosition = function () {
@@ -275,10 +327,10 @@ function StoryView(storyController) {
     }
 
     this.updateSelectedButton = function (clickedElementId) {
-        console.log("> StoryView.updateSelectedButton");
+        storyView.debug("> StoryView.updateSelectedButton");
         AJS.$(".story-container-button").removeClass("selected-story-container-button");
         AJS.$("#" + clickedElementId).addClass("selected-story-container-button");
-        console.log("# StoryView.updateSelectedButton");
+        storyView.debug("# StoryView.updateSelectedButton");
     }
 
     this.removeStory = function () {
@@ -289,7 +341,7 @@ function StoryView(storyController) {
 
     this.showStoryButton = function (story) {
 
-        console.log("> StoryView.showStoryButton");
+        storyView.debug("> StoryView.showStoryButton");
 
         // add the story button link
         var storyButtonHtml = execspec.viewissuepage.showstory.renderStoryButton(story);
@@ -302,14 +354,14 @@ function StoryView(storyController) {
             }
         );
 
-        console.log("# StoryView.showStoryButton");
+        storyView.debug("# StoryView.showStoryButton");
     }
 
     this.showStory = function (story, editMode) {
 
-        console.log("> StoryView.showStory");
-        console.log("story.asString - " + story.asString);
-        console.log("editMode - " + editMode);
+        storyView.debug("> StoryView.showStory");
+        storyView.debug("story.asString - " + story.asString);
+        storyView.debug("editMode - " + editMode);
 
         if (editMode != undefined && editMode == true) {
 
@@ -333,32 +385,32 @@ function StoryView(storyController) {
             this.editor.execCommand("setContent", storyAsHTML);
 
             var height = AJS.$("iframe").contents().height() + 40;
-            console.log("setting editor height to - " + height);
+            storyView.debug("setting editor height to - " + height);
             AJS.$("#storyEditContainer").height(height);
 
             AJS.$("#storyEditContainer").show();
 
             var height = AJS.$("iframe").contents().height() + 40;
-            console.log("setting editor height to - " + height);
+            storyView.debug("setting editor height to - " + height);
             AJS.$("#storyEditContainer").height(height);
 
             AJS.$("#testMouseOver").mouseover(function () {
-                console.log("Mouse over event fired on test container!");
+                storyView.debug("Mouse over event fired on test container!");
             });
 
 //            AJS.$("#inOrderTo").mouseover(function() {
-//                console.log("Mouse over event fired on inOrderTo!");
+//                storyView.debug("Mouse over event fired on inOrderTo!");
 //            });
 
 //            AJS.$("#story-edit-text-area").keyup(function (event) {
 //
-//                console.log("keyup, event.keyCode - " + event.keyCode);
+//                storyView.debug("keyup, event.keyCode - " + event.keyCode);
 //                var caretPos = AJS.$("#story-edit-text-area").caret();
-//                console.log("caretPos - " + caretPos);
+//                storyView.debug("caretPos - " + caretPos);
 //
 //
 //                if (event.keyCode == 17) {
-//                    console.log("control key pressed");
+//                    storyView.debug("control key pressed");
 ////                    AJS.InlineDialog(AJS.$("#popupLink"), 1,
 ////                        function(content, trigger, showPopup) {
 ////                            content.css({"padding":"20px"}).html('<h2>Inline dialog</h2><p>The inline dialog is a wrapper for secondary content/controls to be displayed on user request. Consider this component as displayed in context to the triggering control with the dialog overlaying the page content.</p><button class="aui-button">Done</button></form>');
@@ -385,7 +437,7 @@ function StoryView(storyController) {
 ////                    + (parseInt(AJS.$("#story-edit-text-area").css('font-size'), 10) * 1.5);
 ////                var newX = AJS.$("#story-edit-text-area").textAreaHelper('caretPos').left;
 ////                var posString = "left+" + newX + "px top+" + newY + "px";
-////                console.log("posString - " + posString);
+////                storyView.debug("posString - " + posString);
 ////                AJS.$("#story-edit-text-area").autocomplete("option", "position", {
 ////                    my: "left top",
 ////                    at: posString
@@ -416,18 +468,18 @@ function StoryView(storyController) {
             var templateObject = new Object();
             templateObject.story = story;
             templateObject.story.asJson = JSON.stringify(story);
-            var storyHtml = execspec.viewissuepage.showstory.renderStory(templateObject);
-            AJS.$("#storyContainer").html(storyHtml);
+            var editStoryContent = execspec.viewissuepage.editstory.renderEditStory(templateObject);
+            AJS.$("#storyContainer").html(editStoryContent);
 
             AJS.$("#storyContainer").show();
 
             AJS.$(".beforeNarrative").mouseover(function () {
-                console.log("mouse over on - beforeNarrative")
+                storyView.debug("mouse over on - beforeNarrative")
                 AJS.$(".beforeNarrativeHint").show();
             });
 
             AJS.$(".beforeNarrative").mouseout(function () {
-                console.log("mouse out on - beforeNarrative")
+                storyView.debug("mouse out on - beforeNarrative")
                 AJS.$(".beforeNarrativeHint").hide();
             });
 
@@ -435,15 +487,15 @@ function StoryView(storyController) {
 
         this.updateSelectedButton("show-story-button");
 
-        console.log("# StoryView.showStory");
+        storyView.debug("# StoryView.showStory");
     }
 
     this.showStoryReportButtons = function (story) {
 
-        console.log("> StoryView.showStoryReportButtons");
+        storyView.debug("> StoryView.showStoryReportButtons");
 
         var storyVersion = story.version;
-        console.log("storyVersion - " + storyVersion);
+        storyView.debug("storyVersion - " + storyVersion);
 
         // add the story reports
         var storyReportButtons = execspec.viewissuepage.showstory.renderStoryReportButtons(story);
@@ -456,7 +508,7 @@ function StoryView(storyController) {
             AJS.$("#" + linkId).click(
                 function (event) {
 
-                    console.log("> show story report button clicked");
+                    storyView.debug("> show story report button clicked");
                     event.preventDefault();
 
                     var attributes = event.target.attributes;
@@ -464,18 +516,18 @@ function StoryView(storyController) {
                     var environment = environmentNode.nodeValue;
                     storyController.showStoryReport(environment);
 
-                    console.log("# show story report button clicked");
+                    storyView.debug("# show story report button clicked");
                 }
             );
         }
 
-        console.log("# StoryView.showStoryReportButtons");
+        storyView.debug("# StoryView.showStoryReportButtons");
     }
 
     this.showStoryReport = function (storyReport, storyVersion) {
 
-        console.log("> StoryView.showStoryReport");
-        console.log("storyReport.environment - " + storyReport.environment);
+        storyView.debug("> StoryView.showStoryReport");
+        storyView.debug("storyReport.environment - " + storyReport.environment);
 
         var reportToShowTemplateModel = new Object();
         reportToShowTemplateModel.storyReport = storyReport;
@@ -494,13 +546,13 @@ function StoryView(storyController) {
         AJS.$("#storyReportContainer").show();
 
         this.updateSelectedButton("show-story-report-" + storyReport.environment);
-        console.log("# StoryView.showStoryReport");
+        storyView.debug("# StoryView.showStoryReport");
     }
 
     this.showAutoComplete = function (entries) {
 
-        console.log("> StoryView.showAutoComplete");
-        console.log("entries - " + entries);
+        storyView.debug("> StoryView.showAutoComplete");
+        storyView.debug("entries - " + entries);
 
         this.autoCompleteEntries = entries;
 
@@ -515,12 +567,12 @@ function StoryView(storyController) {
 
 
         var autoCompleteHtml = storyView.autoCompleteDialog.html();
-        console.log("autoCompleteHtml - " + autoCompleteHtml);
+        storyView.debug("autoCompleteHtml - " + autoCompleteHtml);
 
 //        AJS.$("#autoCompleteHtml").html(autoCompleteHtml);
 //        AJS.$("#arrow-autoCompleteDialog")
 
-        console.log("# StoryView.showAutoComplete");
+        storyView.debug("# StoryView.showAutoComplete");
     }
 
 }

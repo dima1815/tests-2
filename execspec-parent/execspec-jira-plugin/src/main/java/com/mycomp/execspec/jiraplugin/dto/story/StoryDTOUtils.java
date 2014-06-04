@@ -2,17 +2,11 @@ package com.mycomp.execspec.jiraplugin.dto.story;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.StoryReporter;
+import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.util.ByLineStoryParser;
 import org.jbehave.core.steps.StepCreator;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 
 /**
@@ -20,71 +14,14 @@ import java.util.regex.Matcher;
  */
 public class StoryDTOUtils {
 
-    public static StoryDTO toDTO(Story story, List<StoryHtmlReportDTO> storyReports, List<StepDocDTO> stepDocs) {
+    public static StoryDTO toDTO(Story story, List<StepDocDTO> stepDocs) {
 
         String issueKey = story.getIssueKey();
-        String projectKey = story.getProjectKey();
         String storyAsString = story.getAsString();
 
-        RegexStoryParser parser = new RegexStoryParser();
-        org.jbehave.core.model.Story jbehaveStory = parser.parseStory(storyAsString, story.getIssueKey());
-
-        ReportingStoryWalker reportingStoryWalker = new ReportingStoryWalker(stepDocs);
-        BytesListPrintStream printStream = new BytesListPrintStream();
-        Properties outputPatterns = new DefaultHTMLFormatPatterns().getPatterns();
-        outputPatterns.setProperty("pending", "<div class=\"step pending\">{0}</div>\n");
-        StoryReporter reporter = new CustomHTMLOutput(printStream, outputPatterns);
-        reportingStoryWalker.walkStory(jbehaveStory, reporter);
-
-        List<Byte> writtenBytes = printStream.getWrittenBytes();
-        String asHTML = bytesListToString(writtenBytes);
-//        String asHTML = toHTML(jbehaveStory, stepDocs);
-
-        String desription = "default description";
-
-        GivenStoriesDTO givenStories = new GivenStoriesDTO();
-        givenStories.setPaths(jbehaveStory.getGivenStories().getPaths());
-
-        Lifecycle jbLifecycle = jbehaveStory.getLifecycle();
-        LifecycleDTO lifecycle;
-        if (jbLifecycle != null) {
-            List<String> beforeSteps = jbLifecycle.getBeforeSteps();
-            List<String> afterSteps = jbLifecycle.getAfterSteps();
-            lifecycle = new LifecycleDTO();
-            lifecycle.setBeforeSteps(beforeSteps);
-            lifecycle.setAfterSteps(afterSteps);
-        } else {
-            lifecycle = null;
-        }
-
-        MetaDTO meta = new MetaDTO(); // TODO - use actual properties here
-        Narrative jbNarrative = jbehaveStory.getNarrative();
-        NarrativeDTO narrative = new NarrativeDTO();
-//        narrative.setInOrderTo(jbNarrative.inOrderTo());
-//        narrative.setAsA(jbNarrative.asA());
-//        narrative.setiWantTo(jbNarrative.iWantTo());
-//        narrative.setSoThat(jbNarrative.soThat());
-        List<ScenarioDTO> scenarioDTOs = new ArrayList<ScenarioDTO>();
-
-        StoryDTO storyModel = null;
-//                new StoryDTO(
-//                projectKey, issueKey, story.getVersion(), storyAsString, asHTML, storyReports,
-//                desription, givenStories, lifecycle, meta, narrative, scenarioDTOs);
-
-        return storyModel;
-    }
-
-    public static String bytesListToString(List<Byte> writtenBytes) {
-
-        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
-        byte[] bytesArray = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            Byte aByte = bytes[i];
-            bytesArray[i] = aByte;
-        }
-
-        String str = new String(bytesArray);
-        return str;
+        ByLineStoryParser parser = new ByLineStoryParser();
+        StoryDTO storyDTO = parser.parseStory(storyAsString, issueKey + ".story");
+        return storyDTO;
     }
 
     private static String markTablesInPendingStep(String step, CustomHTMLOutput reporter) {

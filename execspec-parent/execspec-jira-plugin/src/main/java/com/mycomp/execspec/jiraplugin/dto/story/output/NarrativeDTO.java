@@ -21,6 +21,13 @@ public class NarrativeDTO {
 
     private SoThatDTO soThat;
 
+    public NarrativeDTO() {
+    }
+
+    public NarrativeDTO(String keyword) {
+        this.keyword = keyword;
+    }
+
     public String getKeyword() {
         return keyword;
     }

@@ -1,0 +1,48 @@
+{namespace execspec.viewissuepage.storytoolbar}
+
+/**
+ * Render story button toolbar
+ */
+{template .renderStoryToolbar}
+    <div class="aui-toolbar2">
+        <div class="aui-toolbar2-inner">
+            <div class="aui-toolbar2-primary">
+                <div id="storyButtons" class="aui-buttons"></div>
+            </div>
+            <div class="aui-toolbar2-secondary">
+                <div id="storyReportButtons" class="aui-buttons"></div>
+            </div>
+        </div>
+    </div>
+    <div id="storyContainer" class="story-container" style="display: none;"></div>
+    <div id="storyReportContainer" class="story-container" style="display: none;"></div>
+    <div id="storyEditContainer" style="display: none;"></div>
+{/template}
+
+/**
+ * Render story panel
+ */
+{template .renderButtonsForAddStory}
+    <button id="add-story-button" onclick="storyController.addStoryHandler(event)" class="aui-button aui-button-subtle">
+        <span class="aui-icon aui-icon-small aui-iconfont-add">View </span> Add Story
+    </button>
+{/template}
+
+/**
+ * Render story button
+ * @param path
+ */
+{template .renderButtonsForStory}
+    <button id="showStoryButton"
+        class="aui-button story-container-button selected-story-container-button">{$path}</button>
+//    <button id="edit-story-button"
+//            class="aui-button aui-button-subtle story-container-button selected-story-container-button">{$path}</button>
+//aria-pressed="true"
+    <button id="editStoryButton" class="aui-button"><span class="aui-icon aui-icon-small aui-iconfont-edit">Edit </span></button>
+//    {call aui.buttons.button}
+//        {param text: '' /}
+//        {param iconType: 'aui' /}
+//        {param iconClass: 'aui-icon-small aui-iconfont-edit' /}
+//        {param iconText: 'View' /}
+//    {/call}
+{/template}

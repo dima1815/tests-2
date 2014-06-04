@@ -15,6 +15,13 @@ public class IWantToDTO {
 
     private String value;
 
+    public IWantToDTO() {
+    }
+
+    public IWantToDTO(String keyword, String value) {
+        this.keyword = keyword;
+        this.value = value;
+    }
 
     public String getKeyword() {
         return keyword;

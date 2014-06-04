@@ -1,0 +1,48 @@
+#editStoryButtons {
+    margin-top: 20px;
+    margin-left: 0px;
+}
+
+/*#editStoryButtons {*/
+/*max-height: 10px;*/
+/*}*/
+
+#richStoryEditContent {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.insert-element-div {
+    position: relative;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    /*border: 1px solid #008000;*/
+
+}
+
+.insert-element-trigger-div {
+    position: absolute;
+    top: 0px;
+    left: -23px;
+    width: 100%;
+    /*border: 1px solid #006699;*/
+}
+
+.insert-element-link {
+    /*position: absolute;*/
+    /*top: 0px;*/
+    /*left: 0px;*/
+    margin-left: 3px;
+}
+
+.insert-element-link {
+    color: #00cc00;
+}
+
+/*.aui-button.aui-button-link.insert-element-link, .aui-button.aui-button-link.insert-element-link:visited {*/
+/*color: #ff0000;*/
+/*}*/
+
+.insert-element-link:focus, .insert-element-link:active .insert-element-link:visited {
+    color: #00cc00;
+}

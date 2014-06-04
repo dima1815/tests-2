@@ -1,0 +1,31 @@
+{namespace execspec.viewissuepage.showstoryreports}
+
+
+/**
+ * Render story report buttons
+ * @param storyReports
+ */
+{template .renderStoryReportButtons}
+    {foreach $storyReport in $storyReports}
+        <button id="show-story-report-{$storyReport.environment}"
+                environment="{$storyReport.environment}"
+                class="aui-button aui-button-subtle story-container-button">{$storyReport.environment}{if $storyReport.totalScenariosPassed > 0}<span
+                class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{/if}{if $storyReport.totalScenariosFailed > 0}<span
+                class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
+                class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
+                class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
+                class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
+        </button>
+    {/foreach}
+{/template}
+
+/**
+ * Render story report
+ * @param storyReport
+ */
+{template .renderStoryReport autoescape="false"}
+    <div id="reportMessageContainer"></div>
+    <div class="story-report">
+        {$storyReport.htmlReport}
+    </div>
+{/template}

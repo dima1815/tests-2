@@ -1,0 +1,198 @@
+{namespace execspec.viewissuepage.editstory}
+
+/**
+ * Renders story edit container.
+ */
+{template .renderEditStoryContainer}
+    <div id="editStoryButtons" class="aui-toolbar2">
+        <div class="aui-toolbar2-inner">
+            <div class="aui-toolbar2-primary">
+                <div id="editorTypeButtons" class="aui-buttons">
+                    <button id="richTextEditorButton" class="aui-button"
+                        onclick="editButtonHandler.richTextEditorClicked(event)">
+                        <b>Rich</b>
+                    </button>
+                    <button id="rawTextEditorButton" class="aui-button"
+                        onclick="editButtonHandler.rawTextEditorClicked(event)">
+                        <b>Text</b>
+                    </button>
+                </div>
+                <div id="editorOperationsButtons" class="aui-buttons">
+//                    <button id="insertTableButton" class="aui-button">
+//                        <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Table Parameter</span>
+//                    </button>
+//                    <button id="formatTablesButton" class="aui-button">
+////                        <span class="aui-icon aui-icon-small aui-iconfont-view-card">Format Tables</span>
+//                        <b>F</b>
+//                    </button>
+                </div>
+            </div>
+            <div class="aui-toolbar2-secondary">
+                <div id="saveOrCancelButtons" class="aui-buttons">
+//                    <button id="saveStoryButton" class="aui-button aui-button-subtle">
+//                        <span class="aui-icon aui-icon-small aui-iconfont-success">Save </span> Save
+//                    </button>
+//                    <button id="cancelEditButton" class="aui-button aui-button-subtle">
+//                        <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Cancel </span> Cancel
+//                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="richEditStoryContainer" style="display: none">Rich editor container</div>
+    <div id="rawEditStoryContainer" style="display: none">Raw editor container</div>
+{/template}
+
+/**
+ * Renders story edit buttons.
+ */
+{template .renderRichEditorOperationButtons}
+//    <div class="aui-toolbar2-inner">
+//        <div class="aui-toolbar2-primary">
+//            <div id="editorTypeButtons" class="aui-buttons">
+//                <button id="richTextEditorButton" class="aui-button"
+//                    onclick="editButtonHandler.richTextEditorClicked(event)">
+//                    <b>Rich</b>
+//                </button>
+//                <button id="rawTextEditorButton" class="aui-button"
+//                    onclick="editButtonHandler.rawTextEditorClicked(event)">
+//                    <b>Text</b>
+//                </button>
+//            </div>
+//            <div id="editOperationsButtons" class="aui-buttons">
+//                <button id="insertTableButton" class="aui-button">
+//                    <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Table Parameter</span>
+//                </button>
+//                <button id="insertTableButton" class="aui-button">
+//                    <span class="aui-icon aui-icon-small aui-iconfont-arrows-left">Table Parameter</span>
+//                </button>
+
+//            </div>
+//        </div>
+//    </div>
+{/template}
+
+/**
+ * Renders story edit buttons.
+ */
+{template .renderRawEditorOperationButtons}
+    <button id="insertTableButton" class="aui-button">
+        <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Table Parameter</span>
+    </button>
+    <button id="formatTablesButton" class="aui-button">
+//                        <span class="aui-icon aui-icon-small aui-iconfont-view-card">Format Tables</span>
+        <b>F</b>
+    </button>
+    <button id="validateStoryButton" class="aui-button">
+    //                        <span class="aui-icon aui-icon-small aui-iconfont-view-card">Format Tables</span>
+        <b>V</b>
+    </button>
+{/template}
+
+/**
+ * Renders the '+' insert icon link to add story elements.
+ * @param triggerDivId
+ * @param dropdownDivId
+ */
+{template .renderInsertLinkDiv}
+    {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
+    <div class="insert-element-div">&nbsp;
+        <div id="{$triggerDivId}" class="insert-element-trigger-div">
+            <a aria-controls="dropdown2-more" href="#{$dropdownDivId}" aria-owns="{$dropdownDivId}"
+                aria-haspopup="true"
+                class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+                style="display: none"
+                pressed="false">
+                <span class="{$addIconClass} insert-element-icon"></span>
+            </a>&nbsp;
+        </div>
+        <div id="{$dropdownDivId}" trigger-div-id="{$triggerDivId}"
+            class="aui-dropdown2 aui-style-default insert-dropdown-content"
+            aria-hidden="true" data-dropdown2-alignment="left"
+            style="left: 280.6px; top: 801.3px; display: none;">
+            <ul class="aui-list-truncate">
+                <li><a href="http://example.com/">Description</a></li>
+                <li><a href="http://example.com/">Meta</a></li>
+            </ul>
+        </div>
+    </div>
+{/template}
+
+/**
+ * Renders story.
+ * @param story
+ */
+{template .renderRichEditStoryContent}
+    <div id="richStoryEditContent">
+    {let $clickHere: '[click here to edit]' /}
+
+    {if $story.narrative != null}
+
+        {call .renderInsertLinkDiv}
+            {param triggerDivId: 'myTriggerDivId' /}
+            {param dropdownDivId: 'myDropdownDivId' /}
+        {/call}
+
+//        <div class="insert-element-div">&nbsp;
+//            <div id="insert-before-narrative" class="insert-element-trigger-div">
+//                <a aria-controls="dropdown2-more" href="#dropdown2-more" aria-owns="dropdown2-more"
+//                    aria-haspopup="true"
+//                    class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+//                    style="display: none"
+//                    pressed="false">
+//                    <span class="{$addIconClass} insert-element-icon"></span>
+//                </a>&nbsp;
+//            </div>
+//            <div trigger-div-id="insert-before-narrative"
+//                aria-hidden="true" data-dropdown2-alignment="left"
+//                style="left: 280.6px; top: 801.3px; display: none;"
+//                id="dropdown2-more" class="aui-dropdown2 aui-style-default insert-dropdown-content">
+//                <ul class="aui-list-truncate">
+//                    <li><a href="http://example.com/">Description</a></li>
+//                    <li><a href="http://example.com/">Meta</a></li>
+//                </ul>
+//            </div>
+//        </div>
+
+        <div class="narrative">
+            <div class="title">{$story.narrative.keyword}</div>
+            <div class="inOrderTo">
+                <span class="keyword">{$story.narrative.inOrderTo.keyword}</span>
+                {if $story.narrative.inOrderTo.value != null}
+                    <span class="value">{$story.narrative.inOrderTo.value}</span>
+                {else}
+                    <span class="value">{sp}{$clickHere}</span>
+                {/if}
+            </div>
+            <div class="asA">
+                <span class="keyword">{$story.narrative.asA.keyword}</span>
+                {if $story.narrative.asA.value != null}
+                    <span class="value">{$story.narrative.asA.value}</span>
+                {else}
+                    <span class="value">{sp}{$clickHere}</span>
+                {/if}
+            </div>
+            <div class="iWantTo">
+                <span class="keyword">{$story.narrative.iWantTo.keyword}</span>
+                {if $story.narrative.iWantTo.value != null}
+                    <span class="value">{$story.narrative.iWantTo.value}</span>
+                {else}
+                    <span class="value">{sp}{$clickHere}</span>
+                {/if}
+            </div>
+            {if $story.soThat != null}
+                <div class="soThat">
+                    <span class="keyword">{$story.narrative.soThat.keyword}</span>
+                    {if $story.narrative.soThat.value != null}
+                        <span class="value">{$story.narrative.soThat.value}</span>
+                    {else}
+                        <span class="value">{sp}{$clickHere}</span>
+                    {/if}
+                </div>
+            {/if}
+        </div>
+    {/if}
+    </div>
+{/template}
+
+

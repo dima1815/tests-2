@@ -15,6 +15,13 @@ public class AsADTO {
 
     private String value;
 
+    public AsADTO() {
+    }
+
+    public AsADTO(String keyword, String value) {
+        this.keyword = keyword;
+        this.value = value;
+    }
 
     public String getKeyword() {
         return keyword;

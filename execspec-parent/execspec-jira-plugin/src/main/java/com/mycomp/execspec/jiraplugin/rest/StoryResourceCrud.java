@@ -3,10 +3,11 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.*;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,5 +89,27 @@ public class StoryResourceCrud {
         storyService.delete(projectKey, issueKey);
         return Response.ok("Successful deletion from server!").build();
     }
+
+    @GET
+    @AnonymousAllowed
+    @Path("/newstorytemplate/{projectKey}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNewStoryTemplate(@PathParam("projectKey") String projectKey) {
+
+        // TODO - make this project specific, e.g. keywords maybe localized for some projects
+        LocalizedKeywords keywords = new LocalizedKeywords();
+
+        StoryDTO storyDTO = new StoryDTO();
+        NarrativeDTO narrative = new NarrativeDTO(keywords.narrative());
+        narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
+        narrative.setAsA(new AsADTO(keywords.asA(), null));
+        narrative.setiWantTo(new IWantToDTO(keywords.iWantTo(), null));
+        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
+        storyDTO.setNarrative(narrative);
+        storyDTO.setProjectKey(projectKey);
+
+        return Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+    }
+
 
 }
