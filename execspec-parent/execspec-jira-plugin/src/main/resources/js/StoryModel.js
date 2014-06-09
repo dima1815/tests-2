@@ -1,9 +1,14 @@
 function StoryModel() {
 
-    this.projectKey = "";
-    this.issueKey = "";
-    this.path = "";
-    this.version = "";
+    this.projectKey = null;
+    this.issueKey = null;
+    this.path = null;
+    this.version = null;
+
+    this.description = null;
+    this.meta = new Object();
+    this.meta.keyword = null;
+    this.meta.properties = null;
 
     this.narrative = new Object();
     this.narrative.inOrderTo = new Object();

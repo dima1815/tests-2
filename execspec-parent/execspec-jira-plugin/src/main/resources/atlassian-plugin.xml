@@ -34,6 +34,7 @@
         <!--soy-->
         <resource type="download" name="TemplatesShowStory.soy.js" location="js/TemplatesShowStory.soy"/>
         <resource type="download" name="TemplatesEditStory.soy.js" location="js/TemplatesEditStory.soy"/>
+        <resource type="download" name="TemplatesEditStoryRich.soy.js" location="js/TemplatesEditStoryRich.soy"/>
         <resource type="download" name="TemplatesShowStoryReports.soy.js" location="js/TemplatesShowStoryReports.soy"/>
         <resource type="download" name="TemplatesStoryToolbar.soy.js" location="js/TemplatesStoryToolbar.soy"/>
         <!-- CSS -->

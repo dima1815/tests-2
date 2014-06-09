@@ -12,12 +12,12 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ScenarioDTO {
 
+    private String keyword;
     private String title;
     private MetaDTO meta;
     private GivenStoriesDTO givenStories;
     private ExamplesTableDTO examplesTable;
     private List<String> steps;
-    private String keyword;
 
     public String getTitle() {
         return title;

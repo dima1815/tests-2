@@ -3,6 +3,7 @@ package com.mycomp.execspec.jiraplugin.dto.story.output;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,18 +26,17 @@ public class StoryDTO {
 
     private String description;
 
-    private GivenStoriesDTO givenStories;
-
-    private LifecycleDTO lifecycle;
-
     private MetaDTO meta;
 
     private NarrativeDTO narrative;
 
-    private List<ScenarioDTO> scenarios;
+    private GivenStoriesDTO givenStories;
+
+    private LifecycleDTO lifecycle;
+
+    private List<ScenarioDTO> scenarios = new ArrayList<ScenarioDTO>();
 
     private String asString;
-
 
     public String getIssueKey() {
         return issueKey;

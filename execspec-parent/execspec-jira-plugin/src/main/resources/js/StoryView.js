@@ -239,10 +239,24 @@ function StoryView(storyController) {
         // set content for rich editor as well as raw editor
         var templateObj = new Object();
         templateObj.story = story;
-        var richEditStoryContent = execspec.viewissuepage.editstory.renderRichEditStoryContent(templateObj);
+
+
+        templateObj.insertGivenStoriesLinkInfo = new Object();
+        templateObj.insertGivenStoriesLinkInfo.text = "GivenStories";
+        templateObj.insertGivenStoriesLinkInfo.onClickFunction = "insertGivenStories";
+
+        templateObj.insertLifecycleLinkInfo = new Object();
+        templateObj.insertLifecycleLinkInfo.text = "Lifecycle";
+        templateObj.insertLifecycleLinkInfo.onClickFunction = "insertLifecycle";
+
+        templateObj.insertScenarioLinkInfo = new Object();
+        templateObj.insertScenarioLinkInfo.text = "Scenario";
+        templateObj.insertScenarioLinkInfo.onClickFunction = "insertScenario";
+
+        var richEditStoryContent = execspec.viewissuepage.editstory.rich.renderRichEditStoryContent(templateObj);
         AJS.$("#richEditStoryContainer").html(richEditStoryContent);
 
-        editButtonHandler.assignRichEditorHandlers();
+        editButtonHandler.assignRichEditorHandlers(story);
 
         AJS.$("#richTextEditorButton").click();
 

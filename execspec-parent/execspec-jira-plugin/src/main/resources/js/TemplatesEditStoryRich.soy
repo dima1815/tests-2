@@ -1,0 +1,321 @@
+{namespace execspec.viewissuepage.editstory.rich}
+
+/**
+ * Renders story edit buttons.
+ */
+{template .renderRichEditorOperationButtons}
+//    <div class="aui-toolbar2-inner">
+//        <div class="aui-toolbar2-primary">
+//            <div id="editorTypeButtons" class="aui-buttons">
+//                <button id="richTextEditorButton" class="aui-button"
+//                    onclick="editButtonHandler.richTextEditorClicked(event)">
+//                    <b>Rich</b>
+//                </button>
+//                <button id="rawTextEditorButton" class="aui-button"
+//                    onclick="editButtonHandler.rawTextEditorClicked(event)">
+//                    <b>Text</b>
+//                </button>
+//            </div>
+//            <div id="editOperationsButtons" class="aui-buttons">
+//                <button id="insertTableButton" class="aui-button">
+//                    <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Table Parameter</span>
+//                </button>
+//                <button id="insertTableButton" class="aui-button">
+//                    <span class="aui-icon aui-icon-small aui-iconfont-arrows-left">Table Parameter</span>
+//                </button>
+
+//            </div>
+//        </div>
+//    </div>
+{/template}
+
+/**
+ * Renders the '+' insert icon link to add story elements.
+ * @param triggerDivId
+ * @param dropdownDivId
+ * @param dropdownItems
+ */
+{template .renderInsertLinkDiv}
+    {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
+    <div class="insert-element-div">&nbsp;
+        <div id="{$triggerDivId}" class="insert-element-trigger-div">
+            <a aria-controls="dropdown2-more" href="#{$dropdownDivId}" aria-owns="{$dropdownDivId}"
+                aria-haspopup="true"
+                class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+                style="display: none"
+                pressed="false">
+                <span class="{$addIconClass} insert-element-icon"></span>
+            </a>&nbsp;
+        </div>
+        <div id="{$dropdownDivId}" trigger-div-id="{$triggerDivId}"
+            class="aui-dropdown2 aui-style-default insert-dropdown-content"
+            aria-hidden="true" data-dropdown2-alignment="left"
+            style="left: 280.6px; top: 801.3px; display: none;">
+            <ul class="aui-list-truncate">
+                {foreach $item in $dropdownItems}
+                    <li><a href="#"
+                        onclick="editButtonHandler.{$item.onClickFunction}(event)">{$item.text}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+{/template}
+
+/**
+ * Renders the text area type editable field.
+  * @param fieldName
+ * @param fieldValue
+ */
+{template .renderMultiLineField}
+    <textarea class="textarea rich-story-editor-field"
+        name="comment"
+        rows="1"
+        wrap="off"
+        placeholder="enter '{$fieldName}' here">
+        {if $fieldValue != null}
+            {$fieldValue}
+        {/if}
+    </textarea>
+{/template}
+
+/**
+ * Renders the text field type editable field.
+ * @param fieldName
+ * @param fieldValue
+ */
+{template .renderSingleLineField}
+    {if $fieldValue != null}
+        <input style="width: 100%;"
+            class="text long-field rich-story-editor-field"
+            name="{$fieldName}"
+            title="{$fieldName}" type="text"
+            value="{$fieldValue}"/>
+    {else}
+        <input style="width: 100%;"
+            class="text long-field rich-story-editor-field"
+            name="{$fieldName}"
+            title="{$fieldName}" type="text"
+            placeholder="enter '{$fieldName}' here"/>
+    {/if}
+{/template}
+
+/**
+ * Renders story description input field.
+ * @param description
+ */
+{template .renderStoryDescriptionField}
+    <div class="story-description">
+        {call .renderMultiLineField}
+            {param fieldName: 'Description' /}
+            {param fieldValue: $description /}
+        {/call}
+    </div>
+{/template}
+
+/**
+ * Renders story meta input field.
+ * @param meta
+ */
+{template .renderStoryMetaField}
+    <div class="story-meta">
+        <div class="story-meta-keyword">
+            {$meta.keyword}
+        </div>
+    </div>
+{/template}
+
+/**
+ * Renders story.
+ * @param story
+ * @param insertGivenStoriesLinkInfo
+ * @param insertLifecycleLinkInfo
+ * @param insertScenarioLinkInfo
+ */
+{template .renderRichEditStoryContent}
+<div id="richStoryEditContent">
+    {let $clickHere: '[click here to edit]' /}
+
+    <div id="storyDescriptionContainer">
+        {if $story.description != null}
+            {call .renderStoryDescriptionField}
+                {param description: $story.description /}
+            {/call}
+        {/if}
+    </div>
+
+    <div id="storyMetaContainer">
+        {if $story.meta != null}
+            {call .renderStoryMetaField}
+                {param meta: $story.meta /}
+            {/call}
+        {/if}
+    </div>
+
+    <div id="insertLinkBeforeNarrativeContainer"/>
+
+    {if $story.narrative != null}
+        <div class="narrative">
+            <div class="title">{$story.narrative.keyword}</div>
+            <div class="inOrderTo">
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+                            <span class="keyword">{$story.narrative.inOrderTo.keyword}</span>
+                        </td>
+                        <td style="text-align: left;">
+                            {if $story.narrative.inOrderTo.value != null}
+                                {call .renderSingleLineField}
+                                    {param fieldName: 'In order to' /}
+                                    {param fieldValue: $story.narrative.inOrderTo.value /}
+                                {/call}
+                            {else}
+                                {call .renderSingleLineField}
+                                    {param fieldName: 'In order to' /}
+                                    {param fieldValue: null /}
+                                {/call}
+                            {/if}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="asA">
+//                <span class="keyword">{$story.narrative.asA.keyword}</span>
+//                {if $story.narrative.asA.value != null}
+//                    <span class="value">{$story.narrative.asA.value}</span>
+//                {else}
+//                    <span class="value">{sp}{$clickHere}</span>
+//                {/if}
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+                            <span class="keyword">{$story.narrative.asA.keyword}</span>
+                        </td>
+                        <td style="text-align: left;">
+                            {if $story.narrative.asA.value != null}
+                                {call .renderSingleLineField}
+                                    {param fieldName: 'As a' /}
+                                    {param fieldValue: $story.narrative.asA.value /}
+                                {/call}
+                            {else}
+                                {call .renderSingleLineField}
+                                    {param fieldName: 'As a' /}
+                                    {param fieldValue: null /}
+                                {/call}
+                            {/if}
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="iWantTo">
+                <span class="keyword">{$story.narrative.iWantTo.keyword}</span>
+                {if $story.narrative.iWantTo.value != null}
+                    <span class="value">{$story.narrative.iWantTo.value}</span>
+                {else}
+                    <span class="value">{sp}{$clickHere}</span>
+                {/if}
+            </div>
+            {if $story.soThat != null}
+                <div class="soThat">
+                    <span class="keyword">{$story.narrative.soThat.keyword}</span>
+                    {if $story.narrative.soThat.value != null}
+                        <span class="value">{$story.narrative.soThat.value}</span>
+                    {else}
+                        <span class="value">{sp}{$clickHere}</span>
+                    {/if}
+                </div>
+            {/if}
+        </div>
+    {/if}
+
+    {if $story.givenStories != null}
+        <div class="story-given-stories">
+            <div class="story-given-stories-keyword">
+                {$story.givenStories.keyword}
+            </div>
+        </div>
+    {/if}
+    {if $story.lifecycle != null}
+        <div class="story-lifecycle">
+            <div class="story-lifecycle-keyword">
+                {$story.lifecycle.keyword}
+            </div>
+        </div>
+    {/if}
+
+//    {call .renderInsertLinkDiv}
+//        {param triggerDivId: 'anotherTriggerDivId' /}
+//        {param dropdownDivId: 'anotherDropdownDivId' /}
+//        {param dropdownItems: [
+//            $insertGivenStoriesLinkInfo,
+//            $insertLifecycleLinkInfo,
+//            $insertScenarioLinkInfo
+//            ]
+//         /}
+//    {/call}
+
+    {if $story.givenStories == null and $story.lifecycle == null and $story.scenarios.length == 0}
+        {call .renderInsertLinkDiv}
+            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+            {param dropdownItems: [
+                $insertGivenStoriesLinkInfo,
+                $insertLifecycleLinkInfo,
+                $insertScenarioLinkInfo
+            ] /}
+        {/call}
+    {elseif $story.givenStories == null and $story.lifecycle == null}
+        {call .renderInsertLinkDiv}
+            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+            {param dropdownItems: [
+                $insertGivenStoriesLinkInfo,
+                $insertLifecycleLinkInfo
+            ] /}
+        {/call}
+    {elseif $story.givenStories == null and $story.scenarios.length == 0}
+            {call .renderInsertLinkDiv}
+                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+                {param dropdownItems: [$insertGivenStoriesLinkInfo, $insertScenarioLinkInfo] /}
+            {/call}
+    {elseif $story.givenStories == null}
+        {call .renderInsertLinkDiv}
+            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+            {param dropdownItems: [$insertGivenStoriesLinkInfo,] /}
+        {/call}
+    {elseif $story.lifecycle == null and $story.scenarios.length == 0}
+            {call .renderInsertLinkDiv}
+                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+                {param dropdownItems: [$insertLifecycleLinkInfo, $insertScenarioLinkInfo] /}
+            {/call}
+    {elseif $story.lifecycle == null}
+        {call .renderInsertLinkDiv}
+            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+            {param dropdownItems: [$insertLifecycleLinkInfo,] /}
+        {/call}
+    {elseif $story.scenarios.length == 0}
+            {call .renderInsertLinkDiv}
+                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+                {param dropdownItems: [$insertScenarioLinkInfo,] /}
+            {/call}
+    {/if}
+
+    {if $story.scenarios.length != 0}
+        <div class="story-scenarios">
+            {foreach $scenario in $story.scenarios}
+                <div class="story-scenario">
+                    <span class="story-scenario-keyword">{$scenario.keyword}</span>
+                </div>
+            {/foreach}
+        </div>
+    {/if}
+
+</div>
+{/template}
+
+

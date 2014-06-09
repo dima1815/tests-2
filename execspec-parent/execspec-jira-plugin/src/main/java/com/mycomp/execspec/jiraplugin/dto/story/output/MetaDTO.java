@@ -12,6 +12,8 @@ import java.util.Map;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaDTO {
 
+    private String keyword;
+
     private Map properties;
 
     public Map getProperties() {
@@ -22,10 +24,19 @@ public class MetaDTO {
         this.properties = properties;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
     @Override
     public String toString() {
         return "MetaDTO{" +
-                "properties=" + properties +
+                "keyword='" + keyword + '\'' +
+                ", properties=" + properties +
                 '}';
     }
 
@@ -36,6 +47,7 @@ public class MetaDTO {
 
         MetaDTO metaDTO = (MetaDTO) o;
 
+        if (keyword != null ? !keyword.equals(metaDTO.keyword) : metaDTO.keyword != null) return false;
         if (properties != null ? !properties.equals(metaDTO.properties) : metaDTO.properties != null) return false;
 
         return true;
@@ -43,6 +55,8 @@ public class MetaDTO {
 
     @Override
     public int hashCode() {
-        return properties != null ? properties.hashCode() : 0;
+        int result = keyword != null ? keyword.hashCode() : 0;
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        return result;
     }
 }
