@@ -58,6 +58,10 @@
     /*border: 1px solid #006699;*/
 }
 
+.insert-element-link-div {
+    /*border: solid 1px purple;*/
+}
+
 .insert-element-link {
     /*position: absolute;*/
     /*top: 0px;*/
@@ -75,4 +79,28 @@
 
 .insert-element-link:focus, .insert-element-link:active .insert-element-link:visited {
     color: #00cc00;
+}
+
+.story-element-container {
+    position: relative;
+    /*border: solid 1px #815b3a;*/
+}
+
+.element-operations-container {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    border: solid 1px yellow;
+}
+
+.element-content-container {
+    margin-left: 23px;
+}
+
+.remove-element-link {
+    color: red;
+}
+
+.remove-element-link:focus, .remove-element-link:active .remove-element-link:visited {
+    color: red;
 }

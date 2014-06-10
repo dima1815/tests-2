@@ -25,6 +25,8 @@ function StoryEditHandler() {
 
         this.assignInsertLinkHandlers(story);
 
+        this.assignShowElementOperationsOnHover(story);
+
         this.assignAutoHeightForTextAreas(story);
 
 
@@ -80,23 +82,45 @@ function StoryEditHandler() {
 
     this.assignInsertLinkHandlers = function (story) {
 
-        AJS.$(".insert-element-trigger-div").mouseenter(function (event) {
+        AJS.$(".insert-element-link-div").mouseenter(function (event) {
             var div = event.target;
-            editButtonHandler.debug("mouse enter on - divBeforeNarrative");
-            editButtonHandler.debug("hiding all insert links");
-            AJS.$(".insert-element-link").hide();
-            editButtonHandler.debug("div - " + div);
+            editButtonHandler.debug("> mouse enter on - insert-element-link-div");
+//            editButtonHandler.debug("hiding all insert links");
+//            AJS.$(".insert-element-link").hide();
+//            editButtonHandler.debug("div - " + div);
+
+            var target = event.target;
+            if (AJS.$(target).hasClass("insert-element-link-div")) {
+                AJS.$(target).children(".insert-element-link").show();
+            } else {
+                // this is the case of hover over text area input field
+                AJS.$(target)
+                    .closest(".insert-element-link-div")
+                    .children(".insert-element-link")
+                    .show();
+            }
+
             AJS.$(div).children(".insert-element-link").show();
+
+            editButtonHandler.debug("# mouse enter on - insert-element-link-div");
         });
 
-        AJS.$(".insert-element-trigger-div").mouseleave(function (event) {
+        AJS.$(".insert-element-link-div").mouseleave(function (event) {
 
-            var div = event.target;
-            editButtonHandler.debug("> mouse leave on - divBeforeNarrative");
-            editButtonHandler.debug("div - " + div);
+            editButtonHandler.debug("> mouse leave on - insert-element-link-div");
+            editButtonHandler.debug("event.target - " + event.target);
 
-//            var isPressed = AJS.$(".insert-element-link").attr("pressed");
-            var insertLinkElement = AJS.$(div).children(".insert-element-link");
+            var target = event.target;
+            var insertLinkElement = null;
+            if (AJS.$(target).hasClass("insert-element-link-div")) {
+                insertLinkElement = AJS.$(target).children(".insert-element-link");
+            } else {
+                // this is the case of hover over text area input field
+                insertLinkElement = AJS.$(target)
+                    .closest(".insert-element-link-div")
+                    .children(".insert-element-link");
+            }
+
             var isPressed = insertLinkElement.attr("pressed");
             if (isPressed == "true") {
                 editButtonHandler.debug("Not hiding the insert button as is currently pressed");
@@ -105,7 +129,7 @@ function StoryEditHandler() {
                 insertLinkElement.hide();
             }
 
-            editButtonHandler.debug("# mouse leave on - divBeforeNarrative");
+            editButtonHandler.debug("# mouse leave on - insert-element-link-div");
         });
 
         AJS.$(".insert-dropdown-content").on({
@@ -146,7 +170,91 @@ function StoryEditHandler() {
 
     }
 
+    this.assignShowElementOperationsOnHover = function (story) {
+
+        // description
+        {
+            AJS.$(".story-element-container").mouseenter(function (event) {
+                editButtonHandler.debug("> mouse enter on - story-element-container");
+                editButtonHandler.debug("event.target - " + event.target);
+
+//                editButtonHandler.debug("hiding all insert links");
+//                AJS.$(".insert-element-link").hide();
+
+                var target = event.target;
+                if (AJS.$(target).hasClass("story-element-container")) {
+                    AJS.$(target).children(".element-operations-container").show();
+                } else {
+                    // this is the case of hover over text area input field
+                    AJS.$(target)
+                        .closest(".story-element-container")
+                        .children(".element-operations-container")
+                        .show();
+                }
+
+                editButtonHandler.debug("# mouse enter on - story-element-container");
+            });
+
+            AJS.$(".story-element-container").mouseleave(function (event) {
+
+                editButtonHandler.debug("> mouse leave on - story-element-container");
+                editButtonHandler.debug("event.target - " + event.target);
+
+                var target = event.target;
+                if (AJS.$(target).hasClass("story-element-container")) {
+                    AJS.$(target).children(".element-operations-container").hide();
+                } else {
+                    // this is the case of hover over text area input field
+                    AJS.$(target)
+                        .closest(".story-element-container")
+                        .children(".element-operations-container")
+                        .hide();
+                }
+
+                editButtonHandler.debug("# mouse leave on - story-element-container");
+            });
+        }
+
+    }
+
     this.addInsertLinks = function (story) {
+
+        // before Meta
+        {
+            if (story.description == null && story.meta != null) {
+                var templateObj = new Object();
+                templateObj.dropdownItems = [];
+                templateObj.triggerDivId = "insertTriggerDivBeforeMeta";
+                templateObj.dropdownDivId = "insertDropdownDivBeforeMeta";
+                var insertDescriptionLinkInfo = new Object();
+                insertDescriptionLinkInfo.text = "Description";
+                insertDescriptionLinkInfo.onClickFunction = "insertElement";
+                insertDescriptionLinkInfo.elementName = "description";
+                templateObj.dropdownItems.push(insertDescriptionLinkInfo);
+                var insertBeforeNarrativeHtml = execspec.viewissuepage.editstory.rich.renderInsertLinkDiv(templateObj);
+                AJS.$('#insertLinkContainerBeforeMeta').html(insertBeforeNarrativeHtml);
+            } else {
+                AJS.$('#insertLinkContainerBeforeMeta').html("");
+            }
+        }
+
+        // Meta properties
+        {
+            if (story.meta != null) {
+                var templateObj = new Object();
+                templateObj.dropdownItems = [];
+                templateObj.triggerDivId = "insertTriggerDivMetaProperty";
+                templateObj.dropdownDivId = "insertDropdownDivMetaProperty";
+                var insertMetaPropertyLinkInfo = new Object();
+                insertMetaPropertyLinkInfo.text = "New meta field";
+                insertMetaPropertyLinkInfo.onClickFunction = "insertElement";
+                insertMetaPropertyLinkInfo.elementName = "metaEntry";
+                templateObj.dropdownItems.push(insertMetaPropertyLinkInfo);
+                var insertMetaPropertyHtml = execspec.viewissuepage.editstory.rich.renderInsertLinkDiv(templateObj);
+                AJS.$('#insertLinkContainerMetaProperty').html(insertMetaPropertyHtml);
+            }
+
+        }
 
         // before Narrative
         {
@@ -156,10 +264,13 @@ function StoryEditHandler() {
 
             var insertDescriptionLinkInfo = new Object();
             insertDescriptionLinkInfo.text = "Description";
-            insertDescriptionLinkInfo.onClickFunction = "insertDescription";
+            insertDescriptionLinkInfo.onClickFunction = "insertElement";
+            insertDescriptionLinkInfo.elementName = "description";
+
             var insertMetaLinkInfo = new Object();
             insertMetaLinkInfo.text = "Meta";
-            insertMetaLinkInfo.onClickFunction = "insertMeta";
+            insertMetaLinkInfo.onClickFunction = "insertElement";
+            insertMetaLinkInfo.elementName = "meta";
 
             templateObj.dropdownItems = [];
             if (story.description == null && story.meta == null) {
@@ -171,11 +282,12 @@ function StoryEditHandler() {
 
             if (templateObj.dropdownItems.length > 0) {
                 var insertBeforeNarrativeHtml = execspec.viewissuepage.editstory.rich.renderInsertLinkDiv(templateObj);
-                AJS.$('#insertLinkBeforeNarrativeContainer').html(insertBeforeNarrativeHtml);
+                AJS.$('#insertLinkContainerBeforeNarrative').html(insertBeforeNarrativeHtml);
             } else {
-                AJS.$('#insertLinkBeforeNarrativeContainer').html("");
+                AJS.$('#insertLinkContainerBeforeNarrative').html("");
             }
         }
+
 
     }
 
@@ -213,7 +325,33 @@ function StoryEditHandler() {
         this.debug("# rawTextEditorClicked");
     }
 
-    this.insertDescription = function (event) {
+    this.insertElement = function (event, elementName) {
+
+        this.debug("> insertElement");
+
+        if (elementName == "description") {
+            this.insertDescription();
+        } else if (elementName == "meta") {
+            this.insertMeta();
+        }
+
+        this.assignRichEditorHandlers(storyController.currentStory);
+        this.assignShowElementOperationsOnHover(storyController.currentStory);
+
+        event.preventDefault();
+        this.debug("# insertElement");
+    }
+
+    this.insertNewMetaField = function (event) {
+
+        this.debug("> insertNewMetaField");
+
+
+        event.preventDefault();
+        this.debug("# insertNewMetaField");
+    }
+
+    this.insertDescription = function () {
 
         this.debug("> insertDescription");
 
@@ -222,13 +360,46 @@ function StoryEditHandler() {
         var descriptionHtml = execspec.viewissuepage.editstory.rich.renderStoryDescriptionField(storyController.currentStory);
         AJS.$("#storyDescriptionContainer").html(descriptionHtml);
 
-        this.assignRichEditorHandlers(storyController.currentStory);
-
-        event.preventDefault();
         this.debug("# insertDescription");
     }
 
-    this.insertMeta = function (event) {
+    this.removeElement = function (event, elementName) {
+
+        this.debug("> removeElement");
+        this.debug("elementName - " + elementName);
+
+        if (elementName == "description") {
+            this.removeDescription();
+        } else if (elementName == "meta") {
+            this.removeMeta();
+        }
+
+        this.assignRichEditorHandlers(storyController.currentStory);
+        this.assignShowElementOperationsOnHover(storyController.currentStory);
+
+        event.preventDefault();
+        this.debug("# removeElement");
+    }
+
+    this.removeMeta = function () {
+
+        this.debug("> removeMeta");
+        storyController.currentStory.meta = null;
+
+        AJS.$("#storyMetaContainer").html("");
+        this.debug("# removeMeta");
+    }
+
+    this.removeDescription = function () {
+
+        this.debug("> removeDescription");
+        storyController.currentStory.description = null;
+
+        AJS.$("#storyDescriptionContainer").html("");
+        this.debug("# removeDescription");
+    }
+
+    this.insertMeta = function () {
 
         this.debug("> insertMeta");
 
@@ -239,9 +410,6 @@ function StoryEditHandler() {
         var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMetaField(storyController.currentStory);
         AJS.$("#storyMetaContainer").html(metaHtml);
 
-        this.assignRichEditorHandlers(storyController.currentStory);
-
-        event.preventDefault();
         this.debug("# insertMeta");
     }
 

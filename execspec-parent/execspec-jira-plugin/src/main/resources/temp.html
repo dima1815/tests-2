@@ -1,45 +1,80 @@
-<div id="description-val" class="field-ignore-highlight editable-field active">
-    <form id="description-form" class="ajs-dirty-warning-exempt aui" action="#">
-        <div tabindex="1" class="inline-edit-fields">
-            <div class="field-group">
+<div id="storyDescriptionContainer" class="story-element-container">
+    <div class="element-operations-container" style="display: none;"><a class="remove-element-link" href="#"
+                                                                        onclick="editButtonHandler.removeElement(event, 'description')"><span
+            class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span></a></div>
+    <div class="element-content-container story-description"><textarea class="textarea rich-story-editor-field"
+                                                                       name="comment" rows="1" wrap="off"
+                                                                       placeholder="enter 'Description' here"></textarea>
+    </div>
+</div>
+<div id="insertLinkContainerBeforeMeta" class="insert-element-link-div"></div>
+<div id="storyMetaContainer"></div>
+<div id="insertLinkContainerBeforeNarrative" class="insert-element-link-div">&nbsp;<a aria-controls="dropdown2-more"
+                                                                                      href="#insertBeforeNarrativeDropdownDiv"
+                                                                                      aria-owns="insertBeforeNarrativeDropdownDiv"
+                                                                                      aria-haspopup="true"
+                                                                                      class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+                                                                                      style="display: none;"
+                                                                                      pressed="false"><span
+        class="aui-icon aui-icon-small aui-iconfont-add insert-element-icon"></span></a>
 
-
-                <div class="wiki-edit">
-                    <div id="description-wiki-edit" class="wiki-edit-content">
-                        <textarea style="height: 145px; overflow: hidden;"
-                                  class="textarea long-field wiki-textfield long-field mentionable" id="description"
-                                  name="description" rows="12" wrap="virtual" data-projectkey="TESTING"
-                                  data-issuekey="TESTING-1">asdf sasdfasf asdf adsf ads
-
-                            asfas
-                            dfa
-                            sf
-                            as
-                            df</textarea>
-
-                        <div class="content-inner">
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-        <span class="overlay-icon throbber"></span>
-
-        <div tabindex="1" class="save-options">
-            <div class="field-tools">
-
-                <a class="fullscreen" href="#" id="description-preview_link" title="preview"><span
-                        class="aui-icon wiki-renderer-icon"></span></a>
-                <a class="help-lnk" id="viewHelp" href="/jira/secure/WikiRendererHelpAction.jspa?section=texteffects"
-                   title="Get local help about wiki markup help" data-helplink="local"><span
-                        class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
-            </div>
-            <button type="submit" class="aui-button submit" accesskey="s" title="Press Alt+s to submit this form"><span
-                    class="icon icon-save">Save</span></button>
-            <button type="cancel" class="aui-button cancel" accesskey="`" title="Press Alt+` to cancel"><span
-                    class="icon icon-cancel">Cancel</span></button>
-        </div>
-    </form>
+    <div id="insertBeforeNarrativeDropdownDiv" trigger-div-id="insertBeforeNarrativeTriggerDiv"
+         class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true"
+         data-dropdown2-alignment="left" style="left: 280.6px; top: 801.3px; display: none;">
+        <ul class="aui-list-truncate">
+            <li><a href="#" onclick="editButtonHandler.insertMeta(event)">Meta</a></li>
+        </ul>
+    </div>
+    <div id="insertBeforeNarrativeDropdownDiv" trigger-div-id="insertBeforeNarrativeTriggerDiv"
+         class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true"
+         data-dropdown2-alignment="left" style="left: 57.55px; top: 564px; display: none;">
+        <ul class="aui-list-truncate">
+            <li><a class="" href="#" onclick="editButtonHandler.insertDescription(event)">Description</a></li>
+            <li><a class="" href="#" onclick="editButtonHandler.insertMeta(event)">Meta</a></li>
+        </ul>
+    </div>
+</div>
+<div class="narrative">
+    <div class="title">Narrative:</div>
+    <div class="inOrderTo">
+        <table>
+            <tbody>
+            <tr>
+                <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span class="keyword">In order to</span>
+                </td>
+                <td style="text-align: left;"><input style="width: 100%;"
+                                                     class="text long-field rich-story-editor-field" name="In order to"
+                                                     title="In order to" placeholder="enter 'In order to' here"
+                                                     type="text"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="asA">
+        <table>
+            <tbody>
+            <tr>
+                <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span class="keyword">As a</span>
+                </td>
+                <td style="text-align: left;"><input style="width: 100%;"
+                                                     class="text long-field rich-story-editor-field" name="As a"
+                                                     title="As a" placeholder="enter 'As a' here" type="text"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="iWantTo"><span class="keyword">I want to</span><span class="value"> [click here to edit]</span></div>
+</div>&nbsp;<a aria-controls="dropdown2-more" href="#insertAfterNarrativeDropdownDiv"
+               aria-owns="insertAfterNarrativeDropdownDiv" aria-haspopup="true"
+               class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+               style="display: none" pressed="false"><span
+        class="aui-icon aui-icon-small aui-iconfont-add insert-element-icon"></span></a>
+<div id="insertAfterNarrativeDropdownDiv" trigger-div-id="insertAfterNarrativeTriggerDiv"
+     class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true" data-dropdown2-alignment="left"
+     style="left: 280.6px; top: 801.3px; display: none;">
+    <ul class="aui-list-truncate">
+        <li><a href="#" onclick="editButtonHandler.insertGivenStories(event)">GivenStories</a></li>
+        <li><a href="#" onclick="editButtonHandler.insertLifecycle(event)">Lifecycle</a></li>
+        <li><a href="#" onclick="editButtonHandler.insertScenario(event)">Scenario</a></li>
+    </ul>
 </div>

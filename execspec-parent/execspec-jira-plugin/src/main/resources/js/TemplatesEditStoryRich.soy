@@ -37,16 +37,15 @@
  */
 {template .renderInsertLinkDiv}
     {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
-    <div class="insert-element-div">&nbsp;
-        <div id="{$triggerDivId}" class="insert-element-trigger-div">
-            <a aria-controls="dropdown2-more" href="#{$dropdownDivId}" aria-owns="{$dropdownDivId}"
-                aria-haspopup="true"
-                class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
-                style="display: none"
-                pressed="false">
-                <span class="{$addIconClass} insert-element-icon"></span>
-            </a>&nbsp;
-        </div>
+    <div class="insert-element-link-div">
+        &nbsp;
+        <a aria-controls="dropdown2-more" href="#{$dropdownDivId}" aria-owns="{$dropdownDivId}"
+            aria-haspopup="true"
+            class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+            style="display: none"
+            pressed="false">
+            <span class="{$addIconClass} insert-element-icon"></span>
+        </a>
         <div id="{$dropdownDivId}" trigger-div-id="{$triggerDivId}"
             class="aui-dropdown2 aui-style-default insert-dropdown-content"
             aria-hidden="true" data-dropdown2-alignment="left"
@@ -54,7 +53,7 @@
             <ul class="aui-list-truncate">
                 {foreach $item in $dropdownItems}
                     <li><a href="#"
-                        onclick="editButtonHandler.{$item.onClickFunction}(event)">{$item.text}</a></li>
+                        onclick="editButtonHandler.{$item.onClickFunction}(event, '{$item.elementName}')">{$item.text}</a></li>
                 {/foreach}
             </ul>
         </div>
@@ -63,7 +62,7 @@
 
 /**
  * Renders the text area type editable field.
-  * @param fieldName
+ * @param fieldName
  * @param fieldValue
  */
 {template .renderMultiLineField}
@@ -104,11 +103,22 @@
  * @param description
  */
 {template .renderStoryDescriptionField}
-    <div class="story-description">
-        {call .renderMultiLineField}
-            {param fieldName: 'Description' /}
-            {param fieldValue: $description /}
-        {/call}
+    <div class="story-element-container">
+        <div class="element-operations-container"
+            style="display: none">
+            <a class="remove-element-link"
+                  href="#"
+                  onclick="editButtonHandler.removeElement(event, 'description')"
+                >
+                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+            </a>
+        </div>
+        <div class="element-content-container story-description">
+            {call .renderMultiLineField}
+                {param fieldName: 'Description' /}
+                {param fieldValue: $description /}
+            {/call}
+        </div>
     </div>
 {/template}
 
@@ -117,9 +127,30 @@
  * @param meta
  */
 {template .renderStoryMetaField}
-    <div class="story-meta">
-        <div class="story-meta-keyword">
-            {$meta.keyword}
+    <div class="story-element-container">
+        <div class="element-operations-container"
+            style="display: none">
+            <a class="remove-element-link"
+                  href="#"
+                  onclick="editButtonHandler.removeElement(event, 'meta')"
+                >
+                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+            </a>
+        </div>
+        <div class="element-content-container story-meta">
+            <div class="story-meta-keyword">
+                {$meta.keyword}
+            </div>
+            {if $meta.properties != null}
+                <div class="story-meta-properties">
+                    Meta has properties
+                <div>
+            {else}
+                <div class="story-meta-properties">
+                    Meta has NO properties
+                <div>
+            {/if}
+            <div id="insertLinkContainerMetaProperty"/>
         </div>
     </div>
 {/template}
@@ -127,9 +158,6 @@
 /**
  * Renders story.
  * @param story
- * @param insertGivenStoriesLinkInfo
- * @param insertLifecycleLinkInfo
- * @param insertScenarioLinkInfo
  */
 {template .renderRichEditStoryContent}
 <div id="richStoryEditContent">
@@ -143,6 +171,8 @@
         {/if}
     </div>
 
+    <div id="insertLinkContainerBeforeMeta"/>
+
     <div id="storyMetaContainer">
         {if $story.meta != null}
             {call .renderStoryMetaField}
@@ -151,7 +181,7 @@
         {/if}
     </div>
 
-    <div id="insertLinkBeforeNarrativeContainer"/>
+    <div id="insertLinkContainerBeforeNarrative"/>
 
     {if $story.narrative != null}
         <div class="narrative">
@@ -254,56 +284,56 @@
 //         /}
 //    {/call}
 
-    {if $story.givenStories == null and $story.lifecycle == null and $story.scenarios.length == 0}
-        {call .renderInsertLinkDiv}
-            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-            {param dropdownItems: [
-                $insertGivenStoriesLinkInfo,
-                $insertLifecycleLinkInfo,
-                $insertScenarioLinkInfo
-            ] /}
-        {/call}
-    {elseif $story.givenStories == null and $story.lifecycle == null}
-        {call .renderInsertLinkDiv}
-            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-            {param dropdownItems: [
-                $insertGivenStoriesLinkInfo,
-                $insertLifecycleLinkInfo
-            ] /}
-        {/call}
-    {elseif $story.givenStories == null and $story.scenarios.length == 0}
-            {call .renderInsertLinkDiv}
-                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-                {param dropdownItems: [$insertGivenStoriesLinkInfo, $insertScenarioLinkInfo] /}
-            {/call}
-    {elseif $story.givenStories == null}
-        {call .renderInsertLinkDiv}
-            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-            {param dropdownItems: [$insertGivenStoriesLinkInfo,] /}
-        {/call}
-    {elseif $story.lifecycle == null and $story.scenarios.length == 0}
-            {call .renderInsertLinkDiv}
-                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-                {param dropdownItems: [$insertLifecycleLinkInfo, $insertScenarioLinkInfo] /}
-            {/call}
-    {elseif $story.lifecycle == null}
-        {call .renderInsertLinkDiv}
-            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-            {param dropdownItems: [$insertLifecycleLinkInfo,] /}
-        {/call}
-    {elseif $story.scenarios.length == 0}
-            {call .renderInsertLinkDiv}
-                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
-                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
-                {param dropdownItems: [$insertScenarioLinkInfo,] /}
-            {/call}
-    {/if}
+//    {if $story.givenStories == null and $story.lifecycle == null and $story.scenarios.length == 0}
+//        {call .renderInsertLinkDiv}
+//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//            {param dropdownItems: [
+//                $insertGivenStoriesLinkInfo,
+//                $insertLifecycleLinkInfo,
+//                $insertScenarioLinkInfo
+//            ] /}
+//        {/call}
+//    {elseif $story.givenStories == null and $story.lifecycle == null}
+//        {call .renderInsertLinkDiv}
+//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//            {param dropdownItems: [
+//                $insertGivenStoriesLinkInfo,
+//                $insertLifecycleLinkInfo
+//            ] /}
+//        {/call}
+//    {elseif $story.givenStories == null and $story.scenarios.length == 0}
+//            {call .renderInsertLinkDiv}
+//                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//                {param dropdownItems: [$insertGivenStoriesLinkInfo, $insertScenarioLinkInfo] /}
+//            {/call}
+//    {elseif $story.givenStories == null}
+//        {call .renderInsertLinkDiv}
+//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//            {param dropdownItems: [$insertGivenStoriesLinkInfo,] /}
+//        {/call}
+//    {elseif $story.lifecycle == null and $story.scenarios.length == 0}
+//            {call .renderInsertLinkDiv}
+//                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//                {param dropdownItems: [$insertLifecycleLinkInfo, $insertScenarioLinkInfo] /}
+//            {/call}
+//    {elseif $story.lifecycle == null}
+//        {call .renderInsertLinkDiv}
+//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//            {param dropdownItems: [$insertLifecycleLinkInfo,] /}
+//        {/call}
+//    {elseif $story.scenarios.length == 0}
+//            {call .renderInsertLinkDiv}
+//                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+//                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+//                {param dropdownItems: [$insertScenarioLinkInfo,] /}
+//            {/call}
+//    {/if}
 
     {if $story.scenarios.length != 0}
         <div class="story-scenarios">
