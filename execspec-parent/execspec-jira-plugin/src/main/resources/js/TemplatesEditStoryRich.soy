@@ -63,14 +63,15 @@
 /**
  * Renders the text area type editable field.
  * @param fieldName
+ * @param displayValue
  * @param fieldValue
  */
 {template .renderMultiLineField}
-    <textarea class="textarea rich-story-editor-field"
-        name="comment"
+    <textarea class="textarea story-editor-field"
+        name="{$fieldName}"
         rows="1"
         wrap="off"
-        placeholder="enter '{$fieldName}' here">
+        placeholder="enter '{$displayValue}' here">
         {if $fieldValue != null}
             {$fieldValue}
         {/if}
@@ -80,21 +81,72 @@
 /**
  * Renders the text field type editable field.
  * @param fieldName
+ * @param displayValue
  * @param fieldValue
+ */
+{template .renderLongSingleLineField}
+    {call .renderSingleLineField}
+        {param fieldName: $fieldName /}
+        {param displayValue: $displayValue /}
+        {param fieldValue: $fieldValue /}
+        {param isLongField: true /}
+    {/call}
+{/template}
+
+/**
+ * Renders the text field type editable field.
+ * @param fieldName
+ * @param displayValue
+ * @param fieldValue
+ */
+{template .renderShortSingleLineField}
+    {call .renderSingleLineField}
+        {param fieldName: $fieldName /}
+        {param displayValue: $displayValue /}
+        {param fieldValue: $fieldValue /}
+        {param isLongField: false /}
+    {/call}
+{/template}
+
+/**
+ * Renders the text field type editable field.
+ * @param fieldName
+ * @param displayValue
+ * @param fieldValue
+ * @param isLongField
  */
 {template .renderSingleLineField}
     {if $fieldValue != null}
-        <input style="width: 100%;"
-            class="text long-field rich-story-editor-field"
-            name="{$fieldName}"
-            title="{$fieldName}" type="text"
-            value="{$fieldValue}"/>
+        {if $isLongField == true}
+            <input
+                class="text story-editor-field long-field story-element-field-long"
+                name="{$fieldName}"
+                title="{$fieldName}" type="text"
+                placeholder="enter '{$displayValue}' here"
+                value="{$fieldValue}"/>
+        {else}
+            <input
+                class="text story-editor-field story-element-field-short"
+                name="{$fieldName}"
+                title="{$fieldName}" type="text"
+                placeholder="enter '{$displayValue}' here"
+                value="{$fieldValue}"/>
+        {/if}
+
     {else}
-        <input style="width: 100%;"
-            class="text long-field rich-story-editor-field"
-            name="{$fieldName}"
-            title="{$fieldName}" type="text"
-            placeholder="enter '{$fieldName}' here"/>
+        {if $isLongField == true}
+            <input
+                class="text story-editor-field long-field story-element-field-long"
+                name="{$fieldName}"
+                title="{$fieldName}" type="text"
+                placeholder="enter '{$displayValue}' here"/>
+        {else}
+            <input
+                class="text story-editor-field story-element-field-short"
+                name="{$fieldName}"
+                title="{$fieldName}" type="text"
+                placeholder="enter '{$displayValue}' here"/>
+        {/if}
     {/if}
 {/template}
 
@@ -115,7 +167,8 @@
         </div>
         <div class="element-content-container story-description">
             {call .renderMultiLineField}
-                {param fieldName: 'Description' /}
+                {param fieldName: 'description' /}
+                {param displayValue: 'Description' /}
                 {param fieldValue: $description /}
             {/call}
         </div>
@@ -126,7 +179,7 @@
  * Renders story meta input field.
  * @param meta
  */
-{template .renderStoryMetaField}
+{template .renderStoryMeta}
     <div class="story-element-container">
         <div class="element-operations-container"
             style="display: none">
@@ -143,11 +196,28 @@
             </div>
             {if $meta.properties != null}
                 <div class="story-meta-properties">
-                    Meta has properties
-                <div>
-            {else}
-                <div class="story-meta-properties">
-                    Meta has NO properties
+                    {foreach $metaProperty in $meta.properties}
+                        <div class="story-meta-property">
+                            <span class="meta-property-start-symbol">
+                                @
+                            </span>
+                            <span class="meta-property-name">
+                                {call .renderShortSingleLineField}
+                                    {param fieldName: 'meta.properties[0].name' /}
+                                    {param displayValue: 'Property key' /}
+                                    {param fieldValue: $metaProperty.name /}
+                                {/call}
+                            </span>
+                            &nbsp;
+                            <span class="meta-preperty-value">
+                                {call .renderShortSingleLineField}
+                                    {param fieldName: 'meta.properties[0].value' /}
+                                    {param displayValue: 'Property value' /}
+                                    {param fieldValue: $metaProperty.value /}
+                                {/call}
+                            </span>
+                        <div>
+                    {/foreach}
                 <div>
             {/if}
             <div id="insertLinkContainerMetaProperty"/>
@@ -175,7 +245,7 @@
 
     <div id="storyMetaContainer">
         {if $story.meta != null}
-            {call .renderStoryMetaField}
+            {call .renderStoryMeta}
                 {param meta: $story.meta /}
             {/call}
         {/if}
@@ -193,68 +263,47 @@
                             <span class="keyword">{$story.narrative.inOrderTo.keyword}</span>
                         </td>
                         <td style="text-align: left;">
-                            {if $story.narrative.inOrderTo.value != null}
-                                {call .renderSingleLineField}
-                                    {param fieldName: 'In order to' /}
-                                    {param fieldValue: $story.narrative.inOrderTo.value /}
-                                {/call}
-                            {else}
-                                {call .renderSingleLineField}
-                                    {param fieldName: 'In order to' /}
-                                    {param fieldValue: null /}
-                                {/call}
-                            {/if}
+                            {call .renderLongSingleLineField}
+                                {param fieldName: 'narrative.inOrderTo' /}
+                                {param displayValue: 'In order to' /}
+                                {param fieldValue: $story.narrative.inOrderTo.value /}
+                            {/call}
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="asA">
-//                <span class="keyword">{$story.narrative.asA.keyword}</span>
-//                {if $story.narrative.asA.value != null}
-//                    <span class="value">{$story.narrative.asA.value}</span>
-//                {else}
-//                    <span class="value">{sp}{$clickHere}</span>
-//                {/if}
                 <table>
                     <tr>
                         <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
                             <span class="keyword">{$story.narrative.asA.keyword}</span>
                         </td>
                         <td style="text-align: left;">
-                            {if $story.narrative.asA.value != null}
-                                {call .renderSingleLineField}
-                                    {param fieldName: 'As a' /}
-                                    {param fieldValue: $story.narrative.asA.value /}
-                                {/call}
-                            {else}
-                                {call .renderSingleLineField}
-                                    {param fieldName: 'As a' /}
-                                    {param fieldValue: null /}
-                                {/call}
-                            {/if}
+                            {call .renderLongSingleLineField}
+                                {param fieldName: 'narrative.asA' /}
+                                {param displayValue: 'As a' /}
+                                {param fieldValue: $story.narrative.asA.value /}
+                            {/call}
                         </td>
                     </tr>
                 </table>
-
             </div>
             <div class="iWantTo">
-                <span class="keyword">{$story.narrative.iWantTo.keyword}</span>
-                {if $story.narrative.iWantTo.value != null}
-                    <span class="value">{$story.narrative.iWantTo.value}</span>
-                {else}
-                    <span class="value">{sp}{$clickHere}</span>
-                {/if}
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+                            <span class="keyword">{$story.narrative.iWantTo.keyword}</span>
+                        </td>
+                        <td style="text-align: left;">
+                            {call .renderLongSingleLineField}
+                                {param fieldName: 'narrative.iWantTo' /}
+                                {param displayValue: 'I Want to' /}
+                                {param fieldValue: $story.narrative.iWantTo.value /}
+                            {/call}
+                        </td>
+                    </tr>
+                </table>
             </div>
-            {if $story.soThat != null}
-                <div class="soThat">
-                    <span class="keyword">{$story.narrative.soThat.keyword}</span>
-                    {if $story.narrative.soThat.value != null}
-                        <span class="value">{$story.narrative.soThat.value}</span>
-                    {else}
-                        <span class="value">{sp}{$clickHere}</span>
-                    {/if}
-                </div>
-            {/if}
         </div>
     {/if}
 

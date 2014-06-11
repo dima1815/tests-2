@@ -36,7 +36,7 @@ function StoryEditHandler() {
     this.assignAutoHeightForTextAreas = function (story) {
 
         // set height dynamically on key press
-        AJS.$('.rich-story-editor-field').keydown(function (event) {
+        AJS.$('.story-editor-field').keydown(function (event) {
             editButtonHandler.debug('keydown, event.target - ' + event.target);
             var key = event.which;
             editButtonHandler.debug('keydown, event.which - ' + key);
@@ -46,7 +46,7 @@ function StoryEditHandler() {
             }
         });
 
-        AJS.$('.rich-story-editor-field').keyup(function (event) {
+        AJS.$('.story-editor-field').keyup(function (event) {
             editButtonHandler.resizeTextArea(event);
         });
 
@@ -68,12 +68,12 @@ function StoryEditHandler() {
         }
 
         // add border on focus
-        AJS.$('.rich-story-editor-field').focus(function (event) {
+        AJS.$('.story-editor-field').focus(function (event) {
             editButtonHandler.debug('focused, event.target - ' + event.target);
             AJS.$(event.target).addClass("focused");
 
         });
-        AJS.$('.rich-story-editor-field').blur(function (event) {
+        AJS.$('.story-editor-field').blur(function (event) {
             editButtonHandler.debug('blurred, event.target - ' + event.target);
             AJS.$(event.target).removeClass("focused");
         });
@@ -248,7 +248,7 @@ function StoryEditHandler() {
                 var insertMetaPropertyLinkInfo = new Object();
                 insertMetaPropertyLinkInfo.text = "New meta field";
                 insertMetaPropertyLinkInfo.onClickFunction = "insertElement";
-                insertMetaPropertyLinkInfo.elementName = "metaEntry";
+                insertMetaPropertyLinkInfo.elementName = "metaField";
                 templateObj.dropdownItems.push(insertMetaPropertyLinkInfo);
                 var insertMetaPropertyHtml = execspec.viewissuepage.editstory.rich.renderInsertLinkDiv(templateObj);
                 AJS.$('#insertLinkContainerMetaProperty').html(insertMetaPropertyHtml);
@@ -325,14 +325,67 @@ function StoryEditHandler() {
         this.debug("# rawTextEditorClicked");
     }
 
+    this.bindInputElementsToModel = function () {
+
+        this.debug("> bindInputElementsToModel");
+
+        this.debug("story before binding:\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+
+        AJS.$("#richStoryEditContent").find(".story-editor-field").each(
+            function () {
+//                editButtonHandler.debug("> bindInputElementsToModel.each(story-editor-field)");
+                var fieldName = AJS.$(this).attr("name");
+                var fieldValue = AJS.$(this).attr("value");
+                editButtonHandler.debug("fieldName = " + fieldName + ", value = " + fieldValue);
+
+//                editButtonHandler.debug("convert indexes to properties");
+//                editButtonHandler.debug("fieldName before - " + fieldName);
+//                fieldName = fieldName.replace(/\[(\w+)\]/g, '.$1');
+//                editButtonHandler.debug("fieldName after - " + fieldName);
+
+                var path = fieldName.split('.');
+                var obj = storyController.currentStory;
+                for (var i = 0; i < path.length - 1; i++) {
+                    obj[path[i]] = {};
+                    obj = obj[path[i]];
+                }
+                obj[path[path.length - 1]] = fieldValue;
+
+                //console.log("s before - '" + s + "'");
+//                fieldName = fieldName.replace(/\[(\w+)\]/g, '.$1');  // convert indexes to properties
+//                //console.log("s after - '" + s + "'");
+//                fieldName = fieldName.replace(/^\./, ''); // strip leading dot
+//                var token = fieldName.split('.');
+//                var o = storyController.currentStory;
+//                while (token.length) {
+//                    var n = token.shift();
+//                    editButtonHandler.debug("processing token - " + n);
+//                    o = o[n];
+//                    o = fieldValue;
+//                }
+
+//                editButtonHandler.debug("# bindInputElementsToModel.each(story-editor-field)");
+            }
+        );
+
+        this.debug("story after binding:\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+
+        this.debug("# bindInputElementsToModel");
+    }
+
     this.insertElement = function (event, elementName) {
 
         this.debug("> insertElement");
+        this.debug("elementName = " + elementName);
+
+        this.bindInputElementsToModel();
 
         if (elementName == "description") {
             this.insertDescription();
         } else if (elementName == "meta") {
             this.insertMeta();
+        } else if (elementName == "metaField") {
+            this.insertMetaField();
         }
 
         this.assignRichEditorHandlers(storyController.currentStory);
@@ -340,15 +393,6 @@ function StoryEditHandler() {
 
         event.preventDefault();
         this.debug("# insertElement");
-    }
-
-    this.insertNewMetaField = function (event) {
-
-        this.debug("> insertNewMetaField");
-
-
-        event.preventDefault();
-        this.debug("# insertNewMetaField");
     }
 
     this.insertDescription = function () {
@@ -405,12 +449,37 @@ function StoryEditHandler() {
 
         var meta = new Object();
         meta.keyword = "Meta:";
+        meta.properties = [];
         storyController.currentStory.meta = meta;
 
-        var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMetaField(storyController.currentStory);
+        var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMeta(storyController.currentStory);
         AJS.$("#storyMetaContainer").html(metaHtml);
 
         this.debug("# insertMeta");
+    }
+
+    this.insertMetaField = function (fieldName, fieldValue) {
+
+        this.debug("> insertMetaField");
+
+        var meta = storyController.currentStory.meta;
+        var newEntry = new Object();
+        if (fieldName == null) {
+            newEntry.name = null;
+        } else {
+            newEntry.name = fieldName;
+        }
+        if (fieldValue == null) {
+            newEntry.value = null;
+        } else {
+            newEntry.value = fieldValue;
+        }
+        meta.properties.push(newEntry);
+
+        var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMeta(storyController.currentStory);
+        AJS.$("#storyMetaContainer").html(metaHtml);
+
+        this.debug("# insertMetaField");
     }
 
     this.insertGivenStories = function (event) {
