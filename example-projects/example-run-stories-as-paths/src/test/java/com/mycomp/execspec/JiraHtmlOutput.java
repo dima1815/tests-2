@@ -159,7 +159,7 @@ public class JiraHtmlOutput extends HtmlOutput {
         if (!givenStory && !storyPath.equals("BeforeStories") && !storyPath.equals("AfterStories")) {
             String versionProperty = story.getMeta().getProperty("jira-version");
             if (versionProperty.isEmpty()) {
-                String msg = "!!! Meta property 'jira-version' was not set on the story - " + storyPath;
+                String msg = "!!! meta property 'jira-version' was not set on the story - " + storyPath;
                 System.out.println(msg + storyPath);
                 throw new IllegalArgumentException(msg);
             }
