@@ -34,11 +34,14 @@
  */
 {template .renderButtonsForStory}
     <button id="showStoryButton"
+        onclick="storyController.showStoryHandler(event)"
         class="aui-button story-container-button selected-story-container-button">{$path}</button>
 //    <button id="edit-story-button"
 //            class="aui-button aui-button-subtle story-container-button selected-story-container-button">{$path}</button>
 //aria-pressed="true"
-    <button id="editStoryButton" class="aui-button"><span class="aui-icon aui-icon-small aui-iconfont-edit">Edit </span></button>
+    <button id="editStoryButton"
+        onclick="storyController.editStoryHandler(event)"
+        class="aui-button"><span class="aui-icon aui-icon-small aui-iconfont-edit">Edit </span></button>
 //    {call aui.buttons.button}
 //        {param text: '' /}
 //        {param iconType: 'aui' /}

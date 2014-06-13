@@ -106,7 +106,15 @@ public class StoryServiceImpl implements StoryService {
         long rolledVersion = currentVersion + 1;
         story.setVersion(rolledVersion);
 
-        story.setAsString(storyDTO.getAsString());
+        String asString = storyDTO.getAsString();
+        if (asString != null) {
+            // this will be the case when the client sends the story already as a string, e.g. from the
+            // Raw editor rather than Rich editor
+        } else {
+            asString = StoryDTOUtils.asString(storyDTO);
+        }
+        story.setAsString(asString);
+
         story.setLastEditedBy(userName);
         story.save();
 

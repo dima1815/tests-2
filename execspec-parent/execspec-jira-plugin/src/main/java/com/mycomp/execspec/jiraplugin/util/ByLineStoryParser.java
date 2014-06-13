@@ -47,6 +47,8 @@ public class ByLineStoryParser {
 
         StoryDTO storyDTO = new StoryDTO();
 
+        storyDTO.setAsString(storyAsText);
+
         if (storyPath != null && !storyPath.isEmpty()) {
             storyDTO.setPath(storyPath);
         }

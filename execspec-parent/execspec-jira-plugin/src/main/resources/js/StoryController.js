@@ -34,12 +34,14 @@ function StoryController() {
         var projectKey = pageUtils.getProjectKey();
         storyService.find(projectKey, issueKey,
             function (story) {
-                storyView.debug("> loadStory.callback, story - " + story);
+                storyController.debug("> loadStory.callback");
+                var storyPayload = JSON.stringify(story, null, "\t");
+                storyController.debug("story - " + storyPayload);
                 if (story != undefined) {
 //                    storyView.showStoryButton(story);
 //                    storyView.showStoryReportButtons(story); // TODO
                     storyController.currentStory = story;
-                    storyController.showStoryHandler();
+                    storyController.showStoryHandler(null);
                 } else {
                     storyController.debug("no story found for project - " + projectKey + ", issue - " + issueKey);
                     storyView.showAddStory();
@@ -59,8 +61,9 @@ function StoryController() {
 
             story.issueKey = pageUtils.getIssueKey();
             story.path = pageUtils.getIssueKey() + ".story";
-            storyView.editStory(story);
+
             storyController.currentStory = story;
+            storyController.editStoryHandler(null);
 
             storyController.debug("# addStoryHandler.callback");
         });
@@ -69,10 +72,14 @@ function StoryController() {
         this.debug("# addStoryHandler");
     }
 
-    this.showStoryHandler = function () {
+    this.showStoryHandler = function (event) {
 
         this.debug("> showStoryHandler");
-        storyView.showStory(this.currentStory, this.editMode);
+        this.editMode = false;
+        storyView.showStory(this.currentStory);
+        if (event != null) {
+            event.preventDefault();
+        }
         this.debug("# showStoryHandler");
     }
 
@@ -134,12 +141,16 @@ function StoryController() {
 //        this.debug("# addStory");
 //    }
 
-    this.editStoryHandler = function () {
+    this.editStoryHandler = function (event) {
 
         this.debug("> editStoryHandler");
-        this.debug("current story as string - " + this.currentStory.asString);
+
         this.editMode = true;
-        storyView.showStory(this.currentStory, this.editMode);
+        storyView.editStory(this.currentStory);
+
+        if(event != null) {
+            event.preventDefault();
+        }
         this.debug("# editStoryHandler");
     }
 
@@ -186,12 +197,15 @@ function StoryController() {
         var storyPayload = JSON.stringify(this.currentStory);
 
         storyService.saveOrUpdateStory(storyPayload, function (savedStory) {
-            storyController.debug("> saveStory.saveOrUpdateStory callback");
-            storyController.editMode = false;
-            storyView.showStory(savedStory, storyController.editMode);
-            storyView.showStoryReportButtons(savedStory);
+            storyController.debug("> saveStoryAsModel.saveOrUpdateStory callback");
+//            storyView.showStoryReportButtons(savedStory);
+            var jsonStory = JSON.stringify(savedStory, null, "\t");
+            storyController.debug("saved story:\n" + jsonStory);
+
             storyController.currentStory = savedStory;
-            storyController.debug("# saveStory.saveOrUpdateStory callback");
+            storyController.editMode = false;
+            storyController.showStoryHandler(null);
+            storyController.debug("# saveStoryAsModel.saveOrUpdateStory callback");
         });
 
         this.debug("# saveStoryAsModel");

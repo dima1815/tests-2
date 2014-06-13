@@ -575,6 +575,8 @@ function StoryEditHandler() {
 
         this.bindInputElementsToModel();
 
+        // remove the asString field as we are saving from the rich editor
+        storyController.currentStory.asString = null;
         storyController.saveStoryAsModel();
 
         event.preventDefault();

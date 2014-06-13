@@ -247,14 +247,7 @@ function StoryView(storyController) {
 
         AJS.$("#richTextEditorButton").click();
 
-//        if (richEditor) {
-
-//        } else {
-//            var rawEditButtons = execspec.viewissuepage.editstory.renderRawEditStoryButtons();
-//            AJS.$("#editStoryButtons").html(rawEditButtons);
-//            AJS.$("#rawTextEditorButton").attr("aria-pressed", "true");
-//        }
-
+        AJS.$("#storyContainer").hide();
         AJS.$("#storyEditContainer").show();
         this.debug("# editStory");
     }
@@ -358,9 +351,25 @@ function StoryView(storyController) {
         storyView.debug("# StoryView.showStoryButton");
     }
 
-    this.showStory = function(story) {
-        AJS.$("#storyContainer").html("This issue has a story");
+    this.showStory = function (story) {
+
+        storyView.debug("> StoryView.showStory");
+
+        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
+        AJS.$("#storyButtons").html(buttonsForStory);
+        AJS.$("#editStoryButton").attr("aria-pressed", "false");
+        AJS.$("#showStoryButton").attr("aria-pressed", "true");
+
+        var templateObj = new Object();
+        templateObj.story = story;
+        var storyHtml = execspec.viewissuepage.showstory.renderStoryAsString(templateObj);
+
+        AJS.$("#storyContainer").html(storyHtml);
         AJS.$("#storyContainer").show();
+
+        AJS.$("#storyEditContainer").hide();
+
+        storyView.debug("# StoryView.showStory");
     }
 
 //    this.showStory = function (story, editMode) {
@@ -450,7 +459,7 @@ function StoryView(storyController) {
 ////                });
 //            });
 
-            // add the auto complete
+    // add the auto complete
 //            AJS.$("#story-edit-text-area").autocomplete({
 //                autoFocus: true,
 //                position: {
