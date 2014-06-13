@@ -5,9 +5,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Dmytro on 5/20/2014.
@@ -275,9 +273,9 @@ public class ByLineStoryParser {
                         }
                     } else if (line.startsWith("@") && storyDTO.getMeta() != null
                             && lastElement == CompositeElement.meta) {
-                        Map properties = storyDTO.getMeta().getProperties();
+                        List<MetaEntryDTO> properties = storyDTO.getMeta().getProperties();
                         if (properties == null) {
-                            properties = new HashMap();
+                            properties = new ArrayList<MetaEntryDTO>();
                             storyDTO.getMeta().setProperties(properties);
                         }
                         if (line.length() == 0) {
@@ -288,10 +286,12 @@ public class ByLineStoryParser {
                             if (firstSpaceIndex != -1) {
                                 String key = withoutAtChar.substring(0, firstSpaceIndex);
                                 String value = withoutAtChar.substring(firstSpaceIndex + 1);
-                                properties.put(key, value);
+                                MetaEntryDTO metaEntryDTO = new MetaEntryDTO(key, value);
+                                properties.add(metaEntryDTO);
                             } else {
                                 // some properties don't have value, e.g. @skip
-                                properties.put(withoutAtChar, null);
+                                MetaEntryDTO metaEntryDTO = new MetaEntryDTO(withoutAtChar, null);
+                                properties.add(metaEntryDTO);
                             }
                         }
                     } else {

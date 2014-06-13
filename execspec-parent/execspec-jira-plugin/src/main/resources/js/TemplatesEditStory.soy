@@ -29,12 +29,16 @@
             </div>
             <div class="aui-toolbar2-secondary">
                 <div id="saveOrCancelButtons" class="aui-buttons">
-//                    <button id="saveStoryButton" class="aui-button aui-button-subtle">
-//                        <span class="aui-icon aui-icon-small aui-iconfont-success">Save </span> Save
-//                    </button>
-//                    <button id="cancelEditButton" class="aui-button aui-button-subtle">
-//                        <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Cancel </span> Cancel
-//                    </button>
+                    <span class="aui-buttons">
+                        <button id="saveStoryButton" onclick="editButtonHandler.saveStory(event)" class="aui-button">
+                            <span class="aui-icon aui-icon-small aui-iconfont-success">Save </span> Save
+                        </button>
+                    </span>
+                    <span class="aui-buttons">
+                        <button id="cancelEditButton" onclick="editButtonHandler.cancelEdit(event)" class="aui-button">
+                            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Cancel </span> Cancel
+                        </button>
+                    </span>
                 </div>
             </div>
         </div>

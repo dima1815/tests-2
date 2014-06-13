@@ -4,9 +4,9 @@ import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.mycomp.execspec.jiraplugin.dto.story.output.*;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Contains rest api methods related to processing of Story objects.
@@ -47,11 +46,11 @@ public class StoryResourceCrud {
     public StoryDTO save(@PathParam("projectKey") String projectKey,
                          @PathParam("issueKey") String issueKey,
                          @QueryParam("version") String versionParam,
-                         String asString) {
+                         String storyPayload) {
 
         Validate.notNull(projectKey);
         Validate.notNull(issueKey);
-        Validate.notEmpty(asString, "story asString parameter was empty");
+//        Validate.notEmpty(asString, "story asString parameter was empty");
 
         Long version;
         if (versionParam != null && !versionParam.isEmpty()) {
@@ -59,16 +58,21 @@ public class StoryResourceCrud {
         } else {
             version = null;
         }
-        List<StoryHtmlReportDTO> storyReports = new ArrayList<StoryHtmlReportDTO>();
-
         // TODO - decide what to do about the null parameters below?
+        ObjectMapper mapper = new ObjectMapper();
         StoryDTO storyDTO = null;
+        try {
+            storyDTO = mapper.readValue(storyPayload, StoryDTO.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 //                new StoryDTO(
 //                projectKey, issueKey, version, asString, null, storyReports,
 //                null, null, null, null, null, null);
         log.debug("saving story:\n" + storyDTO);
 
         StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+        Validate.notNull(savedStoryDTO.getVersion());
         return savedStoryDTO;
     }
 
@@ -100,6 +104,16 @@ public class StoryResourceCrud {
         LocalizedKeywords keywords = new LocalizedKeywords();
 
         StoryDTO storyDTO = new StoryDTO();
+
+//        MetaDTO meta = new MetaDTO();
+//        meta.setKeyword("Meta:");
+//        List<MetaEntryDTO> properties = new ArrayList<MetaEntryDTO>();
+//        properties.add(new MetaEntryDTO("property1", "property1_value"));
+//        properties.add(new MetaEntryDTO("property2", "property2_value"));
+//        properties.add(new MetaEntryDTO("property3", "property3_value"));
+//        meta.setProperties(properties);
+//        storyDTO.setMeta(meta);
+
         NarrativeDTO narrative = new NarrativeDTO(keywords.narrative());
         narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
         narrative.setAsA(new AsADTO(keywords.asA(), null));

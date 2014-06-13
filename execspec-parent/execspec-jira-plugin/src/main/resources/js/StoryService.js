@@ -54,12 +54,12 @@ function StoryService() {
         storyService.debug("# fetchNewStoryTemplate");
     }
 
-    this.saveOrUpdateStory = function (story, callBack) {
+    this.saveOrUpdateStory = function (storyPayload, callBack) {
 
         storyService.debug("> saveOrUpdateStory");
-        storyService.debug("story - " + story);
-        var storyAsString = story.asString;
-        storyService.debug("storyAsString - " + storyAsString);
+        storyService.debug("storyPayload - " + storyPayload);
+//        var storyAsString = storyPayload.asString;
+//        storyService.debug("storyAsString - " + storyAsString);
 
         var successCallback = function (data, status, xhr) {
             storyService.debug("> StoryService.saveOrUpdateStory.successCallback");
@@ -72,9 +72,9 @@ function StoryService() {
             storyService.debug("# StoryService.saveOrUpdateStory.successCallback");
         }
 
-        var saveUrl = pathSave + story.projectKey + "/" + story.issueKey;
-        if (story.version != undefined && story.version != "") {
-            saveUrl += "?version=" + story.version;
+        var saveUrl = pathSave + storyPayload.projectKey + "/" + storyPayload.issueKey;
+        if (storyPayload.version != undefined && storyPayload.version != "") {
+            saveUrl += "?version=" + storyPayload.version;
         }
         storyService.debug("saveUrl - " + saveUrl);
 
@@ -83,7 +83,7 @@ function StoryService() {
             url: saveUrl,
             contentType: "text/plain; charset=utf-8",
             success: successCallback,
-            data: storyAsString,
+            data: storyPayload,
             dataType: "json"
         });
 

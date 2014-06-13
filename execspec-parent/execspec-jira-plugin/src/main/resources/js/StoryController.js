@@ -29,23 +29,24 @@ function StoryController() {
 
     this.loadStory = function () {
 
-        this.debug("> showStory");
+        this.debug("> loadStory");
         var issueKey = pageUtils.getIssueKey();
         var projectKey = pageUtils.getProjectKey();
         storyService.find(projectKey, issueKey,
             function (story) {
+                storyView.debug("> loadStory.callback, story - " + story);
                 if (story != undefined) {
-                    storyView.showStoryButton(story);
+//                    storyView.showStoryButton(story);
 //                    storyView.showStoryReportButtons(story); // TODO
-                    storyView.showStory(story, storyController.editMode);
                     storyController.currentStory = story;
+                    storyController.showStoryHandler();
                 } else {
                     storyController.debug("no story found for project - " + projectKey + ", issue - " + issueKey);
                     storyView.showAddStory();
                 }
             }
         );
-        this.debug("# showStory");
+        this.debug("# loadStory");
     }
 
     this.addStoryHandler = function (event) {
@@ -94,32 +95,44 @@ function StoryController() {
         this.debug("# showStoryReport");
     }
 
-    this.addStory = function () {
-
-        this.debug("> addStory");
-
-        var story = new StoryModel();
-        story.projectKey = pageUtils.getProjectKey();
-        story.issueKey = pageUtils.getIssueKey();
-
-        var newStoryAsString = "narrative:";
-        newStoryAsString += "\nIn order to ";
-        newStoryAsString += "\nAs a ";
-        newStoryAsString += "\nI want to ";
-        newStoryAsString += "\n\nScenario: test scenario";
-        newStoryAsString += "\nGiven something none existent";
-        story.asString = newStoryAsString;
-
-        storyService.saveOrUpdateStory(story,
-            function (story) {
-                storyController.currentStory = story;
-                storyView.showStory(story, storyController.editMode);
-                storyView.showStoryReportButtons(story);
-                // TODO remove the add story button from the menu
-            });
-
-        this.debug("# addStory");
-    }
+//    this.addStory = function () {
+//
+//        this.debug("> addStory");
+//
+//        var story = new StoryModel();
+//        story.projectKey = pageUtils.getProjectKey();
+//        story.issueKey = pageUtils.getIssueKey();
+//
+//        var newStoryAsString = "narrative:";
+//        newStoryAsString += "\nIn order to ";
+//        newStoryAsString += "\nAs a ";
+//        newStoryAsString += "\nI want to ";
+//        newStoryAsString += "\n\nScenario: test scenario";
+//        newStoryAsString += "\nGiven something none existent";
+//        story.asString = newStoryAsString;
+//
+//        // TODO - temp
+//        story.meta = new Object();
+//        story.meta.properties = [];
+//        var metaField = new Object();
+//        metaField.name = "metaName";
+//        metaField.value = "metaValue";
+//        story.meta.properties.push(metaField);
+//        var metaField2 = new Object();
+//        metaField2.name = "meta2Name";
+//        metaField2.value = "meta2Value";
+//        story.meta.properties.push(metaField2);
+//
+//        storyService.saveOrUpdateStory(story,
+//            function (story) {
+//                storyController.currentStory = story;
+//                storyView.showStory(story, storyController.editMode);
+//                storyView.showStoryReportButtons(story);
+//                // TODO remove the add story button from the menu
+//            });
+//
+//        this.debug("# addStory");
+//    }
 
     this.editStoryHandler = function () {
 
@@ -166,21 +179,13 @@ function StoryController() {
         this.debug("# deleteStory");
     }
 
-    this.saveStory = function (event) {
+    this.saveStoryAsModel = function () {
 
-        this.debug("> saveStory");
-        event.preventDefault();
+        this.debug("> saveStoryAsModel");
 
-        var model = new StoryModel();
-        var issueKey = pageUtils.getIssueKey();
-        model.issueKey = issueKey;
-        var projectKey = pageUtils.getProjectKey();
-        model.projectKey = projectKey;
-        var storyInput = storyView.getStoryInputAsString();
-        model.asString = storyInput;
-        model.version = this.currentStory.version;
+        var storyPayload = JSON.stringify(this.currentStory);
 
-        storyService.saveOrUpdateStory(model, function (savedStory) {
+        storyService.saveOrUpdateStory(storyPayload, function (savedStory) {
             storyController.debug("> saveStory.saveOrUpdateStory callback");
             storyController.editMode = false;
             storyView.showStory(savedStory, storyController.editMode);
@@ -189,8 +194,34 @@ function StoryController() {
             storyController.debug("# saveStory.saveOrUpdateStory callback");
         });
 
-        this.debug("# saveStory");
+        this.debug("# saveStoryAsModel");
     }
+
+//    this.saveStory = function (event) {
+//
+//        this.debug("> saveStory");
+//        event.preventDefault();
+//
+//        var model = new StoryModel();
+//        var issueKey = pageUtils.getIssueKey();
+//        model.issueKey = issueKey;
+//        var projectKey = pageUtils.getProjectKey();
+//        model.projectKey = projectKey;
+//        var storyInput = storyView.getStoryInputAsString();
+//        model.asString = storyInput;
+//        model.version = this.currentStory.version;
+//
+//        storyService.saveOrUpdateStory(model, function (savedStory) {
+//            storyController.debug("> saveStory.saveOrUpdateStory callback");
+//            storyController.editMode = false;
+//            storyView.showStory(savedStory, storyController.editMode);
+//            storyView.showStoryReportButtons(savedStory);
+//            storyController.currentStory = savedStory;
+//            storyController.debug("# saveStory.saveOrUpdateStory callback");
+//        });
+//
+//        this.debug("# saveStory");
+//    }
 
     this.cancelEditingStory = function (event) {
 

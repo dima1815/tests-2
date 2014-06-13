@@ -197,26 +197,34 @@
             {if $meta.properties != null}
                 <div class="story-meta-properties">
                     {foreach $metaProperty in $meta.properties}
-                        <div class="story-meta-property">
-                            <span class="meta-property-start-symbol">
-                                @
-                            </span>
-                            <span class="meta-property-name">
-                                {call .renderShortSingleLineField}
-                                    {param fieldName: 'meta.properties[0].name' /}
-                                    {param displayValue: 'Property key' /}
-                                    {param fieldValue: $metaProperty.name /}
-                                {/call}
-                            </span>
-                            &nbsp;
-                            <span class="meta-preperty-value">
-                                {call .renderShortSingleLineField}
-                                    {param fieldName: 'meta.properties[0].value' /}
-                                    {param displayValue: 'Property value' /}
-                                    {param fieldValue: $metaProperty.value /}
-                                {/call}
-                            </span>
-                        <div>
+                        <div class="story-element-container">
+                            <div
+                                class="element-operations-container"
+                                style="display: none">
+                                <a class="remove-element-link"href="#"
+                                      onclick="editButtonHandler.removeElement(event, 'metaField', '{index($metaProperty)}')">
+                                    <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+                                </a>
+                            </div>
+                            <div class="story-meta-property element-content-container">
+                                <span class="meta-property-start-symbol">@</span>
+                                <span class="meta-property-name">
+                                    {call .renderShortSingleLineField}
+                                        {param fieldName: 'meta.properties['+ index($metaProperty) + '].name' /}
+                                        {param displayValue: 'Property key' /}
+                                        {param fieldValue: $metaProperty.name /}
+                                    {/call}
+                                </span>
+                                &nbsp;
+                                <span class="meta-preperty-value">
+                                    {call .renderShortSingleLineField}
+                                        {param fieldName: 'meta.properties['+ index($metaProperty) + '].value' /}
+                                        {param displayValue: 'Property value' /}
+                                        {param fieldValue: $metaProperty.value /}
+                                    {/call}
+                                </span>
+                            </div>
+                        </div>
                     {/foreach}
                 <div>
             {/if}
@@ -264,7 +272,7 @@
                         </td>
                         <td style="text-align: left;">
                             {call .renderLongSingleLineField}
-                                {param fieldName: 'narrative.inOrderTo' /}
+                                {param fieldName: 'narrative.inOrderTo.value' /}
                                 {param displayValue: 'In order to' /}
                                 {param fieldValue: $story.narrative.inOrderTo.value /}
                             {/call}
@@ -280,7 +288,7 @@
                         </td>
                         <td style="text-align: left;">
                             {call .renderLongSingleLineField}
-                                {param fieldName: 'narrative.asA' /}
+                                {param fieldName: 'narrative.asA.value' /}
                                 {param displayValue: 'As a' /}
                                 {param fieldValue: $story.narrative.asA.value /}
                             {/call}
@@ -296,7 +304,7 @@
                         </td>
                         <td style="text-align: left;">
                             {call .renderLongSingleLineField}
-                                {param fieldName: 'narrative.iWantTo' /}
+                                {param fieldName: 'narrative.iWantTo.value' /}
                                 {param displayValue: 'I Want to' /}
                                 {param fieldValue: $story.narrative.iWantTo.value /}
                             {/call}

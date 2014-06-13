@@ -240,19 +240,6 @@ function StoryView(storyController) {
         var templateObj = new Object();
         templateObj.story = story;
 
-
-        templateObj.insertGivenStoriesLinkInfo = new Object();
-        templateObj.insertGivenStoriesLinkInfo.text = "GivenStories";
-        templateObj.insertGivenStoriesLinkInfo.onClickFunction = "insertGivenStories";
-
-        templateObj.insertLifecycleLinkInfo = new Object();
-        templateObj.insertLifecycleLinkInfo.text = "Lifecycle";
-        templateObj.insertLifecycleLinkInfo.onClickFunction = "insertLifecycle";
-
-        templateObj.insertScenarioLinkInfo = new Object();
-        templateObj.insertScenarioLinkInfo.text = "Scenario";
-        templateObj.insertScenarioLinkInfo.onClickFunction = "insertScenario";
-
         var richEditStoryContent = execspec.viewissuepage.editstory.rich.renderRichEditStoryContent(templateObj);
         AJS.$("#richEditStoryContainer").html(richEditStoryContent);
 
@@ -371,46 +358,51 @@ function StoryView(storyController) {
         storyView.debug("# StoryView.showStoryButton");
     }
 
-    this.showStory = function (story, editMode) {
+    this.showStory = function(story) {
+        AJS.$("#storyContainer").html("This issue has a story");
+        AJS.$("#storyContainer").show();
+    }
 
-        storyView.debug("> StoryView.showStory");
-        storyView.debug("story.asString - " + story.asString);
-        storyView.debug("editMode - " + editMode);
-
-        if (editMode != undefined && editMode == true) {
-
-            var lines = story.asString.split("\n");
-            var lineCount = lines.length;
-            var storyAsString = story.asString;
-            var storyAsHTML = story.asHTML;
-
-            // hide story and story reports view
-            AJS.$("#storyContainer").hide();
-            AJS.$("#storyReportContainer").hide();
-
-            // show edit area
-//            AJS.$("#story-edit-text-area").val(storyAsString);
-//            AJS.$("#story-edit-text-area").attr("rows", lineCount);
-
-
-//            AJS.$("#storyRichTextEditArea").html(storyAsString);
-//            var editorContainer = this.editor.one('storyRichTextEditArea');
-//            editorContainer.html(storyAsString);
-            this.editor.execCommand("setContent", storyAsHTML);
-
-            var height = AJS.$("iframe").contents().height() + 40;
-            storyView.debug("setting editor height to - " + height);
-            AJS.$("#storyEditContainer").height(height);
-
-            AJS.$("#storyEditContainer").show();
-
-            var height = AJS.$("iframe").contents().height() + 40;
-            storyView.debug("setting editor height to - " + height);
-            AJS.$("#storyEditContainer").height(height);
-
-            AJS.$("#testMouseOver").mouseover(function () {
-                storyView.debug("Mouse over event fired on test container!");
-            });
+//    this.showStory = function (story, editMode) {
+//
+//        storyView.debug("> StoryView.showStory");
+//        storyView.debug("story.asString - " + story.asString);
+//        storyView.debug("editMode - " + editMode);
+//
+//        if (editMode != undefined && editMode == true) {
+//
+//            var lines = story.asString.split("\n");
+//            var lineCount = lines.length;
+//            var storyAsString = story.asString;
+//            var storyAsHTML = story.asHTML;
+//
+//            // hide story and story reports view
+//            AJS.$("#storyContainer").hide();
+//            AJS.$("#storyReportContainer").hide();
+//
+//            // show edit area
+////            AJS.$("#story-edit-text-area").val(storyAsString);
+////            AJS.$("#story-edit-text-area").attr("rows", lineCount);
+//
+//
+////            AJS.$("#storyRichTextEditArea").html(storyAsString);
+////            var editorContainer = this.editor.one('storyRichTextEditArea');
+////            editorContainer.html(storyAsString);
+//            this.editor.execCommand("setContent", storyAsHTML);
+//
+//            var height = AJS.$("iframe").contents().height() + 40;
+//            storyView.debug("setting editor height to - " + height);
+//            AJS.$("#storyEditContainer").height(height);
+//
+//            AJS.$("#storyEditContainer").show();
+//
+//            var height = AJS.$("iframe").contents().height() + 40;
+//            storyView.debug("setting editor height to - " + height);
+//            AJS.$("#storyEditContainer").height(height);
+//
+//            AJS.$("#testMouseOver").mouseover(function () {
+//                storyView.debug("Mouse over event fired on test container!");
+//            });
 
 //            AJS.$("#inOrderTo").mouseover(function() {
 //                storyView.debug("Mouse over event fired on inOrderTo!");
@@ -473,36 +465,36 @@ function StoryView(storyController) {
 //                at: "left+" + 100 + "px top+" + 100 + "px"
 //            });
 
-        } else {
-
-            AJS.$("#storyReportContainer").hide();
-            AJS.$("#storyEditContainer").hide();
-
-//            AJS.$("#storyContainer").html(story.asHTML);
-            var templateObject = new Object();
-            templateObject.story = story;
-            templateObject.story.asJson = JSON.stringify(story);
-            var editStoryContent = execspec.viewissuepage.editstory.renderEditStory(templateObject);
-            AJS.$("#storyContainer").html(editStoryContent);
-
-            AJS.$("#storyContainer").show();
-
-            AJS.$(".beforeNarrative").mouseover(function () {
-                storyView.debug("mouse over on - beforeNarrative")
-                AJS.$(".beforeNarrativeHint").show();
-            });
-
-            AJS.$(".beforeNarrative").mouseout(function () {
-                storyView.debug("mouse out on - beforeNarrative")
-                AJS.$(".beforeNarrativeHint").hide();
-            });
-
-        }
-
-        this.updateSelectedButton("show-story-button");
-
-        storyView.debug("# StoryView.showStory");
-    }
+//        } else {
+//
+//            AJS.$("#storyReportContainer").hide();
+//            AJS.$("#storyEditContainer").hide();
+//
+////            AJS.$("#storyContainer").html(story.asHTML);
+//            var templateObject = new Object();
+//            templateObject.story = story;
+//            templateObject.story.asJson = JSON.stringify(story);
+//            var editStoryContent = execspec.viewissuepage.editstory.renderEditStory(templateObject);
+//            AJS.$("#storyContainer").html(editStoryContent);
+//
+//            AJS.$("#storyContainer").show();
+//
+//            AJS.$(".beforeNarrative").mouseover(function () {
+//                storyView.debug("mouse over on - beforeNarrative")
+//                AJS.$(".beforeNarrativeHint").show();
+//            });
+//
+//            AJS.$(".beforeNarrative").mouseout(function () {
+//                storyView.debug("mouse out on - beforeNarrative")
+//                AJS.$(".beforeNarrativeHint").hide();
+//            });
+//
+//        }
+//
+//        this.updateSelectedButton("show-story-button");
+//
+//        storyView.debug("# StoryView.showStory");
+//    }
 
     this.showStoryReportButtons = function (story) {
 
@@ -538,30 +530,30 @@ function StoryView(storyController) {
         storyView.debug("# StoryView.showStoryReportButtons");
     }
 
-    this.showStoryReport = function (storyReport, storyVersion) {
-
-        storyView.debug("> StoryView.showStoryReport");
-        storyView.debug("storyReport.environment - " + storyReport.environment);
-
-        var reportToShowTemplateModel = new Object();
-        reportToShowTemplateModel.storyReport = storyReport;
-        var storyReportHTML = execspec.viewissuepage.showstory.renderStoryReport(reportToShowTemplateModel);
-        AJS.$("#storyReportContainer").html(storyReportHTML);
-
-        if (storyVersion > storyReport.storyVersion) {
-            AJS.messages.generic("#reportMessageContainer", {
-                title: "Story has been modified since last run",
-                closeable: false
-            });
-        }
-
-        AJS.$("#storyContainer").hide();
-        AJS.$("#storyEditContainer").hide();
-        AJS.$("#storyReportContainer").show();
-
-        this.updateSelectedButton("show-story-report-" + storyReport.environment);
-        storyView.debug("# StoryView.showStoryReport");
-    }
+//    this.showStoryReport = function (storyReport, storyVersion) {
+//
+//        storyView.debug("> StoryView.showStoryReport");
+//        storyView.debug("storyReport.environment - " + storyReport.environment);
+//
+//        var reportToShowTemplateModel = new Object();
+//        reportToShowTemplateModel.storyReport = storyReport;
+//        var storyReportHTML = execspec.viewissuepage.showstory.renderStoryReport(reportToShowTemplateModel);
+//        AJS.$("#storyReportContainer").html(storyReportHTML);
+//
+//        if (storyVersion > storyReport.storyVersion) {
+//            AJS.messages.generic("#reportMessageContainer", {
+//                title: "Story has been modified since last run",
+//                closeable: false
+//            });
+//        }
+//
+//        AJS.$("#storyContainer").hide();
+//        AJS.$("#storyEditContainer").hide();
+//        AJS.$("#storyReportContainer").show();
+//
+//        this.updateSelectedButton("show-story-report-" + storyReport.environment);
+//        storyView.debug("# StoryView.showStoryReport");
+//    }
 
     this.showAutoComplete = function (entries) {
 

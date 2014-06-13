@@ -1,9 +1,9 @@
 package com.mycomp.execspec.jiraplugin.dto.story;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.output.*;
 import com.mycomp.execspec.jiraplugin.util.ByLineStoryParser;
+import org.apache.commons.lang.Validate;
 import org.jbehave.core.steps.StepCreator;
 
 import java.util.List;
@@ -14,13 +14,18 @@ import java.util.regex.Matcher;
  */
 public class StoryDTOUtils {
 
-    public static StoryDTO toDTO(Story story, List<StepDocDTO> stepDocs) {
+    public static StoryDTO toDTO(Story story) {
 
         String issueKey = story.getIssueKey();
         String storyAsString = story.getAsString();
 
         ByLineStoryParser parser = new ByLineStoryParser();
         StoryDTO storyDTO = parser.parseStory(storyAsString, issueKey + ".story");
+
+        storyDTO.setProjectKey(story.getProjectKey());
+        storyDTO.setIssueKey(story.getIssueKey());
+        storyDTO.setVersion(story.getVersion());
+
         return storyDTO;
     }
 
@@ -132,4 +137,101 @@ public class StoryDTOUtils {
         }
     }
 
+    public static String asString(StoryDTO storyDTO) {
+
+        // walk the story model and convert to string
+
+        final String LB = "\n";
+        StringBuilder sb = new StringBuilder();
+
+        // description
+        String description = storyDTO.getDescription();
+        if (description != null && !description.trim().isEmpty()) {
+            sb.append(description.trim() + LB);
+            sb.append(LB);
+        }
+
+        // meta
+        MetaDTO meta = storyDTO.getMeta();
+        if (meta != null) {
+            String keyword = meta.getKeyword();
+            Validate.notEmpty(keyword);
+            keyword = keyword.trim();
+            Validate.notEmpty(keyword);
+            sb.append(keyword + LB);
+            List<MetaEntryDTO> properties = meta.getProperties();
+            if (properties != null && !properties.isEmpty()) {
+                for (MetaEntryDTO p : properties) {
+                    String name = p.getName();
+                    String value = p.getValue();
+                    sb.append(name);
+                    if (value != null && !value.isEmpty()) {
+                        sb.append(" " + value);
+                    }
+                    sb.append(LB);
+                }
+            }
+            sb.append(LB);
+        }
+
+        // narrative
+        NarrativeDTO narrative = storyDTO.getNarrative();
+        if (narrative != null) {
+            {
+                String keyword = narrative.getKeyword();
+                sb.append(keyword + LB);
+            }
+            {
+                InOrderToDTO inOrderTo = narrative.getInOrderTo();
+                if (inOrderTo != null) {
+                    String keyword = inOrderTo.getKeyword();
+                    sb.append(keyword);
+                    String value = inOrderTo.getValue();
+                    if (value != null && !value.isEmpty()) {
+                        sb.append(" " + value);
+                    }
+                    sb.append(LB);
+                }
+            }
+            {
+                AsADTO asA = narrative.getAsA();
+                if (asA != null) {
+                    String keyword = asA.getKeyword();
+                    sb.append(keyword);
+                    String value = asA.getValue();
+                    if (value != null && !value.isEmpty()) {
+                        sb.append(" " + value);
+                    }
+                    sb.append(LB);
+                }
+            }
+            {
+                IWantToDTO iWantTo = narrative.getiWantTo();
+                if (iWantTo != null) {
+                    String keyword = iWantTo.getKeyword();
+                    sb.append(keyword);
+                    String value = iWantTo.getValue();
+                    if (value != null && !value.isEmpty()) {
+                        sb.append(" " + value);
+                    }
+                    sb.append(LB);
+                }
+            }
+            {
+                SoThatDTO soThat = narrative.getSoThat();
+                if (soThat != null) {
+                    String keyword = soThat.getKeyword();
+                    sb.append(keyword);
+                    String value = soThat.getValue();
+                    if (value != null && !value.isEmpty()) {
+                        sb.append(" " + value);
+                    }
+                    sb.append(LB);
+                }
+            }
+        }
+
+        String asString = sb.toString();
+        return asString;
+    }
 }

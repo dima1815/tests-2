@@ -7,10 +7,8 @@ import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +82,17 @@ public class StoryServiceImpl implements StoryService {
         story.setVersion(1L);
         story.setIssueKey(storyDTO.getIssueKey());
         story.setProjectKey(storyDTO.getProjectKey());
-        story.setAsString(storyDTO.getAsString());
+
+
+        String asString = storyDTO.getAsString();
+        if (asString != null) {
+            // this will be the case when the client sends the story already as a string, e.g. from the
+            // Raw editor rather than Rich editor
+        } else {
+            asString = StoryDTOUtils.asString(storyDTO);
+        }
+        story.setAsString(asString);
+
         story.setLastEditedBy(userName);
         story.save();
 
@@ -118,8 +126,7 @@ public class StoryServiceImpl implements StoryService {
 
             Story story = byIssueKey.get(0);
 
-            List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, stepDocs);
+            StoryDTO storyDTO = StoryDTOUtils.toDTO(story);
             return storyDTO;
         }
     }
@@ -127,13 +134,11 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<StoryDTO> findByProjectKey(String projectKey) {
 
-        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
-
         List<Story> stories = storyDao.findAll();
 
         List<StoryDTO> storyDTOs = new ArrayList<StoryDTO>(stories.size());
         for (Story story : stories) {
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story, stepDocs);
+            StoryDTO storyDTO = StoryDTOUtils.toDTO(story);
             storyDTOs.add(storyDTO);
         }
 
@@ -145,9 +150,7 @@ public class StoryServiceImpl implements StoryService {
 
         Story story = storyDao.get(storyId);
 
-        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(story.getProjectKey());
-        List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(story.getProjectKey(), story.getIssueKey());
-        StoryDTO storyModel = StoryDTOUtils.toDTO(story, stepDocs);
+        StoryDTO storyModel = StoryDTOUtils.toDTO(story);
         return storyModel;
     }
 

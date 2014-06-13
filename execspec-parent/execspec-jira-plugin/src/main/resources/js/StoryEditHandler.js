@@ -12,7 +12,7 @@ function StoryEditHandler() {
         }
     }
 
-    this.init = function () {
+    this.init = function ( ) {
         this.debug("initialized");
     }
 
@@ -325,6 +325,18 @@ function StoryEditHandler() {
         this.debug("# rawTextEditorClicked");
     }
 
+    this.getArrayIndexFromPath = function (str) {
+        this.debug("> getArrayIndexFromPath");
+        var regExp = new RegExp('\\[(\\d+)\\]$');
+        var match = regExp.exec(str);
+        if (match != null) {
+            return match[1];
+        } else {
+            return null;
+        }
+        this.debug("# getArrayIndexFromPath");
+    }
+
     this.bindInputElementsToModel = function () {
 
         this.debug("> bindInputElementsToModel");
@@ -338,16 +350,24 @@ function StoryEditHandler() {
                 var fieldValue = AJS.$(this).attr("value");
                 editButtonHandler.debug("fieldName = " + fieldName + ", value = " + fieldValue);
 
-//                editButtonHandler.debug("convert indexes to properties");
-//                editButtonHandler.debug("fieldName before - " + fieldName);
-//                fieldName = fieldName.replace(/\[(\w+)\]/g, '.$1');
-//                editButtonHandler.debug("fieldName after - " + fieldName);
-
                 var path = fieldName.split('.');
                 var obj = storyController.currentStory;
                 for (var i = 0; i < path.length - 1; i++) {
-                    obj[path[i]] = {};
-                    obj = obj[path[i]];
+                    var pathPart = path[i];
+//                    if (obj[ pathPart] == null) {
+//                        obj[pathPart] = {};
+//                    }
+                    editButtonHandler.debug("### checking if fieldName part ends in array index - " + pathPart);
+                    var arrayIndexFromPath = editButtonHandler.getArrayIndexFromPath(pathPart);
+                    if (arrayIndexFromPath != null) {
+                        editButtonHandler.debug("### fieldName part ends in array index - " + pathPart);
+                        var partWithoutIndex = pathPart.substr(0, pathPart.length - (arrayIndexFromPath.length + 2));
+                        editButtonHandler.debug("### partWithoutIndex " + partWithoutIndex);
+                        obj = obj[partWithoutIndex][arrayIndexFromPath];
+                    } else {
+                        obj = obj[pathPart];
+                    }
+
                 }
                 obj[path[path.length - 1]] = fieldValue;
 
@@ -395,6 +415,28 @@ function StoryEditHandler() {
         this.debug("# insertElement");
     }
 
+    this.removeElement = function (event, elementName, index) {
+
+        this.debug("> removeElement");
+        this.debug("elementName - " + elementName);
+
+        this.bindInputElementsToModel();
+
+        if (elementName == "description") {
+            this.removeDescription();
+        } else if (elementName == "meta") {
+            this.removeMeta();
+        } else if (elementName == "metaField") {
+            this.removeMetaField(index);
+        }
+
+        this.assignRichEditorHandlers(storyController.currentStory);
+        this.assignShowElementOperationsOnHover(storyController.currentStory);
+
+        event.preventDefault();
+        this.debug("# removeElement");
+    }
+
     this.insertDescription = function () {
 
         this.debug("> insertDescription");
@@ -407,24 +449,6 @@ function StoryEditHandler() {
         this.debug("# insertDescription");
     }
 
-    this.removeElement = function (event, elementName) {
-
-        this.debug("> removeElement");
-        this.debug("elementName - " + elementName);
-
-        if (elementName == "description") {
-            this.removeDescription();
-        } else if (elementName == "meta") {
-            this.removeMeta();
-        }
-
-        this.assignRichEditorHandlers(storyController.currentStory);
-        this.assignShowElementOperationsOnHover(storyController.currentStory);
-
-        event.preventDefault();
-        this.debug("# removeElement");
-    }
-
     this.removeMeta = function () {
 
         this.debug("> removeMeta");
@@ -433,6 +457,24 @@ function StoryEditHandler() {
         AJS.$("#storyMetaContainer").html("");
         this.debug("# removeMeta");
     }
+
+    this.removeMetaField = function (index) {
+
+        this.debug("> removeMetaField");
+
+        this.debug("story before removing property at index - " + index
+            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+
+        storyController.currentStory.meta.properties.splice(index, 1);
+
+        this.debug("story after removing property at index - " + index
+            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+
+        var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMeta(storyController.currentStory);
+        AJS.$("#storyMetaContainer").html(metaHtml);
+        this.debug("# removeMetaField");
+    }
+
 
     this.removeDescription = function () {
 
@@ -525,6 +567,18 @@ function StoryEditHandler() {
 
         event.preventDefault();
         this.debug("# insertScenario");
+    }
+
+    this.saveStory = function (event) {
+
+        this.debug("> saveStory");
+
+        this.bindInputElementsToModel();
+
+        storyController.saveStoryAsModel();
+
+        event.preventDefault();
+        this.debug("# saveStory");
     }
 
 }

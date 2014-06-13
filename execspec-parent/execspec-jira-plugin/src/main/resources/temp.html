@@ -1,80 +1,116 @@
-<div id="storyDescriptionContainer" class="story-element-container">
-    <div class="element-operations-container" style="display: none;"><a class="remove-element-link" href="#"
-                                                                        onclick="editButtonHandler.removeElement(event, 'description')"><span
-            class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span></a></div>
-    <div class="element-content-container story-description"><textarea class="textarea rich-story-editor-field"
-                                                                       name="comment" rows="1" wrap="off"
-                                                                       placeholder="enter 'Description' here"></textarea>
-    </div>
-</div>
-<div id="insertLinkContainerBeforeMeta" class="insert-element-link-div"></div>
-<div id="storyMetaContainer"></div>
-<div id="insertLinkContainerBeforeNarrative" class="insert-element-link-div">&nbsp;<a aria-controls="dropdown2-more"
-                                                                                      href="#insertBeforeNarrativeDropdownDiv"
-                                                                                      aria-owns="insertBeforeNarrativeDropdownDiv"
+<div class="element-content-container story-meta">
+    <div class="story-meta-keyword">Meta:</div>
+    <div class="story-meta-properties">
+        <div class="story-element-container">
+            <div class="element-operations-container" style="display: none;"><a class="remove-element-link" href="#"
+                                                                                onclick="editButtonHandler.removeElement(event, 'metaField', '1')"><span
+                    class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span></a></div>
+            <div class="story-meta-property element-content-container"><span class="meta-property-start-symbol">@</span><span
+                    class="meta-property-name"><input class="text story-editor-field story-element-field-short"
+                                                      name="meta.properties[0].name" title="meta.properties[0].name" type="text"
+                                                      placeholder="enter 'Property key' here" value="property1"></span>&nbsp;<span
+                    class="meta-preperty-value"><input class="text story-editor-field story-element-field-short"
+                                                       name="meta.properties[0].value" title="meta.properties[0].value" type="text"
+                                                       placeholder="enter 'Property value' here" value="property1_value"></span>
+
+                <div></div>
+                <div class="story-element-container">
+                    <div class="element-operations-container" style="display: none;"><a class="remove-element-link" href="#"
+                                                                                        onclick="editButtonHandler.removeElement(event, 'metaField', '1')"><span
+                            class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span></a></div>
+                    <div class="story-meta-property element-content-container"><span class="meta-property-start-symbol">@</span><span
+                            class="meta-property-name"><input class="text story-editor-field story-element-field-short"
+                                                              name="meta.properties[1].name" title="meta.properties[1].name" type="text"
+                                                              placeholder="enter 'Property key' here" value="property2"></span>&nbsp;<span
+                            class="meta-preperty-value"><input class="text story-editor-field story-element-field-short"
+                                                               name="meta.properties[1].value" title="meta.properties[1].value" type="text"
+                                                               placeholder="enter 'Property value' here" value="property2_value"></span>
+
+                        <div></div>
+                        <div class="story-element-container">
+                            <div class="element-operations-container" style="display: none;"><a class="remove-element-link" href="#"
+                                                                                                onclick="editButtonHandler.removeElement(event, 'metaField', '1')"><span
+                                    class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span></a></div>
+                            <div class="story-meta-property element-content-container"><span
+                                    class="meta-property-start-symbol">@</span><span class="meta-property-name"><input
+                                    class="text story-editor-field story-element-field-short" name="meta.properties[2].name"
+                                    title="meta.properties[2].name" type="text" placeholder="enter 'Property key' here"
+                                    value="property3"></span>&nbsp;<span class="meta-preperty-value"><input
+                                    class="text story-editor-field story-element-field-short" name="meta.properties[2].value"
+                                    title="meta.properties[2].value" type="text" placeholder="enter 'Property value' here"
+                                    value="property3_value"></span>
+
+                                <div></div>
+                                <div>
+                                    <div id="insertLinkContainerMetaProperty">
+                                        <div class="insert-element-link-div">&nbsp;<a aria-controls="dropdown2-more"
+                                                                                      href="#insertDropdownDivMetaProperty"
+                                                                                      aria-owns="insertDropdownDivMetaProperty"
                                                                                       aria-haspopup="true"
                                                                                       class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
-                                                                                      style="display: none;"
-                                                                                      pressed="false"><span
-        class="aui-icon aui-icon-small aui-iconfont-add insert-element-icon"></span></a>
+                                                                                      style="display: none;" pressed="false"><span
+                                                class="aui-icon aui-icon-small aui-iconfont-add insert-element-icon"></span></a>
 
-    <div id="insertBeforeNarrativeDropdownDiv" trigger-div-id="insertBeforeNarrativeTriggerDiv"
-         class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true"
-         data-dropdown2-alignment="left" style="left: 280.6px; top: 801.3px; display: none;">
-        <ul class="aui-list-truncate">
-            <li><a href="#" onclick="editButtonHandler.insertMeta(event)">Meta</a></li>
-        </ul>
+                                            <div id="insertDropdownDivMetaProperty" trigger-div-id="insertTriggerDivMetaProperty"
+                                                 class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true"
+                                                 data-dropdown2-alignment="left" style="left: 280.6px; top: 801.3px; display: none;">
+                                                <ul class="aui-list-truncate">
+                                                    <li><a href="#" onclick="editButtonHandler.insertElement(event, 'metaField')">New meta
+                                                        field</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="insertLinkContainerBeforeNarrative"></div>
+                        <div class="narrative">
+                            <div class="title">Narrative:</div>
+                            <div class="inOrderTo">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span
+                                                class="keyword">In order to</span></td>
+                                        <td style="text-align: left;"><input
+                                                class="text story-editor-field long-field story-element-field-long"
+                                                name="narrative.inOrderTo" title="narrative.inOrderTo" type="text"
+                                                placeholder="enter 'In order to' here"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="asA">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span
+                                                class="keyword">As a</span></td>
+                                        <td style="text-align: left;"><input
+                                                class="text story-editor-field long-field story-element-field-long" name="narrative.asA"
+                                                title="narrative.asA" type="text" placeholder="enter 'As a' here"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="iWantTo">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span
+                                                class="keyword">I want to</span></td>
+                                        <td style="text-align: left;"><input
+                                                class="text story-editor-field long-field story-element-field-long" name="narrative.iWantTo"
+                                                title="narrative.iWantTo" type="text" placeholder="enter 'I Want to' here"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="insertBeforeNarrativeDropdownDiv" trigger-div-id="insertBeforeNarrativeTriggerDiv"
-         class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true"
-         data-dropdown2-alignment="left" style="left: 57.55px; top: 564px; display: none;">
-        <ul class="aui-list-truncate">
-            <li><a class="" href="#" onclick="editButtonHandler.insertDescription(event)">Description</a></li>
-            <li><a class="" href="#" onclick="editButtonHandler.insertMeta(event)">Meta</a></li>
-        </ul>
-    </div>
-</div>
-<div class="narrative">
-    <div class="title">Narrative:</div>
-    <div class="inOrderTo">
-        <table>
-            <tbody>
-            <tr>
-                <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span class="keyword">In order to</span>
-                </td>
-                <td style="text-align: left;"><input style="width: 100%;"
-                                                     class="text long-field rich-story-editor-field" name="In order to"
-                                                     title="In order to" placeholder="enter 'In order to' here"
-                                                     type="text"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="asA">
-        <table>
-            <tbody>
-            <tr>
-                <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;"><span class="keyword">As a</span>
-                </td>
-                <td style="text-align: left;"><input style="width: 100%;"
-                                                     class="text long-field rich-story-editor-field" name="As a"
-                                                     title="As a" placeholder="enter 'As a' here" type="text"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="iWantTo"><span class="keyword">I want to</span><span class="value"> [click here to edit]</span></div>
-</div>&nbsp;<a aria-controls="dropdown2-more" href="#insertAfterNarrativeDropdownDiv"
-               aria-owns="insertAfterNarrativeDropdownDiv" aria-haspopup="true"
-               class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
-               style="display: none" pressed="false"><span
-        class="aui-icon aui-icon-small aui-iconfont-add insert-element-icon"></span></a>
-<div id="insertAfterNarrativeDropdownDiv" trigger-div-id="insertAfterNarrativeTriggerDiv"
-     class="aui-dropdown2 aui-style-default insert-dropdown-content" aria-hidden="true" data-dropdown2-alignment="left"
-     style="left: 280.6px; top: 801.3px; display: none;">
-    <ul class="aui-list-truncate">
-        <li><a href="#" onclick="editButtonHandler.insertGivenStories(event)">GivenStories</a></li>
-        <li><a href="#" onclick="editButtonHandler.insertLifecycle(event)">Lifecycle</a></li>
-        <li><a href="#" onclick="editButtonHandler.insertScenario(event)">Scenario</a></li>
-    </ul>
 </div>

@@ -3,7 +3,7 @@ package com.mycomp.execspec.jiraplugin.dto.story.output;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by Dmytro on 5/28/2014.
@@ -14,13 +14,13 @@ public class MetaDTO {
 
     private String keyword;
 
-    private Map properties;
+    private List<MetaEntryDTO> properties;
 
-    public Map getProperties() {
+    public List<MetaEntryDTO> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map properties) {
+    public void setProperties(List<MetaEntryDTO> properties) {
         this.properties = properties;
     }
 
