@@ -266,7 +266,7 @@ public class ByLineStoryParser {
                             && storyDTO.getNarrative() == null
                             && storyDTO.getGivenStories() == null
                             && storyDTO.getLifecycle() == null
-                            && storyDTO.getScenarios() == null) {
+                            && storyDTO.getScenarios().isEmpty()) {
                         // we are at the start and can create/append to description
                         if (storyDTO.getDescription() == null) {
                             storyDTO.setDescription(line);

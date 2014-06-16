@@ -4,7 +4,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Dmytro on 5/30/2014.
@@ -14,22 +13,26 @@ import java.util.Map;
 public class ExamplesTableDTO {
 
     private List<String> headers;
-    private List<Map<String, String>> data;
+
+    private List<TableRow> rows;
+
+    public ExamplesTableDTO() {
+    }
 
     public List<String> getHeaders() {
         return headers;
-    }
-
-    public List<Map<String, String>> getData() {
-        return data;
     }
 
     public void setHeaders(List<String> headers) {
         this.headers = headers;
     }
 
-    public void setData(List<Map<String, String>> data) {
-        this.data = data;
+    public List<TableRow> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<TableRow> rows) {
+        this.rows = rows;
     }
 
     @Override
@@ -39,8 +42,8 @@ public class ExamplesTableDTO {
 
         ExamplesTableDTO that = (ExamplesTableDTO) o;
 
-        if (data != null ? !data.equals(that.data) : that.data != null) return false;
         if (headers != null ? !headers.equals(that.headers) : that.headers != null) return false;
+        if (rows != null ? !rows.equals(that.rows) : that.rows != null) return false;
 
         return true;
     }
@@ -48,7 +51,7 @@ public class ExamplesTableDTO {
     @Override
     public int hashCode() {
         int result = headers != null ? headers.hashCode() : 0;
-        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result = 31 * result + (rows != null ? rows.hashCode() : 0);
         return result;
     }
 
@@ -56,7 +59,7 @@ public class ExamplesTableDTO {
     public String toString() {
         return "ExamplesTableDTO{" +
                 "headers=" + headers +
-                ", data=" + data +
+                ", rows=" + rows +
                 '}';
     }
 }

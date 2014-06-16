@@ -29,8 +29,14 @@ function StoryEditHandler() {
 
         this.assignAutoHeightForTextAreas(story);
 
+        this.autoHeightTextAreas(story);
 
         this.debug("# assignRichEditorHandlers");
+    }
+
+    this.autoHeightTextAreas = function (story) {
+
+        story-multiline-edit-field
     }
 
     this.assignAutoHeightForTextAreas = function (story) {
@@ -51,6 +57,7 @@ function StoryEditHandler() {
         });
 
         this.resizeTextArea = function (event) {
+
             var textArea = event.target;
 
             editButtonHandler.debug('keypressed, event.target - ' + textArea);

@@ -45,19 +45,11 @@ public class StoryResourceCrud {
     @Consumes(MediaType.TEXT_PLAIN)
     public StoryDTO save(@PathParam("projectKey") String projectKey,
                          @PathParam("issueKey") String issueKey,
-                         @QueryParam("version") String versionParam,
                          String storyPayload) {
 
         Validate.notNull(projectKey);
         Validate.notNull(issueKey);
-//        Validate.notEmpty(asString, "story asString parameter was empty");
 
-        Long version;
-        if (versionParam != null && !versionParam.isEmpty()) {
-            version = Long.parseLong(versionParam);
-        } else {
-            version = null;
-        }
         // TODO - decide what to do about the null parameters below?
         ObjectMapper mapper = new ObjectMapper();
         StoryDTO storyDTO = null;
@@ -66,9 +58,7 @@ public class StoryResourceCrud {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//                new StoryDTO(
-//                projectKey, issueKey, version, asString, null, storyReports,
-//                null, null, null, null, null, null);
+
         log.debug("saving story:\n" + storyDTO);
 
         StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);

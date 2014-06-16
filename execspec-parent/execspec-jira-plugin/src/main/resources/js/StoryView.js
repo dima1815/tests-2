@@ -1,6 +1,6 @@
 function StoryView(storyController) {
 
-    this.debugOn = false;
+    this.debugOn = true;
 
     this.autoCompleteEntries = AutoCompleteEntryModel[0];
 
@@ -228,6 +228,8 @@ function StoryView(storyController) {
     this.editStory = function (story) {
 
         this.debug("> editStory");
+
+        this.debug("story:\n" + JSON.stringify(story, null, "\t"));
 
         var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
         AJS.$("#storyButtons").html(buttonsForStory);

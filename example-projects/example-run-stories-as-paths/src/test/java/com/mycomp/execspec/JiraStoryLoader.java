@@ -41,7 +41,7 @@ public class JiraStoryLoader implements StoryLoader {
     private String downloadedStoriesDir = "src/test/resources/jira_stories";
 
     //    private String loadStoryPath = "rest/story-res/1.0/find/as-string";
-    private String loadStoryPath = "rest/story-res/1.0/find/for-issue";
+    private String loadStoryPath = "rest/story-res/1.0/find/for-path";
 
     @Override
     public String loadStoryAsText(String storyPath) {
@@ -99,7 +99,7 @@ public class JiraStoryLoader implements StoryLoader {
             List<Byte> writtenBytes = printStream.getWrittenBytes();
             String asString = StoryDTOUtils.bytesListToString(writtenBytes);
 
-            this.writeModelToFile(storyPath + ".story", asString);
+            this.writeModelToFile(storyPath, asString);
             return asString;
         } else {
             int status = response.getStatus();

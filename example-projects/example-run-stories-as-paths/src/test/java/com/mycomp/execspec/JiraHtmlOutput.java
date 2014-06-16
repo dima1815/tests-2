@@ -30,7 +30,7 @@ public class JiraHtmlOutput extends HtmlOutput {
     private String environment;
     private String jiraBaseUrl;
     private String jiraProject;
-    private String addTestReportPath = "rest/story-res/1.0/story-test/add";
+    private String addTestReportPath = "rest/story-res/1.0/story-test/add-for-path";
 
     private String storyPath;
     private Long jiraVersion;

@@ -94,4 +94,17 @@ public class StoryResourceFind {
         return response;
     }
 
+    @GET
+    @Path("/for-path/{projectKey}/{storyPath}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findForPath(
+            @PathParam("projectKey") String projectKey,
+            @PathParam("storyPath") String storyPath) {
+
+        Validate.notNull(storyPath);
+        Validate.isTrue(storyPath.endsWith(".story"));
+        storyPath = storyPath.substring(0, storyPath.lastIndexOf(".story"));
+
+        return this.findForIssue(projectKey, storyPath);
+    }
 }

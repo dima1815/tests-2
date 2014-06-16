@@ -29,6 +29,19 @@ public class StoryDTOUtils {
         return storyDTO;
     }
 
+    public static String bytesListToString(List<Byte> writtenBytes) {
+
+        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
+        byte[] bytesArray = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            Byte aByte = bytes[i];
+            bytesArray[i] = aByte;
+        }
+
+        String str = new String(bytesArray);
+        return str;
+    }
+
     private static String markTablesInPendingStep(String step, CustomHTMLOutput reporter) {
 
         StringBuilder sb = new StringBuilder();

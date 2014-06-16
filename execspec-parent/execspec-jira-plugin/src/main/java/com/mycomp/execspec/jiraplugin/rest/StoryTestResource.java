@@ -7,6 +7,7 @@ import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryTestReportsPayload;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
+import org.apache.commons.lang.Validate;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +54,12 @@ public class StoryTestResource {
     public String addStoryTestReport(
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey,
-            String setPayloadString) {
+            String payload) {
 
         ObjectMapper mapper = new ObjectMapper();
         StoryHtmlReportDTO storyReportDTO = null;
         try {
-            storyReportDTO = mapper.readValue(setPayloadString, StoryHtmlReportDTO.class);
+            storyReportDTO = mapper.readValue(payload, StoryHtmlReportDTO.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -66,6 +67,24 @@ public class StoryTestResource {
         storyReportService.addStoryTestReport(projectKey, issueKey, storyReportDTO);
         return "success";
     }
+
+    @POST
+    @AnonymousAllowed
+    @Path("/add-for-path/{projectKey}/{storyPath}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String addStoryTestReportForPath(
+            @PathParam("projectKey") String projectKey,
+            @PathParam("storyPath") String storyPath,
+            String payload) {
+
+        Validate.notNull(storyPath);
+        Validate.isTrue(storyPath.endsWith(".story"));
+        String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
+
+        return this.addStoryTestReport(projectKey, issueKey, payload);
+    }
+
 
 
     @GET
