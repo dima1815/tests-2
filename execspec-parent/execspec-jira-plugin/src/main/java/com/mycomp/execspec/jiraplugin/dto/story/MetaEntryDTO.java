@@ -1,34 +1,34 @@
-package com.mycomp.execspec.jiraplugin.dto.story.output;
+package com.mycomp.execspec.jiraplugin.dto.story;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Created by Dmytro on 6/2/2014.
+ * Created by Dmytro on 6/13/2014.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AsADTO {
+public class MetaEntryDTO {
 
-    private String keyword;
+    private String name;
 
     private String value;
 
-    public AsADTO() {
+    public MetaEntryDTO() {
     }
 
-    public AsADTO(String keyword, String value) {
-        this.keyword = keyword;
+    public MetaEntryDTO(String name, String value) {
+        this.name = name;
         this.value = value;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getName() {
+        return name;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getValue() {
@@ -40,13 +40,21 @@ public class AsADTO {
     }
 
     @Override
+    public String toString() {
+        return "MetaEntryDTO{" +
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AsADTO that = (AsADTO) o;
+        MetaEntryDTO that = (MetaEntryDTO) o;
 
-        if (keyword != null ? !keyword.equals(that.keyword) : that.keyword != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
@@ -54,16 +62,8 @@ public class AsADTO {
 
     @Override
     public int hashCode() {
-        int result = keyword != null ? keyword.hashCode() : 0;
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AsADTO{" +
-                "keyword='" + keyword + '\'' +
-                ", value='" + value + '\'' +
-                '}';
     }
 }

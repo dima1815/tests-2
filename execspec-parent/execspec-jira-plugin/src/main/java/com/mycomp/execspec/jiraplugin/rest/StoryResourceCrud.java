@@ -3,7 +3,7 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
+import com.mycomp.execspec.jiraplugin.dto.story.*;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -30,9 +30,11 @@ public class StoryResourceCrud {
     private final StoryService storyService;
 
     private SearchService searchService;
+
     private JiraAuthenticationContext authenticationContext;
 
-    public StoryResourceCrud(StoryService storyService, SearchService searchService, JiraAuthenticationContext authenticationContext) {
+    public StoryResourceCrud(StoryService storyService, SearchService searchService,
+                             JiraAuthenticationContext authenticationContext) {
         this.storyService = storyService;
         this.searchService = searchService;
         this.authenticationContext = authenticationContext;
@@ -62,6 +64,7 @@ public class StoryResourceCrud {
         log.debug("saving story:\n" + storyDTO);
 
         StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+
         Validate.notNull(savedStoryDTO.getVersion());
         return savedStoryDTO;
     }

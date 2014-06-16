@@ -1,6 +1,6 @@
 package com.mycomp.execspec.jiraplugin.util;
 
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
+import com.mycomp.execspec.jiraplugin.dto.story.*;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 
@@ -72,7 +72,9 @@ public class ByLineStoryParser {
                         throw new StoryParseException("Found an out of order " + keywords.meta()
                                 + " (meta) keyword declaration on line " + lineNumber);
                     } else {
-                        storyDTO.setMeta(new MetaDTO());
+                        MetaDTO meta = new MetaDTO();
+                        meta.setKeyword(keywords.meta());
+                        storyDTO.setMeta(meta);
                         lastElement = CompositeElement.meta;
                     }
                 }
@@ -98,7 +100,7 @@ public class ByLineStoryParser {
                     } else {
                         InOrderToDTO inOrderTo = new InOrderToDTO();
                         inOrderTo.setKeyword(keywords.inOrderTo());
-                        String value = line.substring(keywords.inOrderTo().length());
+                        String value = line.substring(keywords.inOrderTo().length()).trim();
                         if (!value.isEmpty()) {
                             inOrderTo.setValue(value);
                         }
@@ -115,7 +117,7 @@ public class ByLineStoryParser {
                     } else {
                         AsADTO asA = new AsADTO();
                         asA.setKeyword(keywords.asA());
-                        String value = line.substring(keywords.asA().length());
+                        String value = line.substring(keywords.asA().length()).trim();
                         if (!value.isEmpty()) {
                             asA.setValue(value);
                         }
@@ -132,7 +134,7 @@ public class ByLineStoryParser {
                     } else {
                         IWantToDTO iWantTo = new IWantToDTO();
                         iWantTo.setKeyword(keywords.iWantTo());
-                        String value = line.substring(keywords.iWantTo().length());
+                        String value = line.substring(keywords.iWantTo().length()).trim();
                         if (!value.isEmpty()) {
                             iWantTo.setValue(value);
                         }
@@ -149,7 +151,7 @@ public class ByLineStoryParser {
                     } else {
                         SoThatDTO soThat = new SoThatDTO();
                         soThat.setKeyword(keywords.soThat());
-                        String value = line.substring(keywords.soThat().length());
+                        String value = line.substring(keywords.soThat().length()).trim();
                         if (!value.isEmpty()) {
                             soThat.setValue(value);
                         }

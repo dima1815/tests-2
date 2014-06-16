@@ -1,7 +1,7 @@
 package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.activeobjects.tx.Transactional;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 
 import java.util.List;
 

@@ -15,8 +15,10 @@ function StoryModel() {
     this.narrative.inOrderTo.keyword = "";
     this.narrative.inOrderTo.value = "";
 
+    this.scenarios = [];
+
     this.asString = "";
     this.asHTML = "";
-//    this.storyReports = [];
+    this.testReports = [];
 
 }

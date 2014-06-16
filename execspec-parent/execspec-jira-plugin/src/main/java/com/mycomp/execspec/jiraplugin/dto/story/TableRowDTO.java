@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.output;
+package com.mycomp.execspec.jiraplugin.dto.story;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,14 +10,14 @@ import java.util.List;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TableRow {
+public class TableRowDTO {
 
     private List<String> values;
 
-    public TableRow() {
+    public TableRowDTO() {
     }
 
-    public TableRow(List<String> values) {
+    public TableRowDTO(List<String> values) {
         this.values = values;
     }
 
@@ -41,7 +41,7 @@ public class TableRow {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TableRow tableRow = (TableRow) o;
+        TableRowDTO tableRow = (TableRowDTO) o;
 
         if (values != null ? !values.equals(tableRow.values) : tableRow.values != null) return false;
 

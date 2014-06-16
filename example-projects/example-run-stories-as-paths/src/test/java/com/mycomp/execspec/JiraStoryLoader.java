@@ -1,9 +1,9 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.story.BytesListPrintStream;
-import com.mycomp.execspec.jiraplugin.dto.story.ReportingStoryWalker;
+import com.mycomp.execspec.util.BytesListPrintStream;
+import com.mycomp.execspec.util.ReportingStoryWalker;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;

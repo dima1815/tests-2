@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story;
+package com.mycomp.execspec.util;
 
 import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 import org.jbehave.core.model.GivenStories;

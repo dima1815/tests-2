@@ -1,7 +1,6 @@
 package com.mycomp.execspec.jiraplugin.dto.story;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
 import com.mycomp.execspec.jiraplugin.util.ByLineStoryParser;
 import org.apache.commons.lang.Validate;
 import org.jbehave.core.steps.StepCreator;
@@ -42,7 +41,7 @@ public class StoryDTOUtils {
         return str;
     }
 
-    private static String markTablesInPendingStep(String step, CustomHTMLOutput reporter) {
+    private static String markTablesInPendingStep(String step) {
 
         StringBuilder sb = new StringBuilder();
         String[] lines = step.split("\\n");
@@ -177,7 +176,7 @@ public class StoryDTOUtils {
                 for (MetaEntryDTO p : properties) {
                     String name = p.getName();
                     String value = p.getValue();
-                    sb.append(name);
+                    sb.append("@" + name);
                     if (value != null && !value.isEmpty()) {
                         sb.append(" " + value);
                     }
@@ -240,6 +239,20 @@ public class StoryDTOUtils {
                         sb.append(" " + value);
                     }
                     sb.append(LB);
+                }
+            }
+        }
+
+        List<ScenarioDTO> scenarios = storyDTO.getScenarios();
+        if (scenarios != null && !scenarios.isEmpty()) {
+            for (ScenarioDTO scenario : scenarios) {
+                String keyword = scenario.getKeyword();
+                Validate.notEmpty(keyword);
+                sb.append(keyword);
+                String title = scenario.getTitle();
+                if (title != null && !title.isEmpty()) {
+                    sb.append(" ");
+                    sb.append(title.trim());
                 }
             }
         }

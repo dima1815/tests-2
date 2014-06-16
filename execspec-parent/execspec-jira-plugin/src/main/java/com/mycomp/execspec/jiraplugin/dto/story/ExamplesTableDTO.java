@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.output;
+package com.mycomp.execspec.jiraplugin.dto.story;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,7 +14,7 @@ public class ExamplesTableDTO {
 
     private List<String> headers;
 
-    private List<TableRow> rows;
+    private List<TableRowDTO> rows;
 
     public ExamplesTableDTO() {
     }
@@ -27,11 +27,11 @@ public class ExamplesTableDTO {
         this.headers = headers;
     }
 
-    public List<TableRow> getRows() {
+    public List<TableRowDTO> getRows() {
         return rows;
     }
 
-    public void setRows(List<TableRow> rows) {
+    public void setRows(List<TableRowDTO> rows) {
         this.rows = rows;
     }
 

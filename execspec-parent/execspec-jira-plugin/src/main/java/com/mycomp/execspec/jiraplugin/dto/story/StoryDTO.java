@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.output;
+package com.mycomp.execspec.jiraplugin.dto.story;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -125,4 +125,5 @@ public class StoryDTO {
     public void setAsString(String asString) {
         this.asString = asString;
     }
+
 }

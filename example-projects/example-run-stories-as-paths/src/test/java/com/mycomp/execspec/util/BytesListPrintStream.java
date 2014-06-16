@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story;
+package com.mycomp.execspec.util;
 
 import java.io.IOException;
 import java.io.OutputStream;

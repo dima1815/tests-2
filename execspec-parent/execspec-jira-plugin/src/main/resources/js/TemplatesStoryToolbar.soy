@@ -10,13 +10,13 @@
                 <div id="storyButtons" class="aui-buttons"></div>
             </div>
             <div class="aui-toolbar2-secondary">
-                <div id="storyReportButtons" class="aui-buttons"></div>
+                <div id="storyTestReportButtons" class="aui-buttons"></div>
             </div>
         </div>
     </div>
     <div id="storyContainer" class="story-container" style="display: none;"></div>
-    <div id="storyReportContainer" class="story-container" style="display: none;"></div>
     <div id="storyEditContainer" style="display: none;"></div>
+    <div id="storyReportContainer" class="story-container" style="display: none;"></div>
 {/template}
 
 /**
@@ -30,12 +30,12 @@
 
 /**
  * Render story button
- * @param path
+ * @param story
  */
 {template .renderButtonsForStory}
     <button id="showStoryButton"
         onclick="storyController.showStoryHandler(event)"
-        class="aui-button story-container-button selected-story-container-button">{$path}</button>
+        class="aui-button story-container-button selected-story-container-button">{$story.path}</button>
 //    <button id="edit-story-button"
 //            class="aui-button aui-button-subtle story-container-button selected-story-container-button">{$path}</button>
 //aria-pressed="true"
@@ -48,4 +48,28 @@
 //        {param iconClass: 'aui-icon-small aui-iconfont-edit' /}
 //        {param iconText: 'View' /}
 //    {/call}
+{/template}
+
+/**
+ * Render story test report buttons
+ * @param testReports
+ */
+{template .renderButtonsForTestReports}
+    {foreach $storyReport in $testReports}
+//        <button
+//            onclick="storyController.showStoryReport(event, '{$testReport.environment}')"
+//            class="aui-button story-report-button"
+//            environment="{$testReport.environment}"
+//            >{$testReport.environment}</button>
+        <button id="show-story-report-{$storyReport.environment}"
+                environment="{$storyReport.environment}"
+                onclick="storyController.showStoryReport(event, '{$storyReport.environment}')"
+                class="aui-button story-report-button">{$storyReport.environment}{if $storyReport.totalScenariosPassed > 0}<span
+                class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{/if}{if $storyReport.totalScenariosFailed > 0}<span
+                class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
+                class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
+                class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
+                class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
+        </button>
+    {/foreach}
 {/template}

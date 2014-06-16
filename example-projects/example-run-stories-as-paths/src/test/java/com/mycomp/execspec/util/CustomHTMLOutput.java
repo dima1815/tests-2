@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story;
+package com.mycomp.execspec.util;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.reporters.HtmlOutput;

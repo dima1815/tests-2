@@ -1,6 +1,6 @@
 package com.mycomp.execspec.jiraplugin.util;
 
-import com.mycomp.execspec.jiraplugin.dto.story.output.*;
+import com.mycomp.execspec.jiraplugin.dto.story.*;
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.map.ObjectMapper;

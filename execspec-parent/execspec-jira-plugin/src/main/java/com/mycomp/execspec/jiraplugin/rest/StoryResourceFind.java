@@ -2,9 +2,11 @@ package com.mycomp.execspec.jiraplugin.rest;
 
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoriesPayload;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPathsDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoriesPayload;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryPathsDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryWithReportsPayload;
+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
@@ -85,9 +87,14 @@ public class StoryResourceFind {
             @PathParam("issueKey") String issueKey) {
 
         StoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+
         Response response;
         if (storyDTO != null) {
-            response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+
+            List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
+            StoryWithReportsPayload payload = new StoryWithReportsPayload(storyDTO, storyReports);
+
+            response = Response.ok(payload, MediaType.APPLICATION_JSON).build();
         } else {
             response = Response.noContent().build();
         }
@@ -103,8 +110,16 @@ public class StoryResourceFind {
 
         Validate.notNull(storyPath);
         Validate.isTrue(storyPath.endsWith(".story"));
-        storyPath = storyPath.substring(0, storyPath.lastIndexOf(".story"));
+        String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
 
-        return this.findForIssue(projectKey, storyPath);
+        StoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+
+        Response response;
+        if (storyDTO != null) {
+            response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+        } else {
+            response = Response.noContent().build();
+        }
+        return response;
     }
 }

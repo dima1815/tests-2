@@ -22,10 +22,16 @@
 /**
  * Render story report
  * @param storyReport
+ * @param storyVersion
  */
 {template .renderStoryReport autoescape="false"}
-    <div id="reportMessageContainer"></div>
+    <div id="reportMessageContainer">Story version is - {$storyVersion}</div>
     <div class="story-report">
-        {$storyReport.htmlReport}
+        <div>
+            Report story version is - {$storyReport.storyVersion}
+        </div>
+        <div>
+            {$storyReport.htmlReport}
+        </div>
     </div>
 {/template}

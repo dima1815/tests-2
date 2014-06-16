@@ -198,8 +198,7 @@
                 <div class="story-meta-properties">
                     {foreach $metaProperty in $meta.properties}
                         <div class="story-element-container">
-                            <div
-                                class="element-operations-container"
+                            <div class="element-operations-container"
                                 style="display: none">
                                 <a class="remove-element-link"href="#"
                                       onclick="editButtonHandler.removeElement(event, 'metaField', '{index($metaProperty)}')">
@@ -226,11 +225,82 @@
                             </div>
                         </div>
                     {/foreach}
-                <div>
+                </div>
             {/if}
             <div id="insertLinkContainerMetaProperty"/>
         </div>
     </div>
+{/template}
+
+
+/** Renders narrative
+ * @param narrative
+ */
+{template .renderNarrative}
+    <div class="narrative">
+        <div class="title">{$narrative.keyword}</div>
+        <div class="inOrderTo">
+            <table>
+                <tr>
+                    <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+                        <span class="keyword">{$narrative.inOrderTo.keyword}</span>
+                    </td>
+                    <td style="text-align: left;">
+                        {call .renderLongSingleLineField}
+                            {param fieldName: 'narrative.inOrderTo.value' /}
+                            {param displayValue: 'In order to' /}
+                            {param fieldValue: $narrative.inOrderTo.value /}
+                        {/call}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="asA">
+            <table>
+                <tr>
+                    <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+                        <span class="keyword">{$narrative.asA.keyword}</span>
+                    </td>
+                    <td style="text-align: left;">
+                        {call .renderLongSingleLineField}
+                            {param fieldName: 'narrative.asA.value' /}
+                            {param displayValue: 'As a' /}
+                            {param fieldValue: $narrative.asA.value /}
+                        {/call}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="iWantTo">
+            <table>
+                <tr>
+                    <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+                        <span class="keyword">{$narrative.iWantTo.keyword}</span>
+                    </td>
+                    <td style="text-align: left;">
+                        {call .renderLongSingleLineField}
+                            {param fieldName: 'narrative.iWantTo.value' /}
+                            {param displayValue: 'I Want to' /}
+                            {param fieldValue: $narrative.iWantTo.value /}
+                        {/call}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{/template}
+
+/** Renders scenarios
+ * @param scenarios
+ */
+{template .renderScenarios}
+     <div class="story-scenarios">
+         {foreach $scenario in $scenarios}
+             <div class="story-scenario">
+                 <span class="story-scenario-keyword">{$scenario.keyword}</span>
+             </div>
+         {/foreach}
+     </div>
 {/template}
 
 /**
@@ -261,59 +331,15 @@
 
     <div id="insertLinkContainerBeforeNarrative"/>
 
-    {if $story.narrative != null}
-        <div class="narrative">
-            <div class="title">{$story.narrative.keyword}</div>
-            <div class="inOrderTo">
-                <table>
-                    <tr>
-                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
-                            <span class="keyword">{$story.narrative.inOrderTo.keyword}</span>
-                        </td>
-                        <td style="text-align: left;">
-                            {call .renderLongSingleLineField}
-                                {param fieldName: 'narrative.inOrderTo.value' /}
-                                {param displayValue: 'In order to' /}
-                                {param fieldValue: $story.narrative.inOrderTo.value /}
-                            {/call}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="asA">
-                <table>
-                    <tr>
-                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
-                            <span class="keyword">{$story.narrative.asA.keyword}</span>
-                        </td>
-                        <td style="text-align: left;">
-                            {call .renderLongSingleLineField}
-                                {param fieldName: 'narrative.asA.value' /}
-                                {param displayValue: 'As a' /}
-                                {param fieldValue: $story.narrative.asA.value /}
-                            {/call}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="iWantTo">
-                <table>
-                    <tr>
-                        <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
-                            <span class="keyword">{$story.narrative.iWantTo.keyword}</span>
-                        </td>
-                        <td style="text-align: left;">
-                            {call .renderLongSingleLineField}
-                                {param fieldName: 'narrative.iWantTo.value' /}
-                                {param displayValue: 'I Want to' /}
-                                {param fieldValue: $story.narrative.iWantTo.value /}
-                            {/call}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    {/if}
+    <div id="storyNarrativeContainer">
+        {if $story.narrative != null}
+            {call .renderNarrative}
+                {param narrative: $story.narrative /}
+            {/call}
+        {/if}
+    </div>
+
+    <div id="insertLinkContainerBeforeGiventStories"/>
 
     {if $story.givenStories != null}
         <div class="story-given-stories">
@@ -322,6 +348,9 @@
             </div>
         </div>
     {/if}
+
+    <div id="insertLinkContainerBeforeLifecycle"/>
+
     {if $story.lifecycle != null}
         <div class="story-lifecycle">
             <div class="story-lifecycle-keyword">
@@ -329,6 +358,16 @@
             </div>
         </div>
     {/if}
+
+    <div id="insertLinkContainerAfterScenarios"/>
+
+    <div id="storyScenariosContainer">
+        {if $story.scenarios != null}
+            {call .renderScenarios}
+                {param scenarios: $story.scenarios /}
+            {/call}
+        {/if}
+    </div>
 
 //    {call .renderInsertLinkDiv}
 //        {param triggerDivId: 'anotherTriggerDivId' /}
@@ -392,15 +431,7 @@
 //            {/call}
 //    {/if}
 
-    {if $story.scenarios.length != 0}
-        <div class="story-scenarios">
-            {foreach $scenario in $story.scenarios}
-                <div class="story-scenario">
-                    <span class="story-scenario-keyword">{$scenario.keyword}</span>
-                </div>
-            {/foreach}
-        </div>
-    {/if}
+
 
 </div>
 {/template}

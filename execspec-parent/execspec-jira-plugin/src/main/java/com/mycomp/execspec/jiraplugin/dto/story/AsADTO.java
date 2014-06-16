@@ -1,4 +1,4 @@
-package com.mycomp.execspec.jiraplugin.dto.story.output;
+package com.mycomp.execspec.jiraplugin.dto.story;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,16 +9,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class InOrderToDTO {
+public class AsADTO {
 
     private String keyword;
 
     private String value;
 
-    public InOrderToDTO() {
+    public AsADTO() {
     }
 
-    public InOrderToDTO(String keyword, String value) {
+    public AsADTO(String keyword, String value) {
         this.keyword = keyword;
         this.value = value;
     }
@@ -44,7 +44,7 @@ public class InOrderToDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        InOrderToDTO that = (InOrderToDTO) o;
+        AsADTO that = (AsADTO) o;
 
         if (keyword != null ? !keyword.equals(that.keyword) : that.keyword != null) return false;
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
@@ -61,7 +61,7 @@ public class InOrderToDTO {
 
     @Override
     public String toString() {
-        return "InOrderToDTO{" +
+        return "AsADTO{" +
                 "keyword='" + keyword + '\'' +
                 ", value='" + value + '\'' +
                 '}';

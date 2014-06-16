@@ -7,7 +7,7 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.config.FieldConfigItem;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
-import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;

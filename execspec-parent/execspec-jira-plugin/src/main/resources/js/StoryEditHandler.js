@@ -12,7 +12,7 @@ function StoryEditHandler() {
         }
     }
 
-    this.init = function ( ) {
+    this.init = function () {
         this.debug("initialized");
     }
 
@@ -29,14 +29,18 @@ function StoryEditHandler() {
 
         this.assignAutoHeightForTextAreas(story);
 
-        this.autoHeightTextAreas(story);
+        this.setSizeForTextAreas(story);
 
         this.debug("# assignRichEditorHandlers");
     }
 
-    this.autoHeightTextAreas = function (story) {
+    this.setSizeForTextAreas = function (story) {
 
-        story-multiline-edit-field
+        AJS.$('.story-multiline-edit-field').each(function (element, textArea) {
+            editButtonHandler.debug('> setSizeForTextAreas, textArea - ' + textArea);
+            editButtonHandler.resizeTextArea(textArea);
+            editButtonHandler.debug('# setSizeForTextAreas');
+        });
     }
 
     this.assignAutoHeightForTextAreas = function (story) {
@@ -48,31 +52,13 @@ function StoryEditHandler() {
             editButtonHandler.debug('keydown, event.which - ' + key);
             if (key == 13) {
                 editButtonHandler.debug('return pressed, resizing text area');
-                editButtonHandler.resizeTextArea(event);
+                editButtonHandler.resizeTextArea(event.target);
             }
         });
 
         AJS.$('.story-editor-field').keyup(function (event) {
-            editButtonHandler.resizeTextArea(event);
+            editButtonHandler.resizeTextArea(event.target);
         });
-
-        this.resizeTextArea = function (event) {
-
-            var textArea = event.target;
-
-            editButtonHandler.debug('keypressed, event.target - ' + textArea);
-            var value = AJS.$(event.target).val();
-            editButtonHandler.debug('value - ' + value)
-            var lines = value.split(/\r*\n/);
-            editButtonHandler.debug('lines - ' + lines)
-            var lineCount = lines.length;
-            editButtonHandler.debug('lineCount - ' + lineCount);
-            var currentRows = AJS.$(event.target).attr("rows");
-            editButtonHandler.debug('currentRows - ' + currentRows);
-            if (Number(currentRows) != lineCount) {
-                AJS.$(event.target).attr("rows", lineCount);
-            }
-        }
 
         // add border on focus
         AJS.$('.story-editor-field').focus(function (event) {
@@ -85,6 +71,31 @@ function StoryEditHandler() {
             AJS.$(event.target).removeClass("focused");
         });
 
+    }
+
+    this.resizeTextArea = function (textArea) {
+
+        editButtonHandler.debug("> resizeTextArea");
+
+        editButtonHandler.debug('textArea - ' + textArea);
+        var value = AJS.$(textArea).val();
+
+        if (value != null) {
+            editButtonHandler.debug('value - ' + value)
+            var lines = value.split(/\r*\n/);
+            editButtonHandler.debug('lines - ' + lines)
+            var lineCount = lines.length;
+            editButtonHandler.debug('lineCount - ' + lineCount);
+            var currentRows = AJS.$(textArea).attr("rows");
+            editButtonHandler.debug('currentRows - ' + currentRows);
+            if (Number(currentRows) != lineCount) {
+                AJS.$(textArea).attr("rows", lineCount);
+            }
+        } else {
+            editButtonHandler.debug('not resizing text area as the value is null');
+        }
+
+        editButtonHandler.debug("# resizeTextArea");
     }
 
     this.assignInsertLinkHandlers = function (story) {
@@ -295,6 +306,34 @@ function StoryEditHandler() {
             }
         }
 
+        // after scenarios
+        {
+            var templateObj = new Object();
+            templateObj.triggerDivId = "insertAfterScenariosTriggerDiv";
+            templateObj.dropdownDivId = "insertAfterScenariosDropdownDiv";
+
+            var insertScenarioLinkInfo = new Object();
+            insertScenarioLinkInfo.text = "Scenario";
+            insertScenarioLinkInfo.onClickFunction = "insertElement";
+            insertScenarioLinkInfo.elementName = "scenario";
+
+//            var insertMetaLinkInfo = new Object();
+//            insertMetaLinkInfo.text = "Meta";
+//            insertMetaLinkInfo.onClickFunction = "insertElement";
+//            insertMetaLinkInfo.elementName = "meta";
+
+            templateObj.dropdownItems = [];
+//            if (story.description == null && story.meta == null) {
+//                templateObj.dropdownItems.push(insertScenarioLinkInfo);
+//                templateObj.dropdownItems.push(insertMetaLinkInfo);
+//            } else if (story.meta == null) {
+//                templateObj.dropdownItems.push(insertMetaLinkInfo);
+//            }
+            templateObj.dropdownItems.push(insertScenarioLinkInfo);
+
+            var insertAfterScenariosHtml = execspec.viewissuepage.editstory.rich.renderInsertLinkDiv(templateObj);
+            AJS.$('#insertLinkContainerAfterScenarios').html(insertAfterScenariosHtml);
+        }
 
     }
 
@@ -412,7 +451,11 @@ function StoryEditHandler() {
         } else if (elementName == "meta") {
             this.insertMeta();
         } else if (elementName == "metaField") {
-            this.insertMetaField();
+            this.insertMetaField(null, null);
+        } else if (elementName == "scenario") {
+            this.insertScenario();
+        } else {
+            console.error("Attempting to insert unsupported element - " + elementName);
         }
 
         this.assignRichEditorHandlers(storyController.currentStory);
@@ -513,16 +556,8 @@ function StoryEditHandler() {
 
         var meta = storyController.currentStory.meta;
         var newEntry = new Object();
-        if (fieldName == null) {
-            newEntry.name = null;
-        } else {
-            newEntry.name = fieldName;
-        }
-        if (fieldValue == null) {
-            newEntry.value = null;
-        } else {
-            newEntry.value = fieldValue;
-        }
+        newEntry.name = fieldName;
+        newEntry.value = fieldValue;
         meta.properties.push(newEntry);
 
         var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMeta(storyController.currentStory);
@@ -559,20 +594,20 @@ function StoryEditHandler() {
         this.debug("# insertLifecycle");
     }
 
-    this.insertScenario = function (event) {
+    this.insertScenario = function () {
 
         this.debug("> insertScenario");
 
         var scenario = new Object();
         scenario.keyword = "Scenario:";
-        if (storyController.currentStory.scenarios == null) {
-            storyController.currentStory.scenarios = [];
-        }
         storyController.currentStory.scenarios.push(scenario);
 
-        storyView.editStory(storyController.currentStory);
+        var jsonStory = JSON.stringify(storyController.currentStory, null, "\t");
+        this.debug("after insert of new scenario into story model:\n" + jsonStory);
 
-        event.preventDefault();
+        var scenarioHtml = execspec.viewissuepage.editstory.rich.renderScenarios(storyController.currentStory);
+        AJS.$("#storyScenariosContainer").html(scenarioHtml);
+
         this.debug("# insertScenario");
     }
 

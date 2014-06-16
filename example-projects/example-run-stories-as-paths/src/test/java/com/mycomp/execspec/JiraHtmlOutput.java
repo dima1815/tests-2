@@ -1,10 +1,10 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.story.BytesListPrintStream;
-import com.mycomp.execspec.jiraplugin.dto.story.DefaultHTMLFormatPatterns;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
+import com.mycomp.execspec.util.BytesListPrintStream;
+import com.mycomp.execspec.util.DefaultHTMLFormatPatterns;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.lang.Validate;

@@ -231,26 +231,25 @@ function StoryView(storyController) {
 
         this.debug("story:\n" + JSON.stringify(story, null, "\t"));
 
-        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
-        AJS.$("#storyButtons").html(buttonsForStory);
-        AJS.$("#editStoryButton").attr("aria-pressed", "true");
+//        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
+//        AJS.$("#storyButtons").html(buttonsForStory);
 
         var editContainerContent = execspec.viewissuepage.editstory.renderEditStoryContainer();
         AJS.$("#storyEditContainer").html(editContainerContent);
-
         // set content for rich editor as well as raw editor
         var templateObj = new Object();
         templateObj.story = story;
-
         var richEditStoryContent = execspec.viewissuepage.editstory.rich.renderRichEditStoryContent(templateObj);
+
         AJS.$("#richEditStoryContainer").html(richEditStoryContent);
-
         editButtonHandler.assignRichEditorHandlers(story);
-
         AJS.$("#richTextEditorButton").click();
 
-        AJS.$("#storyContainer").hide();
-        AJS.$("#storyEditContainer").show();
+        this.updateStoryTabButton("edit", null);
+//        AJS.$("#editStoryButton").attr("aria-pressed", "true");
+//        AJS.$("#storyContainer").hide();
+//        AJS.$("#storyEditContainer").show();
+
         this.debug("# editStory");
     }
 
@@ -353,25 +352,111 @@ function StoryView(storyController) {
         storyView.debug("# StoryView.showStoryButton");
     }
 
+    this.showStoryButtons = function(storyPayload) {
+
+        storyView.debug("> showStoryButtons");
+
+        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(storyPayload);
+        AJS.$("#storyButtons").html(buttonsForStory);
+
+        var buttonsForTestReports = execspec.viewissuepage.storytoolbar.renderButtonsForTestReports(storyPayload);
+        AJS.$("#storyTestReportButtons").html(buttonsForTestReports);
+
+        storyView.debug("# showStoryButtons");
+    }
+
+//    this.showStoryReportButtons = function (story) {
+//
+//        storyView.debug("> showStoryReportButtons");
+//
+//        var buttonsForTestReports = execspec.viewissuepage.storytoolbar.renderButtonsForTestReports(story);
+//        AJS.$("#storyTestReportButtons").html(buttonsForTestReports);
+//
+//        storyView.debug("# showStoryReportButtons");
+//
+//    }
+
+    this.showStoryReport = function (storyReport, currentStoryVersion) {
+
+        storyView.debug("> showStoryReport");
+        storyView.debug("currentStoryVersion - " + currentStoryVersion);
+        storyView.debug("storyReport:\n" + JSON.stringify(storyReport, null, "\t"));
+
+        var templateObj = new Object();
+        templateObj.storyReport = storyReport;
+        templateObj.storyVersion = currentStoryVersion;
+        var reportHtml = execspec.viewissuepage.showstoryreports.renderStoryReport(templateObj);
+        AJS.$("#storyReportContainer").html(reportHtml);
+
+        this.updateStoryTabButton("report", storyReport.environment);
+
+        storyView.debug("# showStoryReport");
+    }
+
     this.showStory = function (story) {
 
-        storyView.debug("> StoryView.showStory");
-
-        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
-        AJS.$("#storyButtons").html(buttonsForStory);
-        AJS.$("#editStoryButton").attr("aria-pressed", "false");
-        AJS.$("#showStoryButton").attr("aria-pressed", "true");
+        storyView.debug("> showStory");
 
         var templateObj = new Object();
         templateObj.story = story;
         var storyHtml = execspec.viewissuepage.showstory.renderStoryAsString(templateObj);
 
         AJS.$("#storyContainer").html(storyHtml);
-        AJS.$("#storyContainer").show();
 
-        AJS.$("#storyEditContainer").hide();
+        this.updateStoryTabButton("view", null);
 
-        storyView.debug("# StoryView.showStory");
+        storyView.debug("# showStory");
+    }
+
+    this.updateStoryTabButton = function (mode, reportForEnv) {
+
+        if (mode == "view") {
+
+            AJS.$(".story-report-button").attr("aria-pressed", "false");
+            AJS.$("#storyReportContainer").hide();
+
+            AJS.$("#editStoryButton").attr("aria-pressed", "false");
+            AJS.$("#storyEditContainer").hide();
+
+            AJS.$("#showStoryButton").attr("aria-pressed", "true");
+            AJS.$("#storyContainer").show();
+
+        } else if (mode == "edit") {
+
+            AJS.$(".story-report-button").attr("aria-pressed", "false");
+            AJS.$("#storyReportContainer").hide();
+
+            AJS.$("#editStoryButton").attr("aria-pressed", "true");
+            AJS.$("#storyEditContainer").show();
+
+            AJS.$("#showStoryButton").attr("aria-pressed", "false");
+            AJS.$("#storyContainer").hide();
+
+        } else if (mode == "report") {
+
+            AJS.$("#editStoryButton").attr("aria-pressed", "false");
+            AJS.$("#storyEditContainer").hide();
+
+            AJS.$("#showStoryButton").attr("aria-pressed", "false");
+            AJS.$("#storyContainer").hide();
+
+            AJS.$(".story-report-button").each(
+                function (index, element) {
+                    var buttonReportEnv = AJS.$(element).attr("environment");
+                    if (buttonReportEnv == reportForEnv) {
+                        AJS.$(element).attr("aria-pressed", "true");
+                    } else {
+                        AJS.$(element).attr("aria-pressed", "false");
+                    }
+                }
+            );
+//            AJS.$(".story-report-button").attr("aria-pressed", "false");
+
+            AJS.$("#storyReportContainer").show();
+
+        } else {
+            console.error("Unsupported mode - " + mode);
+        }
     }
 
 //    this.showStory = function (story, editMode) {
@@ -507,39 +592,39 @@ function StoryView(storyController) {
 //        storyView.debug("# StoryView.showStory");
 //    }
 
-    this.showStoryReportButtons = function (story) {
-
-        storyView.debug("> StoryView.showStoryReportButtons");
-
-        var storyVersion = story.version;
-        storyView.debug("storyVersion - " + storyVersion);
-
-        // add the story reports
-        var storyReportButtons = execspec.viewissuepage.showstory.renderStoryReportButtons(story);
-        AJS.$("#storyReportButtons").html(storyReportButtons);
-        // set the story report button onClick handlers
-        var storyReports = story.storyReports;
-        for (var i = 0; i < storyReports.length; i++) {
-            var storyReport = storyReports[i];
-            var linkId = "show-story-report-" + storyReport.environment;
-            AJS.$("#" + linkId).click(
-                function (event) {
-
-                    storyView.debug("> show story report button clicked");
-                    event.preventDefault();
-
-                    var attributes = event.target.attributes;
-                    var environmentNode = attributes["environment"];
-                    var environment = environmentNode.nodeValue;
-                    storyController.showStoryReport(environment);
-
-                    storyView.debug("# show story report button clicked");
-                }
-            );
-        }
-
-        storyView.debug("# StoryView.showStoryReportButtons");
-    }
+//    this.showStoryReportButtons = function (story) {
+//
+//        storyView.debug("> StoryView.showStoryReportButtons");
+//
+//        var storyVersion = story.version;
+//        storyView.debug("storyVersion - " + storyVersion);
+//
+//        // add the story reports
+//        var storyReportButtons = execspec.viewissuepage.showstory.renderStoryReportButtons(story);
+//        AJS.$("#storyReportButtons").html(storyReportButtons);
+//        // set the story report button onClick handlers
+//        var storyReports = story.storyReports;
+//        for (var i = 0; i < storyReports.length; i++) {
+//            var storyReport = storyReports[i];
+//            var linkId = "show-story-report-" + storyReport.environment;
+//            AJS.$("#" + linkId).click(
+//                function (event) {
+//
+//                    storyView.debug("> show story report button clicked");
+//                    event.preventDefault();
+//
+//                    var attributes = event.target.attributes;
+//                    var environmentNode = attributes["environment"];
+//                    var environment = environmentNode.nodeValue;
+//                    storyController.showStoryReport(environment);
+//
+//                    storyView.debug("# show story report button clicked");
+//                }
+//            );
+//        }
+//
+//        storyView.debug("# StoryView.showStoryReportButtons");
+//    }
 
 //    this.showStoryReport = function (storyReport, storyVersion) {
 //

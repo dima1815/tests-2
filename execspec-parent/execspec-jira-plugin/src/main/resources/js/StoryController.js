@@ -19,6 +19,7 @@ function StoryController() {
     pageUtils.init();
 
     this.currentStory = new StoryModel();
+    this.currentReports = [];
     this.editMode = false;
 
     this.debug = function (msg) {
@@ -33,14 +34,15 @@ function StoryController() {
         var issueKey = pageUtils.getIssueKey();
         var projectKey = pageUtils.getProjectKey();
         storyService.find(projectKey, issueKey,
-            function (story) {
+            function (storyPayload) {
                 storyController.debug("> loadStory.callback");
-                var storyPayload = JSON.stringify(story, null, "\t");
-                storyController.debug("story - " + storyPayload);
-                if (story != undefined) {
+                storyController.debug("storyPayload - " + JSON.stringify(storyPayload, null, "\t"));
+                if (storyPayload != undefined) {
 //                    storyView.showStoryButton(story);
 //                    storyView.showStoryReportButtons(story); // TODO
-                    storyController.currentStory = story;
+                    storyView.showStoryButtons(storyPayload);
+                    storyController.currentStory = storyPayload.story;
+                    storyController.currentReports = storyPayload.testReports;
                     storyController.showStoryHandler(null);
                 } else {
                     storyController.debug("no story found for project - " + projectKey + ", issue - " + issueKey);
@@ -83,15 +85,15 @@ function StoryController() {
         this.debug("# showStoryHandler");
     }
 
-    this.showStoryReport = function (environment) {
+    this.showStoryReport = function (event, environment) {
 
         this.debug("> showStoryReport");
         this.debug("environment - " + environment);
 
         // find the report for environment
         var reportForEnvironment = undefined;
-        for (var i = 0; i < this.currentStory.storyReports.length; i++) {
-            var storyReport = this.currentStory.storyReports[i];
+        for (var i = 0; i < this.currentReports.length; i++) {
+            var storyReport = this.currentReports[i];
             if (storyReport.environment == environment) {
                 reportForEnvironment = storyReport;
                 break;
@@ -99,6 +101,7 @@ function StoryController() {
         }
         storyView.showStoryReport(reportForEnvironment, this.currentStory.version);
 
+        event.preventDefault();
         this.debug("# showStoryReport");
     }
 
@@ -148,7 +151,7 @@ function StoryController() {
         this.editMode = true;
         storyView.editStory(this.currentStory);
 
-        if(event != null) {
+        if (event != null) {
             event.preventDefault();
         }
         this.debug("# editStoryHandler");
@@ -194,7 +197,9 @@ function StoryController() {
 
         this.debug("> saveStoryAsModel");
 
-        var storyPayload = JSON.stringify(this.currentStory);
+        var storyPayload = JSON.stringify(this.currentStory, null, "\t");
+
+        this.debug("saving story:\n" + storyPayload);
 
         storyService.saveOrUpdateStory(storyPayload, function (savedStory) {
             storyController.debug("> saveStoryAsModel.saveOrUpdateStory callback");
