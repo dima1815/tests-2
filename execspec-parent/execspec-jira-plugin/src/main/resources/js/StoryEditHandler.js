@@ -335,6 +335,51 @@ function StoryEditHandler() {
             AJS.$('#insertLinkContainerAfterScenarios').html(insertAfterScenariosHtml);
         }
 
+        // after scenario steps
+        {
+            AJS.$('.insert-link-container-after-scenario-steps').each(
+                function (index, element) {
+
+                    var templateObj = new Object();
+
+                    templateObj.triggerDivId = "insertAfterScenarioStepsTriggerDiv_" + index;
+                    templateObj.dropdownDivId = "insertAfterScenarioStepsDropdownDiv_" + index;
+
+                    templateObj.additionalParams = [];
+                    templateObj.additionalParams.push(index);
+
+                    templateObj.dropdownItems = [];
+
+                    var insertGivenLink = new Object();
+                    insertGivenLink.text = "Given";
+//                    insertGivenLink.onClickFunction = "insertElement";
+                    insertGivenLink.elementName = "given";
+                    templateObj.dropdownItems.push(insertGivenLink);
+
+                    var insertWhenLink = new Object();
+                    insertWhenLink.text = "When";
+//                    insertWhenLink.onClickFunction = "insertElement";
+                    insertWhenLink.elementName = "when";
+                    templateObj.dropdownItems.push(insertWhenLink);
+
+                    var insertThenLink = new Object();
+                    insertThenLink.text = "Then";
+//                    insertThenLink.onClickFunction = "insertElement";
+                    insertThenLink.elementName = "then";
+                    templateObj.dropdownItems.push(insertThenLink);
+
+                    var insertAndLink = new Object();
+                    insertAndLink.text = "And";
+//                    insertAndLink.onClickFunction = "insertElement";
+                    insertAndLink.elementName = "and";
+                    templateObj.dropdownItems.push(insertAndLink);
+
+                    var insertAfterScenariosHtml = execspec.viewissuepage.editstory.rich.renderInsertStepLinkDiv(templateObj);
+                    AJS.$(element).html(insertAfterScenariosHtml);
+                }
+            );
+        }
+
     }
 
     this.richTextEditorClicked = function (event) {
@@ -403,12 +448,12 @@ function StoryEditHandler() {
 //                    if (obj[ pathPart] == null) {
 //                        obj[pathPart] = {};
 //                    }
-                    editButtonHandler.debug("### checking if fieldName part ends in array index - " + pathPart);
+//                    editButtonHandler.debug("### checking if fieldName part ends in array index - " + pathPart);
                     var arrayIndexFromPath = editButtonHandler.getArrayIndexFromPath(pathPart);
                     if (arrayIndexFromPath != null) {
-                        editButtonHandler.debug("### fieldName part ends in array index - " + pathPart);
+//                        editButtonHandler.debug("### fieldName part ends in array index - " + pathPart);
                         var partWithoutIndex = pathPart.substr(0, pathPart.length - (arrayIndexFromPath.length + 2));
-                        editButtonHandler.debug("### partWithoutIndex " + partWithoutIndex);
+//                        editButtonHandler.debug("### partWithoutIndex " + partWithoutIndex);
                         obj = obj[partWithoutIndex][arrayIndexFromPath];
                     } else {
                         obj = obj[pathPart];
@@ -439,7 +484,7 @@ function StoryEditHandler() {
         this.debug("# bindInputElementsToModel");
     }
 
-    this.insertElement = function (event, elementName) {
+    this.insertElement = function (event, elementName, scenarioIndex) {
 
         this.debug("> insertElement");
         this.debug("elementName = " + elementName);
@@ -478,6 +523,10 @@ function StoryEditHandler() {
             this.removeMeta();
         } else if (elementName == "metaField") {
             this.removeMetaField(index);
+        } else if (elementName == "scenario") {
+            this.removeScenario(index);
+        } else {
+            console.error("attempted to remove unsupported element - " + elementName);
         }
 
         this.assignRichEditorHandlers(storyController.currentStory);
@@ -512,8 +561,8 @@ function StoryEditHandler() {
 
         this.debug("> removeMetaField");
 
-        this.debug("story before removing property at index - " + index
-            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+//        this.debug("story before removing property at index - " + index
+//            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
 
         storyController.currentStory.meta.properties.splice(index, 1);
 
@@ -523,6 +572,27 @@ function StoryEditHandler() {
         var metaHtml = execspec.viewissuepage.editstory.rich.renderStoryMeta(storyController.currentStory);
         AJS.$("#storyMetaContainer").html(metaHtml);
         this.debug("# removeMetaField");
+    }
+
+    this.removeScenario = function (index) {
+
+        this.debug("> removeScenario");
+        this.debug("index - " + index);
+
+        storyController.currentStory.scenarios.splice(index, 1);
+
+        this.debug("story after removing scenario at index - " + index
+            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+
+        var scenariosHtml;
+        if (storyController.currentStory.scenarios.length > 0) {
+            scenariosHtml = execspec.viewissuepage.editstory.rich.renderScenarios(storyController.currentStory);
+        } else {
+            scenariosHtml = "";
+        }
+        AJS.$("#storyScenariosContainer").html(scenariosHtml);
+
+        this.debug("# removeScenario");
     }
 
 
@@ -609,6 +679,37 @@ function StoryEditHandler() {
         AJS.$("#storyScenariosContainer").html(scenarioHtml);
 
         this.debug("# insertScenario");
+    }
+
+    this.insertStep = function (event, elementName, scenarioIndex) {
+
+        this.debug("> insertStep");
+        this.debug("scenarioIndex - " + scenarioIndex);
+
+        this.bindInputElementsToModel();
+
+        if (elementName == "step") {
+            this.insertStep(scenarioIndex);
+        } else if (elementName == "given") {
+            this.insertGiven(scenarioIndex);
+        } else {
+            console.error("Attempting to insert unsupported step element - " + elementName);
+        }
+
+        this.assignRichEditorHandlers(storyController.currentStory);
+        this.assignShowElementOperationsOnHover(storyController.currentStory);
+        event.preventDefault();
+
+        this.debug("# insertStep");
+    }
+
+    this.insertGiven = function (scenarioIndex) {
+
+        this.debug("> insertGiven");
+        this.debug("scenarioIndex - " + scenarioIndex)
+
+
+        this.debug("# insertGiven");
     }
 
     this.saveStory = function (event) {

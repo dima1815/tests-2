@@ -34,6 +34,7 @@
  * @param triggerDivId
  * @param dropdownDivId
  * @param dropdownItems
+ * @param additionalParams
  */
 {template .renderInsertLinkDiv}
     {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
@@ -53,7 +54,51 @@
             <ul class="aui-list-truncate">
                 {foreach $item in $dropdownItems}
                     <li><a href="#"
-                        onclick="editButtonHandler.{$item.onClickFunction}(event, '{$item.elementName}')">{$item.text}</a></li>
+                        onclick="editButtonHandler.{$item.onClickFunction}(event, '{$item.elementName}'
+                        {if $additionalParams != null}
+                            {foreach $param in $additionalParams}
+                                , '{$param}'
+                            {/foreach}
+                        {/if}
+                        )">{$item.text}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+{/template}
+
+/**
+ * Renders the '+' insert icon link to add scenario steps.
+ * @param triggerDivId
+ * @param dropdownDivId
+ * @param dropdownItems
+ * @param additionalParams
+ */
+{template .renderInsertStepLinkDiv}
+    {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
+    <div class="insert-element-link-div">
+        &nbsp;
+        <a aria-controls="dropdown2-more" href="#{$dropdownDivId}" aria-owns="{$dropdownDivId}"
+            aria-haspopup="true"
+            class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
+            style="display: none"
+            pressed="false">
+            <span class="{$addIconClass} insert-element-icon"></span>
+        </a>
+        <div id="{$dropdownDivId}" trigger-div-id="{$triggerDivId}"
+            class="aui-dropdown2 aui-style-default insert-dropdown-content"
+            aria-hidden="true" data-dropdown2-alignment="left"
+            style="left: 280.6px; top: 801.3px; display: none;">
+            <ul class="aui-list-truncate dropdown-items">
+                {foreach $item in $dropdownItems}
+                    <li><a href="#"
+                        onclick="editButtonHandler.insertStep(event, '{$item.elementName}'
+                        {if $additionalParams != null}
+                            {foreach $param in $additionalParams}
+                                , '{$param}'
+                            {/foreach}
+                        {/if}
+                        )">{$item.text}</a></li>
                 {/foreach}
             </ul>
         </div>
@@ -294,13 +339,41 @@
  * @param scenarios
  */
 {template .renderScenarios}
-     <div class="story-scenarios">
-         {foreach $scenario in $scenarios}
-             <div class="story-scenario">
-                 <span class="story-scenario-keyword">{$scenario.keyword}</span>
-             </div>
-         {/foreach}
-     </div>
+    <div class="story-scenarios">
+        {foreach $scenario in $scenarios}
+            // title line
+            <div class="story-element-container">
+                <div class="element-operations-container" style="display: none">
+                    <a class="remove-element-link" href="#"
+                        onclick="editButtonHandler.removeElement(event, 'scenario', '{index($scenario)}')"
+                    >
+                        <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+                    </a>
+                </div>
+                <div class="story-scenario element-content-container">
+                    <span class="story-scenario-keyword">{$scenario.keyword}</span>
+                    <span class="story-scenario-title">
+                        {call .renderLongSingleLineField}
+                            {param fieldName: 'scenarios[' + index($scenario) + '].title' /}
+                            {param displayValue: 'scenario title' /}
+                            {param fieldValue: $scenario.title/}
+                        {/call}
+                    </span>
+                </div>
+            </div>
+            // steps
+            {if $scenario.steps != null}
+                <div class="scenario-steps">
+                    {foreach $step in $scenario.steps}
+                        <div class="scenario-step">
+                            {$step}
+                        </div>
+                    {/foreach}
+                </div>
+            {/if}
+            <div class="insert-link-container-after-scenario-steps"/>
+        {/foreach}
+    </div>
 {/template}
 
 /**
