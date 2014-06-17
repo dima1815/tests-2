@@ -111,7 +111,7 @@ public class StoryResourceCrud {
         narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
         narrative.setAsA(new AsADTO(keywords.asA(), null));
         narrative.setiWantTo(new IWantToDTO(keywords.iWantTo(), null));
-        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
+//        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
         storyDTO.setNarrative(narrative);
         storyDTO.setProjectKey(projectKey);
 

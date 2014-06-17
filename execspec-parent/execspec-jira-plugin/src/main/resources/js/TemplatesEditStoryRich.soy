@@ -359,8 +359,6 @@
         </div>
     {/if}
 
-    <div id="insertLinkContainerAfterScenarios"/>
-
     <div id="storyScenariosContainer">
         {if $story.scenarios != null}
             {call .renderScenarios}
@@ -369,6 +367,7 @@
         {/if}
     </div>
 
+    <div id="insertLinkContainerAfterScenarios"/>
 //    {call .renderInsertLinkDiv}
 //        {param triggerDivId: 'anotherTriggerDivId' /}
 //        {param dropdownDivId: 'anotherDropdownDivId' /}

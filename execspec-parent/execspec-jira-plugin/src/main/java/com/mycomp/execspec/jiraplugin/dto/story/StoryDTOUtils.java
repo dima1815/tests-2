@@ -246,6 +246,7 @@ public class StoryDTOUtils {
         List<ScenarioDTO> scenarios = storyDTO.getScenarios();
         if (scenarios != null && !scenarios.isEmpty()) {
             for (ScenarioDTO scenario : scenarios) {
+                sb.append(LB);
                 String keyword = scenario.getKeyword();
                 Validate.notEmpty(keyword);
                 sb.append(keyword);
@@ -254,6 +255,7 @@ public class StoryDTOUtils {
                     sb.append(" ");
                     sb.append(title.trim());
                 }
+                sb.append(LB);
             }
         }
 
