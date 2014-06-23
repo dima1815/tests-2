@@ -417,7 +417,7 @@ function StoryEditHandler() {
     }
 
     this.getArrayIndexFromPath = function (str) {
-        this.debug("> getArrayIndexFromPath");
+//        this.debug("> getArrayIndexFromPath");
         var regExp = new RegExp('\\[(\\d+)\\]$');
         var match = regExp.exec(str);
         if (match != null) {
@@ -425,7 +425,7 @@ function StoryEditHandler() {
         } else {
             return null;
         }
-        this.debug("# getArrayIndexFromPath");
+//        this.debug("# getArrayIndexFromPath");
     }
 
     this.bindInputElementsToModel = function () {
@@ -439,7 +439,7 @@ function StoryEditHandler() {
 //                editButtonHandler.debug("> bindInputElementsToModel.each(story-editor-field)");
                 var fieldName = AJS.$(this).attr("name");
                 var fieldValue = AJS.$(this).attr("value");
-                editButtonHandler.debug("fieldName = " + fieldName + ", value = " + fieldValue);
+//                editButtonHandler.debug("fieldName = " + fieldName + ", value = " + fieldValue);
 
                 var path = fieldName.split('.');
                 var obj = storyController.currentStory;
@@ -689,25 +689,44 @@ function StoryEditHandler() {
         this.bindInputElementsToModel();
 
         if (elementName == "step") {
-            this.insertStep(scenarioIndex);
+            this.insertStep(event.target, scenarioIndex);
         } else if (elementName == "given") {
-            this.insertGiven(scenarioIndex);
+            this.insertGiven(event.target, scenarioIndex);
         } else {
             console.error("Attempting to insert unsupported step element - " + elementName);
         }
 
         this.assignRichEditorHandlers(storyController.currentStory);
         this.assignShowElementOperationsOnHover(storyController.currentStory);
+
         event.preventDefault();
 
         this.debug("# insertStep");
     }
 
-    this.insertGiven = function (scenarioIndex) {
+    this.insertGiven = function (target, scenarioIndex) {
 
         this.debug("> insertGiven");
-        this.debug("scenarioIndex - " + scenarioIndex)
+        this.debug("scenarioIndex - " + scenarioIndex);
+        this.debug("target - " + target);
 
+        AJS.$(target).closest(".dropdown-items").each(
+            function(index, element){
+                editButtonHandler.debug("> replacing dropdown items for Given step");
+
+                AJS.$(element).children(".concrete-given-step").removeClass("hidden");
+                AJS.$(element).children(".concrete-given-step").children("a").removeClass("disabled");
+                AJS.$(element).children(".concrete-given-step").children("a").attr("aria-disabled", "false");
+
+                var stepHintHtml = "<li><a href='#'>step hint here</a></li>";
+                AJS.$(element).append(stepHintHtml);
+
+                editButtonHandler.debug("# replacing dropdown items for Given step");
+            }
+        );
+
+//        var stepHintHtml = "<li><a href='#'>step hint here</a></li>";
+//        AJS.$(target).closest(".dropdown-items").html(stepHintHtml);
 
         this.debug("# insertGiven");
     }

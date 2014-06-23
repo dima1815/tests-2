@@ -88,10 +88,13 @@
         <div id="{$dropdownDivId}" trigger-div-id="{$triggerDivId}"
             class="aui-dropdown2 aui-style-default insert-dropdown-content"
             aria-hidden="true" data-dropdown2-alignment="left"
-            style="left: 280.6px; top: 801.3px; display: none;">
+//            style="left: 280.6px; top: 801.3px; display: none;"
+            style="display: none; min-width: 700px; max-width: 700px;"
+            >
             <ul class="aui-list-truncate dropdown-items">
                 {foreach $item in $dropdownItems}
                     <li><a href="#"
+                        class="story-element-insert-link interactive"
                         onclick="editButtonHandler.insertStep(event, '{$item.elementName}'
                         {if $additionalParams != null}
                             {foreach $param in $additionalParams}
@@ -100,7 +103,29 @@
                         {/if}
                         )">{$item.text}</a></li>
                 {/foreach}
+                <li class="concrete-given-step">
+                    <span style="width: 100%;">
+                        <input
+                            style="width: 100%;"
+                            class="text long-field interactive"
+                            type="text"></input>
+//                        Comment
+                    </span>
+                </li>
+                <li class="concrete-given-step hidden">
+                    <a href="http://example.com/">
+                        Long Comment, asfasfasdfasfa fas fas fasdfa sfa sfd asdf as fdasfasdfasdfas fdasdfasdf
+                    </a>
+                </li>
+                <li class="concrete-given-step hidden">
+                    <a href="http://example.com/">Concrete step</a>
+                </li>
             </ul>
+        </div>
+        <div class="step-auto-complete-container"
+//            style="left: 280.6px; top: 801.3px; display: none;"
+        >
+            TODO
         </div>
     </div>
 {/template}
