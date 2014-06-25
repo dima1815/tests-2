@@ -68,6 +68,24 @@
 {/template}
 
 /**
+ * Render the step filter
+ */
+{template .renderStepFilterElement}
+    <li>
+        <span
+//        style="width: 100%;"
+        >
+//            Filter:
+            <input
+                style="width: 695px;"
+                class="text long-field interactive step-filter-input"
+                type="text"></input>
+    //                        Comment
+        </span>
+</li>
+{/template}
+
+/**
  * Renders the '+' insert icon link to add scenario steps.
  * @param triggerDivId
  * @param dropdownDivId
@@ -93,7 +111,8 @@
             >
             <ul class="aui-list-truncate dropdown-items">
                 {foreach $item in $dropdownItems}
-                    <li><a href="#"
+                    <li class="insert-step-link-container">
+                        <a href="#"
                         class="story-element-insert-link interactive"
                         onclick="editButtonHandler.insertStep(event, '{$item.elementName}'
                         {if $additionalParams != null}
@@ -103,23 +122,14 @@
                         {/if}
                         )">{$item.text}</a></li>
                 {/foreach}
-                <li class="concrete-given-step">
-                    <span style="width: 100%;">
-                        <input
-                            style="width: 100%;"
-                            class="text long-field interactive"
-                            type="text"></input>
-//                        Comment
-                    </span>
-                </li>
-                <li class="concrete-given-step hidden">
-                    <a href="http://example.com/">
-                        Long Comment, asfasfasdfasfa fas fas fasdfa sfa sfd asdf as fdasfasdfasdfas fdasdfasdf
-                    </a>
-                </li>
-                <li class="concrete-given-step hidden">
-                    <a href="http://example.com/">Concrete step</a>
-                </li>
+//                <li class="concrete-given-step hidden">
+//                    <a href="http://example.com/">
+//                        Long Comment, asfasfasdfasfa fas fas fasdfa sfa sfd asdf as fdasfasdfasdfas fdasdfasdf
+//                    </a>
+//                </li>
+//                <li class="concrete-given-step hidden">
+//                    <a href="http://example.com/">Concrete step</a>
+//                </li>
             </ul>
         </div>
         <div class="step-auto-complete-container"

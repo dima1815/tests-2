@@ -696,6 +696,22 @@ function StoryEditHandler() {
             console.error("Attempting to insert unsupported step element - " + elementName);
         }
 
+//        AJS.$(".step-filter-input").each(
+//            function (index, element) {
+//                AJS.$(element).closest("");
+//            }
+//        );
+        AJS.$('.step-filter-input').keydown(function (event) {
+            editButtonHandler.debug('keydown on step filter, event.target - ' + event.target);
+            var key = event.which;
+            editButtonHandler.debug('keydown on step filter, event.which - ' + key);
+            if (key == 13) {
+                editButtonHandler.debug('return pressed, ignoring it');
+//                editButtonHandler.resizeTextArea(event.target);
+            }
+        });
+
+
         this.assignRichEditorHandlers(storyController.currentStory);
         this.assignShowElementOperationsOnHover(storyController.currentStory);
 
@@ -711,15 +727,23 @@ function StoryEditHandler() {
         this.debug("target - " + target);
 
         AJS.$(target).closest(".dropdown-items").each(
-            function(index, element){
+            function (index, element) {
                 editButtonHandler.debug("> replacing dropdown items for Given step");
 
-                AJS.$(element).children(".concrete-given-step").removeClass("hidden");
-                AJS.$(element).children(".concrete-given-step").children("a").removeClass("disabled");
-                AJS.$(element).children(".concrete-given-step").children("a").attr("aria-disabled", "false");
+                AJS.$(element).children(".insert-step-link-container").hide();
+
+//                AJS.$(element).children(".concrete-given-step").removeClass("hidden");
+//                AJS.$(element).children(".concrete-given-step").children("a").removeClass("disabled");
+//                AJS.$(element).children(".concrete-given-step").children("a").attr("aria-disabled", "false");
+
+                var filterStepHtml = execspec.viewissuepage.editstory.rich.renderStepFilterElement();
+                AJS.$(element).append(filterStepHtml);
 
                 var stepHintHtml = "<li><a href='#'>step hint here</a></li>";
                 AJS.$(element).append(stepHintHtml);
+
+                var stepHintHtml2 = "<li><a href='#'>step hint 2 here</a></li>";
+                AJS.$(element).append(stepHintHtml2);
 
                 editButtonHandler.debug("# replacing dropdown items for Given step");
             }
