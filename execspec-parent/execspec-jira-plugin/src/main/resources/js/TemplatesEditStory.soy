@@ -64,4 +64,20 @@
     </button>
 {/template}
 
+/**
+ * Renders raw story editor.
+ * @param story
+ */
+{template .rawEditorContent}
+    Test RAW edit here: {\n}{\n}
+//    {$story.asString|changeNewlineToBr}
+    {\n}{\n}
+    <textarea id="rawStoryEditor"
+//        class="textarea story-editor-field story-multiline-edit-field"
+//            name="{$fieldName}"
+            rows="10"
+//            wrap="off"
+            placeholder="enter text here">{$story.asString}</textarea>
+{/template}
+
 

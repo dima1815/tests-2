@@ -1,0 +1,77 @@
+.cm-s-default .cm-meta-title {
+    color: #770088;
+    font-weight: bold;
+}
+
+.cm-s-default .cm-meta-field {
+    color: #770088;
+}
+
+.cm-s-default .cm-narrative-title {
+    color: #0000cc;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.cm-s-default .cm-narrative-field-keyword {
+    color: #0000cc;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.cm-s-default .cm-narrative-field-value {
+    color: #0000cc;
+    font-size: 14px;
+}
+
+.cm-s-default .cm-scenario-keyword {
+    color: green;
+    font-weight: bold;
+}
+
+.cm-s-default .cm-scenario-title {
+    color: green;
+    /*font-weight: bold;*/
+}
+
+.cm-s-default .cm-step-keyword {
+    color: #aa5500;
+    font-weight: bold;
+}
+
+.cm-s-default .cm-description-line {
+    color: dimgrey;
+}
+
+
+/*.cm-s-default .cm-atom {color: #219;}*/
+/*.cm-s-default .cm-number {color: #164;}*/
+/*.cm-s-default .cm-def {color: #00f;}*/
+/*.cm-s-default .cm-variable,*/
+/*.cm-s-default .cm-punctuation,*/
+/*.cm-s-default .cm-property,*/
+/*.cm-s-default .cm-operator {}*/
+/*.cm-s-default .cm-variable-2 {color: #05a;}*/
+/*.cm-s-default .cm-variable-3 {color: #085;}*/
+/*.cm-s-default .cm-comment {color: #a50;}*/
+/*.cm-s-default .cm-string {color: #a11;}*/
+/*.cm-s-default .cm-string-2 {color: #f50;}*/
+/*.cm-s-default .cm-meta {color: #555;}*/
+/*.cm-s-default .cm-qualifier {color: #555;}*/
+/*.cm-s-default .cm-builtin {color: #30a;}*/
+/*.cm-s-default .cm-bracket {color: #997;}*/
+/*.cm-s-default .cm-tag {color: #170;}*/
+/*.cm-s-default .cm-attribute {color: #00c;}*/
+/*.cm-s-default .cm-header {color: blue;}*/
+/*.cm-s-default .cm-quote {color: #090;}*/
+/*.cm-s-default .cm-hr {color: #999;}*/
+/*.cm-s-default .cm-link {color: #00c;}*/
+
+/*.cm-negative {color: #d44;}*/
+/*.cm-positive {color: #292;}*/
+/*.cm-header, .cm-strong {font-weight: bold;}*/
+/*.cm-em {font-style: italic;}*/
+/*.cm-link {text-decoration: underline;}*/
+
+/*.cm-s-default .cm-error {color: #f00;}*/
+/*.cm-invalidchar {color: #f00;}*/
