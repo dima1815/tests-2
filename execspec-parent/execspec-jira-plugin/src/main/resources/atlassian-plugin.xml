@@ -13,7 +13,19 @@
         <context>jira.view.issue</context>
         <!--<dependency>jira.webresources:jira-global</dependency>-->
         <!--<resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>-->
-        <resource type="download" name="yui-3.17.1-min.js" location="/js/3rdparty/yui-3.17.1-min.js"/>
+        <!--<resource type="download" name="yui-3.17.1-min.js" location="/js/3rdparty/yui-3.17.1-min.js"/>-->
+        <resource type="download" name="codemirror.js" location="/js/3rdparty/codemirror-4.3/lib/codemirror.js"/>
+        <!--codemirror modes-->
+        <resource type="download" name="gherkin.js" location="/js/3rdparty/codemirror-4.3/mode/gherkin/gherkin.js"/>
+        <resource type="download" name="jbehave.js" location="/js/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js"/>
+
+        <!--codemirror hints-->
+        <resource type="download" name="show-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/show-hint.js"/>
+        <resource type="download" name="jbehave-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js"/>
+        <resource type="download" name="anyword-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/anyword-hint.js"/>
+
+        <resource type="download" name="codemirror.css" location="/css/3rdparty/codemirror-4.3/lib/codemirror.css"/>
+        <resource type="download" name="show-hint.css" location="/css/3rdparty/codemirror-4.3/lib/show-hint.css"/>
     </web-resource>
     <!--Custom javascript and css-->
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
@@ -48,6 +60,9 @@
             <param name="content-type" value="text/css"/>
         </resource>
         <resource type="download" name="jbehave-core.css" location="css/jbehave-core.css">
+            <param name="content-type" value="text/css"/>
+        </resource>
+        <resource type="download" name="jbehave-edit.css" location="css/jbehave-edit.css">
             <param name="content-type" value="text/css"/>
         </resource>
         <context>jira.view.issue</context>

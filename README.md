@@ -1,8 +1,124 @@
++{template .renderInsertStepLinkDiv}
++    {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
++    <div class="insert-element-link-div">
++        &nbsp;
++        <a aria-controls="dropdown2-more" href="#{$dropdownDivId}" aria-owns="{$dropdownDivId}"
++            aria-haspopup="true"
++            class="aui-dropdown2-trigger aui-style-default aui-dropdown2-trigger-arrowless insert-element-link"
++            style="display: none"
++            pressed="false">
++            <span class="{$addIconClass} insert-element-icon"></span>
++        </a>
++        <div id="{$dropdownDivId}" trigger-div-id="{$triggerDivId}"
++            class="aui-dropdown2 aui-style-default insert-dropdown-content"
++            aria-hidden="true" data-dropdown2-alignment="left"
++            style="left: 280.6px; top: 801.3px; display: none;">
++            <ul class="aui-list-truncate dropdown-items">
++                {foreach $item in $dropdownItems}
++                    <li><a href="#"
++                        onclick="editButtonHandler.insertStep(event, '{$item.elementName}'
++                        {if $additionalParams != null}
++                            {foreach $param in $additionalParams}
++                                , '{$param}'
++                            {/foreach}
++                        {/if}
++                        )">{$item.text}</a></li>
++                {/foreach}
++            </ul>
+ /**
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryEditHandler.js
++        // after scenario steps
++        {
++            AJS.$('.insert-link-container-after-scenario-steps').each(
++                function (index, element) {
++                    var insertWhenLink = new Object();
++                    insertWhenLink.text = "When";
++//                    insertWhenLink.onClickFunction = "insertElement";
++                    insertWhenLink.elementName = "when";
++                    templateObj.dropdownItems.push(insertWhenLink);
++                    var insertThenLink = new Object();
++                    insertThenLink.text = "Then";
++//                    insertThenLink.onClickFunction = "insertElement";
++                    insertThenLink.elementName = "then";
++                    templateObj.dropdownItems.push(insertThenLink);
++                    var insertAndLink = new Object();
++                    insertAndLink.text = "And";
++//                    insertAndLink.onClickFunction = "insertElement";
++                    insertAndLink.elementName = "and";
++                    templateObj.dropdownItems.push(insertAndLink);
++                    var insertAfterScenariosHtml = execspec.viewissuepage.editstory.rich.renderInsertStepLinkDiv(templateObj);
++                    AJS.$(element).html(insertAfterScenariosHtml);
++            );
+         this.debug("> richTextEditorClicked");
+@@ -403,12 +448,12 @@
+ //                    if (obj[ pathPart] == null) {
+ //                        obj[pathPart] = {};
+ //                    }
+-                    editButtonHandler.debug("### checking if fieldName part ends in array index - " + pathPart);
++//                    editButtonHandler.debug("### checking if fieldName part ends in array index - " + pathPart);
+                     var arrayIndexFromPath = editButtonHandler.getArrayIndexFromPath(pathPart);
+                     if (arrayIndexFromPath != null) {
+-                        editButtonHandler.debug("### fieldName part ends in array index - " + pathPart);
++//                        editButtonHandler.debug("### fieldName part ends in array index - " + pathPart);
+                         var partWithoutIndex = pathPart.substr(0, pathPart.length - (arrayIndexFromPath.length + 2));
+-                        editButtonHandler.debug("### partWithoutIndex " + partWithoutIndex);
++//                        editButtonHandler.debug("### partWithoutIndex " + partWithoutIndex);
+                         obj = obj[partWithoutIndex][arrayIndexFromPath];
+                     } else {
+                         obj = obj[pathPart];
+@@ -439,7 +484,7 @@
+         this.debug("# bindInputElementsToModel");
+-    this.insertElement = function (event, elementName) {
++    this.insertElement = function (event, elementName, scenarioIndex) {
+         this.debug("> insertElement");
+         this.debug("elementName = " + elementName);
+@@ -478,6 +523,10 @@
+             this.removeMeta();
+         } else if (elementName == "metaField") {
+             this.removeMetaField(index);
++        } else if (elementName == "scenario") {
++            this.removeScenario(index);
+         this.assignRichEditorHandlers(storyController.currentStory);
+@@ -512,8 +561,8 @@
+ 
+         this.debug("> removeMetaField");
+-        this.debug("story before removing property at index - " + index
+-            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
++//        this.debug("story before removing property at index - " + index
++//            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
+ 
+         storyController.currentStory.meta.properties.splice(index, 1);
+@@ -525,7 +574,28 @@
+         this.debug("# removeMetaField");
+ 
++    this.removeScenario = function (index) {
++        this.debug("> removeScenario");
++        this.debug("index - " + index);
++        this.debug("story after removing scenario at index - " + index
++            + ":\n" + JSON.stringify(storyController.currentStory, null, "\t"));
++        var scenariosHtml;
++        if (storyController.currentStory.scenarios.length > 0) {
++            scenariosHtml = execspec.viewissuepage.editstory.rich.renderScenarios(storyController.currentStory);
++        } else {
++            scenariosHtml = "";
+     this.removeDescription = function () {
+ 
+         this.debug("> removeDescription");
+@@ -609,6 +679,37 @@
+         AJS.$("#storyScenariosContainer").html(scenarioHtml);
+ 
+         this.debug("# insertScenario");
++    }
++        this.assignRichEditorHandlers(storyController.currentStory);
++        this.assignShowElementOperationsOnHover(storyController.currentStory);
++        event.preventDefault();
++        this.debug("> insertGiven");
++        this.debug("scenarioIndex - " + scenarioIndex)
+     }
+     this.saveStory = function (event) {
+\ No newline at end of file
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/TemplatesEditStoryRich.soy
 --- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html	(date 1403079607000)
 +++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html	(revision )
 @@ -1,27 +1,52 @@
@@ -95,6 +211,11 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  {/template}
  
  /**
++ * Renders the '+' insert icon link to add scenario steps.
++ * @param triggerDivId
++ * @param dropdownDivId
++ * @param dropdownItems
++ * @param additionalParams
 + * Render the step filter
 + */
 +{template .renderStepFilterElement}
@@ -110,9 +231,59 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    //                        Comment
 +        </span>
 +</li>
++    </div>
 +{/template}
 +
 +/**
+  * Renders the text area type editable field.
+  * @param fieldName
+  * @param displayValue
+@@ -294,13 +339,41 @@
+  * @param scenarios
+  */
+ {template .renderScenarios}
+-     <div class="story-scenarios">
+-         {foreach $scenario in $scenarios}
++    <div class="story-scenarios">
++        {foreach $scenario in $scenarios}
+-             <div class="story-scenario">
++            // title line
++            <div class="story-element-container">
++                <div class="element-operations-container" style="display: none">
++                    <a class="remove-element-link" href="#"
++                        onclick="editButtonHandler.removeElement(event, 'scenario', '{index($scenario)}')"
++                    >
++                        <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
++                    </a>
++                </div>
++                <div class="story-scenario element-content-container">
+-                 <span class="story-scenario-keyword">{$scenario.keyword}</span>
++                    <span class="story-scenario-keyword">{$scenario.keyword}</span>
++                    <span class="story-scenario-title">
++                        {call .renderLongSingleLineField}
++                            {param fieldName: 'scenarios[' + index($scenario) + '].title' /}
++                            {param displayValue: 'scenario title' /}
++                            {param fieldValue: $scenario.title/}
++                        {/call}
++                    </span>
+-             </div>
++                </div>
++            </div>
++            // steps
++            {if $scenario.steps != null}
++                <div class="scenario-steps">
++                    {foreach $step in $scenario.steps}
++                        <div class="scenario-step">
++                            {$step}
++                        </div>
++                    {/foreach}
++                </div>
++            {/if}
++            <div class="insert-link-container-after-scenario-steps"/>
+-         {/foreach}
+-     </div>
++        {/foreach}
++    </div>
   * Renders the '+' insert icon link to add scenario steps.
   * @param triggerDivId
   * @param dropdownDivId
@@ -150,6 +321,29 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        <div class="step-auto-complete-container"
 +//            style="left: 280.6px; top: 801.3px; display: none;"
 +        >
+@@ -34,6 +34,7 @@
+  * @param triggerDivId
+  * @param dropdownDivId
+  * @param dropdownItems
++ * @param additionalParams
+  */
+ {template .renderInsertLinkDiv}
+     {let $addIconClass: 'aui-icon aui-icon-small aui-iconfont-add' /}
+@@ -53,14 +54,58 @@
+             <ul class="aui-list-truncate">
+                 {foreach $item in $dropdownItems}
+                     <li><a href="#"
+-                        onclick="editButtonHandler.{$item.onClickFunction}(event, '{$item.elementName}')">{$item.text}</a></li>
++                        onclick="editButtonHandler.{$item.onClickFunction}(event, '{$item.elementName}'
++                        {if $additionalParams != null}
++                            {foreach $param in $additionalParams}
++                                , '{$param}'
+-                {/foreach}
++                            {/foreach}
++                        {/if}
++                        )">{$item.text}</a></li>
++                {/foreach}
+             </ul>
          </div>
      </div>
  {/template}
@@ -294,6 +488,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +            (pos.ch && closeOn.test(line.charAt(pos.ch - 1)))) {
 +          completion.close();
 +        } else {
++            console.error("attempted to remove unsupported element - " + elementName);
 +          debounce = requestAnimationFrame(update);
 +          if (completion.widget) completion.widget.close();
 +        }
@@ -555,6 +750,7 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/TemplatesEditStoryRich.soy	(date 1402994274000)
 --- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/addon/hint/anyword-hint.js	(revision )
 +++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/addon/hint/anyword-hint.js	(revision )
 @@ -0,0 +1,42 @@
@@ -711,10 +907,12 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +  }
 +});
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryEditHandler.js	(date 1402994274000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryEditHandler.js	(revision )
+@@ -335,8 +335,53 @@
+             AJS.$('#insertLinkContainerAfterScenarios').html(insertAfterScenariosHtml);
+         }
+ 
 --- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1403079607000)
 +++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
 @@ -13,7 +13,19 @@
@@ -727,6 +925,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        <!--codemirror modes-->
 +        <resource type="download" name="gherkin.js" location="/js/3rdparty/codemirror-4.3/mode/gherkin/gherkin.js"/>
 +        <resource type="download" name="jbehave.js" location="/js/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js"/>
++                    var templateObj = new Object();
 +
 +        <!--codemirror hints-->
 +        <resource type="download" name="show-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/show-hint.js"/>
@@ -822,14 +1021,22 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +                    // META title
 +                } else if (state.allowMeta && stream.sol() && stream.match(/(Meta):/)) {
 +
++                    templateObj.triggerDivId = "insertAfterScenarioStepsTriggerDiv_" + index;
++                    templateObj.dropdownDivId = "insertAfterScenarioStepsDropdownDiv_" + index;
 +                    state.allowDescription = false;
 +                    state.allowMeta = false;
 +                    state.allowMetaField = true;
 +                    return "meta-title";
 +
++                    templateObj.dropdownItems = [];
 +                    // META field
 +                } else if (state.allowMetaField && stream.sol() && stream.match(/@.*/)) {
 +
++                    var insertGivenLink = new Object();
++                    insertGivenLink.text = "Given";
++//                    insertGivenLink.onClickFunction = "insertElement";
++                    insertGivenLink.elementName = "given";
++                    templateObj.dropdownItems.push(insertGivenLink);
 +                    return "meta-field"
 +
 +                    // Narrative - title
@@ -907,6 +1114,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +//                    stream.eatWhile(/[^@"<#]/);
 +                    return null;
 +                }
++            );
 +            }
 +        };
 +    });
@@ -1026,7 +1234,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +      // TAG
 +      } else if (!state.inKeywordLine && stream.match(/@\S+/)) {
 +        return "tag";
-+
+     this.richTextEditorClicked = function (event) {
 +      // FEATURE
 +      } else if (!state.inKeywordLine && state.allowNarrative && stream.match(/(æ©Ÿèƒ½|åŠŸèƒ½|ãƒ•ã‚£ãƒ¼ãƒãƒ£|ê¸°ëŠ¥|à¹‚à¸„à¸£à¸‡à¸«à¸¥à¸±à¸|à¸„à¸§à¸²à¸¡à¸ªà¸²à¸¡à¸²à¸£à¸–|à¸„à¸§à¸²à¸¡à¸•à¹‰à¸­à¸‡à¸à¸²à¸£à¸—à¸²à¸‡à¸˜à¸¸à¸£à¸à¸´à¸ˆ|à²¹à³†à²šà³à²šà²³|à°—à±à°£à°®à±|à¨®à©à¨¹à¨¾à¨‚à¨¦à¨°à¨¾|à¨¨à¨•à¨¶ à¨¨à©à¨¹à¨¾à¨°|à¨–à¨¾à¨¸à©€à¨…à¨¤|à¤°à¥‚à¤ª à¤²à¥‡à¤–|ÙˆÙÛŒÚ˜Ú¯ÛŒ|Ø®Ø§ØµÙŠØ©|×ª×›×•× ×”|Ð¤ÑƒÐ½ÐºÑ†Ñ–Ð¾Ð½Ð°Ð»|Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ|Ð¤ÑƒÐ½ÐºÑ†Ð¸Ð¾Ð½Ð°Ð»Ð½Ð¾ÑÑ‚|Ð¤ÑƒÐ½ÐºÑ†Ð¸Ð¾Ð½Ð°Ð»|Ò®Ð·ÐµÐ½Ñ‡Ó™Ð»ÐµÐºÐ»ÐµÐ»ÐµÐº|Ð¡Ð²Ð¾Ð¹ÑÑ‚Ð²Ð¾|ÐžÑÐ¾Ð±Ð¸Ð½Ð°|ÐœÓ©Ð¼ÐºÐ¸Ð½Ð»ÐµÐº|ÐœÐ¾Ð³ÑƒÑ›Ð½Ð¾ÑÑ‚|Î›ÎµÎ¹Ï„Î¿Ï…ÏÎ³Î¯Î±|Î”Ï…Î½Î±Ï„ÏŒÏ„Î·Ï„Î±|WÅ‚aÅ›ciwoÅ›Ä‡|VlastnosÅ¥|Trajto|TÃ­nh nÄƒng|SavybÄ—|Pretty much|PoÅ¾iadavka|PoÅ¾adavek|Potrzeba biznesowa|Ã–zellik|Osobina|Ominaisuus|Omadus|OH HAI|MoguÄ‡nost|Mogucnost|JellemzÅ‘|HwÃ¦t|Hwaet|FunzionalitÃ |FunktionalitÃ©it|FunktionalitÃ¤t|Funkcja|Funkcionalnost|FunkcionalitÄte|Funkcia|Fungsi|Functionaliteit|FuncÈ›ionalitate|FuncÅ£ionalitate|Functionalitate|Funcionalitat|Funcionalidade|FonctionnalitÃ©|Fitur|FÄ«Äa|Feature|Eiginleiki|Egenskap|Egenskab|CaracterÃ­stica|Caracteristica|Business Need|Aspekt|Arwedd|Ahoy matey!|Ability):/)) {
 +        state.allowScenario = true;
@@ -1093,7 +1301,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        stream.eatWhile(/[^@"<#]/);
 +        return null;
 +      }
-+    }
++                    templateObj.additionalParams = [];
++                    templateObj.additionalParams.push(index);
 +  };
 +});
 +
@@ -1151,7 +1360,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +
 +.cm-s-default .cm-description-line {
 +    color: dimgrey;
-+}
++        this.debug("# insertGiven");
 +
 +
 +/*.cm-s-default .cm-atom {color: #219;}*/
@@ -1196,6 +1405,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +// CodeMirror, copyright (c) by Marijn Haverbeke and others
 +// Distributed under an MIT license: http://codemirror.net/LICENSE
 +
++        storyController.currentStory.scenarios.splice(index, 1);
 +// This is CodeMirror (http://codemirror.net), a code editor
 +// implemented in JavaScript on top of the browser's DOM.
 +//
@@ -1422,19 +1632,25 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    d.maxLineLength = 0;
 +    d.maxLineChanged = false;
 +
++    this.insertStep = function (event, elementName, scenarioIndex) {
 +    // Used for measuring wheel scrolling granularity
 +    d.wheelDX = d.wheelDY = d.wheelStartX = d.wheelStartY = null;
 +
++        this.debug("> insertStep");
++        this.debug("scenarioIndex - " + scenarioIndex);
 +    // True when shift is held down.
 +    d.shift = false;
 +
++        this.bindInputElementsToModel();
 +    // Used to track whether anything happened since the context menu
 +    // was opened.
 +    d.selForContextMenu = null;
 +  }
 +
++        this.debug("# insertStep");
 +  // STATE UPDATES
 +
++    this.insertGiven = function (scenarioIndex) {
 +  // Used to get the editor into a consistent state again when options change.
 +
 +  function loadMode(cm) {
@@ -1460,6 +1676,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    } else {
 +      rmClass(cm.display.wrapper, "CodeMirror-wrap");
 +      findMaxLine(cm);
++        this.debug("# removeScenario");
 +    }
 +    estimateLineHeights(cm);
 +    regChange(cm);
@@ -1526,7 +1743,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        cm.display.lineGutter = gElt;
 +        gElt.style.width = (cm.display.lineNumWidth || 1) + "px";
 +      }
-+    }
++        if (elementName == "step") {
++            this.insertStep(scenarioIndex);
++        } else if (elementName == "given") {
++            this.insertGiven(scenarioIndex);
++        } else {
++            console.error("Attempting to insert unsupported step element - " + elementName);
++        }
 +    gutters.style.display = i ? "" : "none";
 +    updateGutterSpace(cm);
 +  }
@@ -1780,8 +2003,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +      visible = visibleLines(cm.display, cm.doc, viewPort);
 +      if (visible.from >= cm.display.viewFrom && visible.to <= cm.display.viewTo)
 +        break;
-+    }
-+
++        }
 +    cm.display.updateLineNumbers = null;
 +    if (updated) {
 +      signalLater(cm, "update", cm);
@@ -1967,6 +2189,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +          if (indexOf(lineView.changes, "gutter") > -1) updateNumber = false;
 +          updateLineForChanges(cm, lineView, lineN, dims);
 +        }
++        AJS.$("#storyScenariosContainer").html(scenariosHtml);
 +        if (updateNumber) {
 +          removeChildren(lineView.lineNumber);
 +          lineView.lineNumber.appendChild(document.createTextNode(lineNumberFor(cm.options, lineN)));

@@ -236,22 +236,42 @@ function StoryView(storyController) {
 
         var editContainerContent = execspec.viewissuepage.editstory.renderEditStoryContainer();
         AJS.$("#storyEditContainer").html(editContainerContent);
+
         // set content for rich editor as well as raw editor
         var templateObj = new Object();
         templateObj.story = story;
         var richEditStoryContent = execspec.viewissuepage.editstory.rich.renderRichEditStoryContent(templateObj);
-
         AJS.$("#richEditStoryContainer").html(richEditStoryContent);
         editButtonHandler.assignRichEditorHandlers(story);
-        AJS.$("#richTextEditorButton").click();
+
+        // set raw editor content
+        var rawEditStoryContent = execspec.viewissuepage.editstory.rawEditorContent(templateObj);
+        AJS.$("#rawEditStoryContainer").html(rawEditStoryContent);
+
+
+//        AJS.$("#richTextEditorButton").click();
+        AJS.$("#rawTextEditorButton").click();
 
         this.updateStoryTabButton("edit", null);
+
 //        AJS.$("#editStoryButton").attr("aria-pressed", "true");
 //        AJS.$("#storyContainer").hide();
 //        AJS.$("#storyEditContainer").show();
 
+        CodeMirror.commands.autocomplete = function(cm) {
+//            cm.showHint({hint: CodeMirror.hint.anyword});
+            cm.showHint({hint: CodeMirror.hint.jbehave});
+        }
+        var editor = CodeMirror.fromTextArea(document.getElementById("rawStoryEditor"), {
+//            lineNumbers: true,
+            mode: "jbehave",
+            extraKeys: {"Ctrl-Space": "autocomplete"}
+        });
+
         this.debug("# editStory");
     }
+
+
 
     this.fetchAutoCompleteContent = function () {
 
