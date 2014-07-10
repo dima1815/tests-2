@@ -1,52 +1,27 @@
-<div id="rawEditStoryContainer" style="">Test RAW edit here:
-
-    asdf<br><br>Meta:<br>@metaKey metaValue<br><br>Narrative:<br>In order to aaa<br>As a bbb<br>I want to ccc<br><br>Scenario:
-    asdfaf<br><br>Scenario: another scenario<br>
-
-    <textarea id="rawStoryEditor" rows="10" placeholder="enter text here" style="display: none;">asdf
-
-        Meta:
-        @metaKey metaValue
-
-        Narrative:
-        In order to aaa
-        As a bbb
-        I want to ccc
-
-        Scenario: asdfaf
-
-        Scenario: another scenario
-    </textarea>
-
-    <div class="CodeMirror cm-s-default">
-        <div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off"
-                                                                                              spellcheck="false"
-                                                                                              style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"
-                                                                                              tabindex="0"></textarea></div>
-        <div class="CodeMirror-hscrollbar" style="left: 0px;">
-            <div style="height: 100%; min-height: 1px;"></div>
-        </div>
-        <div class="CodeMirror-vscrollbar">
-            <div style="min-width: 1px;"></div>
-        </div>
-        <div class="CodeMirror-scrollbar-filler"></div>
-        <div class="CodeMirror-gutter-filler"></div>
-        <div class="CodeMirror-scroll" tabindex="-1">
-            <div class="CodeMirror-sizer" style="margin-left: 0px;">
-                <div style="position: relative;">
-                    <div class="CodeMirror-lines">
-                        <div style="position: relative; outline: none;">
-                            <div class="CodeMirror-measure"></div>
-                            <div class="CodeMirror-measure"></div>
-                            <div style="position: relative; z-index: 1;"></div>
-                            <div class="CodeMirror-cursors"></div>
-                            <div class="CodeMirror-code"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="position: absolute; height: 30px; width: 1px;"></div>
-            <div class="CodeMirror-gutters" style="display: none;"></div>
-        </div>
+<div class="story-element-container">
+    <div class="element-operations-container"
+         style="display: none">
+        <a class="remove-element-link" href="#"
+           onclick="editButtonHandler.removeElement(event, 'metaField', '{index($metaProperty)}')">
+            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+        </a>
+    </div>
+    <div class="story-meta-property element-content-container">
+        <span class="meta-property-start-symbol">@</span>
+                                <span class="meta-property-name">
+                                    {call .renderShortSingleLineField}
+                                        {param fieldName: 'meta.properties['+ index($metaProperty) + '].name' /}
+                                        {param displayValue: 'Property key' /}
+                                        {param fieldValue: $metaProperty.name /}
+                                    {/call}
+                                </span>
+        &nbsp;
+                                <span class="meta-preperty-value">
+                                    {call .renderShortSingleLineField}
+                                        {param fieldName: 'meta.properties['+ index($metaProperty) + '].value' /}
+                                        {param displayValue: 'Property value' /}
+                                        {param fieldValue: $metaProperty.value /}
+                                    {/call}
+                                </span>
     </div>
 </div>
