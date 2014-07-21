@@ -42,11 +42,12 @@
 
                     allowScenario: false,
                     allowSteps: false,
-                    allowMultilineArgument: false,
 
                     tableHeaderLine: false,
                     inMultilineString: false,
-                    inMultilineTable: false
+                    inMultilineTable: false,
+
+                    lastStepType: null
                 };
             },
             token: function (stream, state) {
@@ -85,7 +86,6 @@
 
                     state.allowScenario = true;
                     state.allowSteps = false;
-                    state.allowMultilineArgument = false;
                     return "narrative-title";
 
                     // Narrative - In order to - keyword
@@ -123,20 +123,36 @@
                 } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario):/)) {
                     state.allowSteps = true;
                     state.allowDescription = false;
-                    state.allowMultilineArgument = false;
-
                     state.inScenarioTitleLine = true;
+                    state.lastStepType = null;
+                    state.allowAndStep = false;
                     return "scenario-keyword";
 
                     // SCENARIO title
                 } else if (state.inScenarioTitleLine && stream.match(/.*/)) {
                     return "scenario-title";
 
-                    // STEPS
-                } else if (state.allowSteps && stream.sol() && stream.match(/(When |Given |Then |And |\* )/)) {
-                    state.inStep = true;
-                    state.allowMultilineArgument = true;
+                    // GIVEN
+                } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
+                    state.lastStepType = "Given";
+                    state.allowAndStep = true;
                     return "step-keyword";
+
+                    // WHEN
+                } else if (state.allowSteps && stream.sol() && stream.match(/(When )/)) {
+                    state.lastStepType = "When";
+                    state.allowAndStep = true;
+                    return "step-keyword";
+
+                    // THEN
+                } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
+                    state.lastStepType = "Then";
+                    state.allowAndStep = true;
+                    return "step-keyword";
+
+                    // AND
+                } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
+                    return "step-keyword-and";
 
                     // Description
                 } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {

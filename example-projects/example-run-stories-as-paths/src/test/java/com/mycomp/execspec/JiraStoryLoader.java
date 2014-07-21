@@ -1,8 +1,5 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.util.BytesListPrintStream;
-import com.mycomp.execspec.util.ReportingStoryWalker;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -10,9 +7,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.lang.Validate;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.TxtOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +19,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -78,29 +72,29 @@ public class JiraStoryLoader implements StoryLoader {
             Meta overridenMeta = new Meta(properties);
             overridenMeta.inheritFrom(originalMeta);
 
-            org.jbehave.core.model.Story overridenJBehaveStory = new Story(
-                    jBehaveStory.getPath(), jBehaveStory.getDescription(), overridenMeta,
-                    jBehaveStory.getNarrative(), jBehaveStory.getGivenStories(),
-                    jBehaveStory.getLifecycle(), jBehaveStory.getScenarios());
-
-            String jiraVersion = overridenJBehaveStory.getMeta().getProperty("jira-version");
-            Validate.notEmpty(jiraVersion);
-
-            BytesListPrintStream printStream = new BytesListPrintStream();
-            Properties customPatterns = new Properties();
-            customPatterns.setProperty("beforeStory", "");
-            customPatterns.setProperty("pending", "{0}\n");
-//            customPatterns.setProperty("examplesTableStart", "");
-//            customPatterns.setProperty("examplesTableRowEnd", "");
-
-            TxtOutput txtOutput = new TxtOutput(printStream, customPatterns);
-            ReportingStoryWalker walker = new ReportingStoryWalker();
-            walker.walkStory(overridenJBehaveStory, txtOutput);
-            List<Byte> writtenBytes = printStream.getWrittenBytes();
-            String asString = StoryDTOUtils.bytesListToString(writtenBytes);
-
-            this.writeModelToFile(storyPath, asString);
-            return asString;
+//            org.jbehave.core.model.Story overridenJBehaveStory = new Story(
+//                    jBehaveStory.getPath(), jBehaveStory.getDescription(), overridenMeta,
+//                    jBehaveStory.getNarrative(), jBehaveStory.getGivenStories(),
+//                    jBehaveStory.getLifecycle(), jBehaveStory.getScenarios());
+//
+//            String jiraVersion = overridenJBehaveStory.getMeta().getProperty("jira-version");
+//            Validate.notEmpty(jiraVersion);
+//
+//            BytesListPrintStream printStream = new BytesListPrintStream();
+//            Properties customPatterns = new Properties();
+//            customPatterns.setProperty("beforeStory", "");
+//            customPatterns.setProperty("pending", "{0}\n");
+////            customPatterns.setProperty("examplesTableStart", "");
+////            customPatterns.setProperty("examplesTableRowEnd", "");
+//
+//            TxtOutput txtOutput = new TxtOutput(printStream, customPatterns);
+//            ReportingStoryWalker walker = new ReportingStoryWalker();
+//            walker.walkStory(overridenJBehaveStory, txtOutput);
+//            List<Byte> writtenBytes = printStream.getWrittenBytes();
+//            String asString = StoryDTOUtils.bytesListToString(writtenBytes);
+//
+//            this.writeModelToFile(storyPath, asString);
+            return storyDTO.getAsString();
         } else {
             int status = response.getStatus();
             Response.StatusType statusInfo = response.getStatusInfo();

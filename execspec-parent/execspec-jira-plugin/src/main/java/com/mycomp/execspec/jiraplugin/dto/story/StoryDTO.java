@@ -3,8 +3,6 @@ package com.mycomp.execspec.jiraplugin.dto.story;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * DTO class for Story instances.
@@ -21,20 +19,6 @@ public class StoryDTO {
     private String projectKey;
 
     private Long version;
-
-    private String path;
-
-    private String description;
-
-    private MetaDTO meta;
-
-    private NarrativeDTO narrative;
-
-    private GivenStoriesDTO givenStories;
-
-    private LifecycleDTO lifecycle;
-
-    private List<ScenarioDTO> scenarios = new ArrayList<ScenarioDTO>();
 
     private String asString;
 
@@ -62,62 +46,6 @@ public class StoryDTO {
         this.version = version;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public GivenStoriesDTO getGivenStories() {
-        return givenStories;
-    }
-
-    public void setGivenStories(GivenStoriesDTO givenStories) {
-        this.givenStories = givenStories;
-    }
-
-    public LifecycleDTO getLifecycle() {
-        return lifecycle;
-    }
-
-    public void setLifecycle(LifecycleDTO lifecycle) {
-        this.lifecycle = lifecycle;
-    }
-
-    public MetaDTO getMeta() {
-        return meta;
-    }
-
-    public void setMeta(MetaDTO meta) {
-        this.meta = meta;
-    }
-
-    public NarrativeDTO getNarrative() {
-        return narrative;
-    }
-
-    public void setNarrative(NarrativeDTO narrative) {
-        this.narrative = narrative;
-    }
-
-    public List<ScenarioDTO> getScenarios() {
-        return scenarios;
-    }
-
-    public void setScenarios(List<ScenarioDTO> scenarios) {
-        this.scenarios = scenarios;
-    }
-
     public String getAsString() {
         return asString;
     }
@@ -125,5 +53,4 @@ public class StoryDTO {
     public void setAsString(String asString) {
         this.asString = asString;
     }
-
 }

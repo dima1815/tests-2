@@ -5,8 +5,6 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.mycomp.execspec.jiraplugin.dto.story.StoriesPayload;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryPathsDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryWithReportsPayload;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
@@ -62,7 +60,7 @@ public class StoryResourceFind {
         List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
         List<String> paths = new ArrayList<String>(stories.size());
         for (StoryDTO story : stories) {
-            paths.add(story.getPath());
+            paths.add(story.getProjectKey() + "/" + story.getIssueKey() + ".story");
         }
         StoryPathsDTO pathsModel = new StoryPathsDTO();
         pathsModel.setPaths(paths);
@@ -90,11 +88,7 @@ public class StoryResourceFind {
 
         Response response;
         if (storyDTO != null) {
-
-            List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
-            StoryWithReportsPayload payload = new StoryWithReportsPayload(storyDTO, storyReports);
-
-            response = Response.ok(payload, MediaType.APPLICATION_JSON).build();
+            response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
         } else {
             response = Response.noContent().build();
         }

@@ -3,11 +3,10 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.story.*;
+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jbehave.core.i18n.LocalizedKeywords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +63,14 @@ public class StoryResourceCrud {
         log.debug("saving story:\n" + storyDTO);
 
         StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
-
         Validate.notNull(savedStoryDTO.getVersion());
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+
         return savedStoryDTO;
     }
 
@@ -87,36 +92,36 @@ public class StoryResourceCrud {
         return Response.ok("Successful deletion from server!").build();
     }
 
-    @GET
-    @AnonymousAllowed
-    @Path("/newstorytemplate/{projectKey}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getNewStoryTemplate(@PathParam("projectKey") String projectKey) {
-
-        // TODO - make this project specific, e.g. keywords maybe localized for some projects
-        LocalizedKeywords keywords = new LocalizedKeywords();
-
-        StoryDTO storyDTO = new StoryDTO();
-
-//        MetaDTO meta = new MetaDTO();
-//        meta.setKeyword("Meta:");
-//        List<MetaEntryDTO> properties = new ArrayList<MetaEntryDTO>();
-//        properties.add(new MetaEntryDTO("property1", "property1_value"));
-//        properties.add(new MetaEntryDTO("property2", "property2_value"));
-//        properties.add(new MetaEntryDTO("property3", "property3_value"));
-//        meta.setProperties(properties);
-//        storyDTO.setMeta(meta);
-
-        NarrativeDTO narrative = new NarrativeDTO(keywords.narrative());
-        narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
-        narrative.setAsA(new AsADTO(keywords.asA(), null));
-        narrative.setiWantTo(new IWantToDTO(keywords.iWantTo(), null));
-//        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
-        storyDTO.setNarrative(narrative);
-        storyDTO.setProjectKey(projectKey);
-
-        return Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
-    }
+//    @GET
+//    @AnonymousAllowed
+//    @Path("/newstorytemplate/{projectKey}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getNewStoryTemplate(@PathParam("projectKey") String projectKey) {
+//
+//        // TODO - make this project specific, e.g. keywords maybe localized for some projects
+//        LocalizedKeywords keywords = new LocalizedKeywords();
+//
+//        StoryDTO storyDTO = new StoryDTO();
+//
+////        MetaDTO meta = new MetaDTO();
+////        meta.setKeyword("Meta:");
+////        List<MetaEntryDTO> properties = new ArrayList<MetaEntryDTO>();
+////        properties.add(new MetaEntryDTO("property1", "property1_value"));
+////        properties.add(new MetaEntryDTO("property2", "property2_value"));
+////        properties.add(new MetaEntryDTO("property3", "property3_value"));
+////        meta.setProperties(properties);
+////        storyDTO.setMeta(meta);
+//
+////        NarrativeDTO narrative = new NarrativeDTO(keywords.narrative());
+////        narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
+////        narrative.setAsA(new AsADTO(keywords.asA(), null));
+////        narrative.setiWantTo(new IWantToDTO(keywords.iWantTo(), null));
+//////        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
+////        storyDTO.setNarrative(narrative);
+//        storyDTO.setProjectKey(projectKey);
+//
+//        return Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+//    }
 
 
 }

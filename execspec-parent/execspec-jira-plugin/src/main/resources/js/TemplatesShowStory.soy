@@ -1,6 +1,98 @@
 {namespace execspec.viewissuepage.showstory}
 
 /**
+ * Renders jbehave story panel content.
+ */
+{template .renderStoryPanel}
+<div id="storyContainer">
+    <div id="storyMsgBar"></div>
+    <div id="storyEditAreaContainer">
+        <textarea id="storyTextArea"
+            rows="10"
+            placeholder="enter story text here"></textarea>
+    </div>
+</div>
+{/template}
+
+/**
+ * Renders save or cancel message bar content.
+ */
+{template .renderSaveCancelMsg}
+<div id="storyEditedMsgContainer">
+    <span>Story has been modified! <span
+        class="edit-operation-link"><a href="#" onclick="storyController.saveStory(event)">Save</a></span> or <span
+        class="edit-operation-link"><a href="#" onclick="storyController.cancelEdit(event)">Cancel</a></span></span>
+</div>
+//    <table>
+//        <tr>
+//            <td style="width: 100%;">
+//                Story has been modified
+//            </td>
+//            <td style="width: auto;">
+//                Save or Cancel
+//            </td>
+//        </tr>
+//    </table>
+{/template}
+
+/**
+ * Renders waiting message while the story is being saved.
+ */
+{template .renderWaitingMessage}
+ <div>
+    <div class="firstDiv">Saving&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    <div class="save-story-button-spinner"></div>
+</div>
+//    <table>
+//        <tr>
+//            <td style="width: 100%;">
+//                Saving...
+//            </td>
+//            <td style="width: auto;">
+//                <div class='button-spinner'></div>
+//            </td>
+//        </tr>
+//    </table>
+{/template}
+
+/**
+ * Renders the save and cancel buttons.
+ */
+{template .renderEditOperationsButtons}
+    <div id="storyEditorOperations" class="save-options" tabindex="1"
+        style="display: none;">
+        <div class="field-tools">
+            <a id="description-preview_link" class="fullscreen" href="#" title="preview"><span
+                    class="aui-icon wiki-renderer-icon"></span></a>
+            <a class="help-lnk" id="viewHelp" href="/jira/secure/WikiRendererHelpAction.jspa?section=texteffects"
+               title="Get local help about wiki markup help" data-helplink="local"><span
+                    class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
+        </div>
+        <button class="aui-button" title="Press Alt+s to submit this form"
+                onclick="alert('hello')"><span
+                class="icon icon-save">Save</span></button>
+        <button class="aui-button cancel" title="Press Alt+` to cancel"><span
+                class="icon icon-cancel">Cancel</span></button>
+    </div>
+{/template}
+
+/**
+ * Renders the hover over icon when story editor is not focused.
+ */
+{template .renderStoryHoverIconBlurred}
+    <span class="overlay-icon icon icon-edit-sml"></span>
+{/template}
+
+/**
+ * Renders the hover over icon when story is being submitted.
+ */
+{template .renderStoryHoverIconOnSubmit}
+    <span class="overlay-icon throbber"></span>
+{/template}
+
+
+
+/**
  * Renders story as html.
  * @param story
  */

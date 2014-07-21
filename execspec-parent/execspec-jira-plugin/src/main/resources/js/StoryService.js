@@ -25,6 +25,11 @@ function StoryService() {
         storyService.debug("# init");
     }
 
+
+    this.test = function () {
+        console.log("test function called in storyService");
+    }
+
     this.fetchNewStoryTemplate = function (projectKey, callBack) {
 
         storyService.debug("> fetchNewStoryTemplate");

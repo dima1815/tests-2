@@ -34,7 +34,7 @@
     /*font-weight: bold;*/
 }
 
-.cm-s-default .cm-step-keyword {
+.cm-s-default .cm-step-keyword, .cm-s-default .cm-step-keyword-and {
     color: #aa5500;
     font-weight: bold;
 }
@@ -42,7 +42,6 @@
 .cm-s-default .cm-description-line {
     color: dimgrey;
 }
-
 
 /*.cm-s-default .cm-atom {color: #219;}*/
 /*.cm-s-default .cm-number {color: #164;}*/

@@ -1,52 +1,7 @@
-<div id="rawEditStoryContainer" style="">Test RAW edit here:
-
-    asdf<br><br>Meta:<br>@metaKey metaValue<br><br>Narrative:<br>In order to aaa<br>As a bbb<br>I want to ccc<br><br>Scenario:
-    asdfaf<br><br>Scenario: another scenario<br>
-
-    <textarea id="rawStoryEditor" rows="10" placeholder="enter text here" style="display: none;">asdf
-
-        Meta:
-        @metaKey metaValue
-
-        Narrative:
-        In order to aaa
-        As a bbb
-        I want to ccc
-
-        Scenario: asdfaf
-
-        Scenario: another scenario
-    </textarea>
-
-    <div class="CodeMirror cm-s-default">
-        <div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off"
-                                                                                              spellcheck="false"
-                                                                                              style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"
-                                                                                              tabindex="0"></textarea></div>
-        <div class="CodeMirror-hscrollbar" style="left: 0px;">
-            <div style="height: 100%; min-height: 1px;"></div>
-        </div>
-        <div class="CodeMirror-vscrollbar">
-            <div style="min-width: 1px;"></div>
-        </div>
-        <div class="CodeMirror-scrollbar-filler"></div>
-        <div class="CodeMirror-gutter-filler"></div>
-        <div class="CodeMirror-scroll" tabindex="-1">
-            <div class="CodeMirror-sizer" style="margin-left: 0px;">
-                <div style="position: relative;">
-                    <div class="CodeMirror-lines">
-                        <div style="position: relative; outline: none;">
-                            <div class="CodeMirror-measure"></div>
-                            <div class="CodeMirror-measure"></div>
-                            <div style="position: relative; z-index: 1;"></div>
-                            <div class="CodeMirror-cursors"></div>
-                            <div class="CodeMirror-code"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="position: absolute; height: 30px; width: 1px;"></div>
-            <div class="CodeMirror-gutters" style="display: none;"></div>
-        </div>
+<div id="storyMsgBar">
+    <div class="aui-message warning  shadowed " id="storyWarningMsg"><p class="title"><span
+            class="aui-icon icon-warning"></span><strong></strong></p><span>Story has been modified! <span class="edit-operation-link"><a
+            href="#" onclick="storyController.saveStory(event)">Save</a></span> or <span class="edit-operation-link"><a href="#"
+                                                                                                                        onclick="storyController.cancelEdit(event)">Cancel</a></span></span><!-- .aui-message -->
     </div>
 </div>
