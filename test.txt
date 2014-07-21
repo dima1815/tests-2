@@ -1,0 +1,2439 @@
+Index: execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/JiraStoryLoader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/JiraStoryLoader.java	(date 1405079864000)
++++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/JiraStoryLoader.java	(revision )
+@@ -1,8 +1,5 @@
+ package com.mycomp.execspec;
+ 
+-import com.mycomp.execspec.util.BytesListPrintStream;
+-import com.mycomp.execspec.util.ReportingStoryWalker;
+-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
+ import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
+ import com.sun.jersey.api.client.Client;
+ import com.sun.jersey.api.client.ClientResponse;
+@@ -10,9 +7,7 @@
+ import org.apache.commons.lang.Validate;
+ import org.jbehave.core.io.StoryLoader;
+ import org.jbehave.core.model.Meta;
+-import org.jbehave.core.model.Story;
+ import org.jbehave.core.parsers.RegexStoryParser;
+-import org.jbehave.core.reporters.TxtOutput;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+@@ -24,7 +19,6 @@
+ import java.io.PrintWriter;
+ import java.net.URI;
+ import java.net.URISyntaxException;
+-import java.util.List;
+ import java.util.Properties;
+ 
+ /**
+@@ -78,29 +72,29 @@
+             Meta overridenMeta = new Meta(properties);
+             overridenMeta.inheritFrom(originalMeta);
+ 
+-            org.jbehave.core.model.Story overridenJBehaveStory = new Story(
+-                    jBehaveStory.getPath(), jBehaveStory.getDescription(), overridenMeta,
+-                    jBehaveStory.getNarrative(), jBehaveStory.getGivenStories(),
+-                    jBehaveStory.getLifecycle(), jBehaveStory.getScenarios());
+-
+-            String jiraVersion = overridenJBehaveStory.getMeta().getProperty("jira-version");
+-            Validate.notEmpty(jiraVersion);
+-
+-            BytesListPrintStream printStream = new BytesListPrintStream();
+-            Properties customPatterns = new Properties();
+-            customPatterns.setProperty("beforeStory", "");
+-            customPatterns.setProperty("pending", "{0}\n");
+-//            customPatterns.setProperty("examplesTableStart", "");
+-//            customPatterns.setProperty("examplesTableRowEnd", "");
+-
+-            TxtOutput txtOutput = new TxtOutput(printStream, customPatterns);
+-            ReportingStoryWalker walker = new ReportingStoryWalker();
+-            walker.walkStory(overridenJBehaveStory, txtOutput);
+-            List<Byte> writtenBytes = printStream.getWrittenBytes();
+-            String asString = StoryDTOUtils.bytesListToString(writtenBytes);
+-
+-            this.writeModelToFile(storyPath, asString);
+-            return asString;
++//            org.jbehave.core.model.Story overridenJBehaveStory = new Story(
++//                    jBehaveStory.getPath(), jBehaveStory.getDescription(), overridenMeta,
++//                    jBehaveStory.getNarrative(), jBehaveStory.getGivenStories(),
++//                    jBehaveStory.getLifecycle(), jBehaveStory.getScenarios());
++//
++//            String jiraVersion = overridenJBehaveStory.getMeta().getProperty("jira-version");
++//            Validate.notEmpty(jiraVersion);
++//
++//            BytesListPrintStream printStream = new BytesListPrintStream();
++//            Properties customPatterns = new Properties();
++//            customPatterns.setProperty("beforeStory", "");
++//            customPatterns.setProperty("pending", "{0}\n");
++////            customPatterns.setProperty("examplesTableStart", "");
++////            customPatterns.setProperty("examplesTableRowEnd", "");
++//
++//            TxtOutput txtOutput = new TxtOutput(printStream, customPatterns);
++//            ReportingStoryWalker walker = new ReportingStoryWalker();
++//            walker.walkStory(overridenJBehaveStory, txtOutput);
++//            List<Byte> writtenBytes = printStream.getWrittenBytes();
++//            String asString = StoryDTOUtils.bytesListToString(writtenBytes);
++//
++//            this.writeModelToFile(storyPath, asString);
++            return storyDTO.getAsString();
+         } else {
+             int status = response.getStatus();
+             Response.StatusType statusInfo = response.getStatusInfo();
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html	(revision )
+@@ -1,52 +1,7 @@
+-<div id="rawEditStoryContainer" style="">Test RAW edit here:
+-
+-    asdf<br><br>Meta:<br>@metaKey metaValue<br><br>Narrative:<br>In order to aaa<br>As a bbb<br>I want to ccc<br><br>Scenario:
+-    asdfaf<br><br>Scenario: another scenario<br>
+-
+-    <textarea id="rawStoryEditor" rows="10" placeholder="enter text here" style="display: none;">asdf
+-
+-        Meta:
+-        @metaKey metaValue
+-
+-        Narrative:
+-        In order to aaa
+-        As a bbb
+-        I want to ccc
+-
+-        Scenario: asdfaf
+-
+-        Scenario: another scenario
+-    </textarea>
+-
+-    <div class="CodeMirror cm-s-default">
+-        <div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off"
+-                                                                                              spellcheck="false"
+-                                                                                              style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none;"
+-                                                                                              tabindex="0"></textarea></div>
+-        <div class="CodeMirror-hscrollbar" style="left: 0px;">
+-            <div style="height: 100%; min-height: 1px;"></div>
+-        </div>
+-        <div class="CodeMirror-vscrollbar">
+-            <div style="min-width: 1px;"></div>
+-        </div>
+-        <div class="CodeMirror-scrollbar-filler"></div>
+-        <div class="CodeMirror-gutter-filler"></div>
+-        <div class="CodeMirror-scroll" tabindex="-1">
+-            <div class="CodeMirror-sizer" style="margin-left: 0px;">
+-                <div style="position: relative;">
+-                    <div class="CodeMirror-lines">
+-                        <div style="position: relative; outline: none;">
+-                            <div class="CodeMirror-measure"></div>
+-                            <div class="CodeMirror-measure"></div>
+-                            <div style="position: relative; z-index: 1;"></div>
+-                            <div class="CodeMirror-cursors"></div>
+-                            <div class="CodeMirror-code"></div>
+-                        </div>
+-                    </div>
+-                </div>
+-            </div>
+-            <div style="position: absolute; height: 30px; width: 1px;"></div>
+-            <div class="CodeMirror-gutters" style="display: none;"></div>
+-        </div>
++<div id="storyMsgBar">
++    <div class="aui-message warning  shadowed " id="storyWarningMsg"><p class="title"><span
++            class="aui-icon icon-warning"></span><strong></strong></p><span>Story has been modified! <span class="edit-operation-link"><a
++            href="#" onclick="storyController.saveStory(event)">Save</a></span> or <span class="edit-operation-link"><a href="#"
++                                                                                                                        onclick="storyController.cancelEdit(event)">Cancel</a></span></span><!-- .aui-message -->
+     </div>
+ </div>
+\ No newline at end of file
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryModel.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryModel.js	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryModel.js	(revision )
+@@ -1,24 +1,6 @@
+ function StoryModel() {
+-
+     this.projectKey = null;
+     this.issueKey = null;
+-    this.path = null;
+     this.version = null;
+-
+-    this.description = null;
+-    this.meta = new Object();
+-    this.meta.keyword = null;
+-    this.meta.properties = null;
+-
+-    this.narrative = new Object();
+-    this.narrative.inOrderTo = new Object();
+-    this.narrative.inOrderTo.keyword = "";
+-    this.narrative.inOrderTo.value = "";
+-
+-    this.scenarios = [];
+-
+-    this.asString = "";
+-    this.asHTML = "";
+-    this.testReports = [];
+-
++    this.asString = null;
+ }
+\ No newline at end of file
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/TemplatesShowStory.soy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/TemplatesShowStory.soy	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/TemplatesShowStory.soy	(revision )
+@@ -1,6 +1,98 @@
+ {namespace execspec.viewissuepage.showstory}
+ 
+ /**
++ * Renders jbehave story panel content.
++ */
++{template .renderStoryPanel}
++<div id="storyContainer">
++    <div id="storyMsgBar"></div>
++    <div id="storyEditAreaContainer">
++        <textarea id="storyTextArea"
++            rows="10"
++            placeholder="enter story text here"></textarea>
++    </div>
++</div>
++{/template}
++
++/**
++ * Renders save or cancel message bar content.
++ */
++{template .renderSaveCancelMsg}
++<div id="storyEditedMsgContainer">
++    <span>Story has been modified! <span
++        class="edit-operation-link"><a href="#" onclick="storyController.saveStory(event)">Save</a></span> or <span
++        class="edit-operation-link"><a href="#" onclick="storyController.cancelEdit(event)">Cancel</a></span></span>
++</div>
++//    <table>
++//        <tr>
++//            <td style="width: 100%;">
++//                Story has been modified
++//            </td>
++//            <td style="width: auto;">
++//                Save or Cancel
++//            </td>
++//        </tr>
++//    </table>
++{/template}
++
++/**
++ * Renders waiting message while the story is being saved.
++ */
++{template .renderWaitingMessage}
++ <div>
++    <div class="firstDiv">Saving&nbsp;&nbsp;&nbsp;&nbsp;</div>
++    <div class="save-story-button-spinner"></div>
++</div>
++//    <table>
++//        <tr>
++//            <td style="width: 100%;">
++//                Saving...
++//            </td>
++//            <td style="width: auto;">
++//                <div class='button-spinner'></div>
++//            </td>
++//        </tr>
++//    </table>
++{/template}
++
++/**
++ * Renders the save and cancel buttons.
++ */
++{template .renderEditOperationsButtons}
++    <div id="storyEditorOperations" class="save-options" tabindex="1"
++        style="display: none;">
++        <div class="field-tools">
++            <a id="description-preview_link" class="fullscreen" href="#" title="preview"><span
++                    class="aui-icon wiki-renderer-icon"></span></a>
++            <a class="help-lnk" id="viewHelp" href="/jira/secure/WikiRendererHelpAction.jspa?section=texteffects"
++               title="Get local help about wiki markup help" data-helplink="local"><span
++                    class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
++        </div>
++        <button class="aui-button" title="Press Alt+s to submit this form"
++                onclick="alert('hello')"><span
++                class="icon icon-save">Save</span></button>
++        <button class="aui-button cancel" title="Press Alt+` to cancel"><span
++                class="icon icon-cancel">Cancel</span></button>
++    </div>
++{/template}
++
++/**
++ * Renders the hover over icon when story editor is not focused.
++ */
++{template .renderStoryHoverIconBlurred}
++    <span class="overlay-icon icon icon-edit-sml"></span>
++{/template}
++
++/**
++ * Renders the hover over icon when story is being submitted.
++ */
++{template .renderStoryHoverIconOnSubmit}
++    <span class="overlay-icon throbber"></span>
++{/template}
++
++
++
++/**
+  * Renders story as html.
+  * @param story
+  */
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
+@@ -11,72 +11,56 @@
+ })(function (CodeMirror) {
+     "use strict";
+ 
+-    var WORD = /[\w$]+/, RANGE = 500;
++    var keywords = [
++        {text: "Meta:", stateField: "allowMeta", stateTokenType: "meta-title"},
++        {text: "Narrative:", stateField: "allowNarrative", stateTokenType: "narrative-title"},
++        {text: "Scenario:", stateField: "allowScenario", stateTokenType: "scenario-keyword"},
++        {text: "Given ", stateField: "allowSteps", stateTokenType: "step-keyword"},
++        {text: "When ", stateField: "allowSteps", stateTokenType: "step-keyword"},
++        {text: "Then ", stateField: "allowSteps", stateTokenType: "step-keyword"},
++        {text: "And ", stateField: "allowAndStep", stateTokenType: "step-keyword-and"},
++    ];
+ 
+     CodeMirror.registerHelper("hint", "jbehave", function (editor, options) {
+ 
+         console.log("########################## in autocomplete");
+ 
+-        var word = options && options.word || WORD;
+-        var range = options && options.range || RANGE;
++        var wordPattern = /[\w$]+/;
+         var cur = editor.getCursor();
+ 
+-        var token1 = editor.getTokenAt(cur);
+-        console.log("token1.string - " + token1.string);
+-        console.log("token1.type - " + token1.type);
+-
+         var curLine = editor.getLine(cur.line);
+         console.log("curLine - " + curLine);
+ 
+-        var start = cur.ch;
+-        console.log("start before - " + start);
+-        var end = start;
+-        console.log("end before - " + end);
++        var cursorPos = cur.ch;
++        var currentText = curLine.slice(0, cursorPos);
++        console.log("currentText - " + currentText);
+ 
+-        while (end < curLine.length && word.test(curLine.charAt(end))) ++end;
+-        while (start && word.test(curLine.charAt(start - 1))) --start;
+-
+-        console.log("start after - " + start);
+-        console.log("end after - " + end);
+-
+-        var curWord = start != end && curLine.slice(start, end);
+-        console.log("curWord - " + curWord);
+-
+         var list = [];
+ 
+         var token = editor.getTokenAt(cur);
+         console.log("token.string - " + token.string);
+         console.log("token.type - " + token.type);
+-
+         var state = token.state;
+ 
+         // hint on keywords that must be at start of line
+-        if (cur.ch == 0) {
+-            if (state.allowMeta) {
+-                list.push("Meta:");
++        for (var i = 0; i < keywords.length; i++) {
++            var keyword = keywords[i]
++            if ((state[keyword.stateField] || token.type == keyword.stateTokenType) && (cursorPos == 0 || keyword.text.indexOf(currentText) == 0)) {
++                list.push(keyword.text);
+             }
+-            if (state.allowNarrative) {
++        }
+ 
+-                list.push("Narrative:");
++        // hint on steps
++        var stepHints = ["Given something", "Given something else"];
++
++        if (state.lastStepType == "Given") {
++            for (var i = 0; i < stepHints.length; i++) {
++                var stepHint = stepHints[i];
++                list.push(stepHint);
+             }
+-            list.push("Scenario:");
+         }
++//        storyService.test();
+ 
+-//        var seen = {};
+-//        var re = new RegExp(word.source, "g");
+-//        for (var dir = -1; dir <= 1; dir += 2) {
+-//            var line = cur.line, endLine = Math.min(Math.max(line + dir * range, editor.firstLine()), editor.lastLine()) + dir;
+-//            for (; line != endLine; line += dir) {
+-//                var text = editor.getLine(line), m;
+-//                while (m = re.exec(text)) {
+-//                    if (line == cur.line && m[0] === curWord) continue;
+-//                    if ((!curWord || m[0].lastIndexOf(curWord, 0) == 0) && !Object.prototype.hasOwnProperty.call(seen, m[0])) {
+-//                        seen[m[0]] = true;
+-//                        list.push(m[0]);
+-//                    }
+-//                }
+-//            }
+-//        }
+-        return {list: list, from: CodeMirror.Pos(cur.line, start), to: CodeMirror.Pos(cur.line, end)};
++        return {list: list, from: CodeMirror.Pos(cur.line, 0), to: CodeMirror.Pos(cur.line, cur.ch)};
+     });
+ });
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css	(revision )
+@@ -34,7 +34,7 @@
+     /*font-weight: bold;*/
+ }
+ 
+-.cm-s-default .cm-step-keyword {
++.cm-s-default .cm-step-keyword, .cm-s-default .cm-step-keyword-and {
+     color: #aa5500;
+     font-weight: bold;
+ }
+@@ -42,7 +42,6 @@
+ .cm-s-default .cm-description-line {
+     color: dimgrey;
+ }
+-
+ 
+ /*.cm-s-default .cm-atom {color: #219;}*/
+ /*.cm-s-default .cm-number {color: #164;}*/
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(revision )
+@@ -82,17 +82,7 @@
+         story.setVersion(1L);
+         story.setIssueKey(storyDTO.getIssueKey());
+         story.setProjectKey(storyDTO.getProjectKey());
+-
+-
+-        String asString = storyDTO.getAsString();
+-        if (asString != null) {
+-            // this will be the case when the client sends the story already as a string, e.g. from the
+-            // Raw editor rather than Rich editor
+-        } else {
+-            asString = StoryDTOUtils.asString(storyDTO);
+-        }
+-        story.setAsString(asString);
+-
++        story.setAsString(storyDTO.getAsString());
+         story.setLastEditedBy(userName);
+         story.save();
+ 
+@@ -105,15 +95,7 @@
+         long currentVersion = story.getVersion();
+         long rolledVersion = currentVersion + 1;
+         story.setVersion(rolledVersion);
+-
+-        String asString = storyDTO.getAsString();
+-        if (asString != null) {
+-            // this will be the case when the client sends the story already as a string, e.g. from the
+-            // Raw editor rather than Rich editor
+-        } else {
+-            asString = StoryDTOUtils.asString(storyDTO);
+-        }
+-        story.setAsString(asString);
++        story.setAsString(storyDTO.getAsString());
+ 
+         story.setLastEditedBy(userName);
+         story.save();
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
+@@ -42,11 +42,12 @@
+ 
+                     allowScenario: false,
+                     allowSteps: false,
+-                    allowMultilineArgument: false,
+ 
+                     tableHeaderLine: false,
+                     inMultilineString: false,
+-                    inMultilineTable: false
++                    inMultilineTable: false,
++
++                    lastStepType: null
+                 };
+             },
+             token: function (stream, state) {
+@@ -85,7 +86,6 @@
+ 
+                     state.allowScenario = true;
+                     state.allowSteps = false;
+-                    state.allowMultilineArgument = false;
+                     return "narrative-title";
+ 
+                     // Narrative - In order to - keyword
+@@ -123,20 +123,36 @@
+                 } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario):/)) {
+                     state.allowSteps = true;
+                     state.allowDescription = false;
+-                    state.allowMultilineArgument = false;
+-
+                     state.inScenarioTitleLine = true;
++                    state.lastStepType = null;
++                    state.allowAndStep = false;
+                     return "scenario-keyword";
+ 
+                     // SCENARIO title
+                 } else if (state.inScenarioTitleLine && stream.match(/.*/)) {
+                     return "scenario-title";
+ 
+-                    // STEPS
+-                } else if (state.allowSteps && stream.sol() && stream.match(/(When |Given |Then |And |\* )/)) {
+-                    state.inStep = true;
+-                    state.allowMultilineArgument = true;
++                    // GIVEN
++                } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
++                    state.lastStepType = "Given";
++                    state.allowAndStep = true;
+                     return "step-keyword";
++
++                    // WHEN
++                } else if (state.allowSteps && stream.sol() && stream.match(/(When )/)) {
++                    state.lastStepType = "When";
++                    state.allowAndStep = true;
++                    return "step-keyword";
++
++                    // THEN
++                } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
++                    state.lastStepType = "Then";
++                    state.allowAndStep = true;
++                    return "step-keyword";
++
++                    // AND
++                } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
++                    return "step-keyword-and";
+ 
+                     // Description
+                 } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/AutoCompleteEntryModel.js
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/AutoCompleteEntryModel.js	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/AutoCompleteEntryModel.js	(date 1405079864000)
+@@ -1,4 +0,0 @@
+-function AutoCompleteEntryModel() {
+-    this.suggestion = "";
+-    this.completePart = "";
+-}
+\ No newline at end of file
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(revision )
+@@ -1,3 +1,70 @@
++.edit-operation-link {
++    font-weight: bold;
++}
++
++.firstDiv {
++    display: inline;
++    /*border-style: solid;*/
++    /*border-width: 1px;*/
++    /*border-color: green;*/
++}
++
++.save-story-button-spinner {
++    /*border-style: solid;*/
++    /*border-width: 1px;*/
++    /*border-color: red;*/
++    /*float: left;*/
++    display: inline;
++}
++
++#storyEditArea.active {
++    /*border: 1px solid grey;*/
++    /*border-bottom-left-radius: 2px;*/
++    /*border-bottom-right-radius: 2px;*/
++    /*border-top-left-radius: 2px;*/
++    /*border-top-right-radius: 2px;*/
++    /*box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px;*/
++    /*box-sizing: border-box;*/
++    /*border-bottom-color: rgb(51, 51, 51);*/
++    /*border-left-color: rgb(51, 51, 51);*/
++
++    border-radius: 3px;
++    /*border-bottom-left-radius: 3px;*/
++    /*border-bottom-right-radius: 3px;*/
++    /*border-top-left-radius: 1px;*/
++    /*border-top-right-radius: 1px;*/
++
++    border-style: solid;
++    /*border-left-style: solid;*/
++    /*border-top-style: solid;*/
++    /*border-bottom-style: solid;*/
++    /*border-right-style: solid;*/
++
++    border-width: 1px;
++    /*border-top-width: 1px;*/
++    /*border-bottom-width: 1px;*/
++    /*border-left-width: 1px;*/
++    /*border-right-width: 1px;*/
++
++    border-color: rgb(204, 204, 204);
++    /*border-left-color: rgb(204, 204, 204);*/
++    /*border-right-color: rgb(204, 204, 204);*/
++    /*border-top-color: rgb(204, 204, 204);*/
++    /*border-bottom-color: rgb(204, 204, 204);*/
++
++    border-collapse: separate;
++    border-image-outset: 0px;
++    border-image-repeat: stretch;
++    border-image-slice: 100%;
++    border-image-source: none;
++    border-image-width: 1;
++
++    bottom: auto;
++    box-shadow: rgb(232, 232, 232) 0px 1px 3px 0px inset;
++    box-sizing: border-box;
++}
++
++
+ #editStoryButtons {
+     margin-top: 20px;
+     margin-left: 0px;
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/rest/StoryResourceCrud.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/rest/StoryResourceCrud.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/rest/StoryResourceCrud.java	(revision )
+@@ -3,11 +3,10 @@
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+-import com.mycomp.execspec.jiraplugin.dto.story.*;
++import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
+ import com.mycomp.execspec.jiraplugin.service.StoryService;
+ import org.apache.commons.lang.Validate;
+ import org.codehaus.jackson.map.ObjectMapper;
+-import org.jbehave.core.i18n.LocalizedKeywords;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+@@ -64,8 +63,14 @@
+         log.debug("saving story:\n" + storyDTO);
+ 
+         StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+-
+         Validate.notNull(savedStoryDTO.getVersion());
++
++        try {
++            Thread.sleep(500);
++        } catch (InterruptedException e) {
++            // ignore
++        }
++
+         return savedStoryDTO;
+     }
+ 
+@@ -87,36 +92,36 @@
+         return Response.ok("Successful deletion from server!").build();
+     }
+ 
+-    @GET
+-    @AnonymousAllowed
+-    @Path("/newstorytemplate/{projectKey}")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public Response getNewStoryTemplate(@PathParam("projectKey") String projectKey) {
+-
+-        // TODO - make this project specific, e.g. keywords maybe localized for some projects
+-        LocalizedKeywords keywords = new LocalizedKeywords();
+-
+-        StoryDTO storyDTO = new StoryDTO();
+-
+-//        MetaDTO meta = new MetaDTO();
+-//        meta.setKeyword("Meta:");
+-//        List<MetaEntryDTO> properties = new ArrayList<MetaEntryDTO>();
+-//        properties.add(new MetaEntryDTO("property1", "property1_value"));
+-//        properties.add(new MetaEntryDTO("property2", "property2_value"));
+-//        properties.add(new MetaEntryDTO("property3", "property3_value"));
+-//        meta.setProperties(properties);
+-//        storyDTO.setMeta(meta);
+-
+-        NarrativeDTO narrative = new NarrativeDTO(keywords.narrative());
+-        narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
+-        narrative.setAsA(new AsADTO(keywords.asA(), null));
+-        narrative.setiWantTo(new IWantToDTO(keywords.iWantTo(), null));
+-//        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
+-        storyDTO.setNarrative(narrative);
+-        storyDTO.setProjectKey(projectKey);
+-
+-        return Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+-    }
++//    @GET
++//    @AnonymousAllowed
++//    @Path("/newstorytemplate/{projectKey}")
++//    @Produces(MediaType.APPLICATION_JSON)
++//    public Response getNewStoryTemplate(@PathParam("projectKey") String projectKey) {
++//
++//        // TODO - make this project specific, e.g. keywords maybe localized for some projects
++//        LocalizedKeywords keywords = new LocalizedKeywords();
++//
++//        StoryDTO storyDTO = new StoryDTO();
++//
++////        MetaDTO meta = new MetaDTO();
++////        meta.setKeyword("Meta:");
++////        List<MetaEntryDTO> properties = new ArrayList<MetaEntryDTO>();
++////        properties.add(new MetaEntryDTO("property1", "property1_value"));
++////        properties.add(new MetaEntryDTO("property2", "property2_value"));
++////        properties.add(new MetaEntryDTO("property3", "property3_value"));
++////        meta.setProperties(properties);
++////        storyDTO.setMeta(meta);
++//
++////        NarrativeDTO narrative = new NarrativeDTO(keywords.narrative());
++////        narrative.setInOrderTo(new InOrderToDTO(keywords.inOrderTo(), null));
++////        narrative.setAsA(new AsADTO(keywords.asA(), null));
++////        narrative.setiWantTo(new IWantToDTO(keywords.iWantTo(), null));
++//////        narrative.setSoThat(new SoThatDTO(keywords.soThat(), null));
++////        storyDTO.setNarrative(narrative);
++//        storyDTO.setProjectKey(projectKey);
++//
++//        return Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
++//    }
+ 
+ 
+ }
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/rest/StoryResourceFind.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/rest/StoryResourceFind.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/rest/StoryResourceFind.java	(revision )
+@@ -5,8 +5,6 @@
+ import com.mycomp.execspec.jiraplugin.dto.story.StoriesPayload;
+ import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
+ import com.mycomp.execspec.jiraplugin.dto.story.StoryPathsDTO;
+-import com.mycomp.execspec.jiraplugin.dto.story.StoryWithReportsPayload;
+-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
+ import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
+ import com.mycomp.execspec.jiraplugin.service.StoryReportService;
+ import com.mycomp.execspec.jiraplugin.service.StoryService;
+@@ -62,7 +60,7 @@
+         List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
+         List<String> paths = new ArrayList<String>(stories.size());
+         for (StoryDTO story : stories) {
+-            paths.add(story.getPath());
++            paths.add(story.getProjectKey() + "/" + story.getIssueKey() + ".story");
+         }
+         StoryPathsDTO pathsModel = new StoryPathsDTO();
+         pathsModel.setPaths(paths);
+@@ -90,11 +88,7 @@
+ 
+         Response response;
+         if (storyDTO != null) {
+-
+-            List<StoryHtmlReportDTO> storyReports = storyReportService.findStoryReports(projectKey, issueKey);
+-            StoryWithReportsPayload payload = new StoryWithReportsPayload(storyDTO, storyReports);
+-
+-            response = Response.ok(payload, MediaType.APPLICATION_JSON).build();
++            response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+         } else {
+             response = Response.noContent().build();
+         }
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/test/java/com/mycomp/execspec/jiraplugin/util/ByLineStoryParserTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/test/java/com/mycomp/execspec/jiraplugin/util/ByLineStoryParserTest.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/test/java/com/mycomp/execspec/jiraplugin/util/ByLineStoryParserTest.java	(revision )
+@@ -1,17 +1,11 @@
+ package com.mycomp.execspec.jiraplugin.util;
+ 
+-import com.mycomp.execspec.jiraplugin.dto.story.*;
+-import junit.framework.Assert;
+-import org.apache.commons.io.FileUtils;
+-import org.codehaus.jackson.map.ObjectMapper;
++import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
+ import org.junit.Test;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+-import java.io.File;
+ import java.io.IOException;
+-import java.util.Iterator;
+-import java.util.List;
+ 
+ /**
+  * Created by Dmytro on 5/30/2014.
+@@ -25,71 +19,71 @@
+     @Test
+     public void testStories() throws IOException {
+ 
+-        File storiesDir = new File("src/test/resources/stories/dev");
+-        logger.debug("testing story files in directory - " + storiesDir.getAbsolutePath());
++//        File storiesDir = new File("src/test/resources/stories/dev");
++//        logger.debug("testing story files in directory - " + storiesDir.getAbsolutePath());
++//
++//        Iterator<File> iterator = FileUtils.iterateFiles(storiesDir, new String[]{"story"}, true);
++//
++//        while (iterator.hasNext()) {
++//            File storyFile = iterator.next();
++//            String fileAsString = FileUtils.readFileToString(storyFile);
++//
++//            // trim up to the '===' separator
++//            String[] tokens = fileAsString.split("===");
++//            String storyAsString = tokens[0].trim();
++//            StoryDTO storyDTO = parser.parseStory(storyAsString, storyFile.getName() + ".story");
++//
++//            String expStoryAsJson = tokens[1].trim();
++//            ObjectMapper mapper = new ObjectMapper();
++//            StoryDTO expStoryDTO = mapper.readValue(expStoryAsJson, StoryDTO.class);
++//
++//            // do compare
++//            verifyEqual(storyDTO, expStoryDTO);
++//        }
+ 
+-        Iterator<File> iterator = FileUtils.iterateFiles(storiesDir, new String[]{"story"}, true);
+-
+-        while (iterator.hasNext()) {
+-            File storyFile = iterator.next();
+-            String fileAsString = FileUtils.readFileToString(storyFile);
+-
+-            // trim up to the '===' separator
+-            String[] tokens = fileAsString.split("===");
+-            String storyAsString = tokens[0].trim();
+-            StoryDTO storyDTO = parser.parseStory(storyAsString, storyFile.getName() + ".story");
+-
+-            String expStoryAsJson = tokens[1].trim();
+-            ObjectMapper mapper = new ObjectMapper();
+-            StoryDTO expStoryDTO = mapper.readValue(expStoryAsJson, StoryDTO.class);
+-
+-            // do compare
+-            verifyEqual(storyDTO, expStoryDTO);
+-        }
++    }
+ 
+-    }
+-
+     private void verifyEqual(StoryDTO actualStoryDTO, StoryDTO expStoryDTO) {
+ 
+-        String actualDescription = actualStoryDTO.getDescription();
+-        String expectedDesription = expStoryDTO.getDescription();
+-        Assert.assertEquals("Story description did not match", expectedDesription, actualDescription);
+-
+-        MetaDTO actualMeta = actualStoryDTO.getMeta();
+-        MetaDTO expectedMeta = expStoryDTO.getMeta();
+-        Assert.assertEquals("Meta section was different than expected", expectedMeta, actualMeta);
+-
+-        NarrativeDTO actualNarrative = actualStoryDTO.getNarrative();
+-        NarrativeDTO expectedNarrative = expStoryDTO.getNarrative();
+-        Assert.assertEquals("Narrative section was different than expected", expectedNarrative, actualNarrative);
+-
+-        GivenStoriesDTO actualGivenStories = actualStoryDTO.getGivenStories();
+-        GivenStoriesDTO expectedGivenStories = expStoryDTO.getGivenStories();
+-        Assert.assertEquals("GivenStories section was different than expected", expectedGivenStories, actualGivenStories);
+-
+-        LifecycleDTO actualLifecycle = actualStoryDTO.getLifecycle();
+-        LifecycleDTO expectedLifecycle = expStoryDTO.getLifecycle();
+-        Assert.assertEquals("Lifecycle section was different than expected", expectedLifecycle, actualLifecycle);
+-
+-
+-        List<ScenarioDTO> actualScenarioDTOs = actualStoryDTO.getScenarios();
+-        List<ScenarioDTO> expectedScenarioDTOs = expStoryDTO.getScenarios();
+-
+-        if (actualScenarioDTOs == null) {
+-            if (expectedScenarioDTOs != null) {
+-                Assert.fail("Expected the following scenarios:\n" + expectedScenarioDTOs + "\nbut there were none");
+-            }
+-        } else {
+-            if (expectedScenarioDTOs == null) {
+-                Assert.fail("Expected no scenarios, but there were the following scenarios:\n" + actualScenarioDTOs);
+-            } else {
+-                Assert.assertEquals("Number of actual scenarios and expected scenarios did not match", actualScenarioDTOs.size(), expectedScenarioDTOs.size());
+-                for (ScenarioDTO expectedScenarioDTO : expectedScenarioDTOs) {
+-                    Assert.assertTrue("Actual scenarios did not contain the following expected scenario:\n"
+-                            + expectedScenarioDTO + "\nActual scenarios were:\n" + actualScenarioDTOs, actualScenarioDTOs.contains(expectedScenarioDTO));
+-                }
+-            }
+-        }
++//        String actualDescription = actualStoryDTO.getDescription();
++//        String expectedDesription = expStoryDTO.getDescription();
++//        Assert.assertEquals("Story description did not match", expectedDesription, actualDescription);
++//
++//        MetaDTO actualMeta = actualStoryDTO.getMeta();
++//        MetaDTO expectedMeta = expStoryDTO.getMeta();
++//        Assert.assertEquals("Meta section was different than expected", expectedMeta, actualMeta);
++//
++//        NarrativeDTO actualNarrative = actualStoryDTO.getNarrative();
++//        NarrativeDTO expectedNarrative = expStoryDTO.getNarrative();
++//        Assert.assertEquals("Narrative section was different than expected", expectedNarrative, actualNarrative);
++//
++//        GivenStoriesDTO actualGivenStories = actualStoryDTO.getGivenStories();
++//        GivenStoriesDTO expectedGivenStories = expStoryDTO.getGivenStories();
++//        Assert.assertEquals("GivenStories section was different than expected", expectedGivenStories, actualGivenStories);
++//
++//        LifecycleDTO actualLifecycle = actualStoryDTO.getLifecycle();
++//        LifecycleDTO expectedLifecycle = expStoryDTO.getLifecycle();
++//        Assert.assertEquals("Lifecycle section was different than expected", expectedLifecycle, actualLifecycle);
++//
++//
++//        List<ScenarioDTO> actualScenarioDTOs = actualStoryDTO.getScenarios();
++//        List<ScenarioDTO> expectedScenarioDTOs = expStoryDTO.getScenarios();
++//
++//        if (actualScenarioDTOs == null) {
++//            if (expectedScenarioDTOs != null) {
++//                Assert.fail("Expected the following scenarios:\n" + expectedScenarioDTOs + "\nbut there were none");
++//            }
++//        } else {
++//            if (expectedScenarioDTOs == null) {
++//                Assert.fail("Expected no scenarios, but there were the following scenarios:\n" + actualScenarioDTOs);
++//            } else {
++//                Assert.assertEquals("Number of actual scenarios and expected scenarios did not match", actualScenarioDTOs.size(), expectedScenarioDTOs.size());
++//                for (ScenarioDTO expectedScenarioDTO : expectedScenarioDTOs) {
++//                    Assert.assertTrue("Actual scenarios did not contain the following expected scenario:\n"
++//                            + expectedScenarioDTO + "\nActual scenarios were:\n" + actualScenarioDTOs, actualScenarioDTOs.contains(expectedScenarioDTO));
++//                }
++//            }
++//        }
+ 
+     }
+ }
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/util/ByLineStoryParser.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/util/ByLineStoryParser.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/util/ByLineStoryParser.java	(revision )
+@@ -1,12 +1,8 @@
+ package com.mycomp.execspec.jiraplugin.util;
+ 
+-import com.mycomp.execspec.jiraplugin.dto.story.*;
+ import org.jbehave.core.configuration.Keywords;
+ import org.jbehave.core.i18n.LocalizedKeywords;
+ 
+-import java.util.ArrayList;
+-import java.util.List;
+-
+ /**
+  * Created by Dmytro on 5/20/2014.
+  */
+@@ -43,276 +39,276 @@
+         this.keywords = keywords;
+     }
+ 
+-    public StoryDTO parseStory(String storyAsText, String storyPath) {
+-
+-        StoryDTO storyDTO = new StoryDTO();
+-
+-        storyDTO.setAsString(storyAsText);
+-
+-        if (storyPath != null && !storyPath.isEmpty()) {
+-            storyDTO.setPath(storyPath);
+-        }
+-
+-        String[] lines = storyAsText.split("\\n");
+-        CompositeElement lastElement = null;
+-        for (int i = 0; i < lines.length; i++) {
+-
+-            String line = lines[i].trim();
+-            int lineNumber = i + 1;
+-            if (line.isEmpty()) {
+-                // skip empty lines
+-            } else {
+-
+-                // meta
+-                if (line.startsWith(keywords.meta())) {
+-                    if (storyDTO.getMeta() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.meta()
+-                                + " (meta) keyword declaration on line " + lineNumber);
+-                    } else if (storyDTO.getNarrative() != null) {
+-                        throw new StoryParseException("Found an out of order " + keywords.meta()
+-                                + " (meta) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        MetaDTO meta = new MetaDTO();
+-                        meta.setKeyword(keywords.meta());
+-                        storyDTO.setMeta(meta);
+-                        lastElement = CompositeElement.meta;
+-                    }
+-                }
+-
+-                // narrative
+-                else if (line.startsWith(keywords.narrative())) {
+-                    if (storyDTO.getNarrative() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.narrative()
+-                                + " (narrative) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        NarrativeDTO narrativeDTO = new NarrativeDTO();
+-                        narrativeDTO.setKeyword(keywords.narrative());
+-                        storyDTO.setNarrative(narrativeDTO);
+-                        lastElement = CompositeElement.narrative;
+-                    }
+-                } else if (line.startsWith(keywords.inOrderTo())) {
+-                    if (storyDTO.getNarrative() == null) {
+-                        throw new StoryParseException("Found an out of order " + keywords.inOrderTo()
+-                                + " (inOrderTo) keyword declaration on line " + lineNumber);
+-                    } else if (storyDTO.getNarrative().getInOrderTo() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.inOrderTo()
+-                                + " (inOrderTo) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        InOrderToDTO inOrderTo = new InOrderToDTO();
+-                        inOrderTo.setKeyword(keywords.inOrderTo());
+-                        String value = line.substring(keywords.inOrderTo().length()).trim();
+-                        if (!value.isEmpty()) {
+-                            inOrderTo.setValue(value);
+-                        }
+-                        storyDTO.getNarrative().setInOrderTo(inOrderTo);
+-                        lastElement = CompositeElement.inOrderTo;
+-                    }
+-                } else if (line.startsWith(keywords.asA())) {
+-                    if (storyDTO.getNarrative() == null) {
+-                        throw new StoryParseException("Found an out of order " + keywords.asA()
+-                                + " (asA) keyword declaration on line " + lineNumber);
+-                    } else if (storyDTO.getNarrative().getAsA() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.asA()
+-                                + " (asA) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        AsADTO asA = new AsADTO();
+-                        asA.setKeyword(keywords.asA());
+-                        String value = line.substring(keywords.asA().length()).trim();
+-                        if (!value.isEmpty()) {
+-                            asA.setValue(value);
+-                        }
+-                        storyDTO.getNarrative().setAsA(asA);
+-                        lastElement = CompositeElement.asA;
+-                    }
+-                } else if (line.startsWith(keywords.iWantTo())) {
+-                    if (storyDTO.getNarrative() == null) {
+-                        throw new StoryParseException("Found an out of order " + keywords.iWantTo()
+-                                + " (iWantTo) keyword declaration on line " + lineNumber);
+-                    } else if (storyDTO.getNarrative().getiWantTo() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.iWantTo()
+-                                + " (iWantTo) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        IWantToDTO iWantTo = new IWantToDTO();
+-                        iWantTo.setKeyword(keywords.iWantTo());
+-                        String value = line.substring(keywords.iWantTo().length()).trim();
+-                        if (!value.isEmpty()) {
+-                            iWantTo.setValue(value);
+-                        }
+-                        storyDTO.getNarrative().setiWantTo(iWantTo);
+-                        lastElement = CompositeElement.iWantTo;
+-                    }
+-                } else if (line.startsWith(keywords.soThat())) {
+-                    if (storyDTO.getNarrative() == null) {
+-                        throw new StoryParseException("Found an out of order " + keywords.soThat()
+-                                + " (soThat) keyword declaration on line " + lineNumber);
+-                    } else if (storyDTO.getNarrative().getSoThat() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.soThat()
+-                                + " (soThat) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        SoThatDTO soThat = new SoThatDTO();
+-                        soThat.setKeyword(keywords.soThat());
+-                        String value = line.substring(keywords.soThat().length()).trim();
+-                        if (!value.isEmpty()) {
+-                            soThat.setValue(value);
+-                        }
+-                        storyDTO.getNarrative().setSoThat(soThat);
+-                        lastElement = CompositeElement.soThat;
+-                    }
+-                }
+-
+-                // givenStories
+-                else if (line.startsWith(keywords.givenStories())) {
+-                    if (storyDTO.getGivenStories() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.givenStories()
+-                                + " (givenStories) keyword declaration on line " + lineNumber);
+-                    }
+-//                    else if (storyDTO.narrative == null || lastElement != CompositeElement.scenario) {
+-//                      TODO - implement check when this is an out of order element and throw exception
++//    public StoryDTO parseStory(String storyAsText, String storyPath) {
++//
++//        StoryDTO storyDTO = new StoryDTO();
++//
++//        storyDTO.setAsString(storyAsText);
++//
++//        if (storyPath != null && !storyPath.isEmpty()) {
++//            storyDTO.setPath(storyPath);
+-//                    }
++//        }
+-                    else {
+-//                        List<String> paths = new ArrayList<String>();
+-//                        paths.add(line.substring(keywords.givenStories().length())); // TODO - implement properly
+-                        storyDTO.setGivenStories(new GivenStoriesDTO());
+-                        lastElement = CompositeElement.givenStories;
+-                    }
+-                }
+-
+-                // lifecycle
+-                else if (line.startsWith(keywords.lifecycle())) {
+-                    if (storyDTO.getLifecycle() != null) {
+-                        throw new StoryParseException("Found a duplicate " + keywords.lifecycle()
+-                                + " (Lifecycle) keyword declaration on line " + lineNumber);
+-                    } else {
+-                        storyDTO.setLifecycle(new LifecycleDTO());
+-                        lastElement = CompositeElement.lifecycle;
+-                    }
+-                }
+-
+-                // scenario
+-                else if (line.startsWith(keywords.scenario())) {
+-                    ScenarioDTO scenarioDto = new ScenarioDTO();
+-                    scenarioDto.setKeyword(keywords.scenario());
+-                    String title = line.substring(keywords.scenario().length());
+-                    if (!title.isEmpty()) {
+-                        scenarioDto.setTitle(title);
+-                    }
+-                    if (storyDTO.getScenarios() == null) {
+-                        storyDTO.setScenarios(new ArrayList<ScenarioDTO>());
+-                    }
+-                    storyDTO.getScenarios().add(scenarioDto);
+-                    lastElement = CompositeElement.scenario;
+-                } else if (line.startsWith(keywords.given())) {
+-
+-                    if (storyDTO.getScenarios().isEmpty()) {
+-                        throw new StoryParseException("Found an out of order " + keywords.given()
+-                                + " (Given) keyword declaration on line " + lineNumber);
+-                    }
+-
+-                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
+-                    List<String> steps = scenario.getSteps();
+-                    if (steps == null) {
+-                        steps = new ArrayList<String>();
+-                        scenario.setSteps(steps);
+-                    }
+-                    steps.add(line);
+-                    lastElement = CompositeElement.given;
+-                } else if (line.startsWith(keywords.when())) {
+-
+-                    if (storyDTO.getScenarios().isEmpty()) {
+-                        throw new StoryParseException("Found an out of order " + keywords.when()
+-                                + " (When) keyword declaration on line " + lineNumber);
+-                    }
+-
+-                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
+-                    List<String> steps = scenario.getSteps();
+-                    if (steps == null) {
+-                        steps = new ArrayList<String>();
+-                        scenario.setSteps(steps);
+-                    }
+-                    steps.add(line);
+-                    lastElement = CompositeElement.when;
+-                } else if (line.startsWith(keywords.then())) {
+-
+-                    if (storyDTO.getScenarios().isEmpty()) {
+-                        throw new StoryParseException("Found an out of order " + keywords.then()
+-                                + " (Then) keyword declaration on line " + lineNumber);
+-                    }
+-
+-                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
+-                    List<String> steps = scenario.getSteps();
+-                    if (steps == null) {
+-                        steps = new ArrayList<String>();
+-                        scenario.setSteps(steps);
+-                    }
+-                    steps.add(line);
+-                    lastElement = CompositeElement.then;
+-                } else if (line.startsWith(keywords.and())) {
+-
+-                    if (storyDTO.getScenarios().isEmpty()) {
+-                        throw new StoryParseException("Found an out of order " + keywords.and()
+-                                + " (And) keyword declaration on line " + lineNumber);
+-                    }
+-
+-                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
+-                    List<String> steps = scenario.getSteps();
+-                    if (steps == null) {
+-                        throw new StoryParseException("Found an out of order " + keywords.and() + " (And) keyword " +
+-                                "declaration on line " + lineNumber);
+-                    }
+-                    steps.add(line);
+-                    lastElement = CompositeElement.and;
+-                } else {
+-                    // line doesn't start with any of the keywords, so try to append to either description if at the
+-                    // start of the storyDTO or the last element if it is "appendable"
+-                    if (storyDTO.getMeta() == null
+-                            && storyDTO.getNarrative() == null
+-                            && storyDTO.getGivenStories() == null
+-                            && storyDTO.getLifecycle() == null
+-                            && storyDTO.getScenarios().isEmpty()) {
+-                        // we are at the start and can create/append to description
+-                        if (storyDTO.getDescription() == null) {
+-                            storyDTO.setDescription(line);
+-                        } else {
+-                            storyDTO.setDescription(storyDTO.getDescription() + "\n" + line);
+-                        }
+-                    } else if (line.startsWith("@") && storyDTO.getMeta() != null
+-                            && lastElement == CompositeElement.meta) {
+-                        List<MetaEntryDTO> properties = storyDTO.getMeta().getProperties();
+-                        if (properties == null) {
+-                            properties = new ArrayList<MetaEntryDTO>();
+-                            storyDTO.getMeta().setProperties(properties);
+-                        }
+-                        if (line.length() == 0) {
+-                            throw new StoryParseException("Meta properties must have a minimum of 1 character");
+-                        } else {
+-                            String withoutAtChar = line.substring(1);
+-                            int firstSpaceIndex = withoutAtChar.indexOf(" ");
+-                            if (firstSpaceIndex != -1) {
+-                                String key = withoutAtChar.substring(0, firstSpaceIndex);
+-                                String value = withoutAtChar.substring(firstSpaceIndex + 1);
+-                                MetaEntryDTO metaEntryDTO = new MetaEntryDTO(key, value);
+-                                properties.add(metaEntryDTO);
+-                            } else {
+-                                // some properties don't have value, e.g. @skip
+-                                MetaEntryDTO metaEntryDTO = new MetaEntryDTO(withoutAtChar, null);
+-                                properties.add(metaEntryDTO);
+-                            }
+-                        }
+-                    } else {
+-                        // should not get here, unless the storyDTO structure/format is wrong
+-                        throw new StoryParseException("An out of order line found - \n" + line);
+-                    }
+-
+-                }
+-
+-
+-            }
+-
+-
+-        }
+-
+-        return storyDTO;
+-    }
++//
++//        String[] lines = storyAsText.split("\\n");
++//        CompositeElement lastElement = null;
++//        for (int i = 0; i < lines.length; i++) {
++//
++//            String line = lines[i].trim();
++//            int lineNumber = i + 1;
++//            if (line.isEmpty()) {
++//                // skip empty lines
++//            } else {
++//
++//                // meta
++//                if (line.startsWith(keywords.meta())) {
++//                    if (storyDTO.getMeta() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.meta()
++//                                + " (meta) keyword declaration on line " + lineNumber);
++//                    } else if (storyDTO.getNarrative() != null) {
++//                        throw new StoryParseException("Found an out of order " + keywords.meta()
++//                                + " (meta) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        MetaDTO meta = new MetaDTO();
++//                        meta.setKeyword(keywords.meta());
++//                        storyDTO.setMeta(meta);
++//                        lastElement = CompositeElement.meta;
++//                    }
++//                }
++//
++//                // narrative
++//                else if (line.startsWith(keywords.narrative())) {
++//                    if (storyDTO.getNarrative() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.narrative()
++//                                + " (narrative) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        NarrativeDTO narrativeDTO = new NarrativeDTO();
++//                        narrativeDTO.setKeyword(keywords.narrative());
++//                        storyDTO.setNarrative(narrativeDTO);
++//                        lastElement = CompositeElement.narrative;
++//                    }
++//                } else if (line.startsWith(keywords.inOrderTo())) {
++//                    if (storyDTO.getNarrative() == null) {
++//                        throw new StoryParseException("Found an out of order " + keywords.inOrderTo()
++//                                + " (inOrderTo) keyword declaration on line " + lineNumber);
++//                    } else if (storyDTO.getNarrative().getInOrderTo() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.inOrderTo()
++//                                + " (inOrderTo) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        InOrderToDTO inOrderTo = new InOrderToDTO();
++//                        inOrderTo.setKeyword(keywords.inOrderTo());
++//                        String value = line.substring(keywords.inOrderTo().length()).trim();
++//                        if (!value.isEmpty()) {
++//                            inOrderTo.setValue(value);
++//                        }
++//                        storyDTO.getNarrative().setInOrderTo(inOrderTo);
++//                        lastElement = CompositeElement.inOrderTo;
++//                    }
++//                } else if (line.startsWith(keywords.asA())) {
++//                    if (storyDTO.getNarrative() == null) {
++//                        throw new StoryParseException("Found an out of order " + keywords.asA()
++//                                + " (asA) keyword declaration on line " + lineNumber);
++//                    } else if (storyDTO.getNarrative().getAsA() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.asA()
++//                                + " (asA) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        AsADTO asA = new AsADTO();
++//                        asA.setKeyword(keywords.asA());
++//                        String value = line.substring(keywords.asA().length()).trim();
++//                        if (!value.isEmpty()) {
++//                            asA.setValue(value);
++//                        }
++//                        storyDTO.getNarrative().setAsA(asA);
++//                        lastElement = CompositeElement.asA;
++//                    }
++//                } else if (line.startsWith(keywords.iWantTo())) {
++//                    if (storyDTO.getNarrative() == null) {
++//                        throw new StoryParseException("Found an out of order " + keywords.iWantTo()
++//                                + " (iWantTo) keyword declaration on line " + lineNumber);
++//                    } else if (storyDTO.getNarrative().getiWantTo() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.iWantTo()
++//                                + " (iWantTo) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        IWantToDTO iWantTo = new IWantToDTO();
++//                        iWantTo.setKeyword(keywords.iWantTo());
++//                        String value = line.substring(keywords.iWantTo().length()).trim();
++//                        if (!value.isEmpty()) {
++//                            iWantTo.setValue(value);
++//                        }
++//                        storyDTO.getNarrative().setiWantTo(iWantTo);
++//                        lastElement = CompositeElement.iWantTo;
++//                    }
++//                } else if (line.startsWith(keywords.soThat())) {
++//                    if (storyDTO.getNarrative() == null) {
++//                        throw new StoryParseException("Found an out of order " + keywords.soThat()
++//                                + " (soThat) keyword declaration on line " + lineNumber);
++//                    } else if (storyDTO.getNarrative().getSoThat() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.soThat()
++//                                + " (soThat) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        SoThatDTO soThat = new SoThatDTO();
++//                        soThat.setKeyword(keywords.soThat());
++//                        String value = line.substring(keywords.soThat().length()).trim();
++//                        if (!value.isEmpty()) {
++//                            soThat.setValue(value);
++//                        }
++//                        storyDTO.getNarrative().setSoThat(soThat);
++//                        lastElement = CompositeElement.soThat;
++//                    }
++//                }
++//
++//                // givenStories
++//                else if (line.startsWith(keywords.givenStories())) {
++//                    if (storyDTO.getGivenStories() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.givenStories()
++//                                + " (givenStories) keyword declaration on line " + lineNumber);
++//                    }
++////                    else if (storyDTO.narrative == null || lastElement != CompositeElement.scenario) {
++////                      TODO - implement check when this is an out of order element and throw exception
++////                    }
++//                    else {
++////                        List<String> paths = new ArrayList<String>();
++////                        paths.add(line.substring(keywords.givenStories().length())); // TODO - implement properly
++//                        storyDTO.setGivenStories(new GivenStoriesDTO());
++//                        lastElement = CompositeElement.givenStories;
++//                    }
++//                }
++//
++//                // lifecycle
++//                else if (line.startsWith(keywords.lifecycle())) {
++//                    if (storyDTO.getLifecycle() != null) {
++//                        throw new StoryParseException("Found a duplicate " + keywords.lifecycle()
++//                                + " (Lifecycle) keyword declaration on line " + lineNumber);
++//                    } else {
++//                        storyDTO.setLifecycle(new LifecycleDTO());
++//                        lastElement = CompositeElement.lifecycle;
++//                    }
++//                }
++//
++//                // scenario
++//                else if (line.startsWith(keywords.scenario())) {
++//                    ScenarioDTO scenarioDto = new ScenarioDTO();
++//                    scenarioDto.setKeyword(keywords.scenario());
++//                    String title = line.substring(keywords.scenario().length());
++//                    if (!title.isEmpty()) {
++//                        scenarioDto.setTitle(title);
++//                    }
++//                    if (storyDTO.getScenarios() == null) {
++//                        storyDTO.setScenarios(new ArrayList<ScenarioDTO>());
++//                    }
++//                    storyDTO.getScenarios().add(scenarioDto);
++//                    lastElement = CompositeElement.scenario;
++//                } else if (line.startsWith(keywords.given())) {
++//
++//                    if (storyDTO.getScenarios().isEmpty()) {
++//                        throw new StoryParseException("Found an out of order " + keywords.given()
++//                                + " (Given) keyword declaration on line " + lineNumber);
++//                    }
++//
++//                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
++//                    List<String> steps = scenario.getSteps();
++//                    if (steps == null) {
++//                        steps = new ArrayList<String>();
++//                        scenario.setSteps(steps);
++//                    }
++//                    steps.add(line);
++//                    lastElement = CompositeElement.given;
++//                } else if (line.startsWith(keywords.when())) {
++//
++//                    if (storyDTO.getScenarios().isEmpty()) {
++//                        throw new StoryParseException("Found an out of order " + keywords.when()
++//                                + " (When) keyword declaration on line " + lineNumber);
++//                    }
++//
++//                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
++//                    List<String> steps = scenario.getSteps();
++//                    if (steps == null) {
++//                        steps = new ArrayList<String>();
++//                        scenario.setSteps(steps);
++//                    }
++//                    steps.add(line);
++//                    lastElement = CompositeElement.when;
++//                } else if (line.startsWith(keywords.then())) {
++//
++//                    if (storyDTO.getScenarios().isEmpty()) {
++//                        throw new StoryParseException("Found an out of order " + keywords.then()
++//                                + " (Then) keyword declaration on line " + lineNumber);
++//                    }
++//
++//                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
++//                    List<String> steps = scenario.getSteps();
++//                    if (steps == null) {
++//                        steps = new ArrayList<String>();
++//                        scenario.setSteps(steps);
++//                    }
++//                    steps.add(line);
++//                    lastElement = CompositeElement.then;
++//                } else if (line.startsWith(keywords.and())) {
++//
++//                    if (storyDTO.getScenarios().isEmpty()) {
++//                        throw new StoryParseException("Found an out of order " + keywords.and()
++//                                + " (And) keyword declaration on line " + lineNumber);
++//                    }
++//
++//                    ScenarioDTO scenario = storyDTO.getScenarios().get(storyDTO.getScenarios().size() - 1);
++//                    List<String> steps = scenario.getSteps();
++//                    if (steps == null) {
++//                        throw new StoryParseException("Found an out of order " + keywords.and() + " (And) keyword " +
++//                                "declaration on line " + lineNumber);
++//                    }
++//                    steps.add(line);
++//                    lastElement = CompositeElement.and;
++//                } else {
++//                    // line doesn't start with any of the keywords, so try to append to either description if at the
++//                    // start of the storyDTO or the last element if it is "appendable"
++//                    if (storyDTO.getMeta() == null
++//                            && storyDTO.getNarrative() == null
++//                            && storyDTO.getGivenStories() == null
++//                            && storyDTO.getLifecycle() == null
++//                            && storyDTO.getScenarios().isEmpty()) {
++//                        // we are at the start and can create/append to description
++//                        if (storyDTO.getDescription() == null) {
++//                            storyDTO.setDescription(line);
++//                        } else {
++//                            storyDTO.setDescription(storyDTO.getDescription() + "\n" + line);
++//                        }
++//                    } else if (line.startsWith("@") && storyDTO.getMeta() != null
++//                            && lastElement == CompositeElement.meta) {
++//                        List<MetaEntryDTO> properties = storyDTO.getMeta().getProperties();
++//                        if (properties == null) {
++//                            properties = new ArrayList<MetaEntryDTO>();
++//                            storyDTO.getMeta().setProperties(properties);
++//                        }
++//                        if (line.length() == 0) {
++//                            throw new StoryParseException("Meta properties must have a minimum of 1 character");
++//                        } else {
++//                            String withoutAtChar = line.substring(1);
++//                            int firstSpaceIndex = withoutAtChar.indexOf(" ");
++//                            if (firstSpaceIndex != -1) {
++//                                String key = withoutAtChar.substring(0, firstSpaceIndex);
++//                                String value = withoutAtChar.substring(firstSpaceIndex + 1);
++//                                MetaEntryDTO metaEntryDTO = new MetaEntryDTO(key, value);
++//                                properties.add(metaEntryDTO);
++//                            } else {
++//                                // some properties don't have value, e.g. @skip
++//                                MetaEntryDTO metaEntryDTO = new MetaEntryDTO(withoutAtChar, null);
++//                                properties.add(metaEntryDTO);
++//                            }
++//                        }
++//                    } else {
++//                        // should not get here, unless the storyDTO structure/format is wrong
++//                        throw new StoryParseException("An out of order line found - \n" + line);
++//                    }
++//
++//                }
++//
++//
++//            }
++//
++//
++//        }
++//
++//        return storyDTO;
++//    }
+ 
+ 
+ }
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/templates/storypanel/stories_panel.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/templates/storypanel/stories_panel.vm	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/templates/storypanel/stories_panel.vm	(revision )
+@@ -2,5 +2,5 @@
+ ##<br><br><br>
+ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-experimental-iconfont")
+ $webResourceManager.requireResourcesForContext("execspec-view-issue-page-resources")
+-<div id="story-panel">
+-</div>
++<div id="story-panel">DEFAULT content!</div>
++
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/story/StoryDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/story/StoryDTO.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/story/StoryDTO.java	(revision )
+@@ -3,8 +3,6 @@
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+ import javax.xml.bind.annotation.XmlRootElement;
+-import java.util.ArrayList;
+-import java.util.List;
+ 
+ /**
+  * DTO class for Story instances.
+@@ -22,20 +20,6 @@
+ 
+     private Long version;
+ 
+-    private String path;
+-
+-    private String description;
+-
+-    private MetaDTO meta;
+-
+-    private NarrativeDTO narrative;
+-
+-    private GivenStoriesDTO givenStories;
+-
+-    private LifecycleDTO lifecycle;
+-
+-    private List<ScenarioDTO> scenarios = new ArrayList<ScenarioDTO>();
+-
+     private String asString;
+ 
+     public String getIssueKey() {
+@@ -62,62 +46,6 @@
+         this.version = version;
+     }
+ 
+-    public String getPath() {
+-        return path;
+-    }
+-
+-    public void setPath(String path) {
+-        this.path = path;
+-    }
+-
+-    public String getDescription() {
+-        return description;
+-    }
+-
+-    public void setDescription(String description) {
+-        this.description = description;
+-    }
+-
+-    public GivenStoriesDTO getGivenStories() {
+-        return givenStories;
+-    }
+-
+-    public void setGivenStories(GivenStoriesDTO givenStories) {
+-        this.givenStories = givenStories;
+-    }
+-
+-    public LifecycleDTO getLifecycle() {
+-        return lifecycle;
+-    }
+-
+-    public void setLifecycle(LifecycleDTO lifecycle) {
+-        this.lifecycle = lifecycle;
+-    }
+-
+-    public MetaDTO getMeta() {
+-        return meta;
+-    }
+-
+-    public void setMeta(MetaDTO meta) {
+-        this.meta = meta;
+-    }
+-
+-    public NarrativeDTO getNarrative() {
+-        return narrative;
+-    }
+-
+-    public void setNarrative(NarrativeDTO narrative) {
+-        this.narrative = narrative;
+-    }
+-
+-    public List<ScenarioDTO> getScenarios() {
+-        return scenarios;
+-    }
+-
+-    public void setScenarios(List<ScenarioDTO> scenarios) {
+-        this.scenarios = scenarios;
+-    }
+-
+     public String getAsString() {
+         return asString;
+     }
+@@ -125,5 +53,4 @@
+     public void setAsString(String asString) {
+         this.asString = asString;
+     }
+-
+ }
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/story/StoryDTOUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/story/StoryDTOUtils.java	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/story/StoryDTOUtils.java	(revision )
+@@ -1,8 +1,6 @@
+ package com.mycomp.execspec.jiraplugin.dto.story;
+ 
+ import com.mycomp.execspec.jiraplugin.ao.story.Story;
+-import com.mycomp.execspec.jiraplugin.util.ByLineStoryParser;
+-import org.apache.commons.lang.Validate;
+ import org.jbehave.core.steps.StepCreator;
+ 
+ import java.util.List;
+@@ -15,15 +13,11 @@
+ 
+     public static StoryDTO toDTO(Story story) {
+ 
+-        String issueKey = story.getIssueKey();
+-        String storyAsString = story.getAsString();
+-
+-        ByLineStoryParser parser = new ByLineStoryParser();
+-        StoryDTO storyDTO = parser.parseStory(storyAsString, issueKey + ".story");
+-
++        StoryDTO storyDTO = new StoryDTO();
+         storyDTO.setProjectKey(story.getProjectKey());
+         storyDTO.setIssueKey(story.getIssueKey());
+         storyDTO.setVersion(story.getVersion());
++        storyDTO.setAsString(story.getAsString());
+ 
+         return storyDTO;
+     }
+@@ -149,117 +143,117 @@
+         }
+     }
+ 
+-    public static String asString(StoryDTO storyDTO) {
+-
+-        // walk the story model and convert to string
+-
+-        final String LB = "\n";
+-        StringBuilder sb = new StringBuilder();
+-
+-        // description
+-        String description = storyDTO.getDescription();
+-        if (description != null && !description.trim().isEmpty()) {
+-            sb.append(description.trim() + LB);
+-            sb.append(LB);
+-        }
+-
+-        // meta
+-        MetaDTO meta = storyDTO.getMeta();
+-        if (meta != null) {
+-            String keyword = meta.getKeyword();
+-            Validate.notEmpty(keyword);
+-            keyword = keyword.trim();
+-            Validate.notEmpty(keyword);
+-            sb.append(keyword + LB);
+-            List<MetaEntryDTO> properties = meta.getProperties();
+-            if (properties != null && !properties.isEmpty()) {
+-                for (MetaEntryDTO p : properties) {
+-                    String name = p.getName();
+-                    String value = p.getValue();
+-                    sb.append("@" + name);
+-                    if (value != null && !value.isEmpty()) {
+-                        sb.append(" " + value);
+-                    }
+-                    sb.append(LB);
+-                }
+-            }
+-            sb.append(LB);
+-        }
+-
+-        // narrative
+-        NarrativeDTO narrative = storyDTO.getNarrative();
+-        if (narrative != null) {
+-            {
+-                String keyword = narrative.getKeyword();
+-                sb.append(keyword + LB);
+-            }
+-            {
+-                InOrderToDTO inOrderTo = narrative.getInOrderTo();
+-                if (inOrderTo != null) {
+-                    String keyword = inOrderTo.getKeyword();
+-                    sb.append(keyword);
+-                    String value = inOrderTo.getValue();
+-                    if (value != null && !value.isEmpty()) {
+-                        sb.append(" " + value);
+-                    }
+-                    sb.append(LB);
+-                }
+-            }
+-            {
+-                AsADTO asA = narrative.getAsA();
+-                if (asA != null) {
+-                    String keyword = asA.getKeyword();
+-                    sb.append(keyword);
+-                    String value = asA.getValue();
+-                    if (value != null && !value.isEmpty()) {
+-                        sb.append(" " + value);
+-                    }
+-                    sb.append(LB);
+-                }
+-            }
+-            {
+-                IWantToDTO iWantTo = narrative.getiWantTo();
+-                if (iWantTo != null) {
+-                    String keyword = iWantTo.getKeyword();
+-                    sb.append(keyword);
+-                    String value = iWantTo.getValue();
+-                    if (value != null && !value.isEmpty()) {
+-                        sb.append(" " + value);
+-                    }
+-                    sb.append(LB);
+-                }
+-            }
+-            {
+-                SoThatDTO soThat = narrative.getSoThat();
+-                if (soThat != null) {
+-                    String keyword = soThat.getKeyword();
+-                    sb.append(keyword);
+-                    String value = soThat.getValue();
+-                    if (value != null && !value.isEmpty()) {
+-                        sb.append(" " + value);
+-                    }
+-                    sb.append(LB);
+-                }
+-            }
+-        }
+-
+-        List<ScenarioDTO> scenarios = storyDTO.getScenarios();
+-        if (scenarios != null && !scenarios.isEmpty()) {
+-            for (ScenarioDTO scenario : scenarios) {
+-                sb.append(LB);
+-                String keyword = scenario.getKeyword();
+-                Validate.notEmpty(keyword);
+-                sb.append(keyword);
+-                String title = scenario.getTitle();
+-                if (title != null && !title.isEmpty()) {
+-                    sb.append(" ");
+-                    sb.append(title.trim());
+-                }
+-                sb.append(LB);
+-            }
+-        }
+-
+-        String asString = sb.toString();
+-        return asString;
+-    }
++//    public static String asString(StoryDTO storyDTO) {
++//
++//        // walk the story model and convert to string
++//
++//        final String LB = "\n";
++//        StringBuilder sb = new StringBuilder();
++//
++//        // description
++//        String description = storyDTO.getDescription();
++//        if (description != null && !description.trim().isEmpty()) {
++//            sb.append(description.trim() + LB);
++//            sb.append(LB);
++//        }
++//
++//        // meta
++//        MetaDTO meta = storyDTO.getMeta();
++//        if (meta != null) {
++//            String keyword = meta.getKeyword();
++//            Validate.notEmpty(keyword);
++//            keyword = keyword.trim();
++//            Validate.notEmpty(keyword);
++//            sb.append(keyword + LB);
++//            List<MetaEntryDTO> properties = meta.getProperties();
++//            if (properties != null && !properties.isEmpty()) {
++//                for (MetaEntryDTO p : properties) {
++//                    String name = p.getName();
++//                    String value = p.getValue();
++//                    sb.append("@" + name);
++//                    if (value != null && !value.isEmpty()) {
++//                        sb.append(" " + value);
++//                    }
++//                    sb.append(LB);
++//                }
++//            }
++//            sb.append(LB);
++//        }
++//
++//        // narrative
++//        NarrativeDTO narrative = storyDTO.getNarrative();
++//        if (narrative != null) {
++//            {
++//                String keyword = narrative.getKeyword();
++//                sb.append(keyword + LB);
++//            }
++//            {
++//                InOrderToDTO inOrderTo = narrative.getInOrderTo();
++//                if (inOrderTo != null) {
++//                    String keyword = inOrderTo.getKeyword();
++//                    sb.append(keyword);
++//                    String value = inOrderTo.getValue();
++//                    if (value != null && !value.isEmpty()) {
++//                        sb.append(" " + value);
++//                    }
++//                    sb.append(LB);
++//                }
++//            }
++//            {
++//                AsADTO asA = narrative.getAsA();
++//                if (asA != null) {
++//                    String keyword = asA.getKeyword();
++//                    sb.append(keyword);
++//                    String value = asA.getValue();
++//                    if (value != null && !value.isEmpty()) {
++//                        sb.append(" " + value);
++//                    }
++//                    sb.append(LB);
++//                }
++//            }
++//            {
++//                IWantToDTO iWantTo = narrative.getiWantTo();
++//                if (iWantTo != null) {
++//                    String keyword = iWantTo.getKeyword();
++//                    sb.append(keyword);
++//                    String value = iWantTo.getValue();
++//                    if (value != null && !value.isEmpty()) {
++//                        sb.append(" " + value);
++//                    }
++//                    sb.append(LB);
++//                }
++//            }
++//            {
++//                SoThatDTO soThat = narrative.getSoThat();
++//                if (soThat != null) {
++//                    String keyword = soThat.getKeyword();
++//                    sb.append(keyword);
++//                    String value = soThat.getValue();
++//                    if (value != null && !value.isEmpty()) {
++//                        sb.append(" " + value);
++//                    }
++//                    sb.append(LB);
++//                }
++//            }
++//        }
++//
++//        List<ScenarioDTO> scenarios = storyDTO.getScenarios();
++//        if (scenarios != null && !scenarios.isEmpty()) {
++//            for (ScenarioDTO scenario : scenarios) {
++//                sb.append(LB);
++//                String keyword = scenario.getKeyword();
++//                Validate.notEmpty(keyword);
++//                sb.append(keyword);
++//                String title = scenario.getTitle();
++//                if (title != null && !title.isEmpty()) {
++//                    sb.append(" ");
++//                    sb.append(title.trim());
++//                }
++//                sb.append(LB);
++//            }
++//        }
++//
++//        String asString = sb.toString();
++//        return asString;
++//    }
+ }
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -1,5 +1,5 @@
+ var storyController;
+-var storyView;
++//var storyView;
+ var storyService;
+ var pageUtils;
+ 
+@@ -8,398 +8,182 @@
+     this.debugOn = true;
+ 
+     storyController = this;
+-
+-    storyView = new StoryView(this);
+-    storyView.init();
+-
+     storyService = new StoryService();
+-    storyService.init();
+-
+     pageUtils = new PageUtils();
+-    pageUtils.init();
+ 
+-    this.currentStory = new StoryModel();
+-    this.currentReports = [];
+-    this.editMode = false;
+-
+     this.debug = function (msg) {
+         if (this.debugOn) {
+             console.log("[DEBUG StoryController] " + msg);
+         }
+     }
+ 
+-    this.loadStory = function () {
++    this.editor = null;
++    this.currentStory = null;
++    this.storyChanged = false;
+ 
+-        this.debug("> loadStory");
+-        var issueKey = pageUtils.getIssueKey();
+-        var projectKey = pageUtils.getProjectKey();
+-        storyService.find(projectKey, issueKey,
+-            function (storyPayload) {
+-                storyController.debug("> loadStory.callback");
+-                storyController.debug("storyPayload - " + JSON.stringify(storyPayload, null, "\t"));
+-                if (storyPayload != undefined) {
+-//                    storyView.showStoryButton(story);
+-//                    storyView.showStoryReportButtons(story); // TODO
+-                    storyView.showStoryButtons(storyPayload);
+-                    storyController.currentStory = storyPayload.story;
+-                    storyController.currentReports = storyPayload.testReports;
+-                    storyController.showStoryHandler(null);
+-                } else {
+-                    storyController.debug("no story found for project - " + projectKey + ", issue - " + issueKey);
+-                    storyView.showAddStory();
+-                }
+-            }
+-        );
+-        this.debug("# loadStory");
+-    }
++    this.init  = function () {
+ 
+-    this.addStoryHandler = function (event) {
++        var storyPanelContent = execspec.viewissuepage.showstory.renderStoryPanel();
++        AJS.$("#story-panel").html(storyPanelContent);
+ 
+-        this.debug("> addStoryHandler");
+-
+-        var projectKey = pageUtils.getProjectKey();
+-        storyService.fetchNewStoryTemplate(projectKey, function (story) {
+-            storyController.debug("> addStoryHandler.callback");
+-
+-            story.issueKey = pageUtils.getIssueKey();
+-            story.path = pageUtils.getIssueKey() + ".story";
+-
+-            storyController.currentStory = story;
+-            storyController.editStoryHandler(null);
+-
+-            storyController.debug("# addStoryHandler.callback");
++        CodeMirror.commands.autocomplete = function (cm) {
++            cm.showHint({hint: CodeMirror.hint.jbehave});
++        }
++        var editor = CodeMirror.fromTextArea(document.getElementById("storyTextArea"), {
++            mode: "jbehave",
++            extraKeys: {"Ctrl-Space": "autocomplete"}
+         });
++        this.editor = editor;
++        editor.on("change", this.onEditorChangeHandler);
+ 
+-        event.preventDefault();
+-        this.debug("# addStoryHandler");
++        this.loadStory();
+     }
+ 
+-    this.showStoryHandler = function (event) {
++    this.onEditorChangeHandler = function () {
++        storyController.debug("> onEditorChangeHandler");
+ 
+-        this.debug("> showStoryHandler");
+-        this.editMode = false;
+-        storyView.showStory(this.currentStory);
+-        if (event != null) {
+-            event.preventDefault();
++        if (storyController.storyChanged == false) {
++            var saveCancelMsg = execspec.viewissuepage.showstory.renderSaveCancelMsg();
++            storyController.showWarningMessage(saveCancelMsg);
+         }
+-        this.debug("# showStoryHandler");
+-    }
+ 
+-    this.showStoryReport = function (event, environment) {
++        storyController.storyChanged = true;
+ 
+-        this.debug("> showStoryReport");
+-        this.debug("environment - " + environment);
++        storyController.debug("# onEditorChangeHandler");
++    }
+ 
+-        // find the report for environment
+-        var reportForEnvironment = undefined;
+-        for (var i = 0; i < this.currentReports.length; i++) {
+-            var storyReport = this.currentReports[i];
+-            if (storyReport.environment == environment) {
+-                reportForEnvironment = storyReport;
+-                break;
++    this.showWarningMessage = function (saveCancelMsg) {
++        AJS.$("#storyMsgBar").empty();
++        AJS.messages.warning("#storyMsgBar", {
++            title: null,
++            id: "storyWarningMsg",
++            body: saveCancelMsg,
++            closeable: false
++        });
+-            }
++    }
+-        }
+-        storyView.showStoryReport(reportForEnvironment, this.currentStory.version);
+ 
+-        event.preventDefault();
+-        this.debug("# showStoryReport");
++    this.showSuccessMessage = function (saveCancelMsg) {
++        AJS.$("#storyMsgBar").empty();
++        AJS.messages.success("#storyMsgBar", {
++            title: null,
++            fadeout: true,
++            delay: 3000,
++            body: saveCancelMsg,
++            closeable: true
++        });
+     }
+ 
+-//    this.addStory = function () {
+-//
+-//        this.debug("> addStory");
+-//
+-//        var story = new StoryModel();
+-//        story.projectKey = pageUtils.getProjectKey();
+-//        story.issueKey = pageUtils.getIssueKey();
+-//
+-//        var newStoryAsString = "narrative:";
+-//        newStoryAsString += "\nIn order to ";
+-//        newStoryAsString += "\nAs a ";
+-//        newStoryAsString += "\nI want to ";
+-//        newStoryAsString += "\n\nScenario: test scenario";
+-//        newStoryAsString += "\nGiven something none existent";
+-//        story.asString = newStoryAsString;
+-//
+-//        // TODO - temp
+-//        story.meta = new Object();
+-//        story.meta.properties = [];
+-//        var metaField = new Object();
+-//        metaField.name = "metaName";
+-//        metaField.value = "metaValue";
+-//        story.meta.properties.push(metaField);
+-//        var metaField2 = new Object();
+-//        metaField2.name = "meta2Name";
+-//        metaField2.value = "meta2Value";
+-//        story.meta.properties.push(metaField2);
+-//
+-//        storyService.saveOrUpdateStory(story,
+-//            function (story) {
+-//                storyController.currentStory = story;
+-//                storyView.showStory(story, storyController.editMode);
+-//                storyView.showStoryReportButtons(story);
+-//                // TODO remove the add story button from the menu
+-//            });
+-//
+-//        this.debug("# addStory");
+-//    }
++    this.loadStory = function () {
+ 
+-    this.editStoryHandler = function (event) {
++        this.debug("> loadStory");
+ 
+-        this.debug("> editStoryHandler");
++        var issueKey = pageUtils.getIssueKey();
++        var projectKey = pageUtils.getProjectKey();
+ 
+-        this.editMode = true;
+-        storyView.editStory(this.currentStory);
++        storyService.find(projectKey, issueKey,
+ 
+-        if (event != null) {
+-            event.preventDefault();
+-        }
+-        this.debug("# editStoryHandler");
+-    }
++            function (storyPayload) {
+ 
+-    this.clearStoryTests = function () {
++                storyController.debug("> loadStory.callback");
+ 
+-        this.debug("> clearStoryTests");
++                if (storyPayload != undefined) {
++                    storyController.debug("found storyPayload - " + JSON.stringify(storyPayload, null, "\t"));
++                } else {
++                    storyController.debug("no story found for project - " + projectKey + ", issue - " + issueKey);
++                    storyPayload = new StoryModel();
++                    storyPayload.projectKey = pageUtils.getProjectKey();
++                    storyPayload.issueKey = pageUtils.getIssueKey();
++                    storyPayload.asString = "";
++                }
+ 
+-        var projectKey = pageUtils.getProjectKey();
+-        var issueKey = pageUtils.getIssueKey();
++                storyController.showStory(storyPayload);
+ 
+-        storyService.deleteStoryReports(projectKey, issueKey,
+-            function () {
+-                storyController.debug("story reports successfully deleted");
+-                // TODO remove the delete story button from the menu
+-                storyController.currentStory.storyReports = [];
+-                storyView.showStory(storyController.currentStory);
+-                storyView.showStoryReportButtons(storyController.currentStory);
+-            });
++                storyController.debug("# loadStory.callback");
++            }
+ 
+-        this.debug("# clearStoryTests");
++        );
++
++        this.debug("# loadStory");
+     }
+ 
+-    this.deleteStory = function () {
++    this.showStory = function (storyModel) {
+ 
+-        this.debug("> deleteStory");
++        this.debug("> showStory");
+ 
+-        var projectKey = pageUtils.getProjectKey();
+-        var issueKey = pageUtils.getIssueKey();
++        this.currentStory = storyModel;
++        this.editor.off("change", storyController.onEditorChangeHandler);
++        this.editor.setValue(storyModel.asString);
++        this.editor.on("change", storyController.onEditorChangeHandler);
++        storyController.storyChanged = false;
+ 
+-        storyService.deleteStory(projectKey, issueKey,
+-            function () {
+-                storyController.debug("story successfully deleted");
+-                // TODO remove the delete story button from the menu
+-                storyView.removeStory();
+-            });
++        this.editor.setOption("readOnly", false);
+ 
+-        this.debug("# deleteStory");
++        this.debug("# showStory");
+     }
+ 
+-    this.saveStoryAsModel = function () {
++    this.saveStory = function (event) {
+ 
+-        this.debug("> saveStoryAsModel");
++        this.debug("> saveStory");
++        event.preventDefault();
+ 
+-        var storyPayload = JSON.stringify(this.currentStory, null, "\t");
++        var storyBeingSaved = new StoryModel();
++        storyBeingSaved.projectKey = this.currentStory.projectKey;
++        storyBeingSaved.issueKey = this.currentStory.issueKey;
++        storyBeingSaved.version = this.currentStory.version;
++        var storyInputAsText = this.editor.getValue();
++        storyBeingSaved.asString = storyInputAsText;
+ 
++        var storyPayload = JSON.stringify(storyBeingSaved, null, "\t");
+         this.debug("saving story:\n" + storyPayload);
+ 
++        var waitingMsg = execspec.viewissuepage.showstory.renderWaitingMessage();
++//        storyController.showWarningMessage(waitingMsg);
++        AJS.$('#storyEditedMsgContainer').html(waitingMsg);
++        AJS.$('.save-story-button-spinner').spin();
++
++        this.editor.setOption("readOnly", true);
++
+         storyService.saveOrUpdateStory(storyPayload, function (savedStory) {
+-            storyController.debug("> saveStoryAsModel.saveOrUpdateStory callback");
++            storyController.debug("> saveOrUpdateStory callback");
+ //            storyView.showStoryReportButtons(savedStory);
+             var jsonStory = JSON.stringify(savedStory, null, "\t");
+             storyController.debug("saved story:\n" + jsonStory);
+ 
+-            storyController.currentStory = savedStory;
+-            storyController.editMode = false;
+-            storyController.showStoryHandler(null);
+-            storyController.debug("# saveStoryAsModel.saveOrUpdateStory callback");
++            storyController.showSuccessMessage("Story was saved successfully!");
++            storyController.showStory(savedStory);
++            storyController.debug("# saveOrUpdateStory callback");
+         });
+ 
+-        this.debug("# saveStoryAsModel");
++
++        this.debug("# saveStory");
+     }
+ 
+-//    this.saveStory = function (event) {
+-//
+-//        this.debug("> saveStory");
+-//        event.preventDefault();
+-//
+-//        var model = new StoryModel();
+-//        var issueKey = pageUtils.getIssueKey();
+-//        model.issueKey = issueKey;
+-//        var projectKey = pageUtils.getProjectKey();
+-//        model.projectKey = projectKey;
+-//        var storyInput = storyView.getStoryInputAsString();
+-//        model.asString = storyInput;
+-//        model.version = this.currentStory.version;
+-//
+-//        storyService.saveOrUpdateStory(model, function (savedStory) {
+-//            storyController.debug("> saveStory.saveOrUpdateStory callback");
+-//            storyController.editMode = false;
+-//            storyView.showStory(savedStory, storyController.editMode);
+-//            storyView.showStoryReportButtons(savedStory);
+-//            storyController.currentStory = savedStory;
+-//            storyController.debug("# saveStory.saveOrUpdateStory callback");
+-//        });
+-//
+-//        this.debug("# saveStory");
+-//    }
++    this.cancelEdit = function (event) {
+ 
+-    this.cancelEditingStory = function (event) {
+-
+         this.debug("> cancelEditingStory");
+         event.preventDefault();
+ 
+-        this.editMode = false;
+-        storyView.showStory(this.currentStory, this.editMode);
++        this.showStory(this.currentStory);
+ 
+-        this.debug("# cancelEditingStory");
+-    }
+ 
+-    this.showAutoCompleteHandler = function () {
+ 
+-        this.debug("> showAutoComplete");
+-
+-        var storyInputAsString = storyView.getStoryInputAsString();
+-        var caretPosition = storyView.getStoryInputCaretPosition();
+-        this.debug("caretPosition - " + caretPosition);
+-        var substring = storyInputAsString.substr(0, caretPosition);
+-        this.debug("substring - " + substring);
+-
+-//        var lines = substring.split("\n");
+-        var projectKey = pageUtils.getProjectKey();
+-        storyService.autoComplete(projectKey, substring,
+-            function (data) {
+-                var entries = data.entries;
+-                storyView.showAutoComplete(entries);
++        this.debug("# cancelEditingStory");
+-            }
++    }
+-        );
+ 
+-        this.debug("# showAutoComplete");
+-    }
++}
+-}
+ 
+-// function to obtain caret position in text area
+ AJS.$(function () {
+-    AJS.$.fn.caret = function () {
+-
+-        var target = this[0];
+-        var isContentEditable = target.contentEditable === 'true';
+-        //get
+-        if (arguments.length == 0) {
+-            //HTML5
+-            if (window.getSelection) {
+-                //contenteditable
+-                if (isContentEditable) {
+-                    target.focus();
+-                    var range1 = window.getSelection().getRangeAt(0),
+-                        range2 = range1.cloneRange();
+-                    range2.selectNodeContents(target);
+-                    range2.setEnd(range1.endContainer, range1.endOffset);
+-                    return range2.toString().length;
+-                }
+-                //textarea
+-                return target.selectionStart;
+-            }
+-            //IE<9
+-            if (document.selection) {
+-                target.focus();
+-                //contenteditable
+-                if (isContentEditable) {
+-                    var range1 = document.selection.createRange(),
+-                        range2 = document.body.createTextRange();
+-                    range2.moveToElementText(target);
+-                    range2.setEndPoint('EndToEnd', range1);
+-                    return range2.text.length;
+-                }
+-                //textarea
+-                var pos = 0,
+-                    range = target.createTextRange(),
+-                    range2 = document.selection.createRange().duplicate(),
+-                    bookmark = range2.getBookmark();
+-                range.moveToBookmark(bookmark);
+-                while (range.moveStart('character', -1) !== 0) pos++;
+-                return pos;
+-            }
+-            //not supported
+-            return 0;
+-        }
+-        //set
+-        if (pos == -1)
+-            pos = this[isContentEditable ? 'text' : 'val']().length;
+-        //HTML5
+-        if (window.getSelection) {
+-            //contenteditable
+-            if (isContentEditable) {
+-                target.focus();
+-                window.getSelection().collapse(target.firstChild, pos);
+-            }
+-            //textarea
+-            else
+-                target.setSelectionRange(pos, pos);
+-        }
+-        //IE<9
+-        else if (document.body.createTextRange) {
+-            var range = document.body.createTextRange();
+-            range.moveToElementText(target);
+-            range.moveStart('character', pos);
+-            range.collapse(true);
+-            range.select();
+-        }
+-        if (!isContentEditable)
+-            target.focus();
+-        return pos;
+-
+-    };
++    var ctr = new StoryController();
++    ctr.init();
+ });
+ 
+ AJS.$(function () {
+-    var ctr = new StoryController()
+-    ctr.loadStory();
++    // handling page updates in response to inline editing of other jira fields
++    JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, context, reason) {
++//            console.log("reason");
++        if (reason != "inlineEditStarted ") {
++            var ctr = new StoryController();
++            ctr.init();
++        }
+-});
++    });
+-
+-//AJS.$(function () {
+-//    YUI().use('editor-inline', function(Y) {
+-//
+-//        var editor = new Y.InlineEditor({
+-//            content: '<strong>This is <em>a test</em></strong> <strong>This is <em>a test</em></strong> '
+-//        });
+-//
+-//        //Add the BiDi plugin
+-//        editor.plug(Y.Plugin.EditorBidi);
+-//
+-//        //Focusing the Editor when ready
+-//        editor.on('ready', function() {
+-//            editor.focus();
+-//        });
+-//
+-//        //Rendering the Editor.
+-//        editor.render('#yuiEditorPanel');
+-//
+-//    });
+-//    YUI().use('editor', function (Y) {
+-//
+-//        var rangeObject = new Object();
+-//        rangeObject.range = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+-//        var content = execspec.viewissuepage.showstory.renderRichTextArea(rangeObject);
+-////        var content = "test";
+-//
+-//        var editor = new Y.EditorBase({
+-//            content: content
+-//        });
+-//
+-//        //Add the BiDi plugin
+-//        editor.plug(Y.Plugin.EditorBidi);
+-//
+-//        //Focusing the Editor when the frame is ready..
+-//        editor.on('frame:ready', function () {
+-//            this.focus();
+-//            var height = AJS.$("iframe").contents().height() + 40;
+-//            this.debug("setting editor height to - " + height);
+-//            AJS.$("#yuiEditorPanel").height(height);
+-//        });
+-//
+-//        //Rendering the Editor.
+-//        editor.render('#yuiEditorPanel');
+-//
+-//    });
+-//});
+-
+-
++});
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(revision )
+@@ -25,6 +25,11 @@
+         storyService.debug("# init");
+     }
+ 
++
++    this.test = function () {
++        console.log("test function called in storyService");
++    }
++
+     this.fetchNewStoryTemplate = function (projectKey, callBack) {
+ 
+         storyService.debug("> fetchNewStoryTemplate");
+\ No newline at end of file
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/templates/storypanel/stories_panel.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/templates/storypanel/stories_panel.html	(date 1405079864000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/templates/storypanel/stories_panel.html	(revision )
+@@ -1,3 +1,1 @@
+-<div id="story-panel">
+-
+-</div>
+\ No newline at end of file
++<div id="story-panel">default panel content</div>
+\ No newline at end of file
