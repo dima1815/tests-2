@@ -5,6 +5,9 @@ import net.java.ao.Entity;
 import net.java.ao.OneToMany;
 import net.java.ao.Preload;
 
+/**
+ * TODO - renae this class to be different to JBehave's Story class, e.g. JiraStory
+ */
 @Preload
 public interface Story extends Entity {
 

@@ -248,24 +248,8 @@
         // If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
         var winW = window.innerWidth || Math.max(document.body.offsetWidth, document.documentElement.offsetWidth);
         var winH = window.innerHeight || Math.max(document.body.offsetHeight, document.documentElement.offsetHeight);
-
-        console.log("### winH - " + winW);
-        console.log("### winH - " + winH);
-
-
         (completion.options.container || document.body).appendChild(hints);
-        var box = hints.getBoundingClientRect();
-
-        console.log("### box.bottom - " + box.bottom);
-        console.log("### box.top - " + box.top);
-        console.log("### box.width - " + box.width);
-        console.log("### box.height - " + box.height);
-
-        console.log("### widget.screenAmount() - " + widget.screenAmount());
-
-
-        var overlapY = box.bottom - winH;
-
+        var box = hints.getBoundingClientRect(), overlapY = box.bottom - winH;
         if (overlapY > 0) {
             var height = box.bottom - box.top, curTop = box.top - (pos.bottom - pos.top);
             if (curTop - height > 0) { // Fits above cursor

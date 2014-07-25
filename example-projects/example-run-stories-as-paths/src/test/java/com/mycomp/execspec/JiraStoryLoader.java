@@ -4,10 +4,8 @@ import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.apache.commons.lang.Validate;
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.parsers.StoryParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 
 /**
  * Created by Dmytro on 2/25/14.
@@ -30,20 +27,24 @@ public class JiraStoryLoader implements StoryLoader {
 
     private String jiraBaseUrl;
 
-    private String jiraProject;
-
     private String downloadedStoriesDir = "src/test/resources/jira_stories";
 
     //    private String loadStoryPath = "rest/story-res/1.0/find/as-string";
     private String loadStoryPath = "rest/story-res/1.0/find/for-path";
+
+    private final StoryParser parser;
+
+    public JiraStoryLoader(StoryParser parser) {
+        this.parser = parser;
+    }
 
     @Override
     public String loadStoryAsText(String storyPath) {
 
         URI jiraSearchUrl = null;
         try {
-            String fullPath = jiraBaseUrl + "/" + loadStoryPath + "/" + jiraProject + "/" + storyPath;
-            fullPath += "?os_username=admin&os_password=admin";
+            String fullPath = jiraBaseUrl + "/" + loadStoryPath + "/" + storyPath;
+            fullPath += "?os_username=admin&os_password=admin&versionInPath=true";
             log.debug("full story path is - " + fullPath);
             jiraSearchUrl = new URI(fullPath);
         } catch (URISyntaxException e) {
@@ -58,42 +59,6 @@ public class JiraStoryLoader implements StoryLoader {
 
         if (response.getStatus() == 200) {
             StoryDTO storyDTO = response.getEntity(StoryDTO.class);
-            Long version = storyDTO.getVersion();
-            Validate.notNull(version);
-            String receivedAsString = storyDTO.getAsString();
-
-            RegexStoryParser parser = new RegexStoryParser();
-            org.jbehave.core.model.Story jBehaveStory = parser.parseStory(receivedAsString, storyPath);
-
-            // set jira-version property
-            Meta originalMeta = jBehaveStory.getMeta();
-            Properties properties = new Properties();
-            properties.put("jira-version", version.toString());
-            Meta overridenMeta = new Meta(properties);
-            overridenMeta.inheritFrom(originalMeta);
-
-//            org.jbehave.core.model.Story overridenJBehaveStory = new Story(
-//                    jBehaveStory.getPath(), jBehaveStory.getDescription(), overridenMeta,
-//                    jBehaveStory.getNarrative(), jBehaveStory.getGivenStories(),
-//                    jBehaveStory.getLifecycle(), jBehaveStory.getScenarios());
-//
-//            String jiraVersion = overridenJBehaveStory.getMeta().getProperty("jira-version");
-//            Validate.notEmpty(jiraVersion);
-//
-//            BytesListPrintStream printStream = new BytesListPrintStream();
-//            Properties customPatterns = new Properties();
-//            customPatterns.setProperty("beforeStory", "");
-//            customPatterns.setProperty("pending", "{0}\n");
-////            customPatterns.setProperty("examplesTableStart", "");
-////            customPatterns.setProperty("examplesTableRowEnd", "");
-//
-//            TxtOutput txtOutput = new TxtOutput(printStream, customPatterns);
-//            ReportingStoryWalker walker = new ReportingStoryWalker();
-//            walker.walkStory(overridenJBehaveStory, txtOutput);
-//            List<Byte> writtenBytes = printStream.getWrittenBytes();
-//            String asString = StoryDTOUtils.bytesListToString(writtenBytes);
-//
-//            this.writeModelToFile(storyPath, asString);
             return storyDTO.getAsString();
         } else {
             int status = response.getStatus();
@@ -139,11 +104,4 @@ public class JiraStoryLoader implements StoryLoader {
         this.jiraBaseUrl = jiraBaseUrl;
     }
 
-    public void setJiraProject(String jiraProject) {
-        this.jiraProject = jiraProject;
-    }
-
-    public String getJiraProject() {
-        return jiraProject;
-    }
 }

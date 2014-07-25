@@ -33,7 +33,7 @@ public class MyEmbedderTest extends JUnitStories {
                 new StoryReporterBuilder() {
                     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
                         if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
-                            return new JiraHtmlOutput(jiraBaseUrl, jiraProject, "DEV");
+                            return new JiraHtmlOutput(jiraBaseUrl, jiraProject, "TEST");
                         } else {
                             return super.reporterFor(storyPath, format);
                         }
@@ -62,9 +62,9 @@ public class MyEmbedderTest extends JUnitStories {
 //        CrossReference crossReference = new CrossReference();
 //        configuration().storyReporterBuilder().withCrossReference(crossReference);
 
-        JiraStoryLoader jiraLoader = new JiraStoryLoader();
+        JiraStoryLoader jiraLoader = new JiraStoryLoader(configuration().storyParser());
         jiraLoader.setJiraBaseUrl(jiraBaseUrl);
-        jiraLoader.setJiraProject(jiraProject);
+//        jiraLoader.setJiraProject(jiraProject);
         configuration().useStoryLoader(jiraLoader);
 
 
@@ -89,6 +89,8 @@ public class MyEmbedderTest extends JUnitStories {
 
         JiraStepDocReporter stepDocReporter = new JiraStepDocReporter(jiraBaseUrl, jiraProject);
         configuration().useStepdocReporter(stepDocReporter);
+
+//        configuration().useStoryParser(new JiraStoryParser());
 
     }
 
@@ -116,7 +118,7 @@ public class MyEmbedderTest extends JUnitStories {
     @Override
     protected List<String> storyPaths() {
 
-        JiraStoryFinder storyFinder = new JiraStoryFinder();
+        JiraStoryPathFinder storyFinder = new JiraStoryPathFinder();
 
         List<String> includes = null;
         List<String> excludes = null;

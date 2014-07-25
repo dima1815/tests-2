@@ -1,7 +1,120 @@
-<div id="storyMsgBar">
-    <div class="aui-message warning  shadowed " id="storyWarningMsg"><p class="title"><span
-            class="aui-icon icon-warning"></span><strong></strong></p><span>Story has been modified! <span class="edit-operation-link"><a
-            href="#" onclick="storyController.saveStory(event)">Save</a></span> or <span class="edit-operation-link"><a href="#"
-                                                                                                                        onclick="storyController.cancelEdit(event)">Cancel</a></span></span><!-- .aui-message -->
+<div id="storyReportsPanel">
+    <div class="aui-tabs horizontal-tabs">
+        <ul class="tabs-menu">
+            <li class="menu-item active-tab"><a href="#storyReportTab0"><strong>DEV</strong><span class="aui-badge passed">1</span><span
+                    class="aui-badge pending">1</span></a></li>
+            <li class="menu-item"><a href="#storyReportTab1"><strong>TEST</strong><span class="aui-badge pending">2</span></a></li>
+        </ul>
+        <div id="#storyReportTab0" class="tabs-pane story-report-tab active-pane">
+            <div id="storyReportMsgContainer0">
+                <div id="reportMsg0" class="aui-message hint"><p>Story has been modified since the last story run on this environment.</p>
+                    <span class="aui-icon icon-hint"></span></div>
+            </div>
+            <div class="story">
+                <div class="meta">
+                    <div class="keyword">Meta:</div>
+                    <div class="property">@testMetaValue somsdf asfd asdf asdeValue2323</div>
+                </div>
+                <div class="beforeNarrative"><span>&nbsp;</span><span style="display: none;"
+                                                                      class="beforeNarrativeHint">+<span></span></span></div>
+                <div class="narrative">
+                    <div class="label">Narrative:</div>
+                    <div contenteditable="false" class="element inOrderTo">
+                        <div style="display: none;" class="add-icon">+</div>
+                        <span contenteditable="false" class="keyword inOrderTo inOrderToSpan">In order to</span> <span></span></div>
+                    <div class="element asA"><span class="keyword asA">As a</span> development team</div>
+                    <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> use Behaviour-Driven Development</div>
+                </div>
+                <div class="scenario">
+                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">my test scenario 1</span></div>
+                    <div class="step successful">Given something</div>
+                    <div class="step successful">When I send the following request:<span class="step parameter"><table>
+                        <thead>
+                        <tr>
+                            <th>action</th>
+                            <th>value</th>
+                            <th>currency</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Buy</td>
+                            <td>100</td>
+                            <td>USD</td>
+                        </tr>
+                        <tr>
+                            <td>Sell</td>
+                            <td>20</td>
+                            <td>GBP</td>
+                        </tr>
+                        </tbody>
+                    </table>
+</span></div>
+                    <div class="step successful">Then something should happen</div>
+                </div>
+                <div class="scenario">
+                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">sad path</span></div>
+                    <div class="step successful">Given something</div>
+                    <div class="step pending">When I try a step that has not yet been implemented <span
+                            class="keyword pending">(PENDING)</span></div>
+                    <div class="step pending">Then an error should be reported in the test report asadf <span class="keyword pending">(PENDING)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="#storyReportTab1" class="tabs-pane story-report-tab">
+            <div id="storyReportMsgContainer1"></div>
+            <div class="story">
+                <div class="meta">
+                    <div class="keyword">Meta:</div>
+                    <div class="property">@testMetaValue</div>
+                </div>
+                <div class="beforeNarrative"><span>&nbsp;</span><span style="display: none;"
+                                                                      class="beforeNarrativeHint">+<span></span></span></div>
+                <div class="narrative">
+                    <div class="label">Narrative:</div>
+                    <div contenteditable="false" class="element inOrderTo">
+                        <div style="display: none;" class="add-icon">+</div>
+                        <span contenteditable="false" class="keyword inOrderTo inOrderToSpan">In order to</span> <span></span></div>
+                    <div class="element asA"><span class="keyword asA">As a</span> development team</div>
+                    <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> use Behaviour-Driven Development</div>
+                </div>
+                <div class="scenario">
+                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">my test scenario 1</span></div>
+                    <div class="step successful">Given something</div>
+                    <div class="step successful">When I send the following request:<span class="step parameter"><table>
+                        <thead>
+                        <tr>
+                            <th>action</th>
+                            <th>value</th>
+                            <th>currency</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Buy</td>
+                            <td>100</td>
+                            <td>USD</td>
+                        </tr>
+                        <tr>
+                            <td>Sell</td>
+                            <td>20</td>
+                            <td>GBP</td>
+                        </tr>
+                        </tbody>
+                    </table>
+</span></div>
+                    <div class="step pending">Then something should happen asdf <span class="keyword pending">(PENDING)</span></div>
+                </div>
+                <div class="scenario">
+                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">sad path</span></div>
+                    <div class="step successful">Given something</div>
+                    <div class="step pending">When I try a step that has not yet been implemented <span
+                            class="keyword pending">(PENDING)</span></div>
+                    <div class="step pending">Then an error should be reported in the test report asadfa <span class="keyword pending">(PENDING)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

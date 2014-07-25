@@ -10,7 +10,6 @@ import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.lang.Validate;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -19,6 +18,8 @@ import org.jbehave.core.steps.StepCreator;
 
 import javax.ws.rs.core.MediaType;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Dmytro on 4/15/2014.
@@ -28,20 +29,29 @@ public class JiraHtmlOutput extends HtmlOutput {
     private final BytesListPrintStream printStream;
 
     private String environment;
+
     private String jiraBaseUrl;
+
     private String jiraProject;
+
     private String addTestReportPath = "rest/story-res/1.0/story-test/add-for-path";
 
     private String storyPath;
+
     private Long jiraVersion;
 
     private TestStatus status;
 
     private int totalScenarios;
+
     private int totalScenariosPassed;
+
     private int totalScenariosFailed;
+
     private int totalScenariosPending;
+
     private int totalScenariosIgnored;
+
     private int totalScenariosNotPerformed;
 
     private TestStatus currentScenarioStatus;
@@ -156,25 +166,21 @@ public class JiraHtmlOutput extends HtmlOutput {
         this.status = TestStatus.PASSED; // assume passed at start, and then change to other if failed/pending, etc.
 
         storyPath = story.getPath();
+
         if (!givenStory && !storyPath.equals("BeforeStories") && !storyPath.equals("AfterStories")) {
-            String versionProperty = story.getMeta().getProperty("jira-version");
-            if (versionProperty.isEmpty()) {
-                String msg = "!!! meta property 'jira-version' was not set on the story - " + storyPath;
-                System.out.println(msg + storyPath);
-                throw new IllegalArgumentException(msg);
+            // extract version
+            String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
+            Pattern p = Pattern.compile(regexPattern);
+            Matcher matcher = p.matcher(storyPath);
+            if (matcher.matches()) {
+                String versionStr = matcher.group(2);
+                jiraVersion = Long.parseLong(versionStr);
+            } else {
+                throw new IllegalArgumentException("Story path must match pattern - " + regexPattern);
             }
-            jiraVersion = Long.parseLong(versionProperty);
         }
 
-        // instead of calling the superclass's method we put the lines from it here
-        // so that we can remove our "technical" jira-version meta field which we used above
-        Meta meta = story.getMeta();
-        if (!meta.isEmpty() && !(meta.getPropertyNames().size() == 1 && meta.hasProperty("jira-version"))) {
-            super.beforeStory(story, givenStory);
-        } else {
-            print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
-        }
-
+        super.beforeStory(story, givenStory);
     }
 
     @Override
@@ -215,10 +221,21 @@ public class JiraHtmlOutput extends HtmlOutput {
         storyHtmlReportDTO.setTotalScenariosSkipped(totalScenariosIgnored);
         storyHtmlReportDTO.setTotalScenariosNotPerformed(totalScenariosNotPerformed);
 
+        // remove the version part from story path
+        // extract version
+        String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
+        Pattern p = Pattern.compile(regexPattern);
+        Matcher matcher = p.matcher(storyPath);
+        if (matcher.matches()) {
+            storyPath = matcher.group(1) + matcher.group(3);;
+        } else {
+            throw new IllegalArgumentException("Story path must match pattern - " + regexPattern);
+        }
+
         String loginParams = "?os_username=admin&os_password=admin";
         String postUrl = jiraBaseUrl
                 + "/" + addTestReportPath + "/"
-                + jiraProject + "/"
+//                + jiraProject + "/"
                 + storyPath
                 + loginParams;
 

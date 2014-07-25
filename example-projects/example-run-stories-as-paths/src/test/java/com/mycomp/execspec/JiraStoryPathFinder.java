@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Dmytro on 2/17/14.
  */
-public class JiraStoryFinder {
+public class JiraStoryPathFinder {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

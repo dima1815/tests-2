@@ -1,6 +1,4 @@
-##<div id="yuiEditorPanel" style="border-style: solid; border-width: 1px; border-color: green"></div>
-##<br><br><br>
 $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-experimental-iconfont")
 $webResourceManager.requireResourcesForContext("execspec-view-issue-page-resources")
-<div id="story-panel">DEFAULT content!</div>
+<div id="storyReportsPanel"><!--DEFAULT content--></div>
 

@@ -12,14 +12,13 @@ import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Contains rest api methods related to processing of Story objects.
@@ -33,10 +32,13 @@ public class StoryResourceFind {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final StoryService storyService;
+
     private final StoryReportService storyReportService;
+
     private final StepDocsSerivce stepDocsSerivce;
 
     private SearchService searchService;
+
     private JiraAuthenticationContext authenticationContext;
 
     public StoryResourceFind(StoryService storyService,
@@ -53,14 +55,24 @@ public class StoryResourceFind {
     @GET
     @Path("/story-paths/{projectKey}")
     @Produces({MediaType.APPLICATION_JSON})
-    public StoryPathsDTO listStoryPaths(@PathParam("projectKey") String projectKey) {
+    public StoryPathsDTO listStoryPaths(@PathParam("projectKey") String projectKey,
+                                        @QueryParam("appendVersionToPath")
+                                        @DefaultValue("true") boolean includeVersionInPath) {
 
         Validate.notEmpty(projectKey);
 
         List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
         List<String> paths = new ArrayList<String>(stories.size());
         for (StoryDTO story : stories) {
-            paths.add(story.getProjectKey() + "/" + story.getIssueKey() + ".story");
+            StringBuilder storyPathSb = new StringBuilder(story.getProjectKey() + "/" + story.getIssueKey());
+            if (includeVersionInPath) {
+                Long version = story.getVersion();
+                Validate.notNull(version);
+                storyPathSb.append("." + version);
+            }
+            storyPathSb.append(".story");
+            String storyPath = storyPathSb.toString();
+            paths.add(storyPath);
         }
         StoryPathsDTO pathsModel = new StoryPathsDTO();
         pathsModel.setPaths(paths);
@@ -100,11 +112,28 @@ public class StoryResourceFind {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findForPath(
             @PathParam("projectKey") String projectKey,
-            @PathParam("storyPath") String storyPath) {
+            @PathParam("storyPath") String storyPath,
+            @QueryParam("versionInPath")
+            @DefaultValue("false") boolean versionInPath) {
+
+        String issueKey;
+        if (versionInPath) {
+            String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
+            Pattern p = Pattern.compile(regexPattern);
+            Matcher matcher = p.matcher(storyPath);
+            if (matcher.matches()) {
+                String version = matcher.group(2);
+                log.debug("version in issue key is - " + version);
+                issueKey = matcher.group(1);
+            } else {
+                throw new IllegalArgumentException("If story version is part of story path then the path must match pattern - " + regexPattern);
+            }
+        } else {
+            issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
+        }
 
         Validate.notNull(storyPath);
         Validate.isTrue(storyPath.endsWith(".story"));
-        String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
 
         StoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 

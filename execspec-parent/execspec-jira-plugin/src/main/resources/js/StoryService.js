@@ -3,11 +3,17 @@ function StoryService() {
     this.debugOn = false;
 
     var pathBase = "/jira/rest/story-res/1.0/";
-    var pathNewStoryTemplate = pathBase + "crud/newstorytemplate/";
+
+    // story paths
     var pathSave = pathBase + "crud/save/";
     var pathFind = pathBase + "find/for-issue/";
     var pathDelete = pathBase + "crud/delete/";
+
+    // story reports paths
+    var pathFindReports = pathBase + "story-test/find/";
     var pathDeleteReports = pathBase + "story-test/delete/";
+
+    // other paths
     var pathAutoComplete = pathBase + "autocomplete/";
 
     this.debug = function (msg) {
@@ -28,35 +34,6 @@ function StoryService() {
 
     this.test = function () {
         console.log("test function called in storyService");
-    }
-
-    this.fetchNewStoryTemplate = function (projectKey, callBack) {
-
-        storyService.debug("> fetchNewStoryTemplate");
-
-        var successCallback = function (data, status, xhr) {
-            storyService.debug("> fetchNewStoryTemplate.successCallback");
-            storyService.debug("status - " + status);
-            storyService.debug("xhr.status - " + xhr.status);
-            storyService.debug("data - " + data);
-            var jsonData = JSON.stringify(data);
-            storyService.debug("jsonData - " + jsonData);
-            callBack(data);
-            storyService.debug("# fetchNewStoryTemplate.successCallback");
-        }
-
-        var fetchTemplateUrl = pathNewStoryTemplate + projectKey;
-        storyService.debug("fetchTemplateUrl - " + fetchTemplateUrl);
-
-        AJS.$.ajax({
-            type: "GET",
-            url: fetchTemplateUrl,
-            contentType: "text/plain; charset=utf-8",
-            success: successCallback,
-            dataType: "json"
-        });
-
-        storyService.debug("# fetchNewStoryTemplate");
     }
 
     this.saveOrUpdateStory = function (storyPayload, callBack) {
@@ -128,6 +105,32 @@ function StoryService() {
             console.error("xhr.status - " + xhr.status);
         });
         storyService.debug("# StoryService.find");
+    }
+
+    this.findStoryReports = function (projectKey, issueKey, callBack) {
+
+        storyService.debug("> StoryService.findStoryReports");
+        storyService.debug("project key " + projectKey + ", issue key = " + issueKey);
+
+        var urlString = pathFindReports + projectKey + "/" + issueKey;
+
+        var jqxhr = AJS.$.getJSON(urlString);
+
+        var successCallback = function (data, status, xhr) {
+            storyService.debug("> StoryService.findStoryReports.successCallback");
+            storyService.debug("status - " + status);
+            storyService.debug("xhr.status - " + xhr.status);
+            storyService.debug("data - " + data);
+            callBack(data);
+            storyService.debug("# StoryService.findStoryReports.successCallback");
+        }
+        jqxhr.done(successCallback);
+
+        jqxhr.fail(function (data, status, xhr) {
+            console.error("fail, received data - " + data);
+            console.error("xhr.status - " + xhr.status);
+        });
+        storyService.debug("# StoryService.findStoryReports");
     }
 
     this.deleteStory = function (projectKey, issueKey, callBack) {

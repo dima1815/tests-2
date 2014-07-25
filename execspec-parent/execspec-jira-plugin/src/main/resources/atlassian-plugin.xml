@@ -149,14 +149,23 @@
         <styleClass>clear-story-test-button</styleClass>
     </web-item>
     <!-- ==================================================================================================== -->
-    <!--Issue page - Stories panel-->
-    <web-panel name="Executable Stories" i18n-name-key="viewIssuePage.storyPanel.name"
+    <!--Issue page - Story panel-->
+    <web-panel name="Story Panel" i18n-name-key="viewIssuePage.storyPanel.name"
                key="viewIssuePage.storyPanel.key"
-               location="atl.jira.view.issue.left.context" weight="211">
+               location="atl.jira.view.issue.left.context" weight="220">
         <description key="viewIssuePage.storyPanel.description">JBehave Story Panel</description>
         <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryPanelContextProvider"/>
-        <resource name="view" type="velocity" location="templates/storypanel/stories_panel.vm"/>
+        <resource name="view" type="velocity" location="templates/viewissuepage/story_panel.vm"/>
         <label key="viewIssuePage.storyPanel.label"/>
+    </web-panel>
+    <!--Issue page - Story reports panel-->
+    <web-panel name="Story Reports Panel" i18n-name-key="viewIssuePage.storyReportsPanel.name"
+               key="viewIssuePage.storyReportsPanel.key"
+               location="atl.jira.view.issue.left.context" weight="230">
+        <description key="viewIssuePage.storyReportsPanel.description">JBehave Story Reports Panel</description>
+        <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryReportsPanelContextProvider"/>
+        <resource name="view" type="velocity" location="templates/viewissuepage/story_reports_panel.vm"/>
+        <label key="viewIssuePage.storyReportsPanel.label"/>
     </web-panel>
     <!-- ==================================================================================================== -->
     <!--Custom customfields-->

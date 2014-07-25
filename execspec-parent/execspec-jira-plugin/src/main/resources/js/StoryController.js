@@ -37,6 +37,8 @@ function StoryController() {
         editor.on("change", this.onEditorChangeHandler);
 
         this.loadStory();
+
+
     }
 
     this.onEditorChangeHandler = function () {
@@ -119,7 +121,47 @@ function StoryController() {
         this.editor.setOption("readOnly", false);
 
         this.debug("# showStory");
+
+        if (storyModel.version != null) {
+            // this is NOT a new story, so check and show any story reports
+            var projectKey = storyModel.projectKey;
+            var issueKey = storyModel.issueKey;
+            storyService.findStoryReports(projectKey, issueKey,
+                function (storyReportsPayload) {
+
+                    storyController.debug("> findStoryReports.callback");
+
+                    if (storyReportsPayload != undefined && storyReportsPayload.storyTestReports.length != 0) {
+                        storyController.debug("found storyReportsPayload - " + JSON.stringify(storyReportsPayload, null, "\t"));
+                        storyController.showStoryReports(storyReportsPayload.storyTestReports);
+                    } else {
+                        storyController.debug("no story reports were found for project - " + projectKey + ", issue - " + issueKey);
+                    }
+
+                    storyController.debug("# findStoryReports.callback");
+                }
+
+            );
+
+        }
     }
+
+    this.showStoryReports = function (storyTestReports) {
+
+        this.debug("> showStoryReports");
+
+        var templateParam = new Object();
+        templateParam.storyTestReports = storyTestReports;
+        templateParam.currentStoryVersion = this.currentStory.version;
+
+        var storyReportsContent = execspec.viewissuepage.showstoryreports.renderStoryReports(templateParam);
+
+        AJS.$('#storyReportsPanel').html(storyReportsContent);
+        AJS.tabs.setup();
+
+        this.debug("# showStoryReports");
+    }
+
 
     this.saveStory = function (event) {
 
@@ -165,7 +207,8 @@ function StoryController() {
 
         this.showStory(this.currentStory);
 
-
+        // hide story edited message
+        AJS.$("#storyMsgBar").empty();
 
         this.debug("# cancelEditingStory");
     }

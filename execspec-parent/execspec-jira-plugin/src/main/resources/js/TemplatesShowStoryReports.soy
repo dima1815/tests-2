@@ -2,6 +2,48 @@
 
 
 /**
+ * Renders story test reports
+ * @param currentStoryVersion
+ * @param storyTestReports
+ */
+{template .renderStoryReports autoescape="false"}
+<div class="aui-tabs horizontal-tabs">
+    <ul class="tabs-menu">
+        {foreach $storyReport in $storyTestReports}
+            <li class="menu-item {if isFirst($storyReport)}active-tab{/if}">
+                <a href="#storyReportTab{index($storyReport)}"><strong>{$storyReport.environment}</strong>
+                    {if $storyReport.totalScenariosPassed > 0}<span
+                    class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{/if}{if $storyReport.totalScenariosFailed > 0}<span
+                    class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
+                    class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
+                    class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
+                    class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}
+                </a>
+            </li>
+        {/foreach}
+    </ul>
+    {foreach $storyReport in $storyTestReports}
+        <div id="storyReportTab{index($storyReport)}" class="tabs-pane story-report-tab{if isFirst($storyReport)} active-pane{/if}">
+            <div id="storyReportMsgContainer{index($storyReport)}">
+                {if $storyReport.storyVersion != $currentStoryVersion}
+                    {call aui.message.hint}
+//                        {param title: 'Story has been modified since the last story run on this environment' /}
+                        {param closeable: 'true' /}
+                        {param id: 'reportMsg' + index($storyReport) /}
+                        {param content}
+                            <p>Story has been modified since the last run on this environment.</p>
+                        {/param}
+                    {/call}
+                {/if}
+            </div>
+            {$storyReport.htmlReport}
+        </div>
+    {/foreach}
+</div>
+{/template}
+
+
+/**
  * Render story report buttons
  * @param storyReports
  */
