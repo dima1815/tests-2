@@ -11,21 +11,22 @@
     <!--3rd party scripts-->
     <web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">
         <context>jira.view.issue</context>
-        <!--<dependency>jira.webresources:jira-global</dependency>-->
-        <!--<resource type="download" name="jquery-ui-1.10.4.custom.js" location="/js/3rdparty/jquery-ui-1.10.4.custom.js"/>-->
-        <!--<resource type="download" name="yui-3.17.1-min.js" location="/js/3rdparty/yui-3.17.1-min.js"/>-->
-        <resource type="download" name="codemirror.js" location="/js/3rdparty/codemirror-4.3/lib/codemirror.js"/>
+        <!--codemirror core-->
+        <resource type="download" name="codemirror.js" location="/3rdparty/codemirror-4.3/lib/codemirror.js"/>
+        <resource type="download" name="codemirror.css" location="/3rdparty/codemirror-4.3/lib/codemirror.css"/>
         <!--codemirror modes-->
-        <resource type="download" name="gherkin.js" location="/js/3rdparty/codemirror-4.3/mode/gherkin/gherkin.js"/>
-        <resource type="download" name="jbehave.js" location="/js/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js"/>
-
+        <resource type="download" name="gherkin.js" location="/3rdparty/codemirror-4.3/mode/gherkin/gherkin.js"/>
+        <resource type="download" name="jbehave.js" location="/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js"/>
         <!--codemirror hints-->
-        <resource type="download" name="show-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/show-hint.js"/>
-        <resource type="download" name="jbehave-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js"/>
-        <resource type="download" name="anyword-hint.js" location="/js/3rdparty/codemirror-4.3/addon/hint/anyword-hint.js"/>
-
-        <resource type="download" name="codemirror.css" location="/css/3rdparty/codemirror-4.3/lib/codemirror.css"/>
-        <resource type="download" name="show-hint.css" location="/css/3rdparty/codemirror-4.3/lib/show-hint.css"/>
+        <resource type="download" name="show-hint.js" location="/3rdparty/codemirror-4.3/addon/hint/show-hint.js"/>
+        <resource type="download" name="jbehave-hint.js" location="/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js"/>
+        <resource type="download" name="show-hint.css" location="/3rdparty/codemirror-4.3/addon/hint/show-hint.css"/>
+        <!--other codemirror plugins-->
+        <!--<resource type="download" name="fullscreen.css" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.css"/>-->
+        <!--<resource type="download" name="fullscreen.js" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.js"/>-->
+        <resource type="download" name="placeholder.js" location="/3rdparty/codemirror-4.3/addon/display/placeholder.js"/>
+        <resource type="download" name="comment.js" location="/3rdparty/codemirror-4.3/addon/comment/comment.js"/>
+        <!--<resource type="download" name="continuecomment.js" location="/3rdparty/codemirror-4.3/addon/comment/continuecomment.js"/>-->
     </web-resource>
     <!--Custom javascript and css-->
     <web-resource name="View Issue Page Resources" key="execspec-view-issue-page-resources">
@@ -44,11 +45,11 @@
         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
         <resource type="download" name="StoryEditHandler.js" location="/js/StoryEditHandler.js"/>
         <!--soy-->
-        <resource type="download" name="TemplatesShowStory.soy.js" location="js/TemplatesShowStory.soy"/>
-        <resource type="download" name="TemplatesEditStory.soy.js" location="js/TemplatesEditStory.soy"/>
-        <resource type="download" name="TemplatesEditStoryRich.soy.js" location="js/TemplatesEditStoryRich.soy"/>
-        <resource type="download" name="TemplatesShowStoryReports.soy.js" location="js/TemplatesShowStoryReports.soy"/>
-        <resource type="download" name="TemplatesStoryToolbar.soy.js" location="js/TemplatesStoryToolbar.soy"/>
+        <resource type="download" name="TemplatesShowStory.soy.js" location="/soy/TemplatesShowStory.soy"/>
+        <resource type="download" name="TemplatesEditStory.soy.js" location="/soy/TemplatesEditStory.soy"/>
+        <resource type="download" name="TemplatesEditStoryRich.soy.js" location="/soy/TemplatesEditStoryRich.soy"/>
+        <resource type="download" name="TemplatesShowStoryReports.soy.js" location="/soy/TemplatesShowStoryReports.soy"/>
+        <resource type="download" name="TemplatesStoryToolbar.soy.js" location="/soy/TemplatesStoryToolbar.soy"/>
         <!-- CSS -->
         <resource type="download" name="story.css" location="css/story.css">
             <param name="content-type" value="text/css"/>
@@ -155,7 +156,7 @@
                location="atl.jira.view.issue.left.context" weight="220">
         <description key="viewIssuePage.storyPanel.description">JBehave Story Panel</description>
         <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryPanelContextProvider"/>
-        <resource name="view" type="velocity" location="templates/viewissuepage/story_panel.vm"/>
+        <resource name="view" type="velocity" location="/velocity/story_panel.vm"/>
         <label key="viewIssuePage.storyPanel.label"/>
     </web-panel>
     <!--Issue page - Story reports panel-->
@@ -164,7 +165,7 @@
                location="atl.jira.view.issue.left.context" weight="230">
         <description key="viewIssuePage.storyReportsPanel.description">JBehave Story Reports Panel</description>
         <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryReportsPanelContextProvider"/>
-        <resource name="view" type="velocity" location="templates/viewissuepage/story_reports_panel.vm"/>
+        <resource name="view" type="velocity" location="/velocity/story_reports_panel.vm"/>
         <label key="viewIssuePage.storyReportsPanel.label"/>
     </web-panel>
     <!-- ==================================================================================================== -->

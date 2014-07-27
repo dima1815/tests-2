@@ -31,14 +31,58 @@ function StoryController() {
         }
         var editor = CodeMirror.fromTextArea(document.getElementById("storyTextArea"), {
             mode: "jbehave",
-            extraKeys: {"Ctrl-Space": "autocomplete"}
+//            lineComment: "!--",
+            extraKeys: {
+                "Ctrl-Space": "autocomplete",
+
+                // commenting
+                "Ctrl-/": function(cm) {
+
+
+                    console.log("commenting!");
+
+                    var startOfSelection = cm.getCursor(true);
+                    var endOfSelection = cm.getCursor(false);
+
+                    var curLine = cm.getLine(startOfSelection.line);
+                    console.log("curLine - " + curLine);
+
+                    var from = {line: startOfSelection.line, ch: startOfSelection.ch};
+                    var to = {line: endOfSelection.line, ch: endOfSelection.ch};
+                    var options = new Object();
+
+                    if (curLine.substring(0,1) == "|") {
+                        options.lineComment = "|--";
+                        options.uncommentFrom = 1;
+                        options.uncommentTo = 3;
+                        options.commentFrom = 1;
+                    } else {
+                        options.lineComment = "!--";
+                    }
+
+                    options.padding = "";
+
+                    if (curLine.substring(0, 3) == options.lineComment) {
+                        cm.uncomment(from, to, options);
+                    } else {
+                        cm.lineComment(from, to, options);
+                    }
+
+//                    storyController.editor.uncomment(from, to, options);
+
+                }
+//                "F11": function(cm) {
+//                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+//                },
+//                "Esc": function(cm) {
+//                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+//                }
+            }
         });
         this.editor = editor;
         editor.on("change", this.onEditorChangeHandler);
 
         this.loadStory();
-
-
     }
 
     this.onEditorChangeHandler = function () {

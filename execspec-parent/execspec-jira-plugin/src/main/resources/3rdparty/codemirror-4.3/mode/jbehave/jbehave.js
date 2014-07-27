@@ -28,6 +28,8 @@
 
     CodeMirror.defineMode("jbehave", function () {
         return {
+            lineComment: "!--",
+            tableLineComment: "|--",
             startState: function () {
                 return {
                     lineNumber: 0,
@@ -60,6 +62,10 @@
 
                 // LINE COMMENT
                 if (stream.sol() && stream.match(/!--.*/)) {
+                    return "comment";
+
+                    // TABLE COMMENT
+                } else if (stream.sol() && stream.match(/\|--.*/)) {
                     return "comment";
 
                     // META title
