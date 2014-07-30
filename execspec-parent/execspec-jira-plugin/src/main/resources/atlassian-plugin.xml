@@ -10,7 +10,12 @@
     <!-- ==================================================================================================== -->
     <!--3rd party scripts-->
     <web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">
+
         <context>jira.view.issue</context>
+        <!--these custom scripts need to be loaded first as jbehave-hint has dependency on story service-->
+        <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
+        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
+
         <!--codemirror core-->
         <resource type="download" name="codemirror.js" location="/3rdparty/codemirror-4.3/lib/codemirror.js"/>
         <resource type="download" name="codemirror.css" location="/3rdparty/codemirror-4.3/lib/codemirror.css"/>
@@ -36,12 +41,10 @@
             <transformer key="soyTransformer"/>
         </transformation>
         <!--js-->
-        <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
         <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
         <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
         <resource type="download" name="StoryReportModel.js" location="/js/StoryReportModel.js"/>
         <resource type="download" name="AutoCompleteEntryModel.js" location="/js/AutoCompleteEntryModel.js"/>
-        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
         <resource type="download" name="StoryEditHandler.js" location="/js/StoryEditHandler.js"/>
         <!--soy-->

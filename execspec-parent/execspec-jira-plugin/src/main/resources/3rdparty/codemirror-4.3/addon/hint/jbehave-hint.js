@@ -22,39 +22,15 @@
     ];
 
     // fetch step hints
-    var stepDocs = undefined;
-    var fetchStepHints = function (projectKey) {
-
-        console.log("> jbehave-hint.fetchStepHints");
-        console.log("projectKey - " + projectKey);
-
-        var pathBase = "/jira/rest/story-res/1.0/";
-        var pathStepDocs = pathBase + "step-doc/for-project/" + projectKey;
-        console.log("pathStepDocs - " + pathStepDocs);
-
-        var successCallback = function (data, status, xhr) {
-            console.log("> jbehave-hint.fetchStepHints.successCallback");
-            console.log("status - " + status);
-            console.log("xhr.status - " + xhr.status);
-            console.log("data - " + data);
-
-            console.log("found step docs - " + JSON.stringify(data, null, "\t"));
-            stepDocs = data.stepDocs;
-
-            console.log("# jbehave-hint.fetchStepHints.successCallback");
-        };
-
-        AJS.$.ajax({
-            type: "GET",
-            url: pathStepDocs,
-            contentType: "text/plain; charset=utf-8",
-            success: successCallback,
-            dataType: "json"
+    var stepDocs = null;
+    AJS.$(function() {
+        var storyService = new StoryService();
+        var projectKey = new PageUtils().getProjectKey();
+//        console.log("projectKey - " + projectKey);
+        storyService.fetchStepDocs(projectKey, function (foundStepDocs) {
+            stepDocs = foundStepDocs;
         });
-
-        console.log("# jbehave-hint.fetchStepHints");
-    }
-    fetchStepHints("TESTING");
+    });
 
     CodeMirror.registerHelper("hint", "jbehave", function (editor, options) {
 
@@ -89,8 +65,6 @@
         }
 
         // hint on steps
-//        var stepHints = ["Given something", "Given something else"];
-        var stepHints = [];
         for (var k = 0; k < stepDocs.length; k++) {
             var stepHint = new Object();
             stepHint.text = stepDocs[k].startingWord + " " + stepDocs[k].pattern;
@@ -106,15 +80,7 @@
 
             };
 
-            stepHints.push(stepHint);
-        }
-
-
-        if (state.lastStepType == "Given") {
-            for (var i = 0; i < stepHints.length; i++) {
-                var stepHint = stepHints[i];
-                list.push(stepHint);
-            }
+            list.push(stepHint);
         }
 
         return {

@@ -70,13 +70,7 @@
             } else {
                 for (var i = from.line; i < end; ++i) {
                     if (blankLines || nonWS.test(self.getLine(i))) {
-                        var replaceTo;
-                        if (options.commentFrom) {
-                            replaceTo = options.commentFrom;
-                        } else {
-                            replaceTo = 0;
-                        }
-                        self.replaceRange(commentString + pad, Pos(i, 0), Pos(i, replaceTo));
+                        self.replaceRange(commentString + pad, Pos(i, 0));
                     }
                 }
             }
@@ -124,8 +118,6 @@
         // Try finding line comments
         var lineString = options.lineComment || mode.lineComment, lines = [];
         var pad = options.padding == null ? " " : options.padding, didSomething;
-        var uncommentFrom = options.uncommentFrom;
-        var uncommentTo = options.uncommentTo;
         lineComment: {
             if (!lineString) break lineComment;
             for (var i = start; i <= end; ++i) {
@@ -143,12 +135,6 @@
                     if (pos < 0) continue;
                     if (line.slice(endPos, endPos + pad.length) == pad) endPos += pad.length;
                     didSomething = true;
-                    if (uncommentFrom) {
-                        pos = uncommentFrom;
-                    }
-                    if (uncommentTo) {
-                        endPos = uncommentTo;
-                    }
                     self.replaceRange("", Pos(i, pos), Pos(i, endPos));
                 }
             });

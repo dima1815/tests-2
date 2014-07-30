@@ -1,47 +1,72 @@
-.cm-s-default .cm-meta-title {
+.cm-description-line {
+    color: dimgrey;
+}
+
+.cm-meta-title {
     color: #770088;
     font-weight: bold;
 }
 
-.cm-s-default .cm-meta-field {
+.cm-meta-field {
     color: #770088;
 }
 
-.cm-s-default .cm-narrative-title {
+.cm-narrative-title {
     color: #0000cc;
     font-weight: bold;
     font-size: 16px;
 }
 
-.cm-s-default .cm-narrative-field-keyword {
+.cm-narrative-field-keyword {
     color: #0000cc;
     font-weight: bold;
     font-size: 14px;
 }
 
-.cm-s-default .cm-narrative-field-value {
+.cm-narrative-field-value {
     color: #0000cc;
     font-size: 14px;
 }
 
-.cm-s-default .cm-scenario-keyword {
+.cm-scenario-keyword {
     color: green;
     font-weight: bold;
 }
 
-.cm-s-default .cm-scenario-title {
+.cm-scenario-title {
     color: green;
     /*font-weight: bold;*/
 }
 
-.cm-s-default .cm-step-keyword, .cm-s-default .cm-step-keyword-and {
+.cm-step-keyword {
     color: #aa5500;
     font-weight: bold;
 }
 
-.cm-s-default .cm-description-line {
-    color: dimgrey;
+.cm-step-keyword.cm-unmatched-step {
+    font-weight: normal;
+    font-style: italic;
 }
+
+.cm-step-body.cm-unmatched-step {
+    font-style: italic;
+    /*font-weight: bold;*/
+    /*font-weight: bold;*/
+    color: lightslategrey;
+}
+
+.cm-step-body.cm-step-parameter {
+    font-weight: bold;
+    color: purple;
+    /*color: chocolate;*/
+}
+
+/*.cm-unmatched-step {*/
+    /*font-style: italic;*/
+    /*font-weight: bold;*/
+    /*color: dimgrey;*/
+/*}*/
+
 
 /*.cm-s-default .cm-atom {color: #219;}*/
 /*.cm-s-default .cm-number {color: #164;}*/

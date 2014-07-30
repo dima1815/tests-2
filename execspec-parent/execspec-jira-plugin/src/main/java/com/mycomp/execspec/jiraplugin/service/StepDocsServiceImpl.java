@@ -33,14 +33,69 @@ public class StepDocsServiceImpl implements StepDocsSerivce {
         }
 
         for (StepDocDTO stepDocDTO : stepDocs) {
+
+            // check if stepdoc has grouped pattern already set and if not calculate it and set it
+            if (stepDocDTO.getGroupedRegExpPattern() == null) {
+                setGroupedPatternOnStepDoc(stepDocDTO);
+            }
+
             StepDoc stepDoc = stepDocDao.create();
             stepDoc.setProjectKey(projectKey);
             StepDocDTOUtils.fromDTOToModel(stepDocDTO, stepDoc);
-            String regExpPattern = stepDocDTO.getRegExpPattern();
-            stepDoc.setRegExpPattern(regExpPattern);
             stepDoc.save();
         }
 
+    }
+
+    private void setGroupedPatternOnStepDoc(StepDocDTO stepDocDTO) {
+
+        String regExpPattern = stepDocDTO.getRegExpPattern();
+        StringBuilder groupedPatternBuilder = new StringBuilder();
+        List<Integer> parameterGroups = new ArrayList<Integer>();
+
+        int pos = 0;
+        int groupCount = 0;
+        int indexOfOpenBrace = regExpPattern.indexOf("(");
+        while(indexOfOpenBrace != -1) {
+
+            // we want to group everything before that opening brace
+            groupedPatternBuilder.append("(");
+            groupedPatternBuilder.append(regExpPattern.substring(pos, indexOfOpenBrace));
+            groupedPatternBuilder.append(")");
+            groupCount++;
+
+            int indexOfCloseBrace = regExpPattern.indexOf(")", indexOfOpenBrace);
+            Validate.isTrue(indexOfCloseBrace != -1, "Failed to find matching closing brace in pattern - " + regExpPattern);
+            pos = indexOfCloseBrace + 1;
+            groupedPatternBuilder.append(regExpPattern.substring(indexOfOpenBrace, pos));
+            groupCount++;
+            parameterGroups.add(groupCount);
+
+            if (pos >= regExpPattern.length()) {
+                // we have reached the end of the pattern
+                break;
+            } else {
+                indexOfOpenBrace = regExpPattern.indexOf("(", pos);
+                if (indexOfOpenBrace != -1) {
+                    // we simply iterate again
+                    continue;
+                } else {
+                    // there are no more parameter groups so we simply append any string into last group
+                    groupedPatternBuilder.append("(");
+                    groupedPatternBuilder.append(regExpPattern.substring(pos));
+                    groupedPatternBuilder.append(")");
+                    groupCount++;
+                }
+            }
+        }
+
+        String groupedPattern = groupedPatternBuilder.toString();
+        if (groupedPattern.isEmpty()) {
+            // reg exp pattern did not contain any groups
+            groupedPattern = "(" + regExpPattern + ")";
+        }
+        stepDocDTO.setGroupedRegExpPattern(groupedPattern);
+        stepDocDTO.setParameterGroups(parameterGroups);
     }
 
     @Override

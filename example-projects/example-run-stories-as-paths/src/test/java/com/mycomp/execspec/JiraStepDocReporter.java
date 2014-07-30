@@ -50,7 +50,7 @@ public class JiraStepDocReporter implements StepdocReporter {
             StepMatcher stepMatcher = patternParser.parseStep(stepType, pattern);
             StepPattern stepPattern = stepMatcher.pattern();
             String regExpPattern = stepPattern.resolved();
-            StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern);
+            StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern, null, null);
             stepDocDTOs.add(stepDocDTO);
         }
 

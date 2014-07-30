@@ -1,6 +1,6 @@
 function StoryService() {
 
-    this.debugOn = false;
+    this.debugOn = true;
 
     var pathBase = "/jira/rest/story-res/1.0/";
 
@@ -22,18 +22,12 @@ function StoryService() {
         }
     }
 
-
     this.init = function () {
 
         storyService.debug("> init");
         storyService.debug("urlPathBase - " + pathBase);
         storyService.debug("saveBaseUrl - " + pathSave);
         storyService.debug("# init");
-    }
-
-
-    this.test = function () {
-        console.log("test function called in storyService");
     }
 
     this.saveOrUpdateStory = function (storyPayload, callBack) {
@@ -210,5 +204,38 @@ function StoryService() {
         storyService.debug("# StoryService.autoComplete");
     }
 
+    this.fetchStepDocs = function (projectKey, callback) {
+
+        this.debug("> fetchStepDocs");
+        this.debug("projectKey - " + projectKey);
+
+        var pathBase = "/jira/rest/story-res/1.0/";
+        var pathStepDocs = pathBase + "step-doc/for-project/" + projectKey;
+        this.debug("pathStepDocs - " + pathStepDocs);
+
+        var storyService = this;
+        var successCallback = function (data, status, xhr) {
+            storyService.debug("> fetchStepDocs.successCallback");
+            storyService.debug("status - " + status);
+            storyService.debug("xhr.status - " + xhr.status);
+            storyService.debug("data - " + data);
+
+            storyService.debug("found step docs - " + JSON.stringify(data, null, "\t"));
+
+            callback(data.stepDocs);
+
+            storyService.debug("# fetchStepDocs.successCallback");
+        };
+
+        AJS.$.ajax({
+            type: "GET",
+            url: pathStepDocs,
+            contentType: "text/plain; charset=utf-8",
+            success: successCallback,
+            dataType: "json"
+        });
+
+        this.debug("# fetchStepDocs");
+    }
 
 }

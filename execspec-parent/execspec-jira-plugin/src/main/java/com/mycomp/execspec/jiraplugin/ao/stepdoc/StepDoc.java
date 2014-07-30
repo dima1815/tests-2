@@ -28,4 +28,12 @@ public interface StepDoc extends Entity {
     String getRegExpPattern();
 
     void setRegExpPattern(String regExpPattern);
+
+    String getGroupedRegExpPattern();
+
+    void setGroupedRegExpPattern(String groupedRegExpPattern);
+
+    String getParameterGroups();
+
+    void setParameterGroups(String parameterGroups);
 }
