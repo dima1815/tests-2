@@ -448,21 +448,6 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          }
  
          return {
-Index: execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java	(date 1406793811000)
-+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java	(revision )
-@@ -5,7 +5,6 @@
- /**
-  * Created by Dmytro on 4/29/2014.
-  */
--@Deprecated
- public class DefaultHTMLFormatPatterns {
- 
-     public Properties getPatterns() {
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -489,7 +474,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
          var storyPanelContent = execspec.viewissuepage.showstory.renderStoryPanel();
          AJS.$("#story-panel").html(storyPanelContent);
-@@ -93,22 +91,335 @@
+@@ -93,22 +91,351 @@
          });
          this.editor = editor;
          editor.on("change", this.onEditorChangeHandler);
@@ -529,15 +514,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        var lineHandle = this.editor.getLineHandle(lineNumber);
 +        var lineText = lineHandle.text;
 +
-+        if (lineText.substring(0, "Given ".length) == "Given "
-+            || lineText.substring(0, "When ".length) == "When "
-+            || lineText.substring(0, "Then ".length) == "Then "
-+            || lineText.substring(0, "And ".length) == "And ") {
++        var regExpPattern = new RegExp("^(Given|When|Then|And)\\s+");
++        var matchedResult = regExpPattern.exec(lineText);
++        if (matchedResult != null) {
 +            return true;
 +        } else {
 +            return false;
 +        }
-+
 +    }
 +
 +    this.findStepStartingLineBefore = function (lineNumber) {
@@ -563,6 +546,24 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        return -1;
 +    }
 +
++    this.lineStartsWithScenarioOrExamles = function (lineNumber) {
++
++        var lineHandle = this.editor.getLineHandle(lineNumber);
++        var lineText = lineHandle.text;
++
++        if (lineText.match(/^Examples: /)) {
++
++        }
++
++        if (lineText.substring(0, "Examples: ".length) == "Examples: "
++            || lineText.substring(0, "Scenario ".length) == "Scenario ") {
++            return true;
++        } else {
++            return false;
++        }
++
++    }
++
 +    this.findLastStepLineFrom = function (lineNumber) {
 +
 +        var nextLineNumber = lineNumber + 1;
@@ -580,7 +581,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        return lastStepLine;
 +    }
 +
-+    this.findMatchingStepdoc = function (step, stepType, stepDocs) {
++    this.findMatchingStepdoc = function (step, stepType) {
 +
 +        storyController.debug("> findMatchingStepdoc");
 +
@@ -590,8 +591,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        {
 +            step = step.replace(/\s+$/g, ''); // trim trailing whitespace;
 +
-+            for (var i = 0; i < stepDocs.length; i++) {
-+                var stepDoc = stepDocs[i];
++            for (var i = 0; i < storyController.stepDocs.length; i++) {
++                var stepDoc = storyController.stepDocs[i];
 +                if (stepDoc.startingWord == stepType) {
 +                    // try to see if the step docs pattern matches step body
 +                    var regExpStr = stepDoc.groupedRegExpPattern;
@@ -639,7 +640,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +            return;
 +        }
 +
-+        var findResult = this.findMatchingStepdoc(stepBody, keyword, this.stepDocs);
++        var findResult = this.findMatchingStepdoc(stepBody, keyword);
 +
 +        var markerStart = {line: stepStartLine, ch: 0};
 +        var lastStepLineHandle = this.editor.getLineHandle(stepEndLine);
@@ -672,7 +673,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +            var parameterGroups = findResult.stepDoc.parameterGroups;
 +            if (parameterGroups.length > 0) {
 +                var pos = 0;
-+                var lineOffset = 0;
++                var lineOffset = keywordPart.split("\n").length - 1;
 +                for (var j = 1; j < findResult.result.length; j++) {
 +                    var matchedGroup = findResult.result[j];
 +                    if (parameterGroups.indexOf(j) > -1) {
@@ -827,7 +828,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
          storyController.debug("# onEditorChangeHandler");
      }
-@@ -119,18 +430,284 @@
+@@ -119,18 +446,284 @@
  
          var editor = storyController.editor;
          var cursor = editor.getCursor();
@@ -1118,7 +1119,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
              var inStepBody = true;
              var nextLineNum = cursor.line;
              var stepEndedAtLine = cursor.line;
-@@ -159,7 +736,7 @@
+@@ -159,7 +752,7 @@
                      if (nextToken.type != "step-body") {
                          inStepBody = false;
                      } else {
@@ -1127,7 +1128,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                          nextLineNum++;
                          stepEndedAtLine++;
                      }
-@@ -210,7 +787,7 @@
+@@ -210,7 +803,7 @@
  
                                      // work out start and end boundaries in terms of line and line position
                                      // start position
@@ -1136,7 +1137,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                                      var numOfLinesInBefore = beforeParam.split(/\n/).length;
                                      var startAtLine = lastStepStartedAt + (numOfLinesInBefore - 1);
                                      pgi.startAtLine = startAtLine;
-@@ -220,7 +797,7 @@
+@@ -220,7 +813,7 @@
                                      }
                                      pgi.startAtLineCh = pgi.startIndex - lastLineBreakPos;
                                      // end position
@@ -1145,7 +1146,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                                      var numOfLinesInIncludingParam = includingParam.split(/\n/).length;
                                      var endAtLine = lastStepStartedAt + (numOfLinesInIncludingParam - 1);
                                      pgi.endAtLine = endAtLine;
-@@ -340,15 +917,25 @@
+@@ -340,15 +933,25 @@
          this.debug("> showStory");
  
          this.currentStory = storyModel;
@@ -1173,7 +1174,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          if (storyModel.version != null) {
              // this is NOT a new story, so check and show any story reports
              var projectKey = storyModel.projectKey;
-@@ -379,7 +966,7 @@
+@@ -379,7 +982,7 @@
  
          var templateParam = new Object();
          templateParam.storyTestReports = storyTestReports;
@@ -1182,54 +1183,6 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
          var storyReportsContent = execspec.viewissuepage.showstoryreports.renderStoryReports(templateParam);
  
-Index: execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java
-===================================================================
---- execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java	(date 1406793811000)
-+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java	(date 1406793811000)
-@@ -1,43 +0,0 @@
--package com.mycomp.execspec.util;
--
--import org.jbehave.core.configuration.Keywords;
--import org.jbehave.core.reporters.HtmlOutput;
--
--import java.io.PrintStream;
--import java.util.Properties;
--
--/**
-- * Created by Dmytro on 4/29/2014.
-- */
--@Deprecated
--public class CustomHTMLOutput extends HtmlOutput {
--
--    public CustomHTMLOutput(PrintStream output) {
--        super(output);
--    }
--
--    public CustomHTMLOutput(PrintStream output, Properties outputPatterns) {
--        super(output, outputPatterns);
--    }
--
--    public CustomHTMLOutput(PrintStream output, Keywords keywords) {
--        super(output, keywords);
--    }
--
--    public CustomHTMLOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
--        super(output, outputPatterns, keywords);
--    }
--
--    public CustomHTMLOutput(PrintStream output, Properties outputPatterns, Keywords keywords, boolean reportFailureTrace) {
--        super(output, outputPatterns, keywords, reportFailureTrace);
--    }
--
--    public CustomHTMLOutput(PrintStream output, Properties outputPatterns, Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
--        super(output, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
--    }
--
--    public String escapeHTML(String args) {
--        Object[] escaped = super.escape(Format.HTML, args);
--        return (String) escaped[0];
--    }
--}
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
