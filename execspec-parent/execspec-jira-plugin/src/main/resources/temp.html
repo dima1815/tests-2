@@ -1,120 +1,188 @@
-<div id="storyReportsPanel">
-    <div class="aui-tabs horizontal-tabs">
-        <ul class="tabs-menu">
-            <li class="menu-item active-tab"><a href="#storyReportTab0"><strong>DEV</strong><span class="aui-badge passed">1</span><span
-                    class="aui-badge pending">1</span></a></li>
-            <li class="menu-item"><a href="#storyReportTab1"><strong>TEST</strong><span class="aui-badge pending">2</span></a></li>
-        </ul>
-        <div id="#storyReportTab0" class="tabs-pane story-report-tab active-pane">
-            <div id="storyReportMsgContainer0">
-                <div id="reportMsg0" class="aui-message hint"><p>Story has been modified since the last story run on this environment.</p>
-                    <span class="aui-icon icon-hint"></span></div>
-            </div>
-            <div class="story">
-                <div class="meta">
-                    <div class="keyword">Meta:</div>
-                    <div class="property">@testMetaValue somsdf asfd asdf asdeValue2323</div>
-                </div>
-                <div class="beforeNarrative"><span>&nbsp;</span><span style="display: none;"
-                                                                      class="beforeNarrativeHint">+<span></span></span></div>
-                <div class="narrative">
-                    <div class="label">Narrative:</div>
-                    <div contenteditable="false" class="element inOrderTo">
-                        <div style="display: none;" class="add-icon">+</div>
-                        <span contenteditable="false" class="keyword inOrderTo inOrderToSpan">In order to</span> <span></span></div>
-                    <div class="element asA"><span class="keyword asA">As a</span> development team</div>
-                    <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> use Behaviour-Driven Development</div>
-                </div>
-                <div class="scenario">
-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">my test scenario 1</span></div>
-                    <div class="step successful">Given something</div>
-                    <div class="step successful">When I send the following request:<span class="step parameter"><table>
-                        <thead>
-                        <tr>
-                            <th>action</th>
-                            <th>value</th>
-                            <th>currency</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Buy</td>
-                            <td>100</td>
-                            <td>USD</td>
-                        </tr>
-                        <tr>
-                            <td>Sell</td>
-                            <td>20</td>
-                            <td>GBP</td>
-                        </tr>
-                        </tbody>
-                    </table>
-</span></div>
-                    <div class="step successful">Then something should happen</div>
-                </div>
-                <div class="scenario">
-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">sad path</span></div>
-                    <div class="step successful">Given something</div>
-                    <div class="step pending">When I try a step that has not yet been implemented <span
-                            class="keyword pending">(PENDING)</span></div>
-                    <div class="step pending">Then an error should be reported in the test report asadf <span class="keyword pending">(PENDING)</span>
-                    </div>
-                </div>
-            </div>
+<div class="CodeMirror-code">
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">1</div>
         </div>
-        <div id="#storyReportTab1" class="tabs-pane story-report-tab">
-            <div id="storyReportMsgContainer1"></div>
-            <div class="story">
-                <div class="meta">
-                    <div class="keyword">Meta:</div>
-                    <div class="property">@testMetaValue</div>
-                </div>
-                <div class="beforeNarrative"><span>&nbsp;</span><span style="display: none;"
-                                                                      class="beforeNarrativeHint">+<span></span></span></div>
-                <div class="narrative">
-                    <div class="label">Narrative:</div>
-                    <div contenteditable="false" class="element inOrderTo">
-                        <div style="display: none;" class="add-icon">+</div>
-                        <span contenteditable="false" class="keyword inOrderTo inOrderToSpan">In order to</span> <span></span></div>
-                    <div class="element asA"><span class="keyword asA">As a</span> development team</div>
-                    <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> use Behaviour-Driven Development</div>
-                </div>
-                <div class="scenario">
-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">my test scenario 1</span></div>
-                    <div class="step successful">Given something</div>
-                    <div class="step successful">When I send the following request:<span class="step parameter"><table>
-                        <thead>
-                        <tr>
-                            <th>action</th>
-                            <th>value</th>
-                            <th>currency</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Buy</td>
-                            <td>100</td>
-                            <td>USD</td>
-                        </tr>
-                        <tr>
-                            <td>Sell</td>
-                            <td>20</td>
-                            <td>GBP</td>
-                        </tr>
-                        </tbody>
-                    </table>
-</span></div>
-                    <div class="step pending">Then something should happen asdf <span class="keyword pending">(PENDING)</span></div>
-                </div>
-                <div class="scenario">
-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">sad path</span></div>
-                    <div class="step successful">Given something</div>
-                    <div class="step pending">When I try a step that has not yet been implemented <span
-                            class="keyword pending">(PENDING)</span></div>
-                    <div class="step pending">Then an error should be reported in the test report asadfa <span class="keyword pending">(PENDING)</span>
-                    </div>
-                </div>
-            </div>
+        <pre class=" number-line-0 "><span style="padding-right: 0.1px;"><span class="cm-meta-title">Meta:</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">2</div>
         </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-meta-field">@testMetaValues</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">3</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span>​</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">4</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-title">Narrative:</span>  </span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">5</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-field-keyword">In order to </span><span
+                class="cm-narrative-field-value">communicate effectively to the business some functionality</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">6</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-field-keyword">As a </span><span
+                class="cm-narrative-field-value">development team</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">7</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-field-keyword">I want to </span><span
+                class="cm-narrative-field-value">use Behaviour-Driven Development</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">8</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span>​</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">9</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-scenario-keyword">Scenario:</span><span class="cm-scenario-title"> my test scenario 1 add</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">10</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-given-step cm-matched-step">Given </span><span
+                class="cm-step-body cm-matched-step">test parameter value - </span><span
+                class="cm-step-body cm-matched-step cm-step-parameter">$paramValue</span><span
+                class="cm-step-body cm-matched-step"> units</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">11</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-given-step cm-matched-step">Given </span><span
+                class="cm-step-body cm-matched-step">something else:</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">12</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span
+                class="cm-step-body cm-matched-step cm-step-parameter">|transactionId  |amosdfs unt |</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">13</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body cm-matched-step cm-step-parameter">|1<span
+                class="cm-tab">  </span>a<span class="cm-tab">   </span><span class="cm-tab">    </span><span class="cm-tab">    </span>|100 fgdfg<span
+                class="cm-tab">  </span>|</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">14</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span
+                class="cm-step-body cm-matched-step cm-step-parameter">asdfa sfa fad</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">15</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span>​</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">16</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-then-step">Then </span><span class="cm-step-body">the scenario should fail</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">17</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">sWhen I send the following request:</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">18</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">|action |value |currency |</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">19</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">|Buy    |100   |USD      |</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">20</div>
+        </div>
+        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">|Sell   |20    |GBP      |</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">21</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-then-step">Then </span><span class="cm-step-body">something should happen asdf</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">22</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-Then-step">And </span><span class="cm-step-body">asfasfasfasf</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">23</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span>​</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">24</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-scenario-keyword">Scenario:</span><span class="cm-scenario-title"> sad path asdfsfasdf</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">25</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-given-step">Given </span><span
+                class="cm-step-body">something</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">26</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-when-step">When </span><span class="cm-step-body">I try a step that has not yet been implemented</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">27</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-then-step">Then </span><span class="cm-step-body">an error should be reported in the test  report asadfa</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">28</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-body">sdfasfasf</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">29</div>
+        </div>
+        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-body">asfasfasdfasdfadsf</span></span></pre>
     </div>
 </div>

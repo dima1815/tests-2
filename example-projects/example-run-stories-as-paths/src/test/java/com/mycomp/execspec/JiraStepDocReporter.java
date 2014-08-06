@@ -1,7 +1,7 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocsPayload;
+import com.mycomp.execspec.dto.StepDoc;
+import com.mycomp.execspec.dto.StepDocs;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import org.jbehave.core.model.StepPattern;
@@ -39,7 +39,7 @@ public class JiraStepDocReporter implements StepdocReporter {
 //        List<StepCandidate> stepCandidates = candidateSteps.get(0).listCandidates();
         System.out.println("stepdocs, stepdocs - " + stepdocs + ", stepsInstances - " + stepsInstances);
 
-        List<StepDocDTO> stepDocDTOs = new ArrayList<StepDocDTO>(stepdocs.size());
+        List<StepDoc> stepDocDTOs = new ArrayList<StepDoc>(stepdocs.size());
 
         for (Stepdoc stepdoc : stepdocs) {
 
@@ -50,15 +50,15 @@ public class JiraStepDocReporter implements StepdocReporter {
             StepMatcher stepMatcher = patternParser.parseStep(stepType, pattern);
             StepPattern stepPattern = stepMatcher.pattern();
             String regExpPattern = stepPattern.resolved();
-            StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern, null, null);
+            StepDoc stepDocDTO = new StepDoc(stepType, startingWord, pattern, regExpPattern, null, null);
             stepDocDTOs.add(stepDocDTO);
         }
 
-        StepDocsPayload stepDocsPayload = new StepDocsPayload(stepDocDTOs);
+        StepDocs stepDocsPayload = new StepDocs(stepDocDTOs);
         sendStepDocs(stepDocsPayload);
     }
 
-    private void sendStepDocs(StepDocsPayload stepDocsPayload) {
+    private void sendStepDocs(StepDocs stepDocsPayload) {
 
         String loginParams = "?os_username=admin&os_password=admin";
         String postUrl = jiraBaseUrl

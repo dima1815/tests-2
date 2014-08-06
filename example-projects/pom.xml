@@ -17,11 +17,6 @@
         <jbehave.version>3.8</jbehave.version>
     </properties>
     <dependencies>
-        <!--<dependency>-->
-        <!--<groupId>org.jbehave</groupId>-->
-        <!--<artifactId>jbehave-core</artifactId>-->
-        <!--<version>${jbehave.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

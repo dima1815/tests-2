@@ -23,7 +23,7 @@
 
     // fetch step hints
     var stepDocs = null;
-    AJS.$(function() {
+    AJS.$(function () {
         var storyService = new StoryService();
         var projectKey = new PageUtils().getProjectKey();
 //        console.log("projectKey - " + projectKey);
@@ -59,28 +59,42 @@
         // hint on keywords that must be at start of line
         for (var i = 0; i < keywords.length; i++) {
             var keyword = keywords[i]
-            if ((state[keyword.stateField] || token.type == keyword.stateTokenType) && (cursorPos == 0 || keyword.text.indexOf(currentText) == 0)) {
+            if ((state[keyword.stateField]
+                || token.type == keyword.stateTokenType)
+                && (cursorPos == 0 || keyword.text.indexOf(currentText) == 0)) {
                 list.push(keyword.text);
             }
         }
 
-        // hint on steps
-        for (var k = 0; k < stepDocs.length; k++) {
-            var stepHint = new Object();
-            stepHint.text = stepDocs[k].startingWord + " " + stepDocs[k].pattern;
+        var doc = editor.getDoc();
+        var cursor = editor.getCursor();
+        var doc = editor.getDoc();
+        var lineHandle = doc.getLineHandle(cursor.line);
 
-            stepHint.displayText = "<span>Display:</span> " + stepHint.text;
+        var lineTextSoFar = lineHandle.text.substring(0, cursor.ch);
 
-            stepHint.render = function (element, data, self) {
+        var lineTextTrimmed = lineTextSoFar.replace(/\s+$/g, '');
 
-                console.log("### Rendering hint");
-//                var hintDiv = document.createElement("div");
-                element.innerHTML = "<span style='font-weight: bold;'>span</span>: " + self.text;
-//                element.appendChild(hintDiv);
-
-            };
-
-            list.push(stepHint);
+        if (lineTextTrimmed.length > 0) {
+            // hint on steps
+            for (var k = 0; k < stepDocs.length; k++) {
+                var stepDoc = stepDocs[k];
+                var stepPatternWithKeyword = stepDoc.startingWord + " " + stepDoc.pattern;
+                if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
+                    var stepHint = new Object();
+                    stepHint.text = stepPatternWithKeyword;
+                    var pattern = stepDoc.pattern;
+                    var regExpPattern = new RegExp("\\$");
+                    pattern = pattern.replace(regExpPattern, "<span class='cm-step-parameter'>@</span>");
+                    stepHint.stepDoc = stepDoc;
+                    stepHint.render = function (element, data, self) {
+                        element.innerHTML =
+                            "<span class='cm-step-keyword'>" + self.stepDoc.startingWord + "</span> "
+                                + pattern;
+                    };
+                    list.push(stepHint);
+                }
+            }
         }
 
         return {

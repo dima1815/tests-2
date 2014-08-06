@@ -1,6 +1,6 @@
 package com.mycomp.execspec.util;
 
-import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
+import com.mycomp.execspec.dto.StepDoc;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
@@ -17,13 +17,13 @@ import java.util.regex.Pattern;
 @Deprecated
 public class ReportingStoryWalker {
 
-    private final List<StepDocDTO> stepDocs;
+    private final List<StepDoc> stepDocs;
 
     public ReportingStoryWalker() {
-        this(new ArrayList<StepDocDTO>());
+        this(new ArrayList<StepDoc>());
     }
 
-    public ReportingStoryWalker(List<StepDocDTO> stepDocs) {
+    public ReportingStoryWalker(List<StepDoc> stepDocs) {
         this.stepDocs = stepDocs;
     }
 
@@ -52,7 +52,7 @@ public class ReportingStoryWalker {
             for (String step : steps) {
 
                 boolean stepDocFound = false;
-                for (StepDocDTO stepDocDTO : stepDocs) {
+                for (StepDoc stepDocDTO : stepDocs) {
                     String startingWord = stepDocDTO.getStartingWord();
                     String startingPrefix = startingWord + " ";
                     if (step.startsWith(startingPrefix)) {

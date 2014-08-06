@@ -27,6 +27,10 @@
     "use strict";
 
     CodeMirror.defineMode("jbehave", function () {
+
+        var sc = null;
+        var stepDocs = null;
+
         return {
             lineComment: "!--",
             tableLineComment: "|--",
@@ -34,7 +38,7 @@
 //                console.log("### on blankLine");
                 state.lineNumber++;
                 if (state.inStep) {
-                    state.stepBodySoFar += "\n";
+                    state.stepBody += "\n";
                 }
             },
             startState: function () {
@@ -62,11 +66,24 @@
                     lastStepType: null,
                     lastStepStartedAt: null,
 
+                    currentStepNumber: 0,
+
+                    stepStartingKeyword: null,
+                    stepBody: null,
+
                     lastTokenType: null,
-                    stepBodySoFar: null
+
+                    inStep: false
+
                 };
             },
             token: function (stream, state) {
+
+                if (sc == null) {
+                    sc = storyController;
+                    stepDocs = sc.stepDocs;
+                }
+
                 if (stream.sol()) {
                     state.lineNumber++;
 
@@ -159,15 +176,23 @@
 
                     // GIVEN
                 } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
+
                     state.lastStepType = "Given";
+                    state.stepStartingKeyword = "Given "; //TODO
                     state.allowAndStep = true;
                     state.inStep = true;
                     state.stepNumber++;
-                    state.stepBodySoFar = "";
+                    state.stepBody = "";
                     state.lastStepStartedAt = state.lineNumber;
 
                     state.inStepBody = false;
                     state.stepBodyStartedAtCh = null;
+
+                    state.currentStepNumber++;
+
+                    var doc = storyController.editor.getDoc();
+
+                    doc.getLineHandle(state.lineNumber);
 
                     return state.lastTokenType = "step-keyword given-step";
 
@@ -177,26 +202,33 @@
                     state.inStep = true;
                     state.allowAndStep = true;
                     state.lastStepType = "When";
+                    state.stepStartingKeyword = "When "; //TODO
                     state.stepNumber++;
-                    state.stepBodySoFar = "";
+                    state.stepBody = "";
                     state.lastStepStartedAt = state.lineNumber;
 
                     state.inStepBody = false;
                     state.stepBodyStartedAtCh = null;
+
+                    state.currentStepNumber++;
 
                     return state.lastTokenType = "step-keyword when-step";
 
                     // THEN
                 } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
                     state.lastStepType = "Then";
+                    state.stepStartingKeyword = "Then "; //TODO
+
                     state.allowAndStep = true;
                     state.inStep = true;
                     state.stepNumber++;
-                    state.stepBodySoFar = "";
+                    state.stepBody = "";
                     state.lastStepStartedAt = state.lineNumber;
 
                     state.inStepBody = false;
                     state.stepBodyStartedAtCh = null;
+
+                    state.currentStepNumber++;
 
                     return state.lastTokenType = "step-keyword then-step";
 
@@ -204,11 +236,15 @@
                 } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
                     state.inStep = true;
                     state.stepNumber++;
-                    state.stepBodySoFar = "";
+                    state.stepBody = "";
                     state.lastStepStartedAt = state.lineNumber;
+                    state.stepStartingKeyword = "And "; //TODO
+
 
                     state.inStepBody = false;
                     state.stepBodyStartedAtCh = null;
+
+                    state.currentStepNumber++;
 
                     return state.lastTokenType = "step-keyword " + state.lastStepType + "-step";
 
@@ -218,17 +254,62 @@
                     return state.lastTokenType = "description-line";
 
                     // Step body
-                } else if (state.inStep && stream.match(/(.*)/, false)) {
+                } else if (state.inStep && stream.match(/(.*)/)) {
 
                     if (state.inStepBody == false) {
                         // this is the first line of the step
                         state.inStepBody = true;
-                        state.stepBodyStartedAtCh = stream.column();
+                        state.stepBodyStartedAtCh = stream.column() - stream.current().length;
                     }
-                    stream.match(/(.*)/);
 
-                    state.stepBodySoFar += stream.current() + "\n";
-                    console.log("stepBodySoFar - " + state.stepBodySoFar);
+                    state.stepBody += stream.current() + "\n";
+
+                    var stepBody = state.stepBody;
+                    console.log("stepBody - " + stepBody);
+
+//                    // look ahead for full step body
+//                    var editor = storyController.editor;
+//                    var isCurrentStepLine = true;
+//                    var lineNumberToCheck = state.lineNumber;
+//                    var remainingStepBody = "";
+//                    while (isCurrentStepLine) {
+//                        lineToCheck++;
+//                        var lineToCheck = editor.getLineHandle(lineNumberToCheck);
+//                        if (lineToCheck == null) {
+//                            // we are at the end of the document
+//                            break;
+//                        } else {
+//                            var lineText = lineToCheck.text;
+//                            if (lineText.substr(0, "Given ".length) == "Given ") {
+//                                isCurrentStepLine = false;
+//                                break;
+//                            } else {
+//                                remainingStepBody += lineText + "\n";
+//                            }
+//                        }
+//                    }
+//
+//                    var fullStepBody = stepBody + remainingStepBody;
+//                    console.log("### fullStepBody - " + fullStepBody);
+
+
+//                    var paramStart = {line: state.lineNumber, ch: 0};
+//                    var paramEnd = {line: state.lineNumber, ch: currentLine.text.length};
+//                    var options = new Object();
+//                    options.className = "step-body-line";
+//
+//                    var marksBefore = editor.getDoc().findMarks(paramStart, paramEnd);
+//
+//                    if (marksBefore.length > 0) {
+//                        // always remove any existing marks, so that we include newly edited text in the marked range
+//                        for (var m = 0; m < marksBefore.length; m++) {
+//                            marksBefore[m].clear();
+//                        }
+//                    }
+//                    editor.getDoc().markText(paramStart, paramEnd, options);
+
+//                    editor.addLineClass({line: state.lineNumber-1, where: "wrap", "class": "step-body-line"});
+
                     return state.lastTokenType = "step-body"
 //                        + "line-step-line"
 //                        + " line-step-number-" + state.stepNumber
@@ -237,7 +318,7 @@
 
                     // Fall through
                 } else {
-                    stream.next();
+                    stream.match(/(.*)/);
 //                    stream.eatWhile(/[^@"<#]/);
                     return null;
                 }

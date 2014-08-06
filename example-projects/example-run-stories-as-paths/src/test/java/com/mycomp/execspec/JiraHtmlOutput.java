@@ -1,10 +1,9 @@
 package com.mycomp.execspec;
 
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
+import com.mycomp.execspec.dto.StoryHtmlReport;
 import com.mycomp.execspec.util.BytesListPrintStream;
 import com.mycomp.execspec.util.DefaultHTMLFormatPatterns;
+import com.mycomp.execspec.util.TestStatus;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.lang.Validate;
@@ -17,6 +16,7 @@ import org.jbehave.core.reporters.HtmlOutput;
 import org.jbehave.core.steps.StepCreator;
 
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -176,7 +176,7 @@ public class JiraHtmlOutput extends HtmlOutput {
                 String versionStr = matcher.group(2);
                 jiraVersion = Long.parseLong(versionStr);
             } else {
-                throw new IllegalArgumentException("Story path must match pattern - " + regexPattern);
+                throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
             }
         }
 
@@ -201,10 +201,23 @@ public class JiraHtmlOutput extends HtmlOutput {
                 this.status = TestStatus.PASSED;
             }
 
-            String storyReport = StoryDTOUtils.bytesListToString(this.printStream.getWrittenBytes());
+            String storyReport = bytesListToString(this.printStream.getWrittenBytes());
             sendStoryReport(storyReport);
         }
 
+    }
+
+    private static String bytesListToString(List<Byte> writtenBytes) {
+
+        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
+        byte[] bytesArray = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            Byte aByte = bytes[i];
+            bytesArray[i] = aByte;
+        }
+
+        String str = new String(bytesArray);
+        return str;
     }
 
     protected void sendStoryReport(String testReport) {
@@ -212,7 +225,7 @@ public class JiraHtmlOutput extends HtmlOutput {
         Validate.notNull(status);
         Validate.notEmpty(testReport);
 
-        StoryHtmlReportDTO storyHtmlReportDTO = new StoryHtmlReportDTO(environment, storyPath, jiraVersion, status, testReport);
+        StoryHtmlReport storyHtmlReportDTO = new StoryHtmlReport(environment, storyPath, jiraVersion, status, testReport);
 
         storyHtmlReportDTO.setTotalScenarios(totalScenarios);
         storyHtmlReportDTO.setTotalScenariosPassed(totalScenariosPassed);
@@ -227,9 +240,10 @@ public class JiraHtmlOutput extends HtmlOutput {
         Pattern p = Pattern.compile(regexPattern);
         Matcher matcher = p.matcher(storyPath);
         if (matcher.matches()) {
-            storyPath = matcher.group(1) + matcher.group(3);;
+            storyPath = matcher.group(1) + matcher.group(3);
+            ;
         } else {
-            throw new IllegalArgumentException("Story path must match pattern - " + regexPattern);
+            throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
         }
 
         String loginParams = "?os_username=admin&os_password=admin";
