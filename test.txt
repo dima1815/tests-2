@@ -1,814 +1,953 @@
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html	(date 1406793811000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/temp.html	(revision )
+@@ -1,120 +1,188 @@
+-<div id="storyReportsPanel">
+-    <div class="aui-tabs horizontal-tabs">
+-        <ul class="tabs-menu">
+-            <li class="menu-item active-tab"><a href="#storyReportTab0"><strong>DEV</strong><span class="aui-badge passed">1</span><span
+-                    class="aui-badge pending">1</span></a></li>
+-            <li class="menu-item"><a href="#storyReportTab1"><strong>TEST</strong><span class="aui-badge pending">2</span></a></li>
+-        </ul>
+-        <div id="#storyReportTab0" class="tabs-pane story-report-tab active-pane">
+-            <div id="storyReportMsgContainer0">
+-                <div id="reportMsg0" class="aui-message hint"><p>Story has been modified since the last story run on this environment.</p>
+-                    <span class="aui-icon icon-hint"></span></div>
++<div class="CodeMirror-code">
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">1</div>
+-            </div>
++        </div>
+-            <div class="story">
+-                <div class="meta">
+-                    <div class="keyword">Meta:</div>
+-                    <div class="property">@testMetaValue somsdf asfd asdf asdeValue2323</div>
++        <pre class=" number-line-0 "><span style="padding-right: 0.1px;"><span class="cm-meta-title">Meta:</span></span></pre>
+-                </div>
++    </div>
+-                <div class="beforeNarrative"><span>&nbsp;</span><span style="display: none;"
+-                                                                      class="beforeNarrativeHint">+<span></span></span></div>
+-                <div class="narrative">
+-                    <div class="label">Narrative:</div>
+-                    <div contenteditable="false" class="element inOrderTo">
+-                        <div style="display: none;" class="add-icon">+</div>
+-                        <span contenteditable="false" class="keyword inOrderTo inOrderToSpan">In order to</span> <span></span></div>
+-                    <div class="element asA"><span class="keyword asA">As a</span> development team</div>
+-                    <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> use Behaviour-Driven Development</div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">2</div>
+-                </div>
++        </div>
+-                <div class="scenario">
+-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">my test scenario 1</span></div>
+-                    <div class="step successful">Given something</div>
+-                    <div class="step successful">When I send the following request:<span class="step parameter"><table>
+-                        <thead>
+-                        <tr>
+-                            <th>action</th>
+-                            <th>value</th>
+-                            <th>currency</th>
+-                        </tr>
+-                        </thead>
+-                        <tbody>
+-                        <tr>
+-                            <td>Buy</td>
+-                            <td>100</td>
+-                            <td>USD</td>
+-                        </tr>
+-                        <tr>
+-                            <td>Sell</td>
+-                            <td>20</td>
+-                            <td>GBP</td>
+-                        </tr>
+-                        </tbody>
+-                    </table>
+-</span></div>
+-                    <div class="step successful">Then something should happen</div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-meta-field">@testMetaValues</span></span></pre>
+-                </div>
++    </div>
+-                <div class="scenario">
+-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">sad path</span></div>
+-                    <div class="step successful">Given something</div>
+-                    <div class="step pending">When I try a step that has not yet been implemented <span
+-                            class="keyword pending">(PENDING)</span></div>
+-                    <div class="step pending">Then an error should be reported in the test report asadf <span class="keyword pending">(PENDING)</span>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">3</div>
+-                    </div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span>​</span></span></pre>
+-                </div>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">4</div>
+-            </div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-title">Narrative:</span>  </span></pre>
+-        </div>
++    </div>
+-        <div id="#storyReportTab1" class="tabs-pane story-report-tab">
+-            <div id="storyReportMsgContainer1"></div>
+-            <div class="story">
+-                <div class="meta">
+-                    <div class="keyword">Meta:</div>
+-                    <div class="property">@testMetaValue</div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">5</div>
+-                </div>
++        </div>
+-                <div class="beforeNarrative"><span>&nbsp;</span><span style="display: none;"
+-                                                                      class="beforeNarrativeHint">+<span></span></span></div>
+-                <div class="narrative">
+-                    <div class="label">Narrative:</div>
+-                    <div contenteditable="false" class="element inOrderTo">
+-                        <div style="display: none;" class="add-icon">+</div>
+-                        <span contenteditable="false" class="keyword inOrderTo inOrderToSpan">In order to</span> <span></span></div>
+-                    <div class="element asA"><span class="keyword asA">As a</span> development team</div>
+-                    <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> use Behaviour-Driven Development</div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-field-keyword">In order to </span><span
++                class="cm-narrative-field-value">communicate effectively to the business some functionality</span></span></pre>
+-                </div>
++    </div>
+-                <div class="scenario">
+-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">my test scenario 1</span></div>
+-                    <div class="step successful">Given something</div>
+-                    <div class="step successful">When I send the following request:<span class="step parameter"><table>
+-                        <thead>
+-                        <tr>
+-                            <th>action</th>
+-                            <th>value</th>
+-                            <th>currency</th>
+-                        </tr>
+-                        </thead>
+-                        <tbody>
+-                        <tr>
+-                            <td>Buy</td>
+-                            <td>100</td>
+-                            <td>USD</td>
+-                        </tr>
+-                        <tr>
+-                            <td>Sell</td>
+-                            <td>20</td>
+-                            <td>GBP</td>
+-                        </tr>
+-                        </tbody>
+-                    </table>
+-</span></div>
+-                    <div class="step pending">Then something should happen asdf <span class="keyword pending">(PENDING)</span></div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">6</div>
+-                </div>
++        </div>
+-                <div class="scenario">
+-                    <div class="scenario-title"><span class="label">Scenario:</span> <span class="title">sad path</span></div>
+-                    <div class="step successful">Given something</div>
+-                    <div class="step pending">When I try a step that has not yet been implemented <span
+-                            class="keyword pending">(PENDING)</span></div>
+-                    <div class="step pending">Then an error should be reported in the test report asadfa <span class="keyword pending">(PENDING)</span>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-field-keyword">As a </span><span
++                class="cm-narrative-field-value">development team</span></span></pre>
+-                    </div>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">7</div>
+-                </div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-narrative-field-keyword">I want to </span><span
++                class="cm-narrative-field-value">use Behaviour-Driven Development</span></span></pre>
+-            </div>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">8</div>
+         </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span>​</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">9</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-scenario-keyword">Scenario:</span><span class="cm-scenario-title"> my test scenario 1 add</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">10</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-given-step cm-matched-step">Given </span><span
++                class="cm-step-body cm-matched-step">test parameter value - </span><span
++                class="cm-step-body cm-matched-step cm-step-parameter">$paramValue</span><span
++                class="cm-step-body cm-matched-step"> units</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">11</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-given-step cm-matched-step">Given </span><span
++                class="cm-step-body cm-matched-step">something else:</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">12</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span
++                class="cm-step-body cm-matched-step cm-step-parameter">|transactionId  |amosdfs unt |</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">13</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body cm-matched-step cm-step-parameter">|1<span
++                class="cm-tab">  </span>a<span class="cm-tab">   </span><span class="cm-tab">    </span><span class="cm-tab">    </span>|100 fgdfg<span
++                class="cm-tab">  </span>|</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">14</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span
++                class="cm-step-body cm-matched-step cm-step-parameter">asdfa sfa fad</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">15</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span>​</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">16</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-then-step">Then </span><span class="cm-step-body">the scenario should fail</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">17</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">sWhen I send the following request:</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">18</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">|action |value |currency |</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">19</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">|Buy    |100   |USD      |</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">20</div>
++        </div>
++        <pre><span style="padding-right: 0.1px;"><span class="cm-step-body">|Sell   |20    |GBP      |</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">21</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-then-step">Then </span><span class="cm-step-body">something should happen asdf</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">22</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-Then-step">And </span><span class="cm-step-body">asfasfasfasf</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">23</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span>​</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">24</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-scenario-keyword">Scenario:</span><span class="cm-scenario-title"> sad path asdfsfasdf</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">25</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-given-step">Given </span><span
++                class="cm-step-body">something</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">26</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-when-step">When </span><span class="cm-step-body">I try a step that has not yet been implemented</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">27</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-keyword cm-then-step">Then </span><span class="cm-step-body">an error should be reported in the test  report asadfa</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">28</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-body">sdfasfasf</span></span></pre>
++    </div>
++    <div style="position: relative;">
++        <div class="CodeMirror-gutter-wrapper" style="position: absolute; left: -29px;">
++            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 20px;">29</div>
++        </div>
++        <pre class=""><span style="padding-right: 0.1px;"><span class="cm-step-body">asfasfasdfasdfadsf</span></span></pre>
+     </div>
+ </div>
+\ No newline at end of file
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css	(date 1406459024000)
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css	(date 1406793811000)
 +++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/jbehave-edit.css	(revision )
-@@ -1,47 +1,72 @@
--.cm-s-default .cm-meta-title {
-+.cm-description-line {
+@@ -39,31 +39,40 @@
+ }
+ 
+ .cm-step-keyword {
+-    color: #aa5500;
++    font-style: italic;
++    color: #ca7841;
+     font-weight: bold;
+ }
+ 
+-.cm-step-keyword.cm-unmatched-step {
++.cm-step-body {
++    font-style: italic;
++    /*color: slategrey;*/
 +    color: dimgrey;
 +}
 +
-+.cm-meta-title {
-     color: #770088;
-     font-weight: bold;
- }
- 
--.cm-s-default .cm-meta-field {
-+.cm-meta-field {
-     color: #770088;
- }
- 
--.cm-s-default .cm-narrative-title {
-+.cm-narrative-title {
-     color: #0000cc;
-     font-weight: bold;
-     font-size: 16px;
- }
- 
--.cm-s-default .cm-narrative-field-keyword {
-+.cm-narrative-field-keyword {
-     color: #0000cc;
-     font-weight: bold;
-     font-size: 14px;
- }
- 
--.cm-s-default .cm-narrative-field-value {
-+.cm-narrative-field-value {
-     color: #0000cc;
-     font-size: 14px;
- }
- 
--.cm-s-default .cm-scenario-keyword {
-+.cm-scenario-keyword {
-     color: green;
-     font-weight: bold;
- }
- 
--.cm-s-default .cm-scenario-title {
-+.cm-scenario-title {
-     color: green;
-     /*font-weight: bold;*/
- }
- 
--.cm-s-default .cm-step-keyword, .cm-s-default .cm-step-keyword-and {
-+.cm-step-keyword {
-     color: #aa5500;
-     font-weight: bold;
- }
- 
--.cm-s-default .cm-description-line {
--    color: dimgrey;
-+.cm-step-keyword.cm-unmatched-step {
-+    font-weight: normal;
-+    font-style: italic;
- }
-+
-+.cm-step-body.cm-unmatched-step {
-+    font-style: italic;
-+    /*font-weight: bold;*/
-+    /*font-weight: bold;*/
-+    color: lightslategrey;
-+}
-+
-+.cm-step-body.cm-step-parameter {
-+    font-weight: bold;
-+    color: purple;
-+    /*color: chocolate;*/
-+}
-+
-+/*.cm-unmatched-step {*/
-+    /*font-style: italic;*/
-+    /*font-weight: bold;*/
-+    /*color: dimgrey;*/
++/*.cm-step-keyword.cm-unmatched-step {*/
+     /*font-weight: normal;*/
+     /*font-style: italic;*/
+-    background-color: lightgoldenrodyellow;
++    /*background-color: lightgoldenrodyellow;*/
+     /*background-color: yellow;*/
 +/*}*/
 +
- 
- /*.cm-s-default .cm-atom {color: #219;}*/
- /*.cm-s-default .cm-number {color: #164;}*/
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/ao/stepdoc/StepDoc.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/ao/stepdoc/StepDoc.java	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/ao/stepdoc/StepDoc.java	(revision )
-@@ -28,4 +28,12 @@
-     String getRegExpPattern();
- 
-     void setRegExpPattern(String regExpPattern);
-+
-+    String getGroupedRegExpPattern();
-+
-+    void setGroupedRegExpPattern(String groupedRegExpPattern);
-+
-+    String getParameterGroups();
-+
-+    void setParameterGroups(String parameterGroups);
++.cm-step-keyword.matched-step {
++    color: #aa5500;
++    font-style: normal;
  }
+ 
+-.cm-step-body.cm-unmatched-step {
+-    /*font-style: italic;*/
+-    background-color: lightgoldenrodyellow;
+-    /*background-color: yellow;*/
+-    /*font-weight: bold;*/
+-    /*font-weight: bold;*/
+-    /*color: lightslategrey;*/
++.cm-step-body.matched-step {
++    font-style: normal;
++    color: #000000;
+ }
+ 
+-.cm-step-body.cm-step-parameter {
++.cm-step-body.matched-step.step-parameter{
+     font-weight: bold;
+     color: purple;
+     /*color: chocolate;*/
+ }
++
+ 
+ /*.cm-unmatched-step {*/
+     /*font-style: italic;*/
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1406459024000)
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1406793811000)
 +++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
-@@ -22,40 +22,16 @@
-     ];
+@@ -23,7 +23,7 @@
  
      // fetch step hints
--    var stepDocs = undefined;
--    var fetchStepHints = function (projectKey) {
--
--        console.log("> jbehave-hint.fetchStepHints");
--        console.log("projectKey - " + projectKey);
--
--        var pathBase = "/jira/rest/story-res/1.0/";
--        var pathStepDocs = pathBase + "step-doc/for-project/" + projectKey;
--        console.log("pathStepDocs - " + pathStepDocs);
--
--        var successCallback = function (data, status, xhr) {
--            console.log("> jbehave-hint.fetchStepHints.successCallback");
--            console.log("status - " + status);
--            console.log("xhr.status - " + xhr.status);
--            console.log("data - " + data);
--
--            console.log("found step docs - " + JSON.stringify(data, null, "\t"));
--            stepDocs = data.stepDocs;
--
--            console.log("# jbehave-hint.fetchStepHints.successCallback");
--        };
--
--        AJS.$.ajax({
--            type: "GET",
--            url: pathStepDocs,
--            contentType: "text/plain; charset=utf-8",
--            success: successCallback,
--            dataType: "json"
-+    var stepDocs = null;
-+    AJS.$(function() {
-+        var storyService = new StoryService();
-+        var projectKey = new PageUtils().getProjectKey();
-+//        console.log("projectKey - " + projectKey);
-+        storyService.fetchStepDocs(projectKey, function (foundStepDocs) {
-+            stepDocs = foundStepDocs;
-         });
-+    });
- 
--        console.log("# jbehave-hint.fetchStepHints");
--    }
--    fetchStepHints("TESTING");
--
-     CodeMirror.registerHelper("hint", "jbehave", function (editor, options) {
- 
-         console.log("########################## in autocomplete");
-@@ -89,8 +65,6 @@
+     var stepDocs = null;
+-    AJS.$(function() {
++    AJS.$(function () {
+         var storyService = new StoryService();
+         var projectKey = new PageUtils().getProjectKey();
+ //        console.log("projectKey - " + projectKey);
+@@ -59,28 +59,42 @@
+         // hint on keywords that must be at start of line
+         for (var i = 0; i < keywords.length; i++) {
+             var keyword = keywords[i]
+-            if ((state[keyword.stateField] || token.type == keyword.stateTokenType) && (cursorPos == 0 || keyword.text.indexOf(currentText) == 0)) {
++            if ((state[keyword.stateField]
++                || token.type == keyword.stateTokenType)
++                && (cursorPos == 0 || keyword.text.indexOf(currentText) == 0)) {
+                 list.push(keyword.text);
+             }
          }
  
-         // hint on steps
--//        var stepHints = ["Given something", "Given something else"];
--        var stepHints = [];
-         for (var k = 0; k < stepDocs.length; k++) {
-             var stepHint = new Object();
-             stepHint.text = stepDocs[k].startingWord + " " + stepDocs[k].pattern;
-@@ -106,15 +80,7 @@
- 
-             };
- 
--            stepHints.push(stepHint);
--        }
++        var doc = editor.getDoc();
++        var cursor = editor.getCursor();
++        var doc = editor.getDoc();
++        var lineHandle = doc.getLineHandle(cursor.line);
++
++        var lineTextSoFar = lineHandle.text.substring(0, cursor.ch);
++
++        var lineTextTrimmed = lineTextSoFar.replace(/\s+$/g, '');
++
++        if (lineTextTrimmed.length > 0) {
+-        // hint on steps
+-        for (var k = 0; k < stepDocs.length; k++) {
++            // hint on steps
++            for (var k = 0; k < stepDocs.length; k++) {
++                var stepDoc = stepDocs[k];
++                var stepPatternWithKeyword = stepDoc.startingWord + " " + stepDoc.pattern;
++                if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
+-            var stepHint = new Object();
++                    var stepHint = new Object();
+-            stepHint.text = stepDocs[k].startingWord + " " + stepDocs[k].pattern;
 -
+-            stepHint.displayText = "<span>Display:</span> " + stepHint.text;
 -
--        if (state.lastStepType == "Given") {
--            for (var i = 0; i < stepHints.length; i++) {
--                var stepHint = stepHints[i];
--                list.push(stepHint);
-+            list.push(stepHint);
--            }
++                    stepHint.text = stepPatternWithKeyword;
++                    var pattern = stepDoc.pattern;
++                    var regExpPattern = new RegExp("\\$");
++                    pattern = pattern.replace(regExpPattern, "<span class='cm-step-parameter'>@</span>");
++                    stepHint.stepDoc = stepDoc;
+-            stepHint.render = function (element, data, self) {
++                    stepHint.render = function (element, data, self) {
+-
+-                console.log("### Rendering hint");
+-//                var hintDiv = document.createElement("div");
+-                element.innerHTML = "<span style='font-weight: bold;'>span</span>: " + self.text;
+-//                element.appendChild(hintDiv);
+-
++                        element.innerHTML =
++                            "<span class='cm-step-keyword'>" + self.stepDoc.startingWord + "</span> "
++                                + pattern;
+-            };
++                    };
+-
+-            list.push(stepHint);
++                    list.push(stepHint);
++                }
++            }
          }
  
          return {
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/comment/comment.js
+Index: execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/comment/comment.js	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/comment/comment.js	(revision )
-@@ -70,16 +70,10 @@
-             } else {
-                 for (var i = from.line; i < end; ++i) {
-                     if (blankLines || nonWS.test(self.getLine(i))) {
--                        var replaceTo;
--                        if (options.commentFrom) {
--                            replaceTo = options.commentFrom;
--                        } else {
--                            replaceTo = 0;
-+                        self.replaceRange(commentString + pad, Pos(i, 0));
--                        }
-+                    }
--                        self.replaceRange(commentString + pad, Pos(i, 0), Pos(i, replaceTo));
--                    }
--                }
-+                }
-+            }
--            }
-         });
-     });
- 
-@@ -124,8 +118,6 @@
-         // Try finding line comments
-         var lineString = options.lineComment || mode.lineComment, lines = [];
-         var pad = options.padding == null ? " " : options.padding, didSomething;
--        var uncommentFrom = options.uncommentFrom;
--        var uncommentTo = options.uncommentTo;
-         lineComment: {
-             if (!lineString) break lineComment;
-             for (var i = start; i <= end; ++i) {
-@@ -143,12 +135,6 @@
-                     if (pos < 0) continue;
-                     if (line.slice(endPos, endPos + pad.length) == pad) endPos += pad.length;
-                     didSomething = true;
--                    if (uncommentFrom) {
--                        pos = uncommentFrom;
--                    }
--                    if (uncommentTo) {
--                        endPos = uncommentTo;
--                    }
-                     self.replaceRange("", Pos(i, pos), Pos(i, endPos));
-                 }
-             });
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StepDocsServiceImpl.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StepDocsServiceImpl.java	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StepDocsServiceImpl.java	(revision )
-@@ -33,14 +33,69 @@
-         }
- 
-         for (StepDocDTO stepDocDTO : stepDocs) {
-+
-+            // check if stepdoc has grouped pattern already set and if not calculate it and set it
-+            if (stepDocDTO.getGroupedRegExpPattern() == null) {
-+                setGroupedPatternOnStepDoc(stepDocDTO);
-+            }
-+
-             StepDoc stepDoc = stepDocDao.create();
-             stepDoc.setProjectKey(projectKey);
-             StepDocDTOUtils.fromDTOToModel(stepDocDTO, stepDoc);
--            String regExpPattern = stepDocDTO.getRegExpPattern();
--            stepDoc.setRegExpPattern(regExpPattern);
-             stepDoc.save();
-         }
- 
-+    }
-+
-+    private void setGroupedPatternOnStepDoc(StepDocDTO stepDocDTO) {
-+
-+        String regExpPattern = stepDocDTO.getRegExpPattern();
-+        StringBuilder groupedPatternBuilder = new StringBuilder();
-+        List<Integer> parameterGroups = new ArrayList<Integer>();
-+
-+        int pos = 0;
-+        int groupCount = 0;
-+        int indexOfOpenBrace = regExpPattern.indexOf("(");
-+        while(indexOfOpenBrace != -1) {
-+
-+            // we want to group everything before that opening brace
-+            groupedPatternBuilder.append("(");
-+            groupedPatternBuilder.append(regExpPattern.substring(pos, indexOfOpenBrace));
-+            groupedPatternBuilder.append(")");
-+            groupCount++;
-+
-+            int indexOfCloseBrace = regExpPattern.indexOf(")", indexOfOpenBrace);
-+            Validate.isTrue(indexOfCloseBrace != -1, "Failed to find matching closing brace in pattern - " + regExpPattern);
-+            pos = indexOfCloseBrace + 1;
-+            groupedPatternBuilder.append(regExpPattern.substring(indexOfOpenBrace, pos));
-+            groupCount++;
-+            parameterGroups.add(groupCount);
-+
-+            if (pos >= regExpPattern.length()) {
-+                // we have reached the end of the pattern
-+                break;
-+            } else {
-+                indexOfOpenBrace = regExpPattern.indexOf("(", pos);
-+                if (indexOfOpenBrace != -1) {
-+                    // we simply iterate again
-+                    continue;
-+                } else {
-+                    // there are no more parameter groups so we simply append any string into last group
-+                    groupedPatternBuilder.append("(");
-+                    groupedPatternBuilder.append(regExpPattern.substring(pos));
-+                    groupedPatternBuilder.append(")");
-+                    groupCount++;
-+                }
-+            }
-+        }
-+
-+        String groupedPattern = groupedPatternBuilder.toString();
-+        if (groupedPattern.isEmpty()) {
-+            // reg exp pattern did not contain any groups
-+            groupedPattern = "(" + regExpPattern + ")";
-+        }
-+        stepDocDTO.setGroupedRegExpPattern(groupedPattern);
-+        stepDocDTO.setParameterGroups(parameterGroups);
-     }
- 
-     @Override
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -10,7 +10,12 @@
-     <!-- ==================================================================================================== -->
-     <!--3rd party scripts-->
-     <web-resource name="View Issue Page 3rd Party Resources" key="execspec-view-issue-page-3rd-party-resources">
-+
-         <context>jira.view.issue</context>
-+        <!--these custom scripts need to be loaded first as jbehave-hint has dependency on story service-->
-+        <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
-+        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
-+
-         <!--codemirror core-->
-         <resource type="download" name="codemirror.js" location="/3rdparty/codemirror-4.3/lib/codemirror.js"/>
-         <resource type="download" name="codemirror.css" location="/3rdparty/codemirror-4.3/lib/codemirror.css"/>
-@@ -36,12 +41,10 @@
-             <transformer key="soyTransformer"/>
-         </transformation>
-         <!--js-->
--        <resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>
-         <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
-         <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
-         <resource type="download" name="StoryReportModel.js" location="/js/StoryReportModel.js"/>
-         <resource type="download" name="AutoCompleteEntryModel.js" location="/js/AutoCompleteEntryModel.js"/>
--        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
-         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
-         <resource type="download" name="StoryEditHandler.js" location="/js/StoryEditHandler.js"/>
-         <!--soy-->
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
-@@ -30,13 +30,23 @@
-         return {
-             lineComment: "!--",
-             tableLineComment: "|--",
-+            blankLine: function (state) {
-+//                console.log("### on blankLine");
-+                state.lineNumber++;
-+                if (state.inStep) {
-+                    state.stepBodySoFar += "\n";
-+                }
-+            },
-             startState: function () {
-                 return {
--                    lineNumber: 0,
-+                    lineNumber: -1,
-+                    stepNumber: 0,
- 
-                     allowDescription: true,
-+
-                     allowMeta: true,
-                     allowMetaField: false,
-+
-                     allowNarrative: true,
-                     allowNarrativeInOrderTo: false,
-                     allowNarrativeAsA: false,
-@@ -49,7 +59,11 @@
-                     inMultilineString: false,
-                     inMultilineTable: false,
- 
--                    lastStepType: null
-+                    lastStepType: null,
-+                    lastStepStartedAt: null,
-+
-+                    lastTokenType: null,
-+                    stepBodySoFar: null
-                 };
-             },
-             token: function (stream, state) {
-@@ -61,12 +75,13 @@
-                 }
- 
-                 // LINE COMMENT
--                if (stream.sol() && stream.match(/!--.*/)) {
--                    return "comment";
-+                if (stream.sol() && (stream.match(/!--.*/) || stream.match(/\|--.*/))) {
-+//                    state.lastTokenType =  "comment";
-+                    return state.lastTokenType = "comment";
- 
--                    // TABLE COMMENT
--                } else if (stream.sol() && stream.match(/\|--.*/)) {
--                    return "comment";
-+//                    // TABLE COMMENT
-+//                } else if (stream.sol() && stream.match(/\|--.*/)) {
-+//                    return "comment";
- 
-                     // META title
-                 } else if (state.allowMeta && stream.sol() && stream.match(/(Meta):/)) {
-@@ -74,12 +89,12 @@
-                     state.allowDescription = false;
-                     state.allowMeta = false;
-                     state.allowMetaField = true;
--                    return "meta-title";
-+                    return state.lastTokenType = "meta-title line-number-line-" + state.lineNumber;
- 
-                     // META field
-                 } else if (state.allowMetaField && stream.sol() && stream.match(/@.*/)) {
- 
--                    return "meta-field"
-+                    return state.lastTokenType = "meta-field";
- 
-                     // Narrative - title
-                 } else if (state.allowNarrative && stream.sol() && stream.match(/Narrative:/)) {
-@@ -92,7 +107,7 @@
- 
-                     state.allowScenario = true;
-                     state.allowSteps = false;
--                    return "narrative-title";
-+                    return state.lastTokenType = "narrative-title";
- 
-                     // Narrative - In order to - keyword
-                 } else if (state.allowNarrativeInOrderTo && stream.sol() && stream.match(/(In order to )/)) {
-@@ -101,7 +116,7 @@
-                     state.allowNarrativeAsA = true;
-                     state.inNarrativeField = true;
- 
--                    return "narrative-field-keyword";
-+                    return state.lastTokenType = "narrative-field-keyword";
- 
-                     // Narrative - As a - keyword
-                 } else if (state.allowNarrativeAsA && stream.sol() && stream.match(/(As a )/)) {
-@@ -110,7 +125,7 @@
-                     state.allowNarrativeIWantTo = true;
-                     state.inNarrativeField = true;
- 
--                    return "narrative-field-keyword";
-+                    return state.lastTokenType = "narrative-field-keyword";
- 
-                     // Narrative - I want to - keyword
-                 } else if (state.allowNarrativeIWantTo && stream.sol() && stream.match(/(I want to )/)) {
-@@ -118,52 +133,107 @@
-                     state.allowNarrativeIWantTo = false;
-                     state.inNarrativeField = true;
- 
--                    return "narrative-field-keyword";
-+                    return state.lastTokenType = "narrative-field-keyword";
- 
-                     // Narrative - field value
-                 } else if (state.inNarrativeField && stream.match(/.*/)) {
- 
--                    return "narrative-field-value";
-+                    return state.lastTokenType = "narrative-field-value";
- 
-                     // SCENARIO keyword
-                 } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario):/)) {
-                     state.allowSteps = true;
-                     state.allowDescription = false;
-                     state.inScenarioTitleLine = true;
--                    state.lastStepType = null;
-+
-+                    state.inStep = false;
-                     state.allowAndStep = false;
--                    return "scenario-keyword";
-+                    state.lastStepType = null;
-+                    state.lastStepStartedAt = null;
- 
-+                    return state.lastTokenType = "scenario-keyword";
-+
-                     // SCENARIO title
--                } else if (state.inScenarioTitleLine && stream.match(/.*/)) {
--                    return "scenario-title";
-+                } else if (state.inScenarioTitleLine && !stream.sol() && stream.match(/.*/)) {
-+                    return state.lastTokenType = "scenario-title";
- 
-                     // GIVEN
-                 } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
-                     state.lastStepType = "Given";
-                     state.allowAndStep = true;
--                    return "step-keyword";
-+                    state.inStep = true;
-+                    state.stepNumber++;
-+                    state.stepBodySoFar = "";
-+                    state.lastStepStartedAt = state.lineNumber;
- 
-+                    state.inStepBody = false;
-+                    state.stepBodyStartedAtCh = null;
-+
-+                    return state.lastTokenType = "step-keyword given-step";
-+
-                     // WHEN
-                 } else if (state.allowSteps && stream.sol() && stream.match(/(When )/)) {
--                    state.lastStepType = "When";
-+
-+                    state.inStep = true;
-                     state.allowAndStep = true;
--                    return "step-keyword";
-+                    state.lastStepType = "When";
-+                    state.stepNumber++;
-+                    state.stepBodySoFar = "";
-+                    state.lastStepStartedAt = state.lineNumber;
- 
-+                    state.inStepBody = false;
-+                    state.stepBodyStartedAtCh = null;
-+
-+                    return state.lastTokenType = "step-keyword when-step";
-+
-                     // THEN
-                 } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
-                     state.lastStepType = "Then";
-                     state.allowAndStep = true;
--                    return "step-keyword";
-+                    state.inStep = true;
-+                    state.stepNumber++;
-+                    state.stepBodySoFar = "";
-+                    state.lastStepStartedAt = state.lineNumber;
- 
-+                    state.inStepBody = false;
-+                    state.stepBodyStartedAtCh = null;
-+
-+                    return state.lastTokenType = "step-keyword then-step";
-+
-                     // AND
-                 } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
--                    return "step-keyword-and";
-+                    state.inStep = true;
-+                    state.stepNumber++;
-+                    state.stepBodySoFar = "";
-+                    state.lastStepStartedAt = state.lineNumber;
- 
-+                    state.inStepBody = false;
-+                    state.stepBodyStartedAtCh = null;
-+
-+                    return state.lastTokenType = "step-keyword " + state.lastStepType + "-step";
-+
-                     // Description
-                 } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {
- 
--                    return "description-line";
-+                    return state.lastTokenType = "description-line";
-+
-+                    // Step body
-+                } else if (state.inStep && stream.match(/(.*)/, false)) {
-+
-+                    if (state.inStepBody == false) {
-+                        // this is the first line of the step
-+                        state.inStepBody = true;
-+                        state.stepBodyStartedAtCh = stream.column();
-+                    }
-+                    stream.match(/(.*)/);
-+
-+                    state.stepBodySoFar += stream.current() + "\n";
-+                    console.log("stepBodySoFar - " + state.stepBodySoFar);
-+                    return state.lastTokenType = "step-body"
-+//                        + "line-step-line"
-+//                        + " line-step-number-" + state.stepNumber
-+//                        + " line-step-line-number-" + state.lineNumber
-+                        ;
- 
-                     // Fall through
-                 } else {
-Index: execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/JiraStepDocReporter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/JiraStepDocReporter.java	(date 1406459024000)
-+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/JiraStepDocReporter.java	(revision )
-@@ -50,7 +50,7 @@
-             StepMatcher stepMatcher = patternParser.parseStep(stepType, pattern);
-             StepPattern stepPattern = stepMatcher.pattern();
-             String regExpPattern = stepPattern.resolved();
--            StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern);
-+            StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern, null, null);
-             stepDocDTOs.add(stepDocDTO);
-         }
- 
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/stepdoc/StepDocDTO.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/stepdoc/StepDocDTO.java	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/stepdoc/StepDocDTO.java	(revision )
-@@ -5,6 +5,7 @@
- import javax.xml.bind.annotation.XmlAccessType;
- import javax.xml.bind.annotation.XmlAccessorType;
- import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
- 
+--- execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java	(date 1406793811000)
++++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java	(revision )
+@@ -5,7 +5,6 @@
  /**
-  * Created by Dmytro on 4/23/2014.
-@@ -17,15 +18,19 @@
-     private String startingWord;
-     private String pattern;
-     private String regExpPattern;
-+    private String groupedRegExpPattern;
-+    private List<Integer> parameterGroups;
+  * Created by Dmytro on 4/29/2014.
+  */
+-@Deprecated
+ public class DefaultHTMLFormatPatterns {
  
-     protected StepDocDTO() {
-     }
- 
--    public StepDocDTO(StepType stepType, String startingWord, String pattern, String regExpPattern) {
-+    public StepDocDTO(StepType stepType, String startingWord, String pattern, String regExpPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
-         this.stepType = stepType;
-         this.startingWord = startingWord;
-         this.pattern = pattern;
-         this.regExpPattern = regExpPattern;
-+        this.groupedRegExpPattern = groupedRegExpPattern;
-+        this.parameterGroups = parameterGroups;
-     }
- 
-     public StepType getStepType() {
-@@ -42,5 +47,33 @@
- 
-     public String getRegExpPattern() {
-         return regExpPattern;
-+    }
-+
-+    public String getGroupedRegExpPattern() {
-+        return groupedRegExpPattern;
-+    }
-+
-+    public List<Integer> getParameterGroups() {
-+        return parameterGroups;
-+    }
-+
-+    public void setGroupedRegExpPattern(String groupedRegExpPattern) {
-+        this.groupedRegExpPattern = groupedRegExpPattern;
-+    }
-+
-+    public void setParameterGroups(List<Integer> parameterGroups) {
-+        this.parameterGroups = parameterGroups;
-+    }
-+
-+    @Override
-+    public String toString() {
-+        return "StepDocDTO{" +
-+                "stepType=" + stepType +
-+                ", startingWord='" + startingWord + '\'' +
-+                ", pattern='" + pattern + '\'' +
-+                ", regExpPattern='" + regExpPattern + '\'' +
-+                ", groupedRegExpPattern='" + groupedRegExpPattern + '\'' +
-+                ", parameterGroups=" + parameterGroups +
-+                '}';
-     }
- }
+     public Properties getPatterns() {
 Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1406459024000)
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1406793811000)
 +++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -20,9 +20,20 @@
-     this.editor = null;
-     this.currentStory = null;
-     this.storyChanged = false;
-+    this.stepDocs = null;
+@@ -26,13 +26,11 @@
  
--    this.init  = function () {
-+    this.init = function () {
+         storyController.debug("> init");
  
-+        storyController.debug("> init");
-+
-+        AJS.$(function () {
-+            var storyService = new StoryService();
-+            var projectKey = new PageUtils().getProjectKey();
-+            storyService.fetchStepDocs(projectKey, function (foundStepDocs) {
-+                storyController.stepDocs = foundStepDocs;
-+            });
+-        AJS.$(function () {
+-            var storyService = new StoryService();
+-            var projectKey = new PageUtils().getProjectKey();
+-            storyService.fetchStepDocs(projectKey, function (foundStepDocs) {
+-                storyController.stepDocs = foundStepDocs;
+-            });
++        var storyService = new StoryService();
++        var projectKey = new PageUtils().getProjectKey();
++        storyService.fetchStepDocs(projectKey, function (foundStepDocs) {
++            storyController.stepDocs = foundStepDocs;
 +        });
-+
+-        });
+ 
          var storyPanelContent = execspec.viewissuepage.showstory.renderStoryPanel();
          AJS.$("#story-panel").html(storyPanelContent);
- 
-@@ -32,11 +43,12 @@
-         var editor = CodeMirror.fromTextArea(document.getElementById("storyTextArea"), {
-             mode: "jbehave",
- //            lineComment: "!--",
-+            lineNumbers: true,
-             extraKeys: {
-                 "Ctrl-Space": "autocomplete",
- 
-                 // commenting
--                "Ctrl-/": function(cm) {
-+                "Ctrl-/": function (cm) {
- 
- 
-                     console.log("commenting!");
-@@ -51,11 +63,11 @@
-                     var to = {line: endOfSelection.line, ch: endOfSelection.ch};
-                     var options = new Object();
- 
--                    if (curLine.substring(0,1) == "|") {
-+                    if (curLine.substring(0, 1) == "|") {
-                         options.lineComment = "|--";
--                        options.uncommentFrom = 1;
--                        options.uncommentTo = 3;
--                        options.commentFrom = 1;
-+//                        options.uncommentFrom = 1;
-+//                        options.uncommentTo = 3;
-+//                        options.commentFrom = 1;
-                     } else {
-                         options.lineComment = "!--";
-                     }
-@@ -83,6 +95,8 @@
+@@ -93,22 +91,335 @@
+         });
+         this.editor = editor;
          editor.on("change", this.onEditorChangeHandler);
++//
++//        editor.on("beforeChange", function() {
++//           storyController.debug("##### on beforeChange");
++//        });
  
-         this.loadStory();
++        editor.on("update", function (editor, param) {
++            storyController.debug("##### on editor UPDATE");
++//            storyController.onEditorUpdateHandler(editor);
++        });
 +
-+        storyController.debug("# init");
++//        editor.on("keypress", function () {
++//            storyController.debug("##### on editor 'keypress'");
++////            this.onEditorChangeHandler
++//        });
++//
++//        editor.on("change", function (editor, changeObj) {
++//            storyController.debug("##### on editor CHANGE");
++//            storyController.onEditorChangeHandler(editor, changeObj);
++//            var paramStart = {line: 0, ch: 0};
++//            var paramEnd = {line: 1, ch: 10};
++//            var options = new Object();
++//            options.className = "test-marker";
++//            editor.getDoc().markText(paramStart, paramEnd, options);
++//        });
++
+         this.loadStory();
+ 
+         storyController.debug("# init");
      }
  
-     this.onEditorChangeHandler = function () {
-@@ -92,10 +106,179 @@
-             var saveCancelMsg = execspec.viewissuepage.showstory.renderSaveCancelMsg();
-             storyController.showWarningMessage(saveCancelMsg);
-         }
--
-         storyController.storyChanged = true;
- 
-+        storyController.updateEditedStepStyle();
+-    this.onEditorChangeHandler = function () {
++    this.lineStartsWithStepKeyword = function (lineNumber) {
 +
-         storyController.debug("# onEditorChangeHandler");
++        var lineHandle = this.editor.getLineHandle(lineNumber);
++        var lineText = lineHandle.text;
++
++        if (lineText.substring(0, "Given ".length) == "Given "
++            || lineText.substring(0, "When ".length) == "When "
++            || lineText.substring(0, "Then ".length) == "Then "
++            || lineText.substring(0, "And ".length) == "And ") {
++            return true;
++        } else {
++            return false;
++        }
++
 +    }
 +
-+    this.updateEditedStepStyle = function () {
-+
-+        storyController.debug("> updateEditedStepStyle");
-+
-+        var editor = storyController.editor;
-+        var cursor = editor.getCursor();
-+        var line = cursor.line;
-+        storyController.debug("line being edited - " + line);
-+
-+        var tokenAt = editor.getTokenAt(cursor, true);
-+        storyController.debug("tokenAt.type - " + tokenAt.type);
-+
-+//        if (tokenAt.type == "step-body") {
-+        if (tokenAt.state.inStepBody) {
-+            storyController.debug("### modifying step ...");
-+            var doc = editor.getDoc();
-+            var stepBody = tokenAt.state.stepBodySoFar;
-+            storyController.debug("stepBodySoFar - " + stepBody);
-+            var inStepBody = true;
-+            var nextLineNum = cursor.line;
-+            var stepEndedAtLine = cursor.line;
-+            if (cursor.ch != 0) {
-+                // if we are in a step and also at the start of the line, i.e. case of multiline steps
-+                // then we do not want to yet advance to the next line since we want to include the
-+                // step body of this step line also
-+                nextLineNum++;
-+            } else {
-+                stepEndedAtLine--;
++    this.findStepStartingLineBefore = function (lineNumber) {
++        var previousLine = lineNumber - 1;
++        while (previousLine != -1) {
++            if (this.lineStartsWithStepKeyword(previousLine)) {
++                return previousLine;
 +            }
++            previousLine--;
++        }
++        return -1;
++    }
 +
-+            var stepStartedAtLine = tokenAt.state.lastStepStartedAt;
++    this.findStepStartingLineAfter = function (lineNumber) {
++        var nextLine = lineNumber + 1;
++        var totalLines = this.editor.lineCount();
++        while (nextLine < totalLines) {
++            if (this.lineStartsWithStepKeyword(nextLine)) {
++                return nextLine;
++            }
++            nextLine++;
++        }
++        return -1;
++    }
 +
-+            while (inStepBody && nextLineNum < doc.lineCount()) {
-+                var lineContent = editor.getLine(nextLineNum);
-+                if (lineContent == undefined) {
-+                    // we have reached the end of the story
-+                    break;
-+                } else if (lineContent.length == 0) {
-+                    // empty line so simply move onto next line
-+                    nextLineNum++;
-+                    stepEndedAtLine++;
-+                } else {
-+                    var nextToken = editor.getTokenAt({line: nextLineNum, ch: 1}, true);
-+                    if (nextToken.type != "step-body") {
-+                        inStepBody = false;
-+                    } else {
-+                        stepBody = nextToken.state.stepBodySoFar;
-+                        nextLineNum++;
-+                        stepEndedAtLine++;
++    this.findLastStepLineFrom = function (lineNumber) {
++
++        var nextLineNumber = lineNumber + 1;
++        var lineCount = this.editor.getDoc().lineCount();
++        var lastStepLine = lineNumber;
++        while (nextLineNumber < lineCount) {
++            if (this.lineStartsWithStepKeyword(nextLineNumber)) {
++                break;
++            } else {
++                lastStepLine = nextLineNumber;
++                nextLineNumber++;
++            }
++        }
++
++        return lastStepLine;
++    }
++
++    this.findMatchingStepdoc = function (step, stepType, stepDocs) {
++
++        storyController.debug("> findMatchingStepdoc");
++
++        // check if step matches
++        var matchedResult = null;
++        var matchingStepDoc = null;
++        {
++            step = step.replace(/\s+$/g, ''); // trim trailing whitespace;
++
++            for (var i = 0; i < stepDocs.length; i++) {
++                var stepDoc = stepDocs[i];
++                if (stepDoc.startingWord == stepType) {
++                    // try to see if the step docs pattern matches step body
++                    var regExpStr = stepDoc.groupedRegExpPattern;
++                    // replace the (.*) with ([\s\S]*) for javascript version of dotall option
++                    regExpStr = regExpStr.replace("(.*)", "([\\s\\S]*)");
++                    // add start and end chars to match the string exactly
++                    regExpStr = "^" + regExpStr + "$";
++                    storyController.debug("Trying to match the step body against pattern - " + regExpStr);
++                    var regExpPattern = new RegExp(regExpStr);
++                    var matchedResult = regExpPattern.exec(step);
++                    if (matchedResult != null) {
++                        storyController.debug("Step pattern - " + regExpStr + " matches current step body");
++                        matchingStepDoc = stepDoc;
++                        return new Object({result: matchedResult, stepDoc: matchingStepDoc});
++                        break;
 +                    }
 +                }
 +            }
++        }
 +
-+            storyController.debug("Modifying step body:\n" + stepBody);
-+            stepBody = stepBody.replace(/\s+$/g, ''); // trim trailing whitespace
-+            storyController.debug("Modifying step body after trimming:\n" + stepBody);
-+            var lastStepType = tokenAt.state.lastStepType;
++        storyController.debug("# findMatchingStepdoc");
++
++        return null;
++    }
++
++    this.remarkStep = function (stepStartLine, stepEndLine, step) {
++
++        storyController.debug("> remarkStep");
++        storyController.debug("stepStartLine - " + stepStartLine + ", stepEndLine - " + stepEndLine);
++        storyController.debug("step:\n" + step);
++
++
++        // extract step body i.e. without the starting keyword
++        var regExpPattern = new RegExp("(^(Given|When|Then|And)\\s+)([\\s\\S]*)");
++        var matchedResult = regExpPattern.exec(step);
++        var keyword;
++        var stepBody;
++        var keywordPart;
++        if (matchedResult != null) {
++            keywordPart = matchedResult[1];
++            keyword = matchedResult[2];
++            stepBody = matchedResult[3];
++        } else {
++            console.error("Failed to match step against expected pattern, step - " + step + ", pattern - " + regExpPattern);
++            return;
++        }
++
++        var findResult = this.findMatchingStepdoc(stepBody, keyword, this.stepDocs);
++
++        var markerStart = {line: stepStartLine, ch: 0};
++        var lastStepLineHandle = this.editor.getLineHandle(stepEndLine);
++        var markerEnd = {line: stepEndLine, ch: lastStepLineHandle.text.length};
++        var className = "matched-step";
++
++        // remove any matched-step markers
++        var markersBefore = this.editor.getDoc().findMarks(markerStart, markerEnd);
++        if (markersBefore.length > 0) {
++            // always remove any existing marks, so that we include newly edited text in the marked range
++            for (var m = 0; m < markersBefore.length; m++) {
++                var marker = markersBefore[m];
++                if (marker.className == className
++                    || marker.className == "step-parameter") {
++                    marker.clear();
++                }
++            }
++        }
++
++        if (findResult != null) {
++
++            // set matched-step markers
++            var options = new Object();
++            options.className = className;
++            this.editor.getDoc().markText(markerStart, markerEnd, options);
++
++            // match any parameters
++            // obtain boundaries of any parameters
++            var parameterGroupsInfos = [];
++            var parameterGroups = findResult.stepDoc.parameterGroups;
++            if (parameterGroups.length > 0) {
++                var pos = 0;
++                var lineOffset = 0;
++                for (var j = 1; j < findResult.result.length; j++) {
++                    var matchedGroup = findResult.result[j];
++                    if (parameterGroups.indexOf(j) > -1) {
++                        var pgi = new Object();
++                        pgi.number = j;
++                        pgi.text = matchedGroup;
++                        pgi.startIndex = pos;
++                        pgi.startLineOffset = lineOffset;
++                        pgi.endIndex = pos + matchedGroup.length;
++                        pgi.endLineOffset = lineOffset + (matchedGroup.split("\n").length - 1);
++
++                        // obtain line number and ch position
++                        // start
++                        pgi.startLine = stepStartLine + pgi.startLineOffset;
++                        var beforeParam = stepBody.substring(0, pgi.startIndex);
++                        var lastLineBreakInBefore = beforeParam.lastIndexOf("\n");
++                        var parameterStartLineCh;
++                        if (lastLineBreakInBefore > -1) {
++                            parameterStartLineCh = pgi.startIndex - lastLineBreakInBefore;
++                        } else {
++                            parameterStartLineCh = pgi.startIndex;
++                        }
++                        if (pgi.startLineOffset == 0) {
++                            // need to add the length of starting word also if on line 1
++                            parameterStartLineCh += keywordPart.length;
++                        }
++                        pgi.startLineCh = parameterStartLineCh;
++                        // end
++                        pgi.endLine = stepStartLine + pgi.endLineOffset;
++                        var includingParam = stepBody.substring(0, pgi.startIndex + pgi.text.length);
++                        var lastLineBreakInIncludingParam = includingParam.lastIndexOf("\n");
++                        var parameterEndLineCh;
++                        if (lastLineBreakInIncludingParam > -1) {
++                            parameterEndLineCh = pgi.startIndex + pgi.text.length - lastLineBreakInIncludingParam;
++                        } else {
++                            parameterEndLineCh = pgi.startIndex + pgi.text.length;
++                        }
++                        if (pgi.endLineOffset == 0) {
++                            // need to add the length of starting word also
++                            parameterEndLineCh += keywordPart.length;
++                        }
++                        pgi.endLineCh = parameterEndLineCh;
++
++                        parameterGroupsInfos.push(pgi);
++                    }
++                    pos += matchedGroup.length;
++                    var linesInGroup = matchedGroup.split(/\n/).length;
++                    if (linesInGroup > 1) {
++                        lineOffset += linesInGroup;
++                    }
++                }
++
++                // mark any step parameters
++                for (var k = 0; k < parameterGroupsInfos.length; k++) {
++                    var pgi = parameterGroupsInfos[k];
++                    var paramStart = {line: pgi.startLine, ch: pgi.startLineCh};
++                    var paramEnd = {line: pgi.endLine, ch: pgi.endLineCh};
++                    var paramMarkerOptions = new Object();
++                    paramMarkerOptions.className = "step-parameter";
++                    this.editor.getDoc().markText(paramStart, paramEnd, paramMarkerOptions);
++                }
++
++            }
++
++        }
++
++        storyController.debug("# remarkStep");
++    }
++
++
++    this.remarkStepBetween = function (stepStartLine, stepEndLine) {
++
++        storyController.debug("> remarkStepBetween");
++        storyController.debug("stepStartLine - " + stepStartLine + ", stepEndLine - " + stepEndLine);
++
++        var step = "";
++        this.editor.getDoc().eachLine(stepStartLine, stepEndLine + 1, function (lineHandle) {
++            step += lineHandle.text + "\n";
++        });
++
++        this.remarkStep(stepStartLine, stepEndLine, step);
++
++        storyController.debug("# remarkStepBetween");
++    }
++
++    this.remarkStepsBetween = function (scanStartLine, scanEndLine) {
++
++        storyController.debug("> remarkStepsBetween");
++        storyController.debug("scanStartLine - " + scanStartLine + ", scanEndLine - " + scanEndLine);
++
++        var stepStartLine = scanStartLine;
++        var stepEndLine = this.findLastStepLineFrom(scanStartLine);
++
++        this.remarkStepBetween(stepStartLine, stepEndLine);
++
++        while (stepEndLine < scanEndLine) {
++            stepStartLine = stepEndLine + 1;
++            stepEndLine = this.findLastStepLineFrom(stepStartLine);
++            this.remarkStepBetween(stepStartLine, stepEndLine);
++        }
++
++        storyController.debug("# remarkStepsBetween");
++    }
++
++    this.remarkStepsOnChange = function (editor, changeObj) {
++
+         storyController.debug("> onEditorChangeHandler");
+ 
++        var fromLine = changeObj.from.line;
++        var toLine = changeObj.to.line;
++
++        // update toLine if the edited text contains more than one line and the result is greater than current toLine
++        var linesInChangedText = changeObj.text.length;
++        var toLineAfterChange = fromLine + (linesInChangedText - 1);
++        if (toLineAfterChange > toLine) {
++            toLine = toLineAfterChange;
++        }
++
++        var scanStartLine;
++
++        // find a step which starts before or at fromLine
++        var previousStepStartingLine = this.findStepStartingLineBefore(fromLine);
++        if (previousStepStartingLine > -1) {
++            scanStartLine = previousStepStartingLine;
++        } else if (this.lineStartsWithStepKeyword(fromLine)) {
++            scanStartLine = fromLine;
++        } else {
++            // we are not inside the step, so ignore event
++            scanStartLine = null;
++        }
++
++        if (scanStartLine != null) {
++            // find scanEndLine
++            var scanEndLine = this.findLastStepLineFrom(toLine);
++            this.remarkStepsBetween(scanStartLine, scanEndLine);
++        }
++
++        storyController.debug("# onEditorChangeHandler");
++    }
++
++    this.onEditorChangeHandler = function (editor, changeObj) {
++        storyController.debug("> onEditorChangeHandler");
++
+         if (storyController.storyChanged == false) {
+             var saveCancelMsg = execspec.viewissuepage.showstory.renderSaveCancelMsg();
+             storyController.showWarningMessage(saveCancelMsg);
+         }
+         storyController.storyChanged = true;
+ 
+-        storyController.updateEditedStepStyle();
++        storyController.remarkStepsOnChange(editor, changeObj);
+ 
+         storyController.debug("# onEditorChangeHandler");
+     }
+@@ -119,18 +430,284 @@
+ 
+         var editor = storyController.editor;
+         var cursor = editor.getCursor();
++        var lineBeingEdited = cursor.line;
++        storyController.debug("line being edited - " + lineBeingEdited);
++        var doc = editor.getDoc();
++        var lineHandle = doc.getLineHandle(lineBeingEdited);
++
++        var tokenAtCurrentLine = editor.getTokenAt({line: lineBeingEdited, ch: lineHandle.text.length}, true);
++//        if (tokenAtCurrentLine.state.inStepBody) {
++        var stepTokensToRematch = [];
++        var currentStepNumber = tokenAtCurrentLine.state.stepNumber;
++        // if we are at the start of the line, we should rematch any previous step also if any
++        if (cursor.ch == 0) {
++            var previousLine = lineBeingEdited - 1;
++            var previousLineHandle = doc.getLineHandle(previousLine);
++            if (previousLineHandle != null) {
++                var previousLineToken = editor.getTokenAt({line: previousLine, ch: previousLineHandle.text.length}, true);
++                if (previousLineToken != null && previousLineToken.state.inStepBody && previousLineToken.state.stepNumber != currentStepNumber) {
++                    stepTokensToRematch.push(previousLine);
++//                        storyController.rematchStepSpanningLine(previousLine);
++                }
++            }
++        }
++        stepTokensToRematch.push(lineBeingEdited);
++        if (stepTokensToRematch.length == 2) {
++            // use case when we will rematch two steps one after the other
++            // in this case we need to clear the markers in range of lines that span the two target steps
++            var stepsStartedLine = previousLineToken.state.lastStepStartedAt;
++            var stepsEndedLine = lineBeingEdited;
++            var nextLine = stepsEndedLine + 1;
++            var nextLineHandle = doc.getLineHandle(nextLine);
++            if (nextLineHandle != null) {
++                var nextLineToken = editor.getTokenAt({line: nextLine, ch: nextLineHandle.text.length}, true);
++                while (nextLineHandle != null && nextLineToken.state.inStepBody && nextLineToken.state.stepNumber == currentStepNumber) {
++                    stepsEndedLine = nextLine;
++                    nextLine++;
++                    nextLineHandle = doc.getLineHandle(nextLine);
++                    if (nextLineHandle != null) {
++                        nextLineToken = editor.getTokenAt({line: nextLine, ch: nextLineHandle.text.length}, true);
++                    }
++                }
++            }
++            var startOfMarkers = {line: stepsStartedLine, ch: 0};
++            var lastStepsLine = doc.getLineHandle(stepsEndedLine);
++            var endOfMarkers = {line: stepsEndedLine, ch: lastStepsLine.text.length};
++            storyController.debug("### Going to rematch two consecutive steps, " +
++                "going to clear markers between [" + startOfMarkers.line + ":" + startOfMarkers.ch + "]" +
++                " and [" + endOfMarkers.line + ":" + endOfMarkers.ch + "]");
++            var markersBefore = doc.findMarks(startOfMarkers, endOfMarkers);
++            if (markersBefore.length > 0) {
++                // always remove any existing marks, so that we include newly edited text in the marked range
++                for (var m = 0; m < markersBefore.length; m++) {
++                    var marker = markersBefore[m];
++                    if (marker.className == "cm-matched-step"
++                        || marker.className == "cm-unmatched-step"
++                        || marker.className == "cm-step-parameter") {
++                        marker.clear();
++                    }
++                }
++            }
++        }
++
++        if (tokenAtCurrentLine.state.inStepBody) {
++            for (var i = 0; i < stepTokensToRematch.length; i++) {
++                storyController.rematchStepSpanningLine(stepTokensToRematch[i]);
++            }
++        }
++
++//        }
++
++        storyController.debug("# updateEditedStepStyle");
++    }
++
++    this.rematchStepSpanningLine = function (stepLine) {
++
++        storyController.debug("> rematchStepSpanningLine");
++
++        var editor = storyController.editor;
++        var lineBeingEdited = stepLine;
++
++        var doc = editor.getDoc();
++        var lineHandle = doc.getLineHandle(lineBeingEdited);
++
++        var tokenAtCurrentLine = editor.getTokenAt({line: lineBeingEdited, ch: lineHandle.text.length}, true);
++        storyController.debug("tokenAtCurrentLine.type - " + tokenAtCurrentLine.type);
++
++        // work out final token of step body
++        var stepBodyToken = tokenAtCurrentLine;
++        {
++            var currentStepNumber = tokenAtCurrentLine.state.currentStepNumber;
++
++            var lastStepLine = lineBeingEdited;
++            var nextLineHandle = doc.getLineHandle(lastStepLine + 1);
++
++            if (nextLineHandle != null) {
++                var tokenAtNextLine = editor.getTokenAt({line: lastStepLine + 1, ch: nextLineHandle.text.length}, true);
++                while (tokenAtNextLine != null && tokenAtNextLine.state.inStepBody && tokenAtNextLine.state.currentStepNumber == currentStepNumber) {
++                    stepBodyToken = tokenAtNextLine;
++                    lastStepLine++;
++                    var nextLineHandle = doc.getLineHandle(lastStepLine + 1);
++                    if (nextLineHandle != null) {
++                        tokenAtNextLine = editor.getTokenAt({line: lastStepLine + 1, ch: nextLineHandle.text.length}, true);
++                    } else {
++                        tokenAtNextLine = null;
++                    }
++                }
++            }
++        }
++
++        // check if step matches
++        var matchedResult = null;
++        var matchingStepDoc = null;
++        {
++            var lastStepType = stepBodyToken.state.lastStepType;
 +            storyController.debug("lastStepType - " + lastStepType);
 +
-+            // check if step matches
-+            var stepMatched = false;
-+            var lastStepStartedAt = tokenAt.state.lastStepStartedAt;
-+            var stepBodyStartedAtCh = tokenAt.state.stepBodyStartedAtCh;
 +            var stepDocs = storyController.stepDocs;
-+            var parameterGroupsInfos = [];
++            var stepBody = stepBodyToken.state.stepBody;
++            var stepBodyTrimmed = stepBody.replace(/\s+$/g, ''); // trim trailing whitespace;
 +
 +            for (var i = 0; i < stepDocs.length; i++) {
 +                var stepDoc = stepDocs[i];
@@ -819,240 +958,485 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +                    regExpStr = regExpStr.replace("(.*)", "([\\s\\S]*)");
 +                    // add start and end chars to match the string exactly
 +                    regExpStr = "^" + regExpStr + "$";
-+                    storyController.debug("Trying to match the step against pattern - " + regExpStr);
++                    storyController.debug("Trying to match the step body against pattern - " + regExpStr);
 +                    var regExpPattern = new RegExp(regExpStr);
-+                    var matched = regExpPattern.exec(stepBody);
-+                    if (matched != null) {
-+                        var step = lastStepType + " " + stepBody;
-+                        storyController.debug("Step pattern - " + regExpStr + " matches current step");
-+                        stepMatched = true;
-+                        // obtain boundaries of any parameters
-+                        var parameterGroups = stepDoc.parameterGroups;
-+                        if (parameterGroups.length > 0) {
-+                            var pos = stepBodyStartedAtCh;
-+                            for (var j = 1; j < matched.length; j++) {
-+                                var matchedGroup = matched[j];
-+                                if (parameterGroups.indexOf(j) > -1) {
-+                                    var pgi = new Object();
-+                                    pgi.number = j;
-+                                    pgi.text = matchedGroup;
-+                                    pgi.startIndex = pos;
-+                                    pgi.endIndex = pos + matchedGroup.length;
-+
-+                                    // work out start and end boundaries in terms of line and line position
-+                                    // start position
-+                                    var beforeParam = step.substring(0, pgi.startIndex);
-+                                    var numOfLinesInBefore = beforeParam.split(/\n/).length;
-+                                    var startAtLine = lastStepStartedAt + (numOfLinesInBefore - 1);
-+                                    pgi.startAtLine = startAtLine;
-+                                    var lastLineBreakPos = beforeParam.lastIndexOf("\n");
-+                                    if (lastLineBreakPos == -1) {
-+                                        lastLineBreakPos = 0;
-+                                    }
-+                                    pgi.startAtLineCh = pgi.startIndex - lastLineBreakPos;
-+                                    // end position
-+                                    var includingParam = step.substring(0, (pgi.startIndex + matchedGroup.length));
-+                                    var numOfLinesInIncludingParam = includingParam.split(/\n/).length;
-+                                    var endAtLine = lastStepStartedAt + (numOfLinesInIncludingParam - 1);
-+                                    pgi.endAtLine = endAtLine;
-+                                    lastLineBreakPos = includingParam.lastIndexOf("\n");
-+                                    if (lastLineBreakPos == -1) {
-+                                        lastLineBreakPos = 0;
-+                                    }
-+                                    pgi.endAtLineCh = pgi.endIndex - lastLineBreakPos;
-+
-+                                    parameterGroupsInfos.push(pgi);
-+                                }
-+                                pos += matchedGroup.length;
-+                            }
-+                        }
++                    var matchedResult = regExpPattern.exec(stepBodyTrimmed);
++                    if (matchedResult != null) {
++                        storyController.debug("Step pattern - " + regExpStr + " matches current step body");
++                        matchingStepDoc = stepDoc;
 +                        break;
 +                    }
 +                }
 +            }
++        }
 +
++        // obtain boundaries of any parameters
++        var parameterGroupsInfos = [];
++        {
++            if (matchedResult != null) {
++                var parameterGroups = matchingStepDoc.parameterGroups;
++                if (parameterGroups.length > 0) {
++                    var pos = 0;
++                    var lineOffset = 0;
++                    for (var j = 1; j < matchedResult.length; j++) {
++                        var matchedGroup = matchedResult[j];
++                        if (parameterGroups.indexOf(j) > -1) {
++                            var pgi = new Object();
++                            pgi.number = j;
++                            pgi.text = matchedGroup;
++                            pgi.startIndex = pos;
++                            pgi.endIndex = pos + matchedGroup.length;
++                            pgi.lineOffset = lineOffset;
++                            parameterGroupsInfos.push(pgi);
++                        }
++                        pos += matchedGroup.length;
++                        var linesInGroup = matchedGroup.split(/\n/).length;
++                        if (linesInGroup > 1) {
++                            lineOffset += linesInGroup;
++                        }
++                    }
++                }
++            }
++        }
++
++        // obtain start and end indexes of parameters in terms of line number and ch position
++        {
++            if (matchedResult != null && parameterGroupsInfos.length > 0) {
++                var startingWord = stepBodyToken.state.stepStartingKeyword;
++                var stepStartLine = stepBodyToken.state.lastStepStartedAt;
++                for (var i = 0; i < parameterGroupsInfos.length; i++) {
++                    var pgi = parameterGroupsInfos[i];
++                    // start
++                    var parameterStartLine = stepStartLine + pgi.lineOffset;
++                    var beforeParam = stepBodyToken.state.stepBody.substring(0, pgi.startIndex);
++                    var lastLineBreakInBefore = beforeParam.lastIndexOf("\n");
++                    var parameterStartLineCh;
++                    if (lastLineBreakInBefore > -1) {
++                        parameterStartLineCh = pgi.startIndex - lastLineBreakInBefore;
++                    } else {
++                        parameterStartLineCh = pgi.startIndex;
++                    }
++                    if (pgi.lineOffset == 0) {
++                        // need to add the length of starting word also
++                        parameterStartLineCh += startingWord.length;
++                    }
++                    pgi.startLine = parameterStartLine;
++                    pgi.startLineCh = parameterStartLineCh;
++                    // end
++                    var parameterEndLine = stepStartLine + pgi.lineOffset + (pgi.text.split("\n").length - 1);
++                    var includingParam = stepBodyToken.state.stepBody.substring(0, pgi.startIndex + pgi.text.length);
++                    var lastLineBreakInIncludingParam = includingParam.lastIndexOf("\n");
++                    var parameterEndLineCh;
++                    if (lastLineBreakInIncludingParam > -1) {
++                        parameterEndLineCh = pgi.startIndex + pgi.text.length - lastLineBreakInIncludingParam;
++                    } else {
++                        parameterEndLineCh = pgi.startIndex + pgi.text.length;
++                    }
++                    if (pgi.lineOffset == 0 && lastLineBreakInIncludingParam == -1) {
++                        // need to add the length of starting word also
++                        parameterEndLineCh += startingWord.length;
++                    }
++                    pgi.endLine = parameterEndLine;
++                    pgi.endLineCh = parameterEndLineCh;
++                }
++            }
++        }
++
++        // mark the step as unmatched / matched
++        var stepStartedAtLine = stepBodyToken.state.lastStepStartedAt;
++        var stepEndedAtLine = stepBodyToken.state.lineNumber;
++        {
 +            var from = {line: stepStartedAtLine, ch: 0};
-+            var to = {line: stepEndedAtLine, ch: null};
++            var toLineHandle = doc.getLineHandle(stepEndedAtLine);
++            var to = {line: stepEndedAtLine, ch: toLineHandle.text.length};
 +            var options = new Object();
-+
 +            var marksBefore = doc.findMarks(from, to);
-+
 +            if (marksBefore.length > 0) {
 +                // always remove any existing marks, so that we include newly edited text in the marked range
 +                for (var m = 0; m < marksBefore.length; m++) {
-+                    marksBefore[m].clear();
++                    var marks = marksBefore[m];
++                    if (marks.className == "cm-matched-step"
++                        || marks.className == "cm-unmatched-step"
++                        || marks.className == "cm-step-parameter") {
++                        marks.clear();
++                    }
 +                }
 +            }
-+
-+            if (stepMatched) {
++            if (matchedResult != null) {
 +                options.className = "cm-matched-step";
 +            } else {
 +                options.className = "cm-unmatched-step";
 +            }
 +            doc.markText(from, to, options);
++        }
 +
-+            var marksAfter = doc.findMarks(from, to);
-+
-+            // mark parameter boundaries
++        // mark parameter boundaries
++        {
 +            if (parameterGroupsInfos.length > 0) {
 +                for (var k = 0; k < parameterGroupsInfos.length; k++) {
 +                    var pgi = parameterGroupsInfos[k];
-+                    var startLine = pgi.startAtLine;
-+                    var startCh = pgi.startAtLineCh;
-+                    var paramStart = {line: startLine, ch: startCh};
-+                    var endLine = pgi.endAtLine;
-+                    var endCh = pgi.endAtLineCh;
-+                    var paramEnd = {line: endLine, ch: endCh};
++                    var paramStart = {line: pgi.startLine, ch: pgi.startLineCh};
++                    var paramEnd = {line: pgi.endLine, ch: pgi.endLineCh};
 +                    options.className = "cm-step-parameter";
 +                    doc.markText(paramStart, paramEnd, options);
 +                }
 +            }
 +        }
 +
-+        storyController.debug("# updateEditedStepStyle");
-     }
- 
-     this.showWarningMessage = function (saveCancelMsg) {
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(revision )
-@@ -1,6 +1,6 @@
- function StoryService() {
- 
--    this.debugOn = false;
-+    this.debugOn = true;
- 
-     var pathBase = "/jira/rest/story-res/1.0/";
- 
-@@ -22,7 +22,6 @@
-         }
-     }
- 
--
-     this.init = function () {
- 
-         storyService.debug("> init");
-@@ -31,11 +30,6 @@
-         storyService.debug("# init");
-     }
- 
--
--    this.test = function () {
--        console.log("test function called in storyService");
--    }
--
-     this.saveOrUpdateStory = function (storyPayload, callBack) {
- 
-         storyService.debug("> saveOrUpdateStory");
-@@ -210,5 +204,38 @@
-         storyService.debug("# StoryService.autoComplete");
-     }
- 
-+    this.fetchStepDocs = function (projectKey, callback) {
-+
-+        this.debug("> fetchStepDocs");
-+        this.debug("projectKey - " + projectKey);
-+
-+        var pathBase = "/jira/rest/story-res/1.0/";
-+        var pathStepDocs = pathBase + "step-doc/for-project/" + projectKey;
-+        this.debug("pathStepDocs - " + pathStepDocs);
-+
-+        var storyService = this;
-+        var successCallback = function (data, status, xhr) {
-+            storyService.debug("> fetchStepDocs.successCallback");
-+            storyService.debug("status - " + status);
-+            storyService.debug("xhr.status - " + xhr.status);
-+            storyService.debug("data - " + data);
-+
-+            storyService.debug("found step docs - " + JSON.stringify(data, null, "\t"));
-+
-+            callback(data.stepDocs);
-+
-+            storyService.debug("# fetchStepDocs.successCallback");
-+        };
-+
-+        AJS.$.ajax({
-+            type: "GET",
-+            url: pathStepDocs,
-+            contentType: "text/plain; charset=utf-8",
-+            success: successCallback,
-+            dataType: "json"
-+        });
-+
-+        this.debug("# fetchStepDocs");
++        storyController.debug("# rematchStepSpanningLine");
 +    }
++
++
++    this.updateEditedStepStyle_backup = function () {
++
++        storyController.debug("> updateEditedStepStyle");
++
++        var editor = storyController.editor;
++        var cursor = editor.getCursor();
+         var line = cursor.line;
+         storyController.debug("line being edited - " + line);
  
- }
-\ No newline at end of file
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/stepdoc/StepDocDTOUtils.java
+-        var tokenAt = editor.getTokenAt(cursor, true);
++        var doc = editor.getDoc();
++        var lineHandle = doc.getLineHandle(line);
++
++        var checkTokenPos = {line: line, ch: lineHandle.text.length};
++        var tokenAt = editor.getTokenAt(checkTokenPos, true);
+         storyController.debug("tokenAt.type - " + tokenAt.type);
+ 
+-//        if (tokenAt.type == "step-body") {
+-        if (tokenAt.state.inStepBody) {
++        if (tokenAt.state.inStep) {
++
+             storyController.debug("### modifying step ...");
+-            var doc = editor.getDoc();
+-            var stepBody = tokenAt.state.stepBodySoFar;
+-            storyController.debug("stepBodySoFar - " + stepBody);
++
++            var stepBody = tokenAt.state.stepBody;
++            storyController.debug("stepBody - " + stepBody);
+             var inStepBody = true;
+             var nextLineNum = cursor.line;
+             var stepEndedAtLine = cursor.line;
+@@ -159,7 +736,7 @@
+                     if (nextToken.type != "step-body") {
+                         inStepBody = false;
+                     } else {
+-                        stepBody = nextToken.state.stepBodySoFar;
++                        stepBody = nextToken.state.stepBody;
+                         nextLineNum++;
+                         stepEndedAtLine++;
+                     }
+@@ -210,7 +787,7 @@
+ 
+                                     // work out start and end boundaries in terms of line and line position
+                                     // start position
+-                                    var beforeParam = step.substring(0, pgi.startIndex);
++                                    var beforeParam = step.substring(0 + lastStepType.length, pgi.startIndex + lastStepType.length);
+                                     var numOfLinesInBefore = beforeParam.split(/\n/).length;
+                                     var startAtLine = lastStepStartedAt + (numOfLinesInBefore - 1);
+                                     pgi.startAtLine = startAtLine;
+@@ -220,7 +797,7 @@
+                                     }
+                                     pgi.startAtLineCh = pgi.startIndex - lastLineBreakPos;
+                                     // end position
+-                                    var includingParam = step.substring(0, (pgi.startIndex + matchedGroup.length));
++                                    var includingParam = step.substring(0 + lastStepType.length, (pgi.startIndex + matchedGroup.length + lastStepType.length));
+                                     var numOfLinesInIncludingParam = includingParam.split(/\n/).length;
+                                     var endAtLine = lastStepStartedAt + (numOfLinesInIncludingParam - 1);
+                                     pgi.endAtLine = endAtLine;
+@@ -340,15 +917,25 @@
+         this.debug("> showStory");
+ 
+         this.currentStory = storyModel;
+-        this.editor.off("change", storyController.onEditorChangeHandler);
++
++//        this.editor.off("change", storyController.onEditorChangeHandler);
+         this.editor.setValue(storyModel.asString);
+-        this.editor.on("change", storyController.onEditorChangeHandler);
++//        this.editor.on("change", storyController.onEditorChangeHandler);
++
+         storyController.storyChanged = false;
+ 
+         this.editor.setOption("readOnly", false);
+ 
+         this.debug("# showStory");
+ 
++        // rescan step matching
++        var firstStepStartingLine = this.findStepStartingLineAfter(-1);
++        if (firstStepStartingLine != -1) {
++            var lastStepStartingLine = this.findStepStartingLineBefore(this.editor.lineCount());
++            var lastStepEndingLine = this.findLastStepLineFrom(lastStepStartingLine);
++            this.remarkStepsBetween(firstStepStartingLine, lastStepEndingLine);
++        }
++
+         if (storyModel.version != null) {
+             // this is NOT a new story, so check and show any story reports
+             var projectKey = storyModel.projectKey;
+@@ -379,7 +966,7 @@
+ 
+         var templateParam = new Object();
+         templateParam.storyTestReports = storyTestReports;
+-        templateParam.currentStoryVersion = this.currentStory.version;
++        templateParam.currentStoryVersion = storyController.currentStory.version;
+ 
+         var storyReportsContent = execspec.viewissuepage.showstoryreports.renderStoryReports(templateParam);
+ 
+Index: execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java
+===================================================================
+--- execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java	(date 1406793811000)
++++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java	(date 1406793811000)
+@@ -1,43 +0,0 @@
+-package com.mycomp.execspec.util;
+-
+-import org.jbehave.core.configuration.Keywords;
+-import org.jbehave.core.reporters.HtmlOutput;
+-
+-import java.io.PrintStream;
+-import java.util.Properties;
+-
+-/**
+- * Created by Dmytro on 4/29/2014.
+- */
+-@Deprecated
+-public class CustomHTMLOutput extends HtmlOutput {
+-
+-    public CustomHTMLOutput(PrintStream output) {
+-        super(output);
+-    }
+-
+-    public CustomHTMLOutput(PrintStream output, Properties outputPatterns) {
+-        super(output, outputPatterns);
+-    }
+-
+-    public CustomHTMLOutput(PrintStream output, Keywords keywords) {
+-        super(output, keywords);
+-    }
+-
+-    public CustomHTMLOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+-        super(output, outputPatterns, keywords);
+-    }
+-
+-    public CustomHTMLOutput(PrintStream output, Properties outputPatterns, Keywords keywords, boolean reportFailureTrace) {
+-        super(output, outputPatterns, keywords, reportFailureTrace);
+-    }
+-
+-    public CustomHTMLOutput(PrintStream output, Properties outputPatterns, Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
+-        super(output, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
+-    }
+-
+-    public String escapeHTML(String args) {
+-        Object[] escaped = super.escape(Format.HTML, args);
+-        return (String) escaped[0];
+-    }
+-}
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/stepdoc/StepDocDTOUtils.java	(date 1406459024000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
-@@ -4,6 +4,7 @@
- import org.jbehave.core.steps.StepType;
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1406793811000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
+@@ -27,6 +27,10 @@
+     "use strict";
  
- import java.util.ArrayList;
-+import java.util.Collections;
- import java.util.List;
- 
- /**
-@@ -13,10 +14,26 @@
- 
-     public static void fromDTOToModel(StepDocDTO stepDocDTO, StepDoc stepDoc) {
- 
--        stepDoc.setPattern(stepDocDTO.getPattern());
--        stepDoc.setStartingWord(stepDocDTO.getStartingWord());
-         stepDoc.setStepType(stepDocDTO.getStepType().name());
-+        stepDoc.setStartingWord(stepDocDTO.getStartingWord());
-+        stepDoc.setPattern(stepDocDTO.getPattern());
-+        stepDoc.setRegExpPattern(stepDocDTO.getRegExpPattern());
-+        stepDoc.setGroupedRegExpPattern(stepDocDTO.getGroupedRegExpPattern());
+     CodeMirror.defineMode("jbehave", function () {
 +
-+        List<Integer> parameterGroups = stepDocDTO.getParameterGroups();
-+        if (parameterGroups != null && !parameterGroups.isEmpty()) {
-+            StringBuilder sb = new StringBuilder();
-+            for (int i = 0; i < parameterGroups.size(); i++) {
-+                Integer parameterGroup = parameterGroups.get(i);
-+                sb.append(parameterGroup.toString());
-+                if (i < parameterGroups.size()-1) {
-+                    sb.append(",");
--    }
++        var sc = null;
++        var stepDocs = null;
++
+         return {
+             lineComment: "!--",
+             tableLineComment: "|--",
+@@ -34,7 +38,7 @@
+ //                console.log("### on blankLine");
+                 state.lineNumber++;
+                 if (state.inStep) {
+-                    state.stepBodySoFar += "\n";
++                    state.stepBody += "\n";
+                 }
+             },
+             startState: function () {
+@@ -62,11 +66,24 @@
+                     lastStepType: null,
+                     lastStepStartedAt: null,
+ 
++                    currentStepNumber: 0,
++
++                    stepStartingKeyword: null,
++                    stepBody: null,
++
+                     lastTokenType: null,
+-                    stepBodySoFar: null
++
++                    inStep: false
++
+                 };
+             },
+             token: function (stream, state) {
++
++                if (sc == null) {
++                    sc = storyController;
++                    stepDocs = sc.stepDocs;
 +                }
-+            }
-+            String parameterGroupsAsString = sb.toString();
-+            stepDoc.setParameterGroups(parameterGroupsAsString);
-+        }
-+    }
- 
-     public static StepDocDTO fromModelToDTO(StepDoc stepDoc) {
- 
-@@ -24,7 +41,21 @@
-         String startingWord = stepDoc.getStartingWord();
-         String pattern = stepDoc.getPattern();
-         String regExpPattern = stepDoc.getRegExpPattern();
--        StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern);
-+        String groupedRegExpPattern = stepDoc.getGroupedRegExpPattern();
-+        String parameterGroupsStr = stepDoc.getParameterGroups();
-+        List<Integer> parameterGroups;
-+        if (parameterGroupsStr != null) {
-+            String[] strGroups = parameterGroupsStr.split(",");
-+            parameterGroups = new ArrayList<Integer>(strGroups.length);
-+            for (String strGroup : strGroups) {
-+                Integer intGroup = Integer.parseInt(strGroup);
-+                parameterGroups.add(intGroup);
-+            }
-+        } else {
-+            parameterGroups = Collections.emptyList();
-+        }
 +
-+        StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern, groupedRegExpPattern, parameterGroups);
-         return stepDocDTO;
-     }
+                 if (stream.sol()) {
+                     state.lineNumber++;
  
+@@ -159,16 +176,24 @@
+ 
+                     // GIVEN
+                 } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
++
+                     state.lastStepType = "Given";
++                    state.stepStartingKeyword = "Given "; //TODO
+                     state.allowAndStep = true;
+                     state.inStep = true;
+                     state.stepNumber++;
+-                    state.stepBodySoFar = "";
++                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
+ 
+                     state.inStepBody = false;
+                     state.stepBodyStartedAtCh = null;
+ 
++                    state.currentStepNumber++;
++
++                    var doc = storyController.editor.getDoc();
++
++                    doc.getLineHandle(state.lineNumber);
++
+                     return state.lastTokenType = "step-keyword given-step";
+ 
+                     // WHEN
+@@ -177,39 +202,50 @@
+                     state.inStep = true;
+                     state.allowAndStep = true;
+                     state.lastStepType = "When";
++                    state.stepStartingKeyword = "When "; //TODO
+                     state.stepNumber++;
+-                    state.stepBodySoFar = "";
++                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
+ 
+                     state.inStepBody = false;
+                     state.stepBodyStartedAtCh = null;
+ 
++                    state.currentStepNumber++;
++
+                     return state.lastTokenType = "step-keyword when-step";
+ 
+                     // THEN
+                 } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
+                     state.lastStepType = "Then";
++                    state.stepStartingKeyword = "Then "; //TODO
++
+                     state.allowAndStep = true;
+                     state.inStep = true;
+                     state.stepNumber++;
+-                    state.stepBodySoFar = "";
++                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
+ 
+                     state.inStepBody = false;
+                     state.stepBodyStartedAtCh = null;
+ 
++                    state.currentStepNumber++;
++
+                     return state.lastTokenType = "step-keyword then-step";
+ 
+                     // AND
+                 } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
+                     state.inStep = true;
+                     state.stepNumber++;
+-                    state.stepBodySoFar = "";
++                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
++                    state.stepStartingKeyword = "And "; //TODO
+ 
++
+                     state.inStepBody = false;
+                     state.stepBodyStartedAtCh = null;
+ 
++                    state.currentStepNumber++;
++
+                     return state.lastTokenType = "step-keyword " + state.lastStepType + "-step";
+ 
+                     // Description
+@@ -218,17 +254,62 @@
+                     return state.lastTokenType = "description-line";
+ 
+                     // Step body
+-                } else if (state.inStep && stream.match(/(.*)/, false)) {
++                } else if (state.inStep && stream.match(/(.*)/)) {
+ 
+                     if (state.inStepBody == false) {
+                         // this is the first line of the step
+                         state.inStepBody = true;
+-                        state.stepBodyStartedAtCh = stream.column();
++                        state.stepBodyStartedAtCh = stream.column() - stream.current().length;
+                     }
+-                    stream.match(/(.*)/);
+ 
+-                    state.stepBodySoFar += stream.current() + "\n";
+-                    console.log("stepBodySoFar - " + state.stepBodySoFar);
++                    state.stepBody += stream.current() + "\n";
++
++                    var stepBody = state.stepBody;
++                    console.log("stepBody - " + stepBody);
++
++//                    // look ahead for full step body
++//                    var editor = storyController.editor;
++//                    var isCurrentStepLine = true;
++//                    var lineNumberToCheck = state.lineNumber;
++//                    var remainingStepBody = "";
++//                    while (isCurrentStepLine) {
++//                        lineToCheck++;
++//                        var lineToCheck = editor.getLineHandle(lineNumberToCheck);
++//                        if (lineToCheck == null) {
++//                            // we are at the end of the document
++//                            break;
++//                        } else {
++//                            var lineText = lineToCheck.text;
++//                            if (lineText.substr(0, "Given ".length) == "Given ") {
++//                                isCurrentStepLine = false;
++//                                break;
++//                            } else {
++//                                remainingStepBody += lineText + "\n";
++//                            }
++//                        }
++//                    }
++//
++//                    var fullStepBody = stepBody + remainingStepBody;
++//                    console.log("### fullStepBody - " + fullStepBody);
++
++
++//                    var paramStart = {line: state.lineNumber, ch: 0};
++//                    var paramEnd = {line: state.lineNumber, ch: currentLine.text.length};
++//                    var options = new Object();
++//                    options.className = "step-body-line";
++//
++//                    var marksBefore = editor.getDoc().findMarks(paramStart, paramEnd);
++//
++//                    if (marksBefore.length > 0) {
++//                        // always remove any existing marks, so that we include newly edited text in the marked range
++//                        for (var m = 0; m < marksBefore.length; m++) {
++//                            marksBefore[m].clear();
++//                        }
++//                    }
++//                    editor.getDoc().markText(paramStart, paramEnd, options);
++
++//                    editor.addLineClass({line: state.lineNumber-1, where: "wrap", "class": "step-body-line"});
++
+                     return state.lastTokenType = "step-body"
+ //                        + "line-step-line"
+ //                        + " line-step-number-" + state.stepNumber
+@@ -237,7 +318,7 @@
+ 
+                     // Fall through
+                 } else {
+-                    stream.next();
++                    stream.match(/(.*)/);
+ //                    stream.eatWhile(/[^@"<#]/);
+                     return null;
+                 }
