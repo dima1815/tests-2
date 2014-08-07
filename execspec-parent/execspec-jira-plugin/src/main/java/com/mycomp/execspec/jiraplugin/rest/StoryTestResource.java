@@ -7,7 +7,6 @@ import com.mycomp.execspec.jiraplugin.dto.storyreport.StoryTestReportsPayload;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
-import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtmlReport;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,5 @@
 package com.mycomp.execspec.jiraplugin.dto.storyreport;
 
-import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtmlReport;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;

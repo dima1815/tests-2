@@ -1,7 +1,6 @@
 package com.mycomp.execspec.jiraplugin.dto.storyreport;
 
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
-import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtmlReport;
 import org.bitbucket.jbehaveforjira.javaclient.util.TestStatus;
 
 /**

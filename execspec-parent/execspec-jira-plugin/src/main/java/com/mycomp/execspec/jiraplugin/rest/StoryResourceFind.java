@@ -8,7 +8,7 @@ import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
 import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
-import org.bitbucket.jbehaveforjira.javaclient.dto.StoryPathsDTO;
+import org.bitbucket.jbehaveforjira.javaclient.dto.StoryPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public class StoryResourceFind {
     @GET
     @Path("/story-paths/{projectKey}")
     @Produces({MediaType.APPLICATION_JSON})
-    public StoryPathsDTO listStoryPaths(@PathParam("projectKey") String projectKey,
+    public StoryPaths listStoryPaths(@PathParam("projectKey") String projectKey,
                                         @QueryParam("appendVersionToPath")
                                         @DefaultValue("true") boolean includeVersionInPath) {
 
@@ -74,7 +74,7 @@ public class StoryResourceFind {
             String storyPath = storyPathSb.toString();
             paths.add(storyPath);
         }
-        StoryPathsDTO pathsModel = new StoryPathsDTO();
+        StoryPaths pathsModel = new StoryPaths();
         pathsModel.setPaths(paths);
 
         return pathsModel;
