@@ -9,6 +9,7 @@ import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
 import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 import org.apache.commons.lang.Validate;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public synchronized StoryDTO saveOrUpdate(StoryDTO storyDTO) {
+    public synchronized JiraStory saveOrUpdate(JiraStory storyDTO) {
 
         String issueKey = storyDTO.getIssueKey();
         User user = authenticationContext.getLoggedInUser();
@@ -74,7 +75,7 @@ public class StoryServiceImpl implements StoryService {
         }
     }
 
-    private StoryDTO create(StoryDTO storyDTO, String userName) {
+    private JiraStory create(JiraStory storyDTO, String userName) {
 
 
         final Story story = storyDao.create();
@@ -85,11 +86,11 @@ public class StoryServiceImpl implements StoryService {
         story.setLastEditedBy(userName);
         story.save();
 
-        StoryDTO byId = this.findById(story.getID());
+        JiraStory byId = this.findById(story.getID());
         return byId;
     }
 
-    private StoryDTO update(Story story, StoryDTO storyDTO, String userName) {
+    private JiraStory update(Story story, JiraStory storyDTO, String userName) {
 
         long currentVersion = story.getVersion();
         long rolledVersion = currentVersion + 1;
@@ -99,12 +100,12 @@ public class StoryServiceImpl implements StoryService {
         story.setLastEditedBy(userName);
         story.save();
 
-        StoryDTO byId = this.findById(story.getID());
+        JiraStory byId = this.findById(story.getID());
         return byId;
     }
 
     @Override
-    public StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey) {
+    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
 
         List<Story> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
         if (byIssueKey.isEmpty()) {
@@ -115,19 +116,19 @@ public class StoryServiceImpl implements StoryService {
 
             Story story = byIssueKey.get(0);
 
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story);
+            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
             return storyDTO;
         }
     }
 
     @Override
-    public List<StoryDTO> findByProjectKey(String projectKey) {
+    public List<JiraStory> findByProjectKey(String projectKey) {
 
         List<Story> stories = storyDao.findAll();
 
-        List<StoryDTO> storyDTOs = new ArrayList<StoryDTO>(stories.size());
+        List<JiraStory> storyDTOs = new ArrayList<JiraStory>(stories.size());
         for (Story story : stories) {
-            StoryDTO storyDTO = StoryDTOUtils.toDTO(story);
+            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
             storyDTOs.add(storyDTO);
         }
 
@@ -135,11 +136,11 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public StoryDTO findById(int storyId) {
+    public JiraStory findById(int storyId) {
 
         Story story = storyDao.get(storyId);
 
-        StoryDTO storyModel = StoryDTOUtils.toDTO(story);
+        JiraStory storyModel = StoryDTOUtils.toDTO(story);
         return storyModel;
     }
 

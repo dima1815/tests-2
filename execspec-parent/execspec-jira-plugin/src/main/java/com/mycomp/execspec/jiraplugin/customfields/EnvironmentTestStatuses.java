@@ -1,5 +1,7 @@
 package com.mycomp.execspec.jiraplugin.customfields;
 
+import org.bitbucket.jbehaveforjira.javaclient.util.TestStatus;
+
 import java.util.*;
 
 /**

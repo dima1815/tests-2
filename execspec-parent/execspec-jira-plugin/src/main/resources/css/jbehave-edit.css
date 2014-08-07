@@ -41,25 +41,45 @@
 .cm-step-keyword {
     color: #aa5500;
     font-weight: bold;
-}
-
-.cm-step-keyword.cm-unmatched-step {
-    font-weight: normal;
     font-style: italic;
 }
 
-.cm-step-body.cm-unmatched-step {
-    font-style: italic;
-    /*font-weight: bold;*/
-    /*font-weight: bold;*/
-    color: lightslategrey;
+.cm-step-keyword.matched-step {
+    font-style: normal;
 }
 
-.cm-step-body.cm-step-parameter {
+/*.hint-step-keyword {*/
+    /*color: #aa5500;*/
+    /*font-weight: bold;*/
+    /*font-style: normal;*/
+/*}*/
+
+/*.cm-step-body.cm-matched-step {*/
+    /*font-style: normal;*/
+    /*font-weight: bold;*/
+    /*font-weight: bold;*/
+    /*color: lightslategrey;*/
+/*}*/
+
+.cm-step-body {
+    font-style: italic;
+}
+
+.cm-step-body.matched-step {
+    font-style: normal;
+}
+
+.cm-step-body.matched-step.step-parameter {
     font-weight: bold;
     color: purple;
-    /*color: chocolate;*/
 }
+
+/*.hint-step-parameter {*/
+    /*font-weight: bold;*/
+    /*color: purple;*/
+/*}*/
+
+
 
 /*.cm-unmatched-step {*/
     /*font-style: italic;*/

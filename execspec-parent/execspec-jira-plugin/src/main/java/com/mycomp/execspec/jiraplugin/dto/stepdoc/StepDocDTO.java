@@ -14,17 +14,17 @@ public class StepDocDTO {
 
     private String startingWord;
     private String pattern;
-    private String regExpPattern;
+    private String resolvedPattern;
     private String groupedRegExpPattern;
     private List<Integer> parameterGroups;
 
     protected StepDocDTO() {
     }
 
-    public StepDocDTO(String startingWord, String pattern, String regExpPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
+    public StepDocDTO(String startingWord, String pattern, String resolvedPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
         this.startingWord = startingWord;
         this.pattern = pattern;
-        this.regExpPattern = regExpPattern;
+        this.resolvedPattern = resolvedPattern;
         this.groupedRegExpPattern = groupedRegExpPattern;
         this.parameterGroups = parameterGroups;
     }
@@ -38,8 +38,8 @@ public class StepDocDTO {
         return pattern;
     }
 
-    public String getRegExpPattern() {
-        return regExpPattern;
+    public String getResolvedPattern() {
+        return resolvedPattern;
     }
 
     public String getGroupedRegExpPattern() {
@@ -63,7 +63,7 @@ public class StepDocDTO {
         return "StepDocDTO{" +
                 "startingWord='" + startingWord + '\'' +
                 ", pattern='" + pattern + '\'' +
-                ", regExpPattern='" + regExpPattern + '\'' +
+                ", resolvedPattern='" + resolvedPattern + '\'' +
                 ", groupedRegExpPattern='" + groupedRegExpPattern + '\'' +
                 ", parameterGroups=" + parameterGroups +
                 '}';

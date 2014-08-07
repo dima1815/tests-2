@@ -1,7 +1,6 @@
 package com.mycomp.execspec.jiraplugin.dto.stepdoc;
 
 import com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDoc;
-import org.jbehave.core.steps.StepType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,10 +13,9 @@ public class StepDocDTOUtils {
 
     public static void fromDTOToModel(StepDocDTO stepDocDTO, StepDoc stepDoc) {
 
-        stepDoc.setStepType(stepDocDTO.getStepType().name());
         stepDoc.setStartingWord(stepDocDTO.getStartingWord());
         stepDoc.setPattern(stepDocDTO.getPattern());
-        stepDoc.setRegExpPattern(stepDocDTO.getRegExpPattern());
+        stepDoc.setRegExpPattern(stepDocDTO.getResolvedPattern());
         stepDoc.setGroupedRegExpPattern(stepDocDTO.getGroupedRegExpPattern());
 
         List<Integer> parameterGroups = stepDocDTO.getParameterGroups();
@@ -37,7 +35,6 @@ public class StepDocDTOUtils {
 
     public static StepDocDTO fromModelToDTO(StepDoc stepDoc) {
 
-        StepType stepType = StepType.valueOf(stepDoc.getStepType());
         String startingWord = stepDoc.getStartingWord();
         String pattern = stepDoc.getPattern();
         String regExpPattern = stepDoc.getRegExpPattern();
@@ -55,7 +52,7 @@ public class StepDocDTOUtils {
             parameterGroups = Collections.emptyList();
         }
 
-        StepDocDTO stepDocDTO = new StepDocDTO(stepType, startingWord, pattern, regExpPattern, groupedRegExpPattern, parameterGroups);
+        StepDocDTO stepDocDTO = new StepDocDTO(startingWord, pattern, regExpPattern, groupedRegExpPattern, parameterGroups);
         return stepDocDTO;
     }
 

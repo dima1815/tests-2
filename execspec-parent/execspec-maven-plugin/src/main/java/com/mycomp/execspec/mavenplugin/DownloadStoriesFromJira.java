@@ -16,6 +16,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 
 import javax.ws.rs.core.MediaType;
 import java.io.File;
@@ -61,7 +62,7 @@ public class DownloadStoriesFromJira extends AbstractMojo {
         getLog().info("response - " + response);
         if (response.getStatus() == 200) {
             StoriesPayload storiesPayload = response.getEntity(StoriesPayload.class);
-            List<StoryDTO> stories = storiesPayload.getStories();
+            List<JiraStory> stories = storiesPayload.getStories();
             getLog().info("stories.size() = " + stories.size());
             getLog().info("stories:\n" + stories);
 
@@ -75,9 +76,9 @@ public class DownloadStoriesFromJira extends AbstractMojo {
 
     private void writeModelToFile(StoriesPayload storiesPayload) {
 
-        List<StoryDTO> stories = storiesPayload.getStories();
+        List<JiraStory> stories = storiesPayload.getStories();
 
-        for (StoryDTO storyModel : stories) {
+        for (JiraStory storyModel : stories) {
 
             PrintWriter pw = null;
             try {

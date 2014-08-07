@@ -1,6 +1,7 @@
 package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.activeobjects.tx.Transactional;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtml;
 
 import java.util.List;
 
@@ -10,9 +11,9 @@ import java.util.List;
 @Transactional
 public interface StoryReportService {
 
-    void addStoryTestReport(String projectKey, String issueKey, StoryHtmlReportDTO storyReportDTO);
+    void addStoryTestReport(String projectKey, String issueKey, JiraStoryHtml storyReportDTO);
 
-    List<StoryHtmlReportDTO> findStoryReports(String projectKey, String issueKey);
+    List<JiraStoryHtml> findStoryReports(String projectKey, String issueKey);
 
     void deleteForIssue(String projectKey, String issueKey);
 }

@@ -1,5 +1,6 @@
 package com.mycomp.execspec.jiraplugin.util;
 
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class ByLineStoryParserTest {
 
     }
 
-    private void verifyEqual(StoryDTO actualStoryDTO, StoryDTO expStoryDTO) {
+    private void verifyEqual(JiraStory actualStoryDTO, JiraStory expStoryDTO) {
 
 //        String actualDescription = actualStoryDTO.getDescription();
 //        String expectedDesription = expStoryDTO.getDescription();

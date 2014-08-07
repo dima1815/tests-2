@@ -7,6 +7,7 @@ import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
 import com.mycomp.execspec.jiraplugin.dto.storyreport.StoryReportDTOUtils;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtml;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,7 @@ public class StoryReportServiceImpl implements StoryReportService {
         this.storyReportDao = storyReportDao;
     }
 
-    public void addStoryTestReport(String projectKey, String issueKey, StoryHtmlReportDTO storyReportDTO) {
+    public void addStoryTestReport(String projectKey, String issueKey, JiraStoryHtml storyReportDTO) {
 
         List<Story> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
         if (byIssueKey.isEmpty()) {
@@ -65,7 +66,7 @@ public class StoryReportServiceImpl implements StoryReportService {
     }
 
     @Override
-    public List<StoryHtmlReportDTO> findStoryReports(String projectKey, String issueKey) {
+    public List<JiraStoryHtml> findStoryReports(String projectKey, String issueKey) {
         List<Story> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
         if (byIssueKey.isEmpty()) {
             return Collections.emptyList();
@@ -79,9 +80,9 @@ public class StoryReportServiceImpl implements StoryReportService {
                 // createStoryReport a new report
                 return Collections.emptyList();
             } else {
-                List<StoryHtmlReportDTO> storyReportDTOs = new ArrayList<StoryHtmlReportDTO>(storyTestReports.length);
+                List<JiraStoryHtml> storyReportDTOs = new ArrayList<JiraStoryHtml>(storyTestReports.length);
                 for (StoryHtmlReport storyTestReport : storyTestReports) {
-                    StoryHtmlReportDTO storyReportDTO = StoryReportDTOUtils.fromModelToDTO(storyTestReport);
+                    JiraStoryHtml storyReportDTO = StoryReportDTOUtils.fromModelToDTO(storyTestReport);
                     storyReportDTOs.add(storyReportDTO);
                 }
                 return storyReportDTOs;

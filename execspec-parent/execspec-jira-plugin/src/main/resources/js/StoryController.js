@@ -135,6 +135,20 @@ function StoryController() {
         }
     }
 
+    this.lineStartsWithAndKeyword = function (lineNumber) {
+
+        var lineHandle = this.editor.getLineHandle(lineNumber);
+        var lineText = lineHandle.text;
+
+        var regExpPattern = new RegExp("^(And)\\s+");
+        var matchedResult = regExpPattern.exec(lineText);
+        if (matchedResult != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     this.findStepStartingLineBefore = function (lineNumber) {
         var previousLine = lineNumber - 1;
         while (previousLine != -1) {
@@ -142,6 +156,20 @@ function StoryController() {
                 return previousLine;
             }
             previousLine--;
+        }
+        return -1;
+    }
+
+    this.findStepStartingLineInSameScenarioBefore = function (lineNumber) {
+        var previousLine = lineNumber - 1;
+        while (previousLine != -1) {
+            if (this.lineStartsWithStepKeyword(previousLine)) {
+                return previousLine;
+            } else if (this.lineStartsWithScenario(previousLine)) {
+                return -1;
+            } else {
+                previousLine--;
+            }
         }
         return -1;
     }
@@ -158,22 +186,44 @@ function StoryController() {
         return -1;
     }
 
-    this.lineStartsWithScenarioOrExamles = function (lineNumber) {
+    this.findStepStartingLineInSameScenarioAfter = function (lineNumber) {
+        var nextLine = lineNumber + 1;
+        var totalLines = this.editor.lineCount();
+        while (nextLine < totalLines) {
+            if (this.lineStartsWithStepKeyword(nextLine)) {
+                return nextLine;
+            } else if (this.lineStartsWithScenarioOrExamples(nextLine)) {
+                return -1;
+            }
+            nextLine++;
+        }
+        return -1;
+    }
+
+    this.lineStartsWithScenario = function (lineNumber) {
 
         var lineHandle = this.editor.getLineHandle(lineNumber);
         var lineText = lineHandle.text;
-
-        if (lineText.match(/^Examples: /)) {
-
-        }
-
-        if (lineText.substring(0, "Examples: ".length) == "Examples: "
-            || lineText.substring(0, "Scenario ".length) == "Scenario ") {
+        var regExpPattern = new RegExp("^(Scenario:)\\s+");
+        var matchedResult = regExpPattern.exec(lineText);
+        if (matchedResult != null) {
             return true;
         } else {
             return false;
         }
+    }
 
+    this.lineStartsWithScenarioOrExamples = function (lineNumber) {
+
+        var lineHandle = this.editor.getLineHandle(lineNumber);
+        var lineText = lineHandle.text;
+        var regExpPattern = new RegExp("^(Examples:|Scenario:)\\s+");
+        var matchedResult = regExpPattern.exec(lineText);
+        if (matchedResult != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     this.findLastStepLineFrom = function (lineNumber) {
@@ -182,7 +232,8 @@ function StoryController() {
         var lineCount = this.editor.getDoc().lineCount();
         var lastStepLine = lineNumber;
         while (nextLineNumber < lineCount) {
-            if (this.lineStartsWithStepKeyword(nextLineNumber)) {
+            if (this.lineStartsWithStepKeyword(nextLineNumber)
+                || this.lineStartsWithScenarioOrExamples(nextLineNumber)) {
                 break;
             } else {
                 lastStepLine = nextLineNumber;
@@ -209,7 +260,8 @@ function StoryController() {
                     // try to see if the step docs pattern matches step body
                     var regExpStr = stepDoc.groupedRegExpPattern;
                     // replace the (.*) with ([\s\S]*) for javascript version of dotall option
-                    regExpStr = regExpStr.replace("(.*)", "([\\s\\S]*)");
+                    var replacePattern = new RegExp("\\(\\.\\*\\)", "g");
+                    regExpStr = regExpStr.replace(replacePattern, "([\\s\\S]*)");
                     // add start and end chars to match the string exactly
                     regExpStr = "^" + regExpStr + "$";
                     storyController.debug("Trying to match the step body against pattern - " + regExpStr);
@@ -248,8 +300,24 @@ function StoryController() {
             keyword = matchedResult[2];
             stepBody = matchedResult[3];
         } else {
-            console.error("Failed to match step against expected pattern, step - " + step + ", pattern - " + regExpPattern);
+            console.log("Failed to match step against expected pattern, step - " + step + ", pattern - " + regExpPattern);
             return;
+        }
+
+        var lookingAtLine = stepStartLine;
+        while (keyword == "And") {
+            // replace it with the previous steps keyword
+            var previousStepStartLine = this.findStepStartingLineInSameScenarioBefore(lookingAtLine);
+
+            if (previousStepStartLine != -1) {
+                var previousStepFirstLine = this.editor.getLineHandle(previousStepStartLine).text;
+                var result = regExpPattern.exec(previousStepFirstLine);
+                keyword = result[2];
+                lookingAtLine = previousStepStartLine;
+            } else {
+                // there is no previous step in this same scenario
+                return;
+            }
         }
 
         var findResult = this.findMatchingStepdoc(stepBody, keyword);
@@ -304,7 +372,7 @@ function StoryController() {
                         var lastLineBreakInBefore = beforeParam.lastIndexOf("\n");
                         var parameterStartLineCh;
                         if (lastLineBreakInBefore > -1) {
-                            parameterStartLineCh = pgi.startIndex - lastLineBreakInBefore;
+                            parameterStartLineCh = pgi.startIndex - lastLineBreakInBefore - 1;
                         } else {
                             parameterStartLineCh = pgi.startIndex;
                         }
@@ -319,7 +387,7 @@ function StoryController() {
                         var lastLineBreakInIncludingParam = includingParam.lastIndexOf("\n");
                         var parameterEndLineCh;
                         if (lastLineBreakInIncludingParam > -1) {
-                            parameterEndLineCh = pgi.startIndex + pgi.text.length - lastLineBreakInIncludingParam;
+                            parameterEndLineCh = pgi.startIndex + pgi.text.length - lastLineBreakInIncludingParam - 1;
                         } else {
                             parameterEndLineCh = pgi.startIndex + pgi.text.length;
                         }
@@ -333,9 +401,7 @@ function StoryController() {
                     }
                     pos += matchedGroup.length;
                     var linesInGroup = matchedGroup.split(/\n/).length;
-                    if (linesInGroup > 1) {
-                        lineOffset += linesInGroup;
-                    }
+                    lineOffset += (linesInGroup - 1);
                 }
 
                 // mark any step parameters
@@ -384,7 +450,9 @@ function StoryController() {
         while (stepEndLine < scanEndLine) {
             stepStartLine = stepEndLine + 1;
             stepEndLine = this.findLastStepLineFrom(stepStartLine);
-            this.remarkStepBetween(stepStartLine, stepEndLine);
+            if (this.lineStartsWithStepKeyword(stepStartLine)) {
+                this.remarkStepBetween(stepStartLine, stepEndLine);
+            }
         }
 
         storyController.debug("# remarkStepsBetween");
@@ -420,6 +488,19 @@ function StoryController() {
         if (scanStartLine != null) {
             // find scanEndLine
             var scanEndLine = this.findLastStepLineFrom(toLine);
+
+            var nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
+            if (nextStepStartLine != -1) {
+                var startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
+                while(nextStepStartLine !=-1 && startsWithAnd) {
+                    scanEndLine = this.findLastStepLineFrom(nextStepStartLine);
+                    nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
+                    if (nextStepStartLine != -1) {
+                        startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
+                    }
+                }
+            }
+
             this.remarkStepsBetween(scanStartLine, scanEndLine);
         }
 
@@ -438,440 +519,6 @@ function StoryController() {
         storyController.remarkStepsOnChange(editor, changeObj);
 
         storyController.debug("# onEditorChangeHandler");
-    }
-
-    this.updateEditedStepStyle = function () {
-
-        storyController.debug("> updateEditedStepStyle");
-
-        var editor = storyController.editor;
-        var cursor = editor.getCursor();
-        var lineBeingEdited = cursor.line;
-        storyController.debug("line being edited - " + lineBeingEdited);
-        var doc = editor.getDoc();
-        var lineHandle = doc.getLineHandle(lineBeingEdited);
-
-        var tokenAtCurrentLine = editor.getTokenAt({line: lineBeingEdited, ch: lineHandle.text.length}, true);
-//        if (tokenAtCurrentLine.state.inStepBody) {
-        var stepTokensToRematch = [];
-        var currentStepNumber = tokenAtCurrentLine.state.stepNumber;
-        // if we are at the start of the line, we should rematch any previous step also if any
-        if (cursor.ch == 0) {
-            var previousLine = lineBeingEdited - 1;
-            var previousLineHandle = doc.getLineHandle(previousLine);
-            if (previousLineHandle != null) {
-                var previousLineToken = editor.getTokenAt({line: previousLine, ch: previousLineHandle.text.length}, true);
-                if (previousLineToken != null && previousLineToken.state.inStepBody && previousLineToken.state.stepNumber != currentStepNumber) {
-                    stepTokensToRematch.push(previousLine);
-//                        storyController.rematchStepSpanningLine(previousLine);
-                }
-            }
-        }
-        stepTokensToRematch.push(lineBeingEdited);
-        if (stepTokensToRematch.length == 2) {
-            // use case when we will rematch two steps one after the other
-            // in this case we need to clear the markers in range of lines that span the two target steps
-            var stepsStartedLine = previousLineToken.state.lastStepStartedAt;
-            var stepsEndedLine = lineBeingEdited;
-            var nextLine = stepsEndedLine + 1;
-            var nextLineHandle = doc.getLineHandle(nextLine);
-            if (nextLineHandle != null) {
-                var nextLineToken = editor.getTokenAt({line: nextLine, ch: nextLineHandle.text.length}, true);
-                while (nextLineHandle != null && nextLineToken.state.inStepBody && nextLineToken.state.stepNumber == currentStepNumber) {
-                    stepsEndedLine = nextLine;
-                    nextLine++;
-                    nextLineHandle = doc.getLineHandle(nextLine);
-                    if (nextLineHandle != null) {
-                        nextLineToken = editor.getTokenAt({line: nextLine, ch: nextLineHandle.text.length}, true);
-                    }
-                }
-            }
-            var startOfMarkers = {line: stepsStartedLine, ch: 0};
-            var lastStepsLine = doc.getLineHandle(stepsEndedLine);
-            var endOfMarkers = {line: stepsEndedLine, ch: lastStepsLine.text.length};
-            storyController.debug("### Going to rematch two consecutive steps, " +
-                "going to clear markers between [" + startOfMarkers.line + ":" + startOfMarkers.ch + "]" +
-                " and [" + endOfMarkers.line + ":" + endOfMarkers.ch + "]");
-            var markersBefore = doc.findMarks(startOfMarkers, endOfMarkers);
-            if (markersBefore.length > 0) {
-                // always remove any existing marks, so that we include newly edited text in the marked range
-                for (var m = 0; m < markersBefore.length; m++) {
-                    var marker = markersBefore[m];
-                    if (marker.className == "cm-matched-step"
-                        || marker.className == "cm-unmatched-step"
-                        || marker.className == "cm-step-parameter") {
-                        marker.clear();
-                    }
-                }
-            }
-        }
-
-        if (tokenAtCurrentLine.state.inStepBody) {
-            for (var i = 0; i < stepTokensToRematch.length; i++) {
-                storyController.rematchStepSpanningLine(stepTokensToRematch[i]);
-            }
-        }
-
-//        }
-
-        storyController.debug("# updateEditedStepStyle");
-    }
-
-    this.rematchStepSpanningLine = function (stepLine) {
-
-        storyController.debug("> rematchStepSpanningLine");
-
-        var editor = storyController.editor;
-        var lineBeingEdited = stepLine;
-
-        var doc = editor.getDoc();
-        var lineHandle = doc.getLineHandle(lineBeingEdited);
-
-        var tokenAtCurrentLine = editor.getTokenAt({line: lineBeingEdited, ch: lineHandle.text.length}, true);
-        storyController.debug("tokenAtCurrentLine.type - " + tokenAtCurrentLine.type);
-
-        // work out final token of step body
-        var stepBodyToken = tokenAtCurrentLine;
-        {
-            var currentStepNumber = tokenAtCurrentLine.state.currentStepNumber;
-
-            var lastStepLine = lineBeingEdited;
-            var nextLineHandle = doc.getLineHandle(lastStepLine + 1);
-
-            if (nextLineHandle != null) {
-                var tokenAtNextLine = editor.getTokenAt({line: lastStepLine + 1, ch: nextLineHandle.text.length}, true);
-                while (tokenAtNextLine != null && tokenAtNextLine.state.inStepBody && tokenAtNextLine.state.currentStepNumber == currentStepNumber) {
-                    stepBodyToken = tokenAtNextLine;
-                    lastStepLine++;
-                    var nextLineHandle = doc.getLineHandle(lastStepLine + 1);
-                    if (nextLineHandle != null) {
-                        tokenAtNextLine = editor.getTokenAt({line: lastStepLine + 1, ch: nextLineHandle.text.length}, true);
-                    } else {
-                        tokenAtNextLine = null;
-                    }
-                }
-            }
-        }
-
-        // check if step matches
-        var matchedResult = null;
-        var matchingStepDoc = null;
-        {
-            var lastStepType = stepBodyToken.state.lastStepType;
-            storyController.debug("lastStepType - " + lastStepType);
-
-            var stepDocs = storyController.stepDocs;
-            var stepBody = stepBodyToken.state.stepBody;
-            var stepBodyTrimmed = stepBody.replace(/\s+$/g, ''); // trim trailing whitespace;
-
-            for (var i = 0; i < stepDocs.length; i++) {
-                var stepDoc = stepDocs[i];
-                if (stepDoc.startingWord == lastStepType) {
-                    // try to see if the step docs pattern matches step body
-                    var regExpStr = stepDoc.groupedRegExpPattern;
-                    // replace the (.*) with ([\s\S]*) for javascript version of dotall option
-                    regExpStr = regExpStr.replace("(.*)", "([\\s\\S]*)");
-                    // add start and end chars to match the string exactly
-                    regExpStr = "^" + regExpStr + "$";
-                    storyController.debug("Trying to match the step body against pattern - " + regExpStr);
-                    var regExpPattern = new RegExp(regExpStr);
-                    var matchedResult = regExpPattern.exec(stepBodyTrimmed);
-                    if (matchedResult != null) {
-                        storyController.debug("Step pattern - " + regExpStr + " matches current step body");
-                        matchingStepDoc = stepDoc;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // obtain boundaries of any parameters
-        var parameterGroupsInfos = [];
-        {
-            if (matchedResult != null) {
-                var parameterGroups = matchingStepDoc.parameterGroups;
-                if (parameterGroups.length > 0) {
-                    var pos = 0;
-                    var lineOffset = 0;
-                    for (var j = 1; j < matchedResult.length; j++) {
-                        var matchedGroup = matchedResult[j];
-                        if (parameterGroups.indexOf(j) > -1) {
-                            var pgi = new Object();
-                            pgi.number = j;
-                            pgi.text = matchedGroup;
-                            pgi.startIndex = pos;
-                            pgi.endIndex = pos + matchedGroup.length;
-                            pgi.lineOffset = lineOffset;
-                            parameterGroupsInfos.push(pgi);
-                        }
-                        pos += matchedGroup.length;
-                        var linesInGroup = matchedGroup.split(/\n/).length;
-                        if (linesInGroup > 1) {
-                            lineOffset += linesInGroup;
-                        }
-                    }
-                }
-            }
-        }
-
-        // obtain start and end indexes of parameters in terms of line number and ch position
-        {
-            if (matchedResult != null && parameterGroupsInfos.length > 0) {
-                var startingWord = stepBodyToken.state.stepStartingKeyword;
-                var stepStartLine = stepBodyToken.state.lastStepStartedAt;
-                for (var i = 0; i < parameterGroupsInfos.length; i++) {
-                    var pgi = parameterGroupsInfos[i];
-                    // start
-                    var parameterStartLine = stepStartLine + pgi.lineOffset;
-                    var beforeParam = stepBodyToken.state.stepBody.substring(0, pgi.startIndex);
-                    var lastLineBreakInBefore = beforeParam.lastIndexOf("\n");
-                    var parameterStartLineCh;
-                    if (lastLineBreakInBefore > -1) {
-                        parameterStartLineCh = pgi.startIndex - lastLineBreakInBefore;
-                    } else {
-                        parameterStartLineCh = pgi.startIndex;
-                    }
-                    if (pgi.lineOffset == 0) {
-                        // need to add the length of starting word also
-                        parameterStartLineCh += startingWord.length;
-                    }
-                    pgi.startLine = parameterStartLine;
-                    pgi.startLineCh = parameterStartLineCh;
-                    // end
-                    var parameterEndLine = stepStartLine + pgi.lineOffset + (pgi.text.split("\n").length - 1);
-                    var includingParam = stepBodyToken.state.stepBody.substring(0, pgi.startIndex + pgi.text.length);
-                    var lastLineBreakInIncludingParam = includingParam.lastIndexOf("\n");
-                    var parameterEndLineCh;
-                    if (lastLineBreakInIncludingParam > -1) {
-                        parameterEndLineCh = pgi.startIndex + pgi.text.length - lastLineBreakInIncludingParam;
-                    } else {
-                        parameterEndLineCh = pgi.startIndex + pgi.text.length;
-                    }
-                    if (pgi.lineOffset == 0 && lastLineBreakInIncludingParam == -1) {
-                        // need to add the length of starting word also
-                        parameterEndLineCh += startingWord.length;
-                    }
-                    pgi.endLine = parameterEndLine;
-                    pgi.endLineCh = parameterEndLineCh;
-                }
-            }
-        }
-
-        // mark the step as unmatched / matched
-        var stepStartedAtLine = stepBodyToken.state.lastStepStartedAt;
-        var stepEndedAtLine = stepBodyToken.state.lineNumber;
-        {
-            var from = {line: stepStartedAtLine, ch: 0};
-            var toLineHandle = doc.getLineHandle(stepEndedAtLine);
-            var to = {line: stepEndedAtLine, ch: toLineHandle.text.length};
-            var options = new Object();
-            var marksBefore = doc.findMarks(from, to);
-            if (marksBefore.length > 0) {
-                // always remove any existing marks, so that we include newly edited text in the marked range
-                for (var m = 0; m < marksBefore.length; m++) {
-                    var marks = marksBefore[m];
-                    if (marks.className == "cm-matched-step"
-                        || marks.className == "cm-unmatched-step"
-                        || marks.className == "cm-step-parameter") {
-                        marks.clear();
-                    }
-                }
-            }
-            if (matchedResult != null) {
-                options.className = "cm-matched-step";
-            } else {
-                options.className = "cm-unmatched-step";
-            }
-            doc.markText(from, to, options);
-        }
-
-        // mark parameter boundaries
-        {
-            if (parameterGroupsInfos.length > 0) {
-                for (var k = 0; k < parameterGroupsInfos.length; k++) {
-                    var pgi = parameterGroupsInfos[k];
-                    var paramStart = {line: pgi.startLine, ch: pgi.startLineCh};
-                    var paramEnd = {line: pgi.endLine, ch: pgi.endLineCh};
-                    options.className = "cm-step-parameter";
-                    doc.markText(paramStart, paramEnd, options);
-                }
-            }
-        }
-
-        storyController.debug("# rematchStepSpanningLine");
-    }
-
-
-    this.updateEditedStepStyle_backup = function () {
-
-        storyController.debug("> updateEditedStepStyle");
-
-        var editor = storyController.editor;
-        var cursor = editor.getCursor();
-        var line = cursor.line;
-        storyController.debug("line being edited - " + line);
-
-        var doc = editor.getDoc();
-        var lineHandle = doc.getLineHandle(line);
-
-        var checkTokenPos = {line: line, ch: lineHandle.text.length};
-        var tokenAt = editor.getTokenAt(checkTokenPos, true);
-        storyController.debug("tokenAt.type - " + tokenAt.type);
-
-        if (tokenAt.state.inStep) {
-
-            storyController.debug("### modifying step ...");
-
-            var stepBody = tokenAt.state.stepBody;
-            storyController.debug("stepBody - " + stepBody);
-            var inStepBody = true;
-            var nextLineNum = cursor.line;
-            var stepEndedAtLine = cursor.line;
-            if (cursor.ch != 0) {
-                // if we are in a step and also at the start of the line, i.e. case of multiline steps
-                // then we do not want to yet advance to the next line since we want to include the
-                // step body of this step line also
-                nextLineNum++;
-            } else {
-                stepEndedAtLine--;
-            }
-
-            var stepStartedAtLine = tokenAt.state.lastStepStartedAt;
-
-            while (inStepBody && nextLineNum < doc.lineCount()) {
-                var lineContent = editor.getLine(nextLineNum);
-                if (lineContent == undefined) {
-                    // we have reached the end of the story
-                    break;
-                } else if (lineContent.length == 0) {
-                    // empty line so simply move onto next line
-                    nextLineNum++;
-                    stepEndedAtLine++;
-                } else {
-                    var nextToken = editor.getTokenAt({line: nextLineNum, ch: 1}, true);
-                    if (nextToken.type != "step-body") {
-                        inStepBody = false;
-                    } else {
-                        stepBody = nextToken.state.stepBody;
-                        nextLineNum++;
-                        stepEndedAtLine++;
-                    }
-                }
-            }
-
-            storyController.debug("Modifying step body:\n" + stepBody);
-            stepBody = stepBody.replace(/\s+$/g, ''); // trim trailing whitespace
-            storyController.debug("Modifying step body after trimming:\n" + stepBody);
-            var lastStepType = tokenAt.state.lastStepType;
-            storyController.debug("lastStepType - " + lastStepType);
-
-            // check if step matches
-            var stepMatched = false;
-            var lastStepStartedAt = tokenAt.state.lastStepStartedAt;
-            var stepBodyStartedAtCh = tokenAt.state.stepBodyStartedAtCh;
-            var stepDocs = storyController.stepDocs;
-            var parameterGroupsInfos = [];
-
-            for (var i = 0; i < stepDocs.length; i++) {
-                var stepDoc = stepDocs[i];
-                if (stepDoc.startingWord == lastStepType) {
-                    // try to see if the step docs pattern matches step body
-                    var regExpStr = stepDoc.groupedRegExpPattern;
-                    // replace the (.*) with ([\s\S]*) for javascript version of dotall option
-                    regExpStr = regExpStr.replace("(.*)", "([\\s\\S]*)");
-                    // add start and end chars to match the string exactly
-                    regExpStr = "^" + regExpStr + "$";
-                    storyController.debug("Trying to match the step against pattern - " + regExpStr);
-                    var regExpPattern = new RegExp(regExpStr);
-                    var matched = regExpPattern.exec(stepBody);
-                    if (matched != null) {
-                        var step = lastStepType + " " + stepBody;
-                        storyController.debug("Step pattern - " + regExpStr + " matches current step");
-                        stepMatched = true;
-                        // obtain boundaries of any parameters
-                        var parameterGroups = stepDoc.parameterGroups;
-                        if (parameterGroups.length > 0) {
-                            var pos = stepBodyStartedAtCh;
-                            for (var j = 1; j < matched.length; j++) {
-                                var matchedGroup = matched[j];
-                                if (parameterGroups.indexOf(j) > -1) {
-                                    var pgi = new Object();
-                                    pgi.number = j;
-                                    pgi.text = matchedGroup;
-                                    pgi.startIndex = pos;
-                                    pgi.endIndex = pos + matchedGroup.length;
-
-                                    // work out start and end boundaries in terms of line and line position
-                                    // start position
-                                    var beforeParam = step.substring(0 + lastStepType.length, pgi.startIndex + lastStepType.length);
-                                    var numOfLinesInBefore = beforeParam.split(/\n/).length;
-                                    var startAtLine = lastStepStartedAt + (numOfLinesInBefore - 1);
-                                    pgi.startAtLine = startAtLine;
-                                    var lastLineBreakPos = beforeParam.lastIndexOf("\n");
-                                    if (lastLineBreakPos == -1) {
-                                        lastLineBreakPos = 0;
-                                    }
-                                    pgi.startAtLineCh = pgi.startIndex - lastLineBreakPos;
-                                    // end position
-                                    var includingParam = step.substring(0 + lastStepType.length, (pgi.startIndex + matchedGroup.length + lastStepType.length));
-                                    var numOfLinesInIncludingParam = includingParam.split(/\n/).length;
-                                    var endAtLine = lastStepStartedAt + (numOfLinesInIncludingParam - 1);
-                                    pgi.endAtLine = endAtLine;
-                                    lastLineBreakPos = includingParam.lastIndexOf("\n");
-                                    if (lastLineBreakPos == -1) {
-                                        lastLineBreakPos = 0;
-                                    }
-                                    pgi.endAtLineCh = pgi.endIndex - lastLineBreakPos;
-
-                                    parameterGroupsInfos.push(pgi);
-                                }
-                                pos += matchedGroup.length;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-
-            var from = {line: stepStartedAtLine, ch: 0};
-            var to = {line: stepEndedAtLine, ch: null};
-            var options = new Object();
-
-            var marksBefore = doc.findMarks(from, to);
-
-            if (marksBefore.length > 0) {
-                // always remove any existing marks, so that we include newly edited text in the marked range
-                for (var m = 0; m < marksBefore.length; m++) {
-                    marksBefore[m].clear();
-                }
-            }
-
-            if (stepMatched) {
-                options.className = "cm-matched-step";
-            } else {
-                options.className = "cm-unmatched-step";
-            }
-            doc.markText(from, to, options);
-
-            var marksAfter = doc.findMarks(from, to);
-
-            // mark parameter boundaries
-            if (parameterGroupsInfos.length > 0) {
-                for (var k = 0; k < parameterGroupsInfos.length; k++) {
-                    var pgi = parameterGroupsInfos[k];
-                    var startLine = pgi.startAtLine;
-                    var startCh = pgi.startAtLineCh;
-                    var paramStart = {line: startLine, ch: startCh};
-                    var endLine = pgi.endAtLine;
-                    var endCh = pgi.endAtLineCh;
-                    var paramEnd = {line: endLine, ch: endCh};
-                    options.className = "cm-step-parameter";
-                    doc.markText(paramStart, paramEnd, options);
-                }
-            }
-        }
-
-        storyController.debug("# updateEditedStepStyle");
     }
 
     this.showWarningMessage = function (saveCancelMsg) {
@@ -934,9 +581,9 @@ function StoryController() {
 
         this.currentStory = storyModel;
 
-//        this.editor.off("change", storyController.onEditorChangeHandler);
+        this.editor.off("change", storyController.onEditorChangeHandler);
         this.editor.setValue(storyModel.asString);
-//        this.editor.on("change", storyController.onEditorChangeHandler);
+        this.editor.on("change", storyController.onEditorChangeHandler);
 
         storyController.storyChanged = false;
 

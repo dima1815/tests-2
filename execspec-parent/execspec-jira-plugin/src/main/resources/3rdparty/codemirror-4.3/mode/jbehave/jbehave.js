@@ -28,9 +28,6 @@
 
     CodeMirror.defineMode("jbehave", function () {
 
-        var sc = null;
-        var stepDocs = null;
-
         return {
             lineComment: "!--",
             tableLineComment: "|--",
@@ -43,6 +40,7 @@
             },
             startState: function () {
                 return {
+
                     lineNumber: -1,
                     stepNumber: 0,
 
@@ -63,7 +61,8 @@
                     inMultilineString: false,
                     inMultilineTable: false,
 
-                    lastStepType: null,
+                    lastStepKeyword: null,
+                    currentStepKeyword: null,
                     lastStepStartedAt: null,
 
                     currentStepNumber: 0,
@@ -79,14 +78,8 @@
             },
             token: function (stream, state) {
 
-                if (sc == null) {
-                    sc = storyController;
-                    stepDocs = sc.stepDocs;
-                }
-
                 if (stream.sol()) {
                     state.lineNumber++;
-
                     state.inScenarioTitleLine = false;
                     state.inNarrativeField = false;
                 }
@@ -165,7 +158,8 @@
 
                     state.inStep = false;
                     state.allowAndStep = false;
-                    state.lastStepType = null;
+                    state.lastStepKeyword = null;
+                    state.currentStepKeyword = null;
                     state.lastStepStartedAt = null;
 
                     return state.lastTokenType = "scenario-keyword";
@@ -177,7 +171,11 @@
                     // GIVEN
                 } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
 
-                    state.lastStepType = "Given";
+                    if (state.currentStepKeyword != null) {
+                        state.lastStepKeyword = state.currentStepKeyword;
+                    }
+                    state.currentStepKeyword = "Given";
+
                     state.stepStartingKeyword = "Given "; //TODO
                     state.allowAndStep = true;
                     state.inStep = true;
@@ -201,7 +199,12 @@
 
                     state.inStep = true;
                     state.allowAndStep = true;
-                    state.lastStepType = "When";
+
+                    if (state.currentStepKeyword != null) {
+                        state.lastStepKeyword = state.currentStepKeyword;
+                    }
+                    state.currentStepKeyword = "When";
+
                     state.stepStartingKeyword = "When "; //TODO
                     state.stepNumber++;
                     state.stepBody = "";
@@ -216,7 +219,12 @@
 
                     // THEN
                 } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
-                    state.lastStepType = "Then";
+
+                    if (state.currentStepKeyword != null) {
+                        state.lastStepKeyword = state.currentStepKeyword;
+                    }
+                    state.currentStepKeyword = "Then";
+
                     state.stepStartingKeyword = "Then "; //TODO
 
                     state.allowAndStep = true;
@@ -240,13 +248,17 @@
                     state.lastStepStartedAt = state.lineNumber;
                     state.stepStartingKeyword = "And "; //TODO
 
+                    if (state.currentStepKeyword != null) {
+                        state.lastStepKeyword = state.currentStepKeyword;
+                    }
+                    state.currentStepKeyword = state.currentStepKeyword;
 
                     state.inStepBody = false;
                     state.stepBodyStartedAtCh = null;
 
                     state.currentStepNumber++;
 
-                    return state.lastTokenType = "step-keyword " + state.lastStepType + "-step";
+                    return state.lastTokenType = "step-keyword " + state.lastStepKeyword + "-step";
 
                     // Description
                 } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {

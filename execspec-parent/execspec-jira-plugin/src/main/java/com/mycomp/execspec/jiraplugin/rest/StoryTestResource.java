@@ -7,6 +7,7 @@ import com.mycomp.execspec.jiraplugin.dto.storyreport.StoryTestReportsPayload;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtml;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +57,9 @@ public class StoryTestResource {
             String payload) {
 
         ObjectMapper mapper = new ObjectMapper();
-        JiraStoryHtmlReport storyReportDTO = null;
+        JiraStoryHtml storyReportDTO = null;
         try {
-            storyReportDTO = mapper.readValue(payload, JiraStoryHtmlReport.class);
+            storyReportDTO = mapper.readValue(payload, JiraStoryHtml.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -95,7 +96,7 @@ public class StoryTestResource {
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        List<JiraStoryHtmlReport> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+        List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
 
         StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
         return storyTestReportsPayloadDTO;

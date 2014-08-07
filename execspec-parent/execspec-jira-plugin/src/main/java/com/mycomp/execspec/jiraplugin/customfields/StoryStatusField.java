@@ -10,6 +10,9 @@ import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtml;
+import org.bitbucket.jbehaveforjira.javaclient.util.TestStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +54,15 @@ public class StoryStatusField extends CalculatedCFType<EnvironmentTestStatuses, 
         String projectKey = issue.getProjectObject().getKey();
         String issueKey = issue.getKey();
 
-        StoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        JiraStory story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
         if (story != null) {
 
-            List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+            List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
             Map<String, TestStatus> statusesByEnvironment = new HashMap<String, TestStatus>(storyTestReports.size());
             EnvironmentTestStatuses environmentTestStatuses = new EnvironmentTestStatuses(statusesByEnvironment);
 
-            for (StoryHtmlReportDTO storyTestReport : storyTestReports) {
+            for (JiraStoryHtml storyTestReport : storyTestReports) {
                 TestStatus status = storyTestReport.getStatus();
                 String environment = storyTestReport.getEnvironment();
                 statusesByEnvironment.put(environment, status);

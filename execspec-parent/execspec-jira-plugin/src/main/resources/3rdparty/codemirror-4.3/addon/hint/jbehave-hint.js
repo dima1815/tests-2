@@ -75,24 +75,34 @@
 
         var lineTextTrimmed = lineTextSoFar.replace(/\s+$/g, '');
 
-        if (lineTextTrimmed.length > 0) {
+        var stepKeyword = state.currentStepKeyword;
+
+        if (lineTextTrimmed.length > 0 && stepKeyword != null) {
             // hint on steps
             for (var k = 0; k < stepDocs.length; k++) {
                 var stepDoc = stepDocs[k];
-                var stepPatternWithKeyword = stepDoc.startingWord + " " + stepDoc.pattern;
-                if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
-                    var stepHint = new Object();
-                    stepHint.text = stepPatternWithKeyword;
-                    var pattern = stepDoc.pattern;
-                    var regExpPattern = new RegExp("\\$");
-                    pattern = pattern.replace(regExpPattern, "<span class='cm-step-parameter'>@</span>");
-                    stepHint.stepDoc = stepDoc;
-                    stepHint.render = function (element, data, self) {
-                        element.innerHTML =
-                            "<span class='cm-step-keyword'>" + self.stepDoc.startingWord + "</span> "
-                                + pattern;
-                    };
-                    list.push(stepHint);
+
+                if (stepDoc.startingWord == stepKeyword) {
+
+                    var stepStartingKeyword = state.stepStartingKeyword;
+
+                    var stepPatternWithKeyword = stepStartingKeyword + stepDoc.pattern;
+                    if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
+                        var stepHint = new Object();
+                        stepHint.text = stepPatternWithKeyword;
+                        var pattern = stepDoc.pattern;
+                        var regExpPattern = new RegExp("(\\$[^\\s]*)", "g");
+                        pattern = pattern.replace(regExpPattern, "<span class='cm-step-body matched-step step-parameter'>$1</span>");
+                        stepHint.markedPattern = pattern;
+                        stepHint.stepStartingKeyword = stepStartingKeyword;
+                        stepHint.stepDoc = stepDoc;
+                        stepHint.render = function (element, data, self) {
+                            element.innerHTML =
+                                "<span class='cm-step-keyword matched-step'>" + self.stepStartingKeyword + "</span>"
+                                    + self.markedPattern;
+                        };
+                        list.push(stepHint);
+                    }
                 }
             }
         }

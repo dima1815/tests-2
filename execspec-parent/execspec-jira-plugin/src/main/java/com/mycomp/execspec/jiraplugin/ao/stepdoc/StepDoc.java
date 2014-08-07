@@ -13,10 +13,6 @@ public interface StepDoc extends Entity {
 
     void setProjectKey(String projectKey);
 
-    String getStepType();
-
-    void setStepType(String stepType);
-
     String getStartingWord();
 
     void setStartingWord(String startingWord);

@@ -44,7 +44,6 @@
         <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
         <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
         <resource type="download" name="StoryReportModel.js" location="/js/StoryReportModel.js"/>
-        <resource type="download" name="AutoCompleteEntryModel.js" location="/js/AutoCompleteEntryModel.js"/>
         <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
         <resource type="download" name="StoryEditHandler.js" location="/js/StoryEditHandler.js"/>
         <!--soy-->
@@ -206,8 +205,6 @@
                class="com.mycomp.execspec.jiraplugin.service.StoryReportServiceImpl"/>
     <component key="step-doc-service" name="Step Doc Service"
                class="com.mycomp.execspec.jiraplugin.service.StepDocsServiceImpl"/>
-    <component key="auto-complete-service" name="Auto Complete Service"
-               class="com.mycomp.execspec.jiraplugin.service.AutoCompleteServiceImpl"/>
 
     <!-- ==================================================================================================== -->
     <!--Active Objects-->
