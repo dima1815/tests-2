@@ -6,8 +6,7 @@ import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryReportDTOUtils;
+import com.mycomp.execspec.jiraplugin.dto.storyreport.StoryReportDTOUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

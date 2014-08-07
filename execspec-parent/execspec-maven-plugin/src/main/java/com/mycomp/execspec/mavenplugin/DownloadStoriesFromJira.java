@@ -9,7 +9,6 @@ package com.mycomp.execspec.mavenplugin;
 
 
 import com.mycomp.execspec.jiraplugin.dto.story.StoriesPayload;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;

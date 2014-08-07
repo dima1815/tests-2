@@ -1,4 +1,6 @@
-package com.mycomp.execspec.jiraplugin.dto.testreport;
+package com.mycomp.execspec.jiraplugin.dto.storyreport;
+
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtmlReport;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -12,16 +14,16 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StoryTestReportsPayload {
 
-    private List<StoryHtmlReportDTO> storyTestReports;
+    private List<JiraStoryHtmlReport> storyTestReports;
 
     protected StoryTestReportsPayload() {
     }
 
-    public StoryTestReportsPayload(List<StoryHtmlReportDTO> storyTestReports) {
+    public StoryTestReportsPayload(List<JiraStoryHtmlReport> storyTestReports) {
         this.storyTestReports = storyTestReports;
     }
 
-    public List<StoryHtmlReportDTO> getStoryTestReports() {
+    public List<JiraStoryHtmlReport> getStoryTestReports() {
         return storyTestReports;
     }
 }

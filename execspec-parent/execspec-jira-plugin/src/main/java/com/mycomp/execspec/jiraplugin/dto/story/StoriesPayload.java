@@ -1,5 +1,7 @@
 package com.mycomp.execspec.jiraplugin.dto.story;
 
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,7 +18,7 @@ import java.util.List;
 public class StoriesPayload {
 
     @XmlElement
-    private List<StoryDTO> stories;
+    private List<JiraStory> stories;
 
     /**
      * Constructor for use via reflection.
@@ -24,11 +26,11 @@ public class StoriesPayload {
     protected StoriesPayload() {
     }
 
-    public StoriesPayload(List<StoryDTO> stories) {
+    public StoriesPayload(List<JiraStory> stories) {
         this.stories = stories;
     }
 
-    public List<StoryDTO> getStories() {
+    public List<JiraStory> getStories() {
         return stories;
     }
 

@@ -1,6 +1,7 @@
 package com.mycomp.execspec.jiraplugin.dto.story;
 
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 import org.jbehave.core.steps.StepCreator;
 
 import java.util.List;
@@ -11,9 +12,9 @@ import java.util.regex.Matcher;
  */
 public class StoryDTOUtils {
 
-    public static StoryDTO toDTO(Story story) {
+    public static JiraStory toDTO(Story story) {
 
-        StoryDTO storyDTO = new StoryDTO();
+        JiraStory storyDTO = new JiraStory();
         storyDTO.setProjectKey(story.getProjectKey());
         storyDTO.setIssueKey(story.getIssueKey());
         storyDTO.setVersion(story.getVersion());

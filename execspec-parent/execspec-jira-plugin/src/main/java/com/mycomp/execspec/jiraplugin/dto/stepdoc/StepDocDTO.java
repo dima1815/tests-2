@@ -1,7 +1,5 @@
 package com.mycomp.execspec.jiraplugin.dto.stepdoc;
 
-import org.jbehave.core.steps.StepType;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -14,7 +12,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StepDocDTO {
 
-    private StepType stepType;
     private String startingWord;
     private String pattern;
     private String regExpPattern;
@@ -24,8 +21,7 @@ public class StepDocDTO {
     protected StepDocDTO() {
     }
 
-    public StepDocDTO(StepType stepType, String startingWord, String pattern, String regExpPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
-        this.stepType = stepType;
+    public StepDocDTO(String startingWord, String pattern, String regExpPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
         this.startingWord = startingWord;
         this.pattern = pattern;
         this.regExpPattern = regExpPattern;
@@ -33,9 +29,6 @@ public class StepDocDTO {
         this.parameterGroups = parameterGroups;
     }
 
-    public StepType getStepType() {
-        return stepType;
-    }
 
     public String getStartingWord() {
         return startingWord;
@@ -68,8 +61,7 @@ public class StepDocDTO {
     @Override
     public String toString() {
         return "StepDocDTO{" +
-                "stepType=" + stepType +
-                ", startingWord='" + startingWord + '\'' +
+                "startingWord='" + startingWord + '\'' +
                 ", pattern='" + pattern + '\'' +
                 ", regExpPattern='" + regExpPattern + '\'' +
                 ", groupedRegExpPattern='" + groupedRegExpPattern + '\'' +

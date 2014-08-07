@@ -3,11 +3,11 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
-import com.mycomp.execspec.jiraplugin.dto.testreport.StoryTestReportsPayload;
+import com.mycomp.execspec.jiraplugin.dto.storyreport.StoryTestReportsPayload;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtmlReport;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +57,9 @@ public class StoryTestResource {
             String payload) {
 
         ObjectMapper mapper = new ObjectMapper();
-        StoryHtmlReportDTO storyReportDTO = null;
+        JiraStoryHtmlReport storyReportDTO = null;
         try {
-            storyReportDTO = mapper.readValue(payload, StoryHtmlReportDTO.class);
+            storyReportDTO = mapper.readValue(payload, JiraStoryHtmlReport.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,7 +96,7 @@ public class StoryTestResource {
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        List<StoryHtmlReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+        List<JiraStoryHtmlReport> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
 
         StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
         return storyTestReportsPayloadDTO;

@@ -10358,8 +10358,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 - import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 - import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 - import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
--+import com.mycomp.execspec.util.BytesListPrintStream;
--+import com.mycomp.execspec.util.DefaultHTMLFormatPatterns;
+-+import org.bitbucket.jbehaveforjira.javaclient.util.BytesListPrintStream;
+-+import org.bitbucket.jbehaveforjira.javaclient.util.DefaultHTMLFormatPatterns;
 - import com.sun.jersey.api.client.Client;
 - import com.sun.jersey.api.client.WebResource;
 - import org.apache.commons.lang.Validate;
@@ -10369,7 +10369,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 -+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/CustomHTMLOutput.java	(revision )
 -@@ -1,4 +1,4 @@
 --package com.mycomp.execspec.jiraplugin.dto.story;
--+package com.mycomp.execspec.util;
+-+package org.bitbucket.jbehaveforjira.javaclient.util;
 - 
 - import org.jbehave.core.configuration.Keywords;
 - import org.jbehave.core.reporters.HtmlOutput;
@@ -10379,7 +10379,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 -+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/BytesListPrintStream.java	(revision )
 -@@ -1,4 +1,4 @@
 --package com.mycomp.execspec.jiraplugin.dto.story;
--+package com.mycomp.execspec.util;
+-+package org.bitbucket.jbehaveforjira.javaclient.util;
 - 
 - import java.io.IOException;
 - import java.io.OutputStream;
@@ -10492,7 +10492,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 - package com.mycomp.execspec;
   
 --import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPathsDTO;
--+import com.mycomp.execspec.jiraplugin.dto.story.StoryPathsDTO;
+-+import org.bitbucket.jbehaveforjira.javaclient.JiraStoryLoader.StoryPathsDTO;
 - import com.sun.jersey.api.client.Client;
 - import com.sun.jersey.api.client.ClientResponse;
 - import com.sun.jersey.api.client.WebResource;
@@ -11061,8 +11061,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
   
 --import com.mycomp.execspec.jiraplugin.dto.story.BytesListPrintStream;
 --import com.mycomp.execspec.jiraplugin.dto.story.ReportingStoryWalker;
--+import com.mycomp.execspec.util.BytesListPrintStream;
--+import com.mycomp.execspec.util.ReportingStoryWalker;
+-+import org.bitbucket.jbehaveforjira.javaclient.util.BytesListPrintStream;
+-+import org.bitbucket.jbehaveforjira.javaclient.util.ReportingStoryWalker;
 - import com.mycomp.execspec.jiraplugin.dto.story.StoryDTOUtils;
 --import com.mycomp.execspec.jiraplugin.dto.story.output.StoryDTO;
 -+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
@@ -11141,7 +11141,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 -+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/DefaultHTMLFormatPatterns.java	(revision )
 -@@ -1,4 +1,4 @@
 --package com.mycomp.execspec.jiraplugin.dto.story;
--+package com.mycomp.execspec.util;
+-+package org.bitbucket.jbehaveforjira.javaclient.util;
 - 
 - import java.util.Properties;
 - 
@@ -11223,7 +11223,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 --import com.mycomp.execspec.jiraplugin.dto.story.output.StoryPathsDTO;
 -+import com.mycomp.execspec.jiraplugin.dto.story.StoriesPayload;
 -+import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
--+import com.mycomp.execspec.jiraplugin.dto.story.StoryPathsDTO;
+-+import org.bitbucket.jbehaveforjira.javaclient.JiraStoryLoader.StoryPathsDTO;
 -+import com.mycomp.execspec.jiraplugin.dto.story.StoryWithReportsPayload;
 -+import com.mycomp.execspec.jiraplugin.dto.testreport.StoryHtmlReportDTO;
 - import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
@@ -11647,7 +11647,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 -+++ execspec/tests-2-master/example-projects/example-run-stories-as-paths/src/test/java/com/mycomp/execspec/util/ReportingStoryWalker.java	(revision )
 -@@ -1,4 +1,4 @@
 --package com.mycomp.execspec.jiraplugin.dto.story;
--+package com.mycomp.execspec.util;
+-+package org.bitbucket.jbehaveforjira.javaclient.util;
 - 
 - import com.mycomp.execspec.jiraplugin.dto.stepdoc.StepDocDTO;
 - import org.jbehave.core.model.GivenStories;

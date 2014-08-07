@@ -1,7 +1,5 @@
 package com.mycomp.execspec.jiraplugin.customfields;
 
-import com.mycomp.execspec.jiraplugin.dto.testreport.TestStatus;
-
 import java.util.*;
 
 /**

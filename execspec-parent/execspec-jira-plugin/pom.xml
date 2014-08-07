@@ -161,5 +161,10 @@
             <artifactId>logback-classic</artifactId>
             <version>1.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.bitbucket.pristrom</groupId>
+            <artifactId>jbehave-for-jira-java-client</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

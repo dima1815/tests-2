@@ -1,24 +1,24 @@
 package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.activeobjects.tx.Transactional;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 
 import java.util.List;
 
 @Transactional
 public interface StoryService {
 
-    StoryDTO findByProjectAndIssueKey(String projectKey, String issueKey);
+    JiraStory findByProjectAndIssueKey(String projectKey, String issueKey);
 
-    List<StoryDTO> findByProjectKey(String projectKey);
+    List<JiraStory> findByProjectKey(String projectKey);
 
-    StoryDTO findById(int storyId);
+    JiraStory findById(int storyId);
 
     void delete(Long storyId);
 
     void delete(String projectKey, String issueKey);
 
-    StoryDTO saveOrUpdate(StoryDTO storyDTO);
+    JiraStory saveOrUpdate(JiraStory storyDTO);
 }
 
 

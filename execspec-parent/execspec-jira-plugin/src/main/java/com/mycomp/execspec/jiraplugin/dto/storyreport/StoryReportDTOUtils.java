@@ -1,13 +1,15 @@
-package com.mycomp.execspec.jiraplugin.dto.testreport;
+package com.mycomp.execspec.jiraplugin.dto.storyreport;
 
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStoryHtmlReport;
+import org.bitbucket.jbehaveforjira.javaclient.util.TestStatus;
 
 /**
  * Created by Dmytro on 4/8/2014.
  */
 public class StoryReportDTOUtils {
 
-    public static void fromDTOToModel(StoryHtmlReportDTO storyHtmlReportDTO, StoryHtmlReport storyHtmlReport) {
+    public static void fromDTOToModel(JiraStoryHtmlReport storyHtmlReportDTO, StoryHtmlReport storyHtmlReport) {
 
         storyHtmlReport.setStatus(storyHtmlReportDTO.getStatus().name());
         storyHtmlReport.setStoryVersion(storyHtmlReportDTO.getStoryVersion());
@@ -23,14 +25,14 @@ public class StoryReportDTOUtils {
 
     }
 
-    public static StoryHtmlReportDTO fromModelToDTO(StoryHtmlReport storyHtmlReport) {
+    public static JiraStoryHtmlReport fromModelToDTO(StoryHtmlReport storyHtmlReport) {
 
         String environment = storyHtmlReport.getEnvironment();
         String storyPath = storyHtmlReport.getStory().getIssueKey();
         Long storyVersion = storyHtmlReport.getStoryVersion();
         TestStatus status = TestStatus.valueOf(storyHtmlReport.getStatus());
         String htmlReport = storyHtmlReport.getHtmlReport();
-        StoryHtmlReportDTO storyReportDTO = new StoryHtmlReportDTO(environment, storyPath, storyVersion, status, htmlReport);
+        JiraStoryHtmlReport storyReportDTO = new JiraStoryHtmlReport(environment, storyPath, storyVersion, status, htmlReport);
 
         storyReportDTO.setTotalScenarios(storyHtmlReport.getTotalScenarios());
         storyReportDTO.setTotalScenariosPassed(storyHtmlReport.getTotalScenariosPassed());

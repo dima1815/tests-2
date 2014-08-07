@@ -3,9 +3,9 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class StoryResourceCrud {
     @Path("/save/{projectKey}/{issueKey}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.TEXT_PLAIN)
-    public StoryDTO save(@PathParam("projectKey") String projectKey,
+    public JiraStory save(@PathParam("projectKey") String projectKey,
                          @PathParam("issueKey") String issueKey,
                          String storyPayload) {
 
@@ -53,16 +53,16 @@ public class StoryResourceCrud {
 
         // TODO - decide what to do about the null parameters below?
         ObjectMapper mapper = new ObjectMapper();
-        StoryDTO storyDTO = null;
+        JiraStory storyDTO = null;
         try {
-            storyDTO = mapper.readValue(storyPayload, StoryDTO.class);
+            storyDTO = mapper.readValue(storyPayload, JiraStory.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         log.debug("saving story:\n" + storyDTO);
 
-        StoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+        JiraStory savedStoryDTO = storyService.saveOrUpdate(storyDTO);
         Validate.notNull(savedStoryDTO.getVersion());
 
         try {

@@ -1,6 +1,5 @@
 package com.mycomp.execspec.jiraplugin.util;
 
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

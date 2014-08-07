@@ -1,5 +1,9 @@
 package com.mycomp.execspec;
 
+import org.bitbucket.jbehaveforjira.javaclient.JiraHtmlOutput;
+import org.bitbucket.jbehaveforjira.javaclient.JiraStepDocReporter;
+import org.bitbucket.jbehaveforjira.javaclient.JiraStoryLoader;
+import org.bitbucket.jbehaveforjira.javaclient.JiraStoryPathFinder;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;

@@ -105,7 +105,7 @@
         <dependency>
             <groupId>org.bitbucket.pristrom</groupId>
             <artifactId>jbehave-for-jira-java-client</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jbehave</groupId>

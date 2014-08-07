@@ -3,12 +3,12 @@ package com.mycomp.execspec.jiraplugin.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.mycomp.execspec.jiraplugin.dto.story.StoriesPayload;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryDTO;
-import com.mycomp.execspec.jiraplugin.dto.story.StoryPathsDTO;
 import com.mycomp.execspec.jiraplugin.service.StepDocsSerivce;
 import com.mycomp.execspec.jiraplugin.service.StoryReportService;
 import com.mycomp.execspec.jiraplugin.service.StoryService;
 import org.apache.commons.lang.Validate;
+import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
+import org.bitbucket.jbehaveforjira.javaclient.dto.StoryPathsDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +61,9 @@ public class StoryResourceFind {
 
         Validate.notEmpty(projectKey);
 
-        List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
+        List<JiraStory> stories = storyService.findByProjectKey(projectKey);
         List<String> paths = new ArrayList<String>(stories.size());
-        for (StoryDTO story : stories) {
+        for (JiraStory story : stories) {
             StringBuilder storyPathSb = new StringBuilder(story.getProjectKey() + "/" + story.getIssueKey());
             if (includeVersionInPath) {
                 Long version = story.getVersion();
@@ -84,7 +84,7 @@ public class StoryResourceFind {
     @Path("/for-project/{projectKey}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public StoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
-        List<StoryDTO> stories = storyService.findByProjectKey(projectKey);
+        List<JiraStory> stories = storyService.findByProjectKey(projectKey);
         StoriesPayload payload = new StoriesPayload(stories);
         return payload;
     }
@@ -96,7 +96,7 @@ public class StoryResourceFind {
             @PathParam("projectKey") String projectKey,
             @PathParam("issueKey") String issueKey) {
 
-        StoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
         Response response;
         if (storyDTO != null) {
@@ -135,7 +135,7 @@ public class StoryResourceFind {
         Validate.notNull(storyPath);
         Validate.isTrue(storyPath.endsWith(".story"));
 
-        StoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+        JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
 
         Response response;
         if (storyDTO != null) {
