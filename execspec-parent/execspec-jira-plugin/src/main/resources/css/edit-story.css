@@ -1,3 +1,26 @@
+#editorSettingsContainer {
+    /*border: solid #002240 thin;*/
+    /*width: 30px;*/
+    float:right;
+    width: 5%;
+    /*height: 45px;*/
+    /*max-height: 45px;*/
+    /*margin-left: 5px;*/
+    display:inline-block;
+}
+
+#storyEditAreaContainer {
+    padding-top: 10px;
+}
+
+#storyMsgBar {
+    /*border: solid #ca7841 thin;*/
+    width: 94%;
+    /*height: 45px;*/
+    /*max-height: 45px;*/
+    display:inline-block;
+}
+
 .edit-operation-link {
     font-weight: bold;
 }

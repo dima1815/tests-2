@@ -7,6 +7,8 @@ function StoryController() {
 
     this.debugOn = true;
 
+    this.autoAlignTables = true;
+
     storyController = this;
     storyService = new StoryService();
     pageUtils = new PageUtils();
@@ -41,7 +43,7 @@ function StoryController() {
         var editor = CodeMirror.fromTextArea(document.getElementById("storyTextArea"), {
             mode: "jbehave",
 //            lineComment: "!--",
-            lineNumbers: true,
+//            lineNumbers: true,
             extraKeys: {
                 "Ctrl-Space": "autocomplete",
 
@@ -116,22 +118,171 @@ function StoryController() {
 //            editor.getDoc().markText(paramStart, paramEnd, options);
 //        });
 
+//        AJS.$('#storyEditorSettingsTrigger').fadeToggle();
+//        AJS.$("#storyEditorHeader").mouseenter(function (event) {
+//            AJS.$('#storyEditorSettingsTrigger').fadeToggle(300);
+//        });
+//        AJS.$("#storyEditorHeader").mouseleave(function (event) {
+//            AJS.$('#storyEditorSettingsTrigger').fadeToggle(300);
+//        });
+
+        AJS.$("#showLineNumbersTrigger").click(function (event) {
+            var target = event.target;
+            if (AJS.$(target).hasClass("checked")) {
+                storyController.debug("hiding line numbers");
+                storyController.editor.setOption("lineNumbers", false);
+            } else {
+                storyController.debug("showing line numbers");
+                storyController.editor.setOption("lineNumbers", true);
+            }
+
+        });
+
+        AJS.$("#autoAlignTableParamsTrigger").click(function (event) {
+            var target = event.target;
+            if (AJS.$(target).hasClass("checked")) {
+                storyController.debug("auto align table parameters -  Off");
+                storyController.autoAlignTables = false;
+            } else {
+                storyController.debug("auto align table parameters -  On");
+                storyController.autoAlignTables = true;
+                storyController.alignTablesInWholeDoc();
+            }
+
+        });
+
+        AJS.$("#autoInsertTabularParametersTrigger").click(function (event) {
+            var target = event.target;
+            if (AJS.$(target).hasClass("checked")) {
+                storyController.debug("auto insert tabular parameters -  Off");
+            } else {
+                storyController.debug("auto insert tabular parameters -  On");
+            }
+
+        });
+
         this.loadStory();
 
         storyController.debug("# init");
     }
 
+    this.alignTableBetween = function (tableStartLine, tableEndLine) {
+
+        storyController.debug("> alignTableBetween");
+        storyController.debug("tableStartLine - " + tableStartLine + ", tableEndLine - " + tableEndLine);
+
+        // get max width for columns
+        var maxColumnWidths = [];
+        this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
+                var lineText = lineHandle.text;
+                lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
+                if (lineText.substring("|--".length) == "|--") {
+                    // ignore table comment line
+                } else if (lineText.length == 0) {
+                    // ignore empty lines
+                } else {
+                    var tokens = lineText.split("|");
+                    for (var i = 0; i < tokens.length; i++) {
+                        var token = tokens[i];
+                        var currentMax = maxColumnWidths[i];
+                        if (currentMax == null || token.length > currentMax) {
+                            var newMax = token.length;
+                            maxColumnWidths[i] = newMax;
+                        }
+                    }
+                }
+            }
+        );
+
+        // align columns
+        this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
+                var lineText = lineHandle.text;
+                lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
+                var currentLine = lineHandle.lineNo();
+                if (lineText.substring("|--".length) == "|--") {
+                    // ignore table comment line
+                } else if (lineText.length == 0) {
+                    // ignore empty lines
+                } else {
+                    var tokens = lineText.split("|");
+                    var pos = 0;
+                    for (var i = 0; i < tokens.length; i++) {
+                        var token = tokens[i];
+                        if (token != "") {
+                            pos++; // for '|'
+                        }
+                        pos += token.length;
+                        var difference = maxColumnWidths[i] - token.length;
+                        if (difference > 0 && token.length > 0) {
+
+                            var spaces = "";
+                            while (difference > 0) {
+                                spaces = spaces + " ";
+                                difference--;
+                            }
+
+                            var tokenEndCh = pos;
+                            // replace old token with new
+                            storyController.editor.getDoc().replaceRange(spaces,
+                                {line: currentLine, ch: tokenEndCh},
+                                {line: currentLine, ch: tokenEndCh});
+
+                            pos += spaces.length;
+                        }
+                    }
+                }
+            }
+        );
+
+        storyController.debug("# alignTableBetween");
+    }
+
+    this.alignTablesInWholeDoc = function () {
+
+        storyController.debug("> alignTablesInWholeDoc");
+
+        var tableStartLine = null;
+        var currentLine;
+        var previousLine;
+        this.editor.getDoc().eachLine(function (lineHandle) {
+            if (currentLine != null) {
+                previousLine = currentLine;
+            }
+            currentLine = lineHandle.lineNo();
+            var lineText = lineHandle.text;
+            lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
+            if (lineText.substr(0, 1) == "|") {
+                // inside table line
+                if (tableStartLine == null) {
+                    tableStartLine = lineHandle.lineNo();
+                }
+            } else if (tableStartLine != null) {
+                // we were already in the table before
+                var tableEndLine = previousLine;
+                if (tableEndLine > tableStartLine) {
+                    storyController.alignTableBetween(tableStartLine, tableEndLine);
+                }
+                tableStartLine = null;
+            }
+        });
+
+        storyController.debug("# alignTablesInWholeDoc");
+    }
+
     this.lineStartsWithStepKeyword = function (lineNumber) {
 
         var lineHandle = this.editor.getLineHandle(lineNumber);
-        var lineText = lineHandle.text;
-
-        var regExpPattern = new RegExp("^(Given|When|Then|And)\\s+");
-        var matchedResult = regExpPattern.exec(lineText);
-        if (matchedResult != null) {
-            return true;
-        } else {
+        if (lineHandle == null) {
             return false;
+        } else {
+            var lineText = lineHandle.text;
+            var regExpPattern = new RegExp("^(Given|When|Then|And)\\s+");
+            var matchedResult = regExpPattern.exec(lineText);
+            if (matchedResult != null) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -186,6 +337,22 @@ function StoryController() {
         return -1;
     }
 
+    this.findTabularParameterStartingLineAfter = function (lineNumber, butNotAtOrAfter) {
+        var nextLineNumber = lineNumber + 1;
+        while (nextLineNumber < butNotAtOrAfter) {
+            var nextLineHandle = storyController.editor.getLineHandle(nextLineNumber);
+            if (nextLineHandle == null) {
+                return -1;
+            } else {
+                if (nextLineHandle.text.substring(0, 1) == "|" && nextLineHandle.text.substring(0, 3) != "|--") {
+                    return nextLineNumber;
+                }
+                nextLineNumber++;
+            }
+        }
+        return -1;
+    }
+
     this.findStepStartingLineInSameScenarioAfter = function (lineNumber) {
         var nextLine = lineNumber + 1;
         var totalLines = this.editor.lineCount();
@@ -224,6 +391,25 @@ function StoryController() {
         } else {
             return false;
         }
+    }
+
+    this.findTabularParameterEndingLineAfter = function (tableStartLine, notAtOrAfter) {
+        var nextLineNumber = tableStartLine + 1;
+        var lastStepLine = tableStartLine;
+        while (nextLineNumber < notAtOrAfter) {
+            var nextLineHandle = storyController.editor.getLineHandle(nextLineNumber);
+            if (nextLineHandle == null) {
+                return lastStepLine;
+            } else {
+                if (nextLineHandle.text.substring(0, 1) != "|") {
+                    break;
+                } else {
+                    lastStepLine = nextLineNumber;
+                    nextLineNumber++;
+                }
+            }
+        }
+        return lastStepLine;
     }
 
     this.findLastStepLineFrom = function (lineNumber) {
@@ -422,6 +608,19 @@ function StoryController() {
     }
 
 
+    this.realignStepTableParameters = function (stepStartLine, stepEndLine) {
+
+        storyController.debug("> realignStepTableParameters");
+
+        var firstTableLine = storyController.findTabularParameterStartingLineAfter(stepStartLine, stepEndLine + 1);
+        if (firstTableLine != -1) {
+            var lastTableLine = storyController.findTabularParameterEndingLineAfter(stepStartLine, stepEndLine + 1);
+            storyController.alignTableBetween(firstTableLine, lastTableLine);
+        }
+
+        storyController.debug("# realignStepTableParameters");
+    }
+
     this.remarkStepBetween = function (stepStartLine, stepEndLine) {
 
         storyController.debug("> remarkStepBetween");
@@ -433,6 +632,8 @@ function StoryController() {
         });
 
         this.remarkStep(stepStartLine, stepEndLine, step);
+
+        this.realignStepTableParameters(stepStartLine, stepEndLine);
 
         storyController.debug("# remarkStepBetween");
     }
@@ -478,11 +679,9 @@ function StoryController() {
         var previousStepStartingLine = this.findStepStartingLineBefore(fromLine);
         if (previousStepStartingLine > -1) {
             scanStartLine = previousStepStartingLine;
-        } else if (this.lineStartsWithStepKeyword(fromLine)) {
-            scanStartLine = fromLine;
         } else {
             // we are not inside the step, so ignore event
-            scanStartLine = null;
+            scanStartLine = fromLine;
         }
 
         if (scanStartLine != null) {
@@ -492,7 +691,7 @@ function StoryController() {
             var nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
             if (nextStepStartLine != -1) {
                 var startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
-                while(nextStepStartLine !=-1 && startsWithAnd) {
+                while (nextStepStartLine != -1 && startsWithAnd) {
                     scanEndLine = this.findLastStepLineFrom(nextStepStartLine);
                     nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
                     if (nextStepStartLine != -1) {

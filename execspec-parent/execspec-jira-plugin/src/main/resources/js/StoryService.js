@@ -232,7 +232,8 @@ function StoryService() {
             url: pathStepDocs,
             contentType: "text/plain; charset=utf-8",
             success: successCallback,
-            dataType: "json"
+            dataType: "json",
+            async: false
         });
 
         this.debug("# fetchStepDocs");

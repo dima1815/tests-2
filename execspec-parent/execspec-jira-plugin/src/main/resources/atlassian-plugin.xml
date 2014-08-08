@@ -87,54 +87,54 @@
                  location="opsbar-operations" weight="20">
         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
     </web-section>
-    <web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
-              key="viewIssuePage.webItem.createStory.key"
-              section="jbehave-links-section" weight="10">
-        <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
-        <conditions type="and">
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                <param name="permission" value="edit"/>
-            </condition>
-            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition" invert="true">
-            </condition>
-        </conditions>
-        <label key="viewIssuePage.webItem.createStory.label"/>
-        <link linkId="add-jbehave-story-link">/add-jbehave-story</link>
-        <styleClass>add-new-story-button</styleClass>
-    </web-item>
-    <web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"
-              key="viewIssuePage.webItem.editStory.key"
-              section="jbehave-links-section" weight="20">
-        <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
-        <conditions type="and">
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                <param name="permission" value="edit"/>
-            </condition>
-            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">
-            </condition>
-        </conditions>
-        <label key="viewIssuePage.webItem.editStory.label"/>
-        <link linkId="edit-jbehave-story-link">/edit-jbehave-story</link>
-        <styleClass>edit-story-button</styleClass>
-    </web-item>
-    <web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
-              key="viewIssuePage.webItem.deleteStory.key"
-              section="jbehave-links-section" weight="30">
-        <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
-        <conditions type="and">
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                <param name="permission" value="edit"/>
-            </condition>
-            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">
-            </condition>
-        </conditions>
-        <label key="viewIssuePage.webItem.deleteStory.label"/>
-        <link linkId="delete-jbehave-story-link">/delete-jbehave-story</link>
-        <styleClass>delete-story-button</styleClass>
-    </web-item>
+    <!--<web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"-->
+              <!--key="viewIssuePage.webItem.createStory.key"-->
+              <!--section="jbehave-links-section" weight="10">-->
+        <!--<description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>-->
+        <!--<conditions type="and">-->
+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+                <!--<param name="permission" value="edit"/>-->
+            <!--</condition>-->
+            <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition" invert="true">-->
+            <!--</condition>-->
+        <!--</conditions>-->
+        <!--<label key="viewIssuePage.webItem.createStory.label"/>-->
+        <!--<link linkId="add-jbehave-story-link">/add-jbehave-story</link>-->
+        <!--<styleClass>add-new-story-button</styleClass>-->
+    <!--</web-item>-->
+    <!--<web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"-->
+              <!--key="viewIssuePage.webItem.editStory.key"-->
+              <!--section="jbehave-links-section" weight="20">-->
+        <!--<description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>-->
+        <!--<conditions type="and">-->
+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+                <!--<param name="permission" value="edit"/>-->
+            <!--</condition>-->
+            <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">-->
+            <!--</condition>-->
+        <!--</conditions>-->
+        <!--<label key="viewIssuePage.webItem.editStory.label"/>-->
+        <!--<link linkId="edit-jbehave-story-link">/edit-jbehave-story</link>-->
+        <!--<styleClass>edit-story-button</styleClass>-->
+    <!--</web-item>-->
+    <!--<web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"-->
+              <!--key="viewIssuePage.webItem.deleteStory.key"-->
+              <!--section="jbehave-links-section" weight="30">-->
+        <!--<description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>-->
+        <!--<conditions type="and">-->
+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+                <!--<param name="permission" value="edit"/>-->
+            <!--</condition>-->
+            <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">-->
+            <!--</condition>-->
+        <!--</conditions>-->
+        <!--<label key="viewIssuePage.webItem.deleteStory.label"/>-->
+        <!--<link linkId="delete-jbehave-story-link">/delete-jbehave-story</link>-->
+        <!--<styleClass>delete-story-button</styleClass>-->
+    <!--</web-item>-->
     <web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
               key="viewIssuePage.webItem.clearStoryTest.key"
               section="jbehave-links-section" weight="30">

@@ -5,7 +5,27 @@
  */
 {template .renderStoryPanel}
 <div id="storyContainer">
-    <div id="storyMsgBar"></div>
+    <div id="storyEditorHeader">
+        <div id="storyMsgBar"></div>
+        <div id="editorSettingsContainer">
+              <a id="storyEditorSettingsTrigger" href="#storyEditorSettings" aria-owns="storyEditorSettings" aria-haspopup="true"
+                class="aui-button aui-button-link aui-dropdown2-trigger aui-dropdown2-trigger-arrowless aui-style-default">
+                <span class="aui-icon aui-icon-small aui-iconfont-configure aui-dropdown2-trigger-arrowless">Configure</span>
+                </a>
+              <!-- Simple Dropdown - dropdown -->
+              <div id="storyEditorSettings" class="aui-dropdown2 aui-style-default">
+                  <ul class="aui-list-truncate">
+                    <li><a id="showLineNumbersTrigger"
+                        class="aui-dropdown2-checkbox interactive">show line numbers</a></li>
+                      <li><a id="autoAlignTableParamsTrigger"
+                        class="aui-dropdown2-checkbox interactive">auto align tables</a></li>
+                      <li><a id="autoInsertTabularParametersTrigger"
+                        class="aui-dropdown2-checkbox interactive">auto insert tabular parameters</a></li>
+                  </ul>
+              </div><!-- .aui-dropdown2 -->
+        </div>
+    </div>
+
     <div id="storyEditAreaContainer">
         <textarea id="storyTextArea"
             rows="10"

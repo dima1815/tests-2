@@ -1,10 +1,10 @@
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1407485318000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1407485318000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
 @@ -7,6 +7,8 @@
  
      this.debugOn = true;
@@ -307,13 +307,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                      scanEndLine = this.findLastStepLineFrom(nextStepStartLine);
                      nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
                      if (nextStepStartLine != -1) {
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1407485318000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1407485318000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
 @@ -87,54 +87,54 @@
                   location="opsbar-operations" weight="20">
          <label key="viewIssuePage.webSection.jbehaveStory.label"/>
@@ -417,13 +417,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
      <web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
                key="viewIssuePage.webItem.clearStoryTest.key"
                section="jbehave-links-section" weight="30">
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(date 1407485318000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(date 1407485318000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(revision )
 @@ -232,7 +232,8 @@
              url: pathStepDocs,
              contentType: "text/plain; charset=utf-8",
@@ -435,13 +435,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
          this.debug("# fetchStepDocs");
 \ No newline at end of file
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(date 1407485318000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(date 1407485318000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(revision )
 @@ -1,3 +1,26 @@
 +#editorSettingsContainer {
 +    /*border: solid #002240 thin;*/
@@ -469,13 +469,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  .edit-operation-link {
      font-weight: bold;
  }
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(date 1407485318000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(date 1407485318000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(revision )
 @@ -5,7 +5,27 @@
   */
  {template .renderStoryPanel}
