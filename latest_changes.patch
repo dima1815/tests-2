@@ -1,507 +1,228 @@
-Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1407485318000)
-+++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -7,6 +7,8 @@
- 
-     this.debugOn = true;
- 
-+    this.autoAlignTables = true;
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy	(revision )
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy	(revision )
+@@ -0,0 +1,3 @@
++package groovy
 +
-     storyController = this;
-     storyService = new StoryService();
-     pageUtils = new PageUtils();
-@@ -41,7 +43,7 @@
-         var editor = CodeMirror.fromTextArea(document.getElementById("storyTextArea"), {
-             mode: "jbehave",
- //            lineComment: "!--",
--            lineNumbers: true,
-+//            lineNumbers: true,
++println "hello"; HAHA
+\ No newline at end of file
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1407532080000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -23,6 +23,7 @@
+     this.currentStory = null;
+     this.storyChanged = false;
+     this.stepDocs = null;
++    this.alignTablesOnEdit = true;
+ 
+     this.init = function () {
+ 
+@@ -47,6 +48,11 @@
              extraKeys: {
                  "Ctrl-Space": "autocomplete",
  
-@@ -116,24 +118,173 @@
- //            editor.getDoc().markText(paramStart, paramEnd, options);
- //        });
++                Tab: function(cm) {
++                    var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
++                    cm.replaceSelection(spaces, "end", "+input");
++                },
++
+                 // commenting
+                 "Ctrl-/": function (cm) {
  
-+//        AJS.$('#storyEditorSettingsTrigger').fadeToggle();
-+//        AJS.$("#storyEditorHeader").mouseenter(function (event) {
-+//            AJS.$('#storyEditorSettingsTrigger').fadeToggle(300);
-+//        });
-+//        AJS.$("#storyEditorHeader").mouseleave(function (event) {
-+//            AJS.$('#storyEditorSettingsTrigger').fadeToggle(300);
-+//        });
-+
-+        AJS.$("#showLineNumbersTrigger").click(function (event) {
-+            var target = event.target;
-+            if (AJS.$(target).hasClass("checked")) {
-+                storyController.debug("hiding line numbers");
-+                storyController.editor.setOption("lineNumbers", false);
-+            } else {
-+                storyController.debug("showing line numbers");
-+                storyController.editor.setOption("lineNumbers", true);
-+            }
-+
-+        });
-+
-+        AJS.$("#autoAlignTableParamsTrigger").click(function (event) {
-+            var target = event.target;
-+            if (AJS.$(target).hasClass("checked")) {
-+                storyController.debug("auto align table parameters -  Off");
-+                storyController.autoAlignTables = false;
-+            } else {
-+                storyController.debug("auto align table parameters -  On");
-+                storyController.autoAlignTables = true;
-+                storyController.alignTablesInWholeDoc();
-+            }
-+
-+        });
-+
-+        AJS.$("#autoInsertTabularParametersTrigger").click(function (event) {
-+            var target = event.target;
-+            if (AJS.$(target).hasClass("checked")) {
-+                storyController.debug("auto insert tabular parameters -  Off");
-+            } else {
-+                storyController.debug("auto insert tabular parameters -  On");
-+            }
-+
-+        });
-+
-         this.loadStory();
+@@ -171,6 +177,14 @@
+         storyController.debug("> alignTableBetween");
+         storyController.debug("tableStartLine - " + tableStartLine + ", tableEndLine - " + tableEndLine);
  
-         storyController.debug("# init");
-     }
- 
-+    this.alignTableBetween = function (tableStartLine, tableEndLine) {
-+
-+        storyController.debug("> alignTableBetween");
-+        storyController.debug("tableStartLine - " + tableStartLine + ", tableEndLine - " + tableEndLine);
-+
-+        // get max width for columns
-+        var maxColumnWidths = [];
-+        this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
-+                var lineText = lineHandle.text;
-+                lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
-+                if (lineText.substring("|--".length) == "|--") {
-+                    // ignore table comment line
-+                } else if (lineText.length == 0) {
-+                    // ignore empty lines
-+                } else {
-+                    var tokens = lineText.split("|");
-+                    for (var i = 0; i < tokens.length; i++) {
-+                        var token = tokens[i];
-+                        var currentMax = maxColumnWidths[i];
-+                        if (currentMax == null || token.length > currentMax) {
-+                            var newMax = token.length;
-+                            maxColumnWidths[i] = newMax;
-+                        }
-+                    }
-+                }
-+            }
-+        );
-+
-+        // align columns
-+        this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
-+                var lineText = lineHandle.text;
-+                lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
-+                var currentLine = lineHandle.lineNo();
-+                if (lineText.substring("|--".length) == "|--") {
-+                    // ignore table comment line
-+                } else if (lineText.length == 0) {
-+                    // ignore empty lines
-+                } else {
-+                    var tokens = lineText.split("|");
-+                    var pos = 0;
-+                    for (var i = 0; i < tokens.length; i++) {
-+                        var token = tokens[i];
-+                        if (token != "") {
-+                            pos++; // for '|'
-+                        }
-+                        pos += token.length;
-+                        var difference = maxColumnWidths[i] - token.length;
-+                        if (difference > 0 && token.length > 0) {
-+
-+                            var spaces = "";
-+                            while (difference > 0) {
-+                                spaces = spaces + " ";
-+                                difference--;
-+                            }
-+
-+                            var tokenEndCh = pos;
-+                            // replace old token with new
-+                            storyController.editor.getDoc().replaceRange(spaces,
-+                                {line: currentLine, ch: tokenEndCh},
-+                                {line: currentLine, ch: tokenEndCh});
-+
-+                            pos += spaces.length;
-+                        }
-+                    }
-+                }
-+            }
-+        );
-+
-+        storyController.debug("# alignTableBetween");
-+    }
-+
-+    this.alignTablesInWholeDoc = function () {
-+
-+        storyController.debug("> alignTablesInWholeDoc");
-+
-+        var tableStartLine = null;
-+        var currentLine;
-+        var previousLine;
-+        this.editor.getDoc().eachLine(function (lineHandle) {
-+            if (currentLine != null) {
-+                previousLine = currentLine;
-+            }
-+            currentLine = lineHandle.lineNo();
-+            var lineText = lineHandle.text;
-+            lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
-+            if (lineText.substr(0, 1) == "|") {
-+                // inside table line
-+                if (tableStartLine == null) {
-+                    tableStartLine = lineHandle.lineNo();
-+                }
-+            } else if (tableStartLine != null) {
-+                // we were already in the table before
-+                var tableEndLine = previousLine;
-+                if (tableEndLine > tableStartLine) {
-+                    storyController.alignTableBetween(tableStartLine, tableEndLine);
-+                }
-+                tableStartLine = null;
-+            }
-+        });
-+
-+        storyController.debug("# alignTablesInWholeDoc");
-+    }
-+
-     this.lineStartsWithStepKeyword = function (lineNumber) {
- 
-         var lineHandle = this.editor.getLineHandle(lineNumber);
-+        if (lineHandle == null) {
-+            return false;
++        storyController.debug("storyController.alignTablesOnEdit - " + storyController.alignTablesOnEdit);
++        var currentAlignValue = storyController.alignTablesOnEdit;
++        if (storyController.alignTablesOnEdit == false) {
++            return;
 +        } else {
--        var lineText = lineHandle.text;
-+            var lineText = lineHandle.text;
++            storyController.alignTablesOnEdit = false;
++        }
++
+         // get max width for columns
+         var maxColumnWidths = [];
+         this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
+@@ -184,6 +198,7 @@
+                     var tokens = lineText.split("|");
+                     for (var i = 0; i < tokens.length; i++) {
+                         var token = tokens[i];
++                        token = token.replace(/\s+$/g, ''); // trim any trailing spaces
+                         var currentMax = maxColumnWidths[i];
+                         if (currentMax == null || token.length > currentMax) {
+                             var newMax = token.length;
+@@ -207,33 +222,63 @@
+                     var tokens = lineText.split("|");
+                     var pos = 0;
+                     for (var i = 0; i < tokens.length; i++) {
++                        var isFirstToken = i == 0;
+                         var token = tokens[i];
+-                        if (token != "") {
++                        if (!isFirstToken) {
+                             pos++; // for '|'
+                         }
+-                        pos += token.length;
++                        var tokenStartCh = pos;
++                        var tokenEndCh = tokenStartCh + token.length;
+                         var difference = maxColumnWidths[i] - token.length;
+-                        if (difference > 0 && token.length > 0) {
++                        if (difference > 0 && !isFirstToken) {
+ 
+                             var spaces = "";
+                             while (difference > 0) {
+                                 spaces = spaces + " ";
+                                 difference--;
+                             }
 -
--        var regExpPattern = new RegExp("^(Given|When|Then|And)\\s+");
--        var matchedResult = regExpPattern.exec(lineText);
--        if (matchedResult != null) {
--            return true;
--        } else {
--            return false;
--        }
--    }
-+            var regExpPattern = new RegExp("^(Given|When|Then|And)\\s+");
-+            var matchedResult = regExpPattern.exec(lineText);
-+            if (matchedResult != null) {
-+                return true;
-+            } else {
-+                return false;
-+            }
-+        }
-+    }
+-                            var tokenEndCh = pos;
+                             // replace old token with new
+                             storyController.editor.getDoc().replaceRange(spaces,
+                                 {line: currentLine, ch: tokenEndCh},
+                                 {line: currentLine, ch: tokenEndCh});
  
-     this.lineStartsWithAndKeyword = function (lineNumber) {
- 
-@@ -186,6 +337,22 @@
-         return -1;
-     }
- 
-+    this.findTabularParameterStartingLineAfter = function (lineNumber, butNotAtOrAfter) {
-+        var nextLineNumber = lineNumber + 1;
-+        while (nextLineNumber < butNotAtOrAfter) {
-+            var nextLineHandle = storyController.editor.getLineHandle(nextLineNumber);
-+            if (nextLineHandle == null) {
-+                return -1;
-+            } else {
-+                if (nextLineHandle.text.substring(0, 1) == "|" && nextLineHandle.text.substring(0, 3) != "|--") {
-+                    return nextLineNumber;
-+                }
-+                nextLineNumber++;
-+            }
-+        }
-+        return -1;
-+    }
+-                            pos += spaces.length;
++                            pos += token.length + spaces.length;
 +
-     this.findStepStartingLineInSameScenarioAfter = function (lineNumber) {
-         var nextLine = lineNumber + 1;
-         var totalLines = this.editor.lineCount();
-@@ -226,6 +393,25 @@
-         }
-     }
- 
-+    this.findTabularParameterEndingLineAfter = function (tableStartLine, notAtOrAfter) {
-+        var nextLineNumber = tableStartLine + 1;
-+        var lastStepLine = tableStartLine;
-+        while (nextLineNumber < notAtOrAfter) {
-+            var nextLineHandle = storyController.editor.getLineHandle(nextLineNumber);
-+            if (nextLineHandle == null) {
-+                return lastStepLine;
-+            } else {
-+                if (nextLineHandle.text.substring(0, 1) != "|") {
-+                    break;
-+                } else {
-+                    lastStepLine = nextLineNumber;
-+                    nextLineNumber++;
++                        } else if (difference < 0 && !isFirstToken) {
++                            // this is the case when token has whitespace at the end
++                            // so we trim the whitespace
++                            token = token.replace(/\s+$/g, ''); // trim any trailing spaces
++                            // after trimming the difference must be zero
++                            difference = maxColumnWidths[i] - token.length;
++                            if (difference < 0) {
++                                console.error("Error occurred while trying to align table line - " + currentLine + ", length of token - "
++                                    + token + " was longer than maximum length for its column");
++                                pos += token.length;
++                            } else {
++                                // we replace the original token with the trimmed one
++                                // but we may need to pad still following our trimming
++                                var spaces = "";
++                                while (difference > 0) {
++                                    spaces = spaces + " ";
++                                    difference--;
+-                        }
++                                }
++                                // replace old token with new one, which may also be padded
++                                var replaceToken = token + spaces;
++                                storyController.editor.getDoc().replaceRange(replaceToken,
++                                    {line: currentLine, ch: tokenStartCh},
++                                    {line: currentLine, ch: tokenEndCh});
++                                pos += replaceToken.length;
+-                    }
++                            }
++                        } else {
++                            pos += token.length;
+-                }
+-            }
++                        }
++                    }
 +                }
 +            }
-+        }
-+        return lastStepLine;
-+    }
-+
-     this.findLastStepLineFrom = function (lineNumber) {
+         );
  
-         var nextLineNumber = lineNumber + 1;
-@@ -422,6 +608,19 @@
++        storyController.alignTablesOnEdit = currentAlignValue;
++
+         storyController.debug("# alignTableBetween");
      }
  
+@@ -401,7 +446,7 @@
+             if (nextLineHandle == null) {
+                 return lastStepLine;
+             } else {
+-                if (nextLineHandle.text.substring(0, 1) != "|") {
++                if (nextLineHandle.text.length > 0 && nextLineHandle.text.substring(0, 1) != "|") {
+                     break;
+                 } else {
+                     lastStepLine = nextLineNumber;
+Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(date 1407532080000)
++++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(revision )
+@@ -2,7 +2,9 @@
  
-+    this.realignStepTableParameters = function (stepStartLine, stepEndLine) {
+ import com.atlassian.crowd.embedded.api.User;
+ import com.atlassian.jira.bc.issue.IssueService;
++import com.atlassian.jira.plugin.webresource.JiraWebResourceManager;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.plugin.webresource.WebResourceUrlProvider;
+ import com.mycomp.execspec.jiraplugin.ao.story.Story;
+ import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
+ import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
+@@ -13,30 +15,64 @@
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
++import java.io.BufferedReader;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.InputStreamReader;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+ public class StoryServiceImpl implements StoryService {
+ 
+     private final Logger log = LoggerFactory.getLogger(getClass());
 +
-+        storyController.debug("> realignStepTableParameters");
+     private final IssueService is;
 +
-+        var firstTableLine = storyController.findTabularParameterStartingLineAfter(stepStartLine, stepEndLine + 1);
-+        if (firstTableLine != -1) {
-+            var lastTableLine = storyController.findTabularParameterEndingLineAfter(stepStartLine, stepEndLine + 1);
-+            storyController.alignTableBetween(firstTableLine, lastTableLine);
+     private final JiraAuthenticationContext authenticationContext;
++
+     private final StoryDao storyDao;
++
+     private final StoryReportDao storyReportDao;
++
+     private final StepDocsSerivce stepDocsSerivce;
++
+     private StoryReportService storyReportService;
+ 
++    private JiraWebResourceManager jiraWebResourceManager;
++
++    private WebResourceUrlProvider webResourceUrlProvider;
++
+     public StoryServiceImpl(StoryDao storyDao, StoryReportDao storyReportDao,
+                             IssueService is,
+                             JiraAuthenticationContext authenticationContext,
+                             StepDocsSerivce stepDocsSerivce,
+-                            StoryReportService storyReportService) {
++                            StoryReportService storyReportService,
++                            JiraWebResourceManager jiraWebResourceManager,
++                            WebResourceUrlProvider webResourceUrlProvider) {
+         this.storyDao = storyDao;
+         this.storyReportDao = storyReportDao;
+         this.is = is;
+         this.authenticationContext = authenticationContext;
+         this.stepDocsSerivce = stepDocsSerivce;
+         this.storyReportService = storyReportService;
++        this.jiraWebResourceManager = jiraWebResourceManager;
++        this.webResourceUrlProvider = webResourceUrlProvider;
++        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("groovy/test.groovy");
++        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
++
++        String line = null;
++        try {
++            line = br.readLine();
++            while(line != null){
++                System.out.println("line = " + line);
++                line = br.readLine();
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
 +        }
 +
-+        storyController.debug("# realignStepTableParameters");
-+    }
 +
-     this.remarkStepBetween = function (stepStartLine, stepEndLine) {
- 
-         storyController.debug("> remarkStepBetween");
-@@ -434,6 +633,8 @@
- 
-         this.remarkStep(stepStartLine, stepEndLine, step);
- 
-+        this.realignStepTableParameters(stepStartLine, stepEndLine);
 +
-         storyController.debug("# remarkStepBetween");
      }
  
-@@ -478,11 +679,9 @@
-         var previousStepStartingLine = this.findStepStartingLineBefore(fromLine);
-         if (previousStepStartingLine > -1) {
-             scanStartLine = previousStepStartingLine;
--        } else if (this.lineStartsWithStepKeyword(fromLine)) {
--            scanStartLine = fromLine;
-         } else {
-             // we are not inside the step, so ignore event
--            scanStartLine = null;
-+            scanStartLine = fromLine;
-         }
- 
-         if (scanStartLine != null) {
-@@ -492,7 +691,7 @@
-             var nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
-             if (nextStepStartLine != -1) {
-                 var startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
--                while(nextStepStartLine !=-1 && startsWithAnd) {
-+                while (nextStepStartLine != -1 && startsWithAnd) {
-                     scanEndLine = this.findLastStepLineFrom(nextStepStartLine);
-                     nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
-                     if (nextStepStartLine != -1) {
-Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1407485318000)
-+++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -87,54 +87,54 @@
-                  location="opsbar-operations" weight="20">
-         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
-     </web-section>
--    <web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
--              key="viewIssuePage.webItem.createStory.key"
--              section="jbehave-links-section" weight="10">
--        <description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>
--        <conditions type="and">
--            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
--            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
--                <param name="permission" value="edit"/>
--            </condition>
--            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition" invert="true">
--            </condition>
--        </conditions>
--        <label key="viewIssuePage.webItem.createStory.label"/>
--        <link linkId="add-jbehave-story-link">/add-jbehave-story</link>
--        <styleClass>add-new-story-button</styleClass>
--    </web-item>
--    <web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"
--              key="viewIssuePage.webItem.editStory.key"
--              section="jbehave-links-section" weight="20">
--        <description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>
--        <conditions type="and">
--            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
--            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
--                <param name="permission" value="edit"/>
--            </condition>
--            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">
--            </condition>
--        </conditions>
--        <label key="viewIssuePage.webItem.editStory.label"/>
--        <link linkId="edit-jbehave-story-link">/edit-jbehave-story</link>
--        <styleClass>edit-story-button</styleClass>
--    </web-item>
--    <web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
--              key="viewIssuePage.webItem.deleteStory.key"
--              section="jbehave-links-section" weight="30">
--        <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
--        <conditions type="and">
--            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
--            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
--                <param name="permission" value="edit"/>
--            </condition>
--            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">
--            </condition>
--        </conditions>
--        <label key="viewIssuePage.webItem.deleteStory.label"/>
--        <link linkId="delete-jbehave-story-link">/delete-jbehave-story</link>
--        <styleClass>delete-story-button</styleClass>
--    </web-item>
-+    <!--<web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"-->
-+              <!--key="viewIssuePage.webItem.createStory.key"-->
-+              <!--section="jbehave-links-section" weight="10">-->
-+        <!--<description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>-->
-+        <!--<conditions type="and">-->
-+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
-+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
-+                <!--<param name="permission" value="edit"/>-->
-+            <!--</condition>-->
-+            <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition" invert="true">-->
-+            <!--</condition>-->
-+        <!--</conditions>-->
-+        <!--<label key="viewIssuePage.webItem.createStory.label"/>-->
-+        <!--<link linkId="add-jbehave-story-link">/add-jbehave-story</link>-->
-+        <!--<styleClass>add-new-story-button</styleClass>-->
-+    <!--</web-item>-->
-+    <!--<web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"-->
-+              <!--key="viewIssuePage.webItem.editStory.key"-->
-+              <!--section="jbehave-links-section" weight="20">-->
-+        <!--<description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>-->
-+        <!--<conditions type="and">-->
-+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
-+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
-+                <!--<param name="permission" value="edit"/>-->
-+            <!--</condition>-->
-+            <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">-->
-+            <!--</condition>-->
-+        <!--</conditions>-->
-+        <!--<label key="viewIssuePage.webItem.editStory.label"/>-->
-+        <!--<link linkId="edit-jbehave-story-link">/edit-jbehave-story</link>-->
-+        <!--<styleClass>edit-story-button</styleClass>-->
-+    <!--</web-item>-->
-+    <!--<web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"-->
-+              <!--key="viewIssuePage.webItem.deleteStory.key"-->
-+              <!--section="jbehave-links-section" weight="30">-->
-+        <!--<description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>-->
-+        <!--<conditions type="and">-->
-+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
-+            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
-+                <!--<param name="permission" value="edit"/>-->
-+            <!--</condition>-->
-+            <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">-->
-+            <!--</condition>-->
-+        <!--</conditions>-->
-+        <!--<label key="viewIssuePage.webItem.deleteStory.label"/>-->
-+        <!--<link linkId="delete-jbehave-story-link">/delete-jbehave-story</link>-->
-+        <!--<styleClass>delete-story-button</styleClass>-->
-+    <!--</web-item>-->
-     <web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"
-               key="viewIssuePage.webItem.clearStoryTest.key"
-               section="jbehave-links-section" weight="30">
-Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(date 1407485318000)
-+++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryService.js	(revision )
-@@ -232,7 +232,8 @@
-             url: pathStepDocs,
-             contentType: "text/plain; charset=utf-8",
-             success: successCallback,
--            dataType: "json"
-+            dataType: "json",
-+            async: false
-         });
- 
-         this.debug("# fetchStepDocs");
-\ No newline at end of file
-Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(date 1407485318000)
-+++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/css/edit-story.css	(revision )
-@@ -1,3 +1,26 @@
-+#editorSettingsContainer {
-+    /*border: solid #002240 thin;*/
-+    /*width: 30px;*/
-+    float:right;
-+    width: 5%;
-+    /*height: 45px;*/
-+    /*max-height: 45px;*/
-+    /*margin-left: 5px;*/
-+    display:inline-block;
-+}
-+
-+#storyEditAreaContainer {
-+    padding-top: 10px;
-+}
-+
-+#storyMsgBar {
-+    /*border: solid #ca7841 thin;*/
-+    width: 94%;
-+    /*height: 45px;*/
-+    /*max-height: 45px;*/
-+    display:inline-block;
-+}
-+
- .edit-operation-link {
-     font-weight: bold;
- }
-Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(date 1407485318000)
-+++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(revision )
-@@ -5,7 +5,27 @@
-  */
- {template .renderStoryPanel}
- <div id="storyContainer">
-+    <div id="storyEditorHeader">
--    <div id="storyMsgBar"></div>
-+        <div id="storyMsgBar"></div>
-+        <div id="editorSettingsContainer">
-+              <a id="storyEditorSettingsTrigger" href="#storyEditorSettings" aria-owns="storyEditorSettings" aria-haspopup="true"
-+                class="aui-button aui-button-link aui-dropdown2-trigger aui-dropdown2-trigger-arrowless aui-style-default">
-+                <span class="aui-icon aui-icon-small aui-iconfont-configure aui-dropdown2-trigger-arrowless">Configure</span>
-+                </a>
-+              <!-- Simple Dropdown - dropdown -->
-+              <div id="storyEditorSettings" class="aui-dropdown2 aui-style-default">
-+                  <ul class="aui-list-truncate">
-+                    <li><a id="showLineNumbersTrigger"
-+                        class="aui-dropdown2-checkbox interactive">show line numbers</a></li>
-+                      <li><a id="autoAlignTableParamsTrigger"
-+                        class="aui-dropdown2-checkbox interactive">auto align tables</a></li>
-+                      <li><a id="autoInsertTabularParametersTrigger"
-+                        class="aui-dropdown2-checkbox interactive">auto insert tabular parameters</a></li>
-+                  </ul>
-+              </div><!-- .aui-dropdown2 -->
-+        </div>
-+    </div>
-+
-     <div id="storyEditAreaContainer">
-         <textarea id="storyTextArea"
-             rows="10"
+     @Override
