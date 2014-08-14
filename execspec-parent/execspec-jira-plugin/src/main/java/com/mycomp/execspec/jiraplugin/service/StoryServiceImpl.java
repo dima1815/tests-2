@@ -2,7 +2,9 @@ package com.mycomp.execspec.jiraplugin.service;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.issue.IssueService;
+import com.atlassian.jira.plugin.webresource.JiraWebResourceManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.plugin.webresource.WebResourceUrlProvider;
 import com.mycomp.execspec.jiraplugin.ao.story.Story;
 import com.mycomp.execspec.jiraplugin.ao.story.StoryDao;
 import com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport;
@@ -13,30 +15,64 @@ import org.bitbucket.jbehaveforjira.javaclient.dto.JiraStory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StoryServiceImpl implements StoryService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+
     private final IssueService is;
+
     private final JiraAuthenticationContext authenticationContext;
+
     private final StoryDao storyDao;
+
     private final StoryReportDao storyReportDao;
+
     private final StepDocsSerivce stepDocsSerivce;
+
     private StoryReportService storyReportService;
+
+    private JiraWebResourceManager jiraWebResourceManager;
+
+    private WebResourceUrlProvider webResourceUrlProvider;
 
     public StoryServiceImpl(StoryDao storyDao, StoryReportDao storyReportDao,
                             IssueService is,
                             JiraAuthenticationContext authenticationContext,
                             StepDocsSerivce stepDocsSerivce,
-                            StoryReportService storyReportService) {
+                            StoryReportService storyReportService,
+                            JiraWebResourceManager jiraWebResourceManager,
+                            WebResourceUrlProvider webResourceUrlProvider) {
         this.storyDao = storyDao;
         this.storyReportDao = storyReportDao;
         this.is = is;
         this.authenticationContext = authenticationContext;
         this.stepDocsSerivce = stepDocsSerivce;
         this.storyReportService = storyReportService;
+        this.jiraWebResourceManager = jiraWebResourceManager;
+        this.webResourceUrlProvider = webResourceUrlProvider;
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("groovy/test.groovy");
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+
+        String line = null;
+        try {
+            line = br.readLine();
+            while(line != null){
+                System.out.println("line = " + line);
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     @Override

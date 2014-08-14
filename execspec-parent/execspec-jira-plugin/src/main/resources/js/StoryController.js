@@ -23,6 +23,7 @@ function StoryController() {
     this.currentStory = null;
     this.storyChanged = false;
     this.stepDocs = null;
+    this.alignTablesOnEdit = true;
 
     this.init = function () {
 
@@ -46,6 +47,11 @@ function StoryController() {
 //            lineNumbers: true,
             extraKeys: {
                 "Ctrl-Space": "autocomplete",
+
+                Tab: function(cm) {
+                    var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                    cm.replaceSelection(spaces, "end", "+input");
+                },
 
                 // commenting
                 "Ctrl-/": function (cm) {
@@ -171,6 +177,14 @@ function StoryController() {
         storyController.debug("> alignTableBetween");
         storyController.debug("tableStartLine - " + tableStartLine + ", tableEndLine - " + tableEndLine);
 
+        storyController.debug("storyController.alignTablesOnEdit - " + storyController.alignTablesOnEdit);
+        var currentAlignValue = storyController.alignTablesOnEdit;
+        if (storyController.alignTablesOnEdit == false) {
+            return;
+        } else {
+            storyController.alignTablesOnEdit = false;
+        }
+
         // get max width for columns
         var maxColumnWidths = [];
         this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
@@ -184,6 +198,7 @@ function StoryController() {
                     var tokens = lineText.split("|");
                     for (var i = 0; i < tokens.length; i++) {
                         var token = tokens[i];
+                        token = token.replace(/\s+$/g, ''); // trim any trailing spaces
                         var currentMax = maxColumnWidths[i];
                         if (currentMax == null || token.length > currentMax) {
                             var newMax = token.length;
@@ -207,32 +222,62 @@ function StoryController() {
                     var tokens = lineText.split("|");
                     var pos = 0;
                     for (var i = 0; i < tokens.length; i++) {
+                        var isFirstToken = i == 0;
                         var token = tokens[i];
-                        if (token != "") {
+                        if (!isFirstToken) {
                             pos++; // for '|'
                         }
-                        pos += token.length;
+                        var tokenStartCh = pos;
+                        var tokenEndCh = tokenStartCh + token.length;
                         var difference = maxColumnWidths[i] - token.length;
-                        if (difference > 0 && token.length > 0) {
+                        if (difference > 0 && !isFirstToken) {
 
                             var spaces = "";
                             while (difference > 0) {
                                 spaces = spaces + " ";
                                 difference--;
                             }
-
-                            var tokenEndCh = pos;
                             // replace old token with new
                             storyController.editor.getDoc().replaceRange(spaces,
                                 {line: currentLine, ch: tokenEndCh},
                                 {line: currentLine, ch: tokenEndCh});
 
-                            pos += spaces.length;
+                            pos += token.length + spaces.length;
+
+                        } else if (difference < 0 && !isFirstToken) {
+                            // this is the case when token has whitespace at the end
+                            // so we trim the whitespace
+                            token = token.replace(/\s+$/g, ''); // trim any trailing spaces
+                            // after trimming the difference must be zero
+                            difference = maxColumnWidths[i] - token.length;
+                            if (difference < 0) {
+                                console.error("Error occurred while trying to align table line - " + currentLine + ", length of token - "
+                                    + token + " was longer than maximum length for its column");
+                                pos += token.length;
+                            } else {
+                                // we replace the original token with the trimmed one
+                                // but we may need to pad still following our trimming
+                                var spaces = "";
+                                while (difference > 0) {
+                                    spaces = spaces + " ";
+                                    difference--;
+                                }
+                                // replace old token with new one, which may also be padded
+                                var replaceToken = token + spaces;
+                                storyController.editor.getDoc().replaceRange(replaceToken,
+                                    {line: currentLine, ch: tokenStartCh},
+                                    {line: currentLine, ch: tokenEndCh});
+                                pos += replaceToken.length;
+                            }
+                        } else {
+                            pos += token.length;
                         }
                     }
                 }
             }
         );
+
+        storyController.alignTablesOnEdit = currentAlignValue;
 
         storyController.debug("# alignTableBetween");
     }
@@ -401,7 +446,7 @@ function StoryController() {
             if (nextLineHandle == null) {
                 return lastStepLine;
             } else {
-                if (nextLineHandle.text.substring(0, 1) != "|") {
+                if (nextLineHandle.text.length > 0 && nextLineHandle.text.substring(0, 1) != "|") {
                     break;
                 } else {
                     lastStepLine = nextLineNumber;

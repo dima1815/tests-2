@@ -1,22 +1,22 @@
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy	(revision )
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy	(revision )
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/groovy/test.groovy	(revision )
 @@ -0,0 +1,3 @@
 +package groovy
 +
 +println "hello"; HAHA
 \ No newline at end of file
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1407532080000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(date 1407532080000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/resources/js/StoryController.js	(revision )
 @@ -23,6 +23,7 @@
      this.currentStory = null;
      this.storyChanged = false;
@@ -143,13 +143,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                      break;
                  } else {
                      lastStepLine = nextLineNumber;
-Index: execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java
+Index: tests-2/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(date 1407532080000)
-+++ execspec/tests-2-master/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(revision )
+--- tests-2/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(date 1407532080000)
++++ tests-2/execspec-parent/execspec-jira-plugin/src/main/java/com/mycomp/execspec/jiraplugin/service/StoryServiceImpl.java	(revision )
 @@ -2,7 +2,9 @@
  
  import com.atlassian.crowd.embedded.api.User;
