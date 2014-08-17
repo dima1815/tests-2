@@ -1,6 +1,6 @@
 package com.mycomp.execspec.jiraplugin.ao.testreport;
 
-import com.mycomp.execspec.jiraplugin.ao.story.Story;
+import org.bitbucket.jbehaveforjira.plugin.ao.story.Story;
 import net.java.ao.Entity;
 import net.java.ao.Preload;
 

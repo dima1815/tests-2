@@ -144,7 +144,7 @@
             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
                 <param name="permission" value="edit"/>
             </condition>
-            <condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryReportsCondition">
+            <condition class="org.bitbucket.jbehaveforjira.plugin.contextproviders.JiraIssueHasStoryReportsCondition">
             </condition>
         </conditions>
         <label key="viewIssuePage.webItem.clearStoryTest.label"/>
@@ -157,7 +157,7 @@
                key="viewIssuePage.storyPanel.key"
                location="atl.jira.view.issue.left.context" weight="220">
         <description key="viewIssuePage.storyPanel.description">JBehave Story Panel</description>
-        <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryPanelContextProvider"/>
+        <context-provider class="org.bitbucket.jbehaveforjira.plugin.contextproviders.StoryPanelContextProvider"/>
         <resource name="view" type="velocity" location="/velocity/story_panel.vm"/>
         <label key="viewIssuePage.storyPanel.label"/>
     </web-panel>
@@ -166,7 +166,7 @@
                key="viewIssuePage.storyReportsPanel.key"
                location="atl.jira.view.issue.left.context" weight="230">
         <description key="viewIssuePage.storyReportsPanel.description">JBehave Story Reports Panel</description>
-        <context-provider class="com.mycomp.execspec.jiraplugin.contextproviders.StoryReportsPanelContextProvider"/>
+        <context-provider class="org.bitbucket.jbehaveforjira.plugin.contextproviders.StoryReportsPanelContextProvider"/>
         <resource name="view" type="velocity" location="/velocity/story_reports_panel.vm"/>
         <label key="viewIssuePage.storyReportsPanel.label"/>
     </web-panel>
@@ -192,7 +192,7 @@
     <!-- ==================================================================================================== -->
     <!-- Custom components -->
     <!--DAOs-->
-    <component key="story-dao" name="Story DAO" class="com.mycomp.execspec.jiraplugin.ao.story.StoryDao"/>
+    <component key="story-dao" name="Story DAO" class="org.bitbucket.jbehaveforjira.plugin.ao.story.StoryDao"/>
     <component key="story-test-report-dao" name="Story Test Report DAO"
                class="com.mycomp.execspec.jiraplugin.ao.testreport.StoryReportDao"/>
     <component key="story-step-doc-dao" name="Story Step Doc DAO"
@@ -200,17 +200,17 @@
 
     <!--Services-->
     <component key="story-service" name="Story Service"
-               class="com.mycomp.execspec.jiraplugin.service.StoryServiceImpl"/>
+               class="org.bitbucket.jbehaveforjira.plugin.service.StoryServiceImpl"/>
     <component key="story-report-service" name="Story Report Service"
-               class="com.mycomp.execspec.jiraplugin.service.StoryReportServiceImpl"/>
+               class="org.bitbucket.jbehaveforjira.plugin.service.StoryReportServiceImpl"/>
     <component key="step-doc-service" name="Step Doc Service"
-               class="com.mycomp.execspec.jiraplugin.service.StepDocsServiceImpl"/>
+               class="org.bitbucket.jbehaveforjira.plugin.service.StepDocsServiceImpl"/>
 
     <!-- ==================================================================================================== -->
     <!--Active Objects-->
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
-        <entity>com.mycomp.execspec.jiraplugin.ao.story.Story</entity>
+        <entity>org.bitbucket.jbehaveforjira.plugin.ao.story.Story</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.testreport.StoryHtmlReport</entity>
         <entity>com.mycomp.execspec.jiraplugin.ao.stepdoc.StepDoc</entity>
     </ao>

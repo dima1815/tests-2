@@ -2,8 +2,8 @@ package com.mycomp.execspec.jiraplugin.ao;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.activeobjects.test.TestActiveObjects;
-import com.mycomp.execspec.jiraplugin.ao.story.Story;
-import com.mycomp.execspec.jiraplugin.service.StoryService;
+import org.bitbucket.jbehaveforjira.plugin.ao.story.Story;
+import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
 import junit.framework.Assert;
 import net.java.ao.EntityManager;
 import net.java.ao.test.jdbc.Data;
