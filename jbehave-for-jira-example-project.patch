@@ -1,0 +1,120 @@
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookGenre.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookGenre.java	(date 1408351868000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookGenre.java	(revision )
+@@ -8,5 +8,6 @@
+     Drama,
+     Romance,
+     Mystery,
+-    Fantasy
++    Fantasy,
++    MyGenre,
+ }
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1408351868000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java	(revision )
+@@ -5,6 +5,7 @@
+ import org.jbehave.core.embedder.Embedder;
+ import org.jbehave.core.junit.JUnitStories;
+ import org.jbehave.core.reporters.Format;
++import org.jbehave.core.reporters.StepdocReporter;
+ import org.jbehave.core.reporters.StoryReporter;
+ import org.jbehave.core.reporters.StoryReporterBuilder;
+ import org.jbehave.core.steps.CandidateSteps;
+@@ -53,7 +54,8 @@
+         configuration.useStoryLoader(jiraLoader);
+ 
+         // set Jira step doc reporter
+-        JiraStepDocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject);
++        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject);
++//        StepdocReporter stepDocReporter = new org.bitbucket.jbehaveforjira.javaclient.GroovyStepDocReporter(jiraUrl, jiraProject);
+         configuration.useStepdocReporter(stepDocReporter);
+ 
+         useConfiguration(configuration);
+Index: jbehave-for-jira/jbehave-for-jira-example-project/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(date 1408351868000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(revision )
+@@ -80,12 +80,6 @@
+             <version>1.0.0-SNAPSHOT</version>
+             <scope>test</scope>
+         </dependency>
+-        <!--<dependency>-->
+-            <!--<groupId>org.bitbucket.pristrom</groupId>-->
+-            <!--<artifactId>jbehave-for-jira-java-client-impl</artifactId>-->
+-            <!--<version>1.0.0-SNAPSHOT</version>-->
+-            <!--<scope>test</scope>-->
+-        <!--</dependency>-->
+         <dependency>
+             <groupId>org.jbehave</groupId>
+             <artifactId>jbehave-core</artifactId>
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java	(date 1408351868000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java	(revision )
+@@ -11,6 +11,12 @@
+ 
+     private BookStore bookStore = new BookStore();
+ 
++    @Given("the following book: $book")
++    public void givenBook(Book book) {
++
++        bookStore.add(book);
++    }
++
+     @Given("the following books: $books")
+     public void givenBooks(List<Book> books) {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java	(date 1408351868000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java	(revision )
+@@ -18,6 +18,17 @@
+     @Parameter(name = "Author")
+     private String author;
+ 
++    private Double price;
++
++    private Integer ISBN;
++
++    @Parameter(name = "Year pub.")
++    private Integer yearPublished;
++
++    public Integer getYearPublished() {
++        return yearPublished;
++    }
++
+     public String getTitle() {
+         return title;
+     }
+@@ -28,6 +39,14 @@
+ 
+     public String getAuthor() {
+         return author;
++    }
++
++    public Double getPrice() {
++        return price;
++    }
++
++    public Integer getISBN() {
++        return ISBN;
+     }
+ 
+     @Override
