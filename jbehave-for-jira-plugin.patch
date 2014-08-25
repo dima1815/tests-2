@@ -1,2493 +1,373 @@
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryPathsFinder.groovy
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryPathsFinder.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryPathsFinder.groovy	(revision )
-@@ -0,0 +1,95 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(revision )
+@@ -0,0 +1,27 @@
++package org.bitbucket.jbehaveforjira.plugin.conditions;
 +
-+import com.sun.jersey.api.client.Client
-+import com.sun.jersey.api.client.ClientResponse
-+import com.sun.jersey.api.client.WebResource
-+import org.apache.commons.lang.Validate
-+import org.bitbucket.jbehaveforjira.javaclient.StoryPathsFinder
-+import org.slf4j.Logger
-+import org.slf4j.LoggerFactory
++import com.atlassian.plugin.PluginParseException;
++import com.atlassian.plugin.web.Condition;
++import com.atlassian.crowd.embedded.api.User;
 +
-+import javax.ws.rs.core.MediaType
-+import javax.ws.rs.core.Response
-+import javax.xml.bind.annotation.XmlAccessType
-+import javax.xml.bind.annotation.XmlAccessorType
-+import javax.xml.bind.annotation.XmlRootElement
++import java.util.Map;
 +
 +/**
-+ * @author Maryna Stasyuk
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
 + */
-+public class GroovyStoryPathsFinder implements StoryPathsFinder {
++public class ProfileUserEqualsCurrentUser implements Condition {
 +
-+    private final Logger log = LoggerFactory.getLogger(getClass());
-+
-+    private String jiraBaseUrl;
-+
-+    private String projectKey;
-+
-+    public GroovyStoryPathsFinder(String jiraBaseUrl, String projectKey) {
-+        this.jiraBaseUrl = jiraBaseUrl;
-+        this.projectKey = projectKey;
-+        Validate.notEmpty(projectKey);
++    @Override
++    public void init(Map<String, String> params) throws PluginParseException {
 +    }
 +
-+    public List<String> findPaths() {
-+        return this.findPaths(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
++    @Override
++    public boolean shouldDisplay(Map<String, Object> context) {
++        final User profileUser = (User) context.get("profileUser");
++        final User currentUser = (User) context.get("currentUser");
++        return profileUser.equals(currentUser);
 +    }
-+
-+    public List<String> findPaths(List<String> includes, List<String> excludes) {
-+
-+        List<String> paths = new ArrayList<String>();
-+
-+        URI jiraSearchUrl = null;
-+        try {
-+            String fullPath = jiraBaseUrl + "/rest/story-res/1.0/find/story-paths/" + projectKey;
-+            fullPath += "?os_username=admin&os_password=admin";
-+            jiraSearchUrl = new URI(fullPath);
-+        } catch (URISyntaxException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(jiraSearchUrl);
-+        res.type(MediaType.APPLICATION_JSON);
-+//        res.type(MediaType.TEXT_PLAIN);
-+        ClientResponse response = res.get(ClientResponse.class);
-+        log.info("response - " + response);
-+        if (response.getStatus() == 200) {
-+
-+            int length = response.getLength();
-+            MediaType type = response.getType();
-+            StoryPaths storyPaths = response.getEntity(StoryPaths.class);
-+
-+            if (storyPaths.getPaths() != null && !storyPaths.getPaths().isEmpty()) {
-+                paths = storyPaths.getPaths();
-+            }
-+
-+        } else {
-+            int status = response.getStatus();
-+            Response.StatusType statusInfo = response.getStatusInfo();
-+            throw new RuntimeException("Error occurred while trying to find Jira story paths. " +
-+                    "Response status was - " + status + ", status info - " + statusInfo);
-+        }
-+
-+        return paths;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    public static class StoryPaths {
-+
-+        private List<String> paths;
-+
-+        public List<String> getPaths() {
-+            return paths;
-+        }
-+
-+        public void setPaths(List<String> paths) {
-+            this.paths = paths;
-+        }
-+    }
-+
 +}
-+
-+
-+
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryReporter.groovy
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryReporter.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryReporter.groovy	(revision )
-@@ -0,0 +1,725 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
+@@ -0,0 +1,180 @@
++package org.bitbucket.jbehaveforjira.plugin.actions;
 +
-+import com.sun.jersey.api.client.Client
-+import com.sun.jersey.api.client.WebResource
-+import org.apache.commons.lang.Validate
-+import org.jbehave.core.i18n.LocalizedKeywords
-+import org.jbehave.core.model.*
-+import org.jbehave.core.reporters.HtmlOutput
-+import org.jbehave.core.reporters.PrintStreamOutput
-+import org.jbehave.core.reporters.StoryReporter
-+import org.jbehave.core.steps.StepCreator
++import com.atlassian.core.user.preferences.Preferences;
++import com.atlassian.jira.bc.issue.IssueService;
++import com.atlassian.jira.issue.Issue;
++import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.security.xsrf.RequiresXsrfCheck;
++import com.atlassian.jira.user.ApplicationUser;
++import com.atlassian.jira.user.preferences.UserPreferencesManager;
++import com.atlassian.jira.web.action.JiraWebActionSupport;
++import com.atlassian.plugin.webresource.WebResourceManager;
++import org.ofbiz.core.entity.GenericValue;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import webwork.action.ActionContext;
 +
-+import javax.ws.rs.core.MediaType
-+import javax.xml.bind.annotation.XmlAccessType
-+import javax.xml.bind.annotation.XmlAccessorType
-+import javax.xml.bind.annotation.XmlRootElement
-+import java.util.regex.Matcher
-+import java.util.regex.Pattern
++import java.util.HashMap;
++import java.util.Map;
 +
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStoryReporter implements StoryReporter {
++public class UpdateJBehavePreferencesAction extends JiraWebActionSupport {
 +
-+    public static enum TestStatus {
++    private static final Logger log = LoggerFactory.getLogger(UpdateJBehavePreferencesAction.class);
 +
-+        PASSED,
++    private final static String PARAM_NAME_SHOW_LINE_NUMBERS = "showLineNumbers";
++    private final static String PREFERENCE_KEY_SHOW_LINE_NUMBERS = "jbehave.prefs.showLineNumbers";
 +
-+        FAILED,
++    private final static String PARAM_NAME_AUTO_ALIGN_TABLES = "autoAlignTables";
++    private final static String PREFERENCE_KEY_AUTO_ALIGN_TABLES = "jbehave.prefs.autoAlignTables";
 +
-+        PENDING,
++    private final static String PARAM_NAME_AUTO_INSERT_TABLES = "autoInsertTabularFields";
++    private final static String PREFERENCE_KEY_AUTO_INSERT_TABLES = "jbehave.prefs.autoInsertTabularFields";
 +
-+        NOT_PERFORMED,
++    private Long id;
 +
-+        IGNORED
++    private boolean showLineNumbers;
 +
-+    }
++    private boolean autoAlignTables;
 +
-+    private final HtmlOutput htmlOutput;
++    private boolean autoInsertTabularFields;
 +
-+    private boolean compressFailureTrace;
-+    private boolean reportFailureTrace;
-+    private LocalizedKeywords keywords;
++    private final IssueService issueService;
 +
-+    private PrintStream printStream;
++    private final JiraAuthenticationContext authenticationContext;
 +
-+    private String environment;
-+    private Properties outputPatterns;
++    private final WebResourceManager webResourceManager;
 +
-+    private String jiraBaseUrl;
++    private UserPreferencesManager preferencesManager;
 +
-+    private String jiraProject;
++    private HashMap fieldValuesHolder = null;
 +
-+    private String addTestReportPath = "rest/story-res/1.0/story-test/add-for-path";
++    public UpdateJBehavePreferencesAction(IssueService issueService,
++                                          JiraAuthenticationContext authenticationContext,
++                                          WebResourceManager webResourceManager,
++                                          final UserPreferencesManager preferencesManager) {
++        this.issueService = issueService;
++        this.authenticationContext = authenticationContext;
++        this.webResourceManager = webResourceManager;
 +
-+    private String storyPath;
-+
-+    private Long jiraVersion;
-+
-+    private TestStatus status;
-+
-+    private int totalScenarios;
-+
-+    private int totalScenariosPassed;
-+
-+    private int totalScenariosFailed;
-+
-+    private int totalScenariosPending;
-+
-+    private int totalScenariosIgnored;
-+
-+    private int totalScenariosNotPerformed;
-+
-+    private TestStatus currentScenarioStatus;
-+
-+    private final List<Byte> bytesList;
-+
-+    public GroovyStoryReporter(String jiraBaseUrl, String jiraProject, String environment) {
-+//        this(new Properties(), new LocalizedKeywords(), false, jiraBaseUrl, jiraProject, environment);
-+
-+        this.bytesList = new LinkedList<Byte>();
-+        OutputStream outStream = new OutputStream() {
-+
-+            @Override
-+            public void write(int b) throws IOException {
-+                bytesList.add((byte) b);
-+            }
-+
-+        };
-+
-+        this.printStream = new PrintStream(outStream);
-+
-+        this.jiraBaseUrl = jiraBaseUrl;
-+        this.jiraProject = jiraProject;
-+        this.environment = environment;
-+
-+        this.outputPatterns = new Properties();
-+        this.outputPatterns = mergeOverridenPatterns(outputPatterns);
-+        this.keywords = new LocalizedKeywords();
-+        this.reportFailureTrace = false;
-+        this.compressFailureTrace = false;
-+
-+        this.htmlOutput = new CustomHtmlOutput(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
-+    }
-+
-+//    public GroovyStoryReporter(Properties outputPatterns,
-+//                             Keywords keywords, boolean reportFailureTrace,
-+//                             String jiraBaseUrl, String jiraProject, String environment) {
-+//        this(new BytesListPrintStream(new LinkedList<Byte>()), outputPatterns, keywords, reportFailureTrace, false,
-+//                jiraBaseUrl, jiraProject, environment);
-+//    }
-+
-+//    public GroovyStoryReporter(BytesListPrintStream printStream, Properties outputPatterns,
-+//                             Keywords keywords, boolean reportFailureTrace,
-+//                             boolean compressFailureTrace,
-+//                             String jiraBaseUrl, String jiraProject, String environment) {
-+//        super(printStream, mergeOverridenPatterns(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
-+//        this.printStream = printStream;
-+//        this.jiraBaseUrl = jiraBaseUrl;
-+//        this.jiraProject = jiraProject;
-+//        this.environment = environment;
-+//    }
-+
-+    public void narrative(Narrative narrative) {
-+        htmlOutput.narrative(narrative);
-+    }
-+
-+    @Override
-+    public void lifecyle(Lifecycle lifecycle) {
-+        htmlOutput.lifecyle(lifecycle);
-+    }
-+
-+    @Override
-+    public void beforeScenario(String title) {
-+
-+        this.totalScenarios++;
-+        this.currentScenarioStatus = TestStatus.PASSED; // assume pass initially
-+
-+        htmlOutput.beforeScenario(title);
-+    }
-+
-+    @Override
-+    public void scenarioMeta(Meta meta) {
-+        htmlOutput.scenarioMeta(meta);
-+    }
-+
-+    @Override
-+    public void afterScenario() {
-+
-+        htmlOutput.afterScenario();
-+
-+        switch (this.currentScenarioStatus) {
-+            case PASSED:
-+                totalScenariosPassed++;
-+                break;
-+            case FAILED:
-+                totalScenariosFailed++;
-+                break;
-+            case PENDING:
-+                totalScenariosPending++;
-+                break;
-+            case IGNORED:
-+                totalScenariosIgnored++;
-+                break;
-+            case NOT_PERFORMED:
-+                totalScenariosNotPerformed++;
-+                break;
-+        }
-+    }
-+
-+    @Override
-+    public void givenStories(GivenStories givenStories) {
-+        htmlOutput.givenStories(givenStories);
-+    }
-+
-+    @Override
-+    public void givenStories(List<String> storyPaths) {
-+        htmlOutput.givenStories(storyPaths);
-+    }
-+
-+    @Override
-+    public void beforeExamples(List<String> steps, ExamplesTable table) {
-+        htmlOutput.beforeExamples(steps, table);
-+    }
-+
-+    @Override
-+    public void example(Map<String, String> tableRow) {
-+        htmlOutput.example(tableRow);
-+    }
-+
-+    @Override
-+    public void afterExamples() {
-+        htmlOutput.afterExamples();
-+    }
-+
-+    @Override
-+    public void beforeStep(String step) {
-+        htmlOutput.beforeStep(step);
-+    }
-+
-+    @Override
-+    public void scenarioNotAllowed(Scenario scenario, String filter) {
-+
-+        htmlOutput.scenarioNotAllowed(scenario, filter);
-+        if (this.currentScenarioStatus == TestStatus.PASSED /*i.e. if it has not been set to some other status yet*/) {
-+            this.currentScenarioStatus = TestStatus.IGNORED;
-+        }
-+    }
-+
-+    @Override
-+    public void successful(String step) {
-+
-+        htmlOutput.successful(step);
-+    }
-+
-+    @Override
-+    public void ignorable(String step) {
-+        htmlOutput.ignorable(step);
-+    }
-+
-+    @Override
-+    public void failed(String step, Throwable storyFailure) {
-+
-+        htmlOutput.failed(step, storyFailure);
-+        this.currentScenarioStatus = TestStatus.FAILED;
-+    }
-+
-+    @Override
-+    public void failedOutcomes(String step, OutcomesTable table) {
-+        htmlOutput.failedOutcomes(step, table);
-+    }
-+
-+    @Override
-+    public void restarted(String step, Throwable cause) {
-+        htmlOutput.restarted(step, cause);
-+    }
-+
-+    @Override
-+    public void dryRun() {
-+        htmlOutput.dryRun();
-+    }
-+
-+    @Override
-+    public void pendingMethods(List<String> methods) {
-+        htmlOutput.pendingMethods(methods);
-+    }
-+
-+    @Override
-+    public void pending(String step) {
-+
-+        htmlOutput.pending(step);
-+        if (this.currentScenarioStatus != TestStatus.FAILED) { // fail status has priority over pending
-+            this.currentScenarioStatus = TestStatus.PENDING;
-+        }
-+    }
-+
-+    @Override
-+    public void notPerformed(String step) {
-+        htmlOutput.notPerformed(step);
-+    }
-+
-+
-+    @Override
-+    public void storyNotAllowed(Story story, String filter) {
-+        htmlOutput.storyNotAllowed(story, filter);
-+    }
-+
-+    @Override
-+    public void storyCancelled(Story story, StoryDuration storyDuration) {
-+        htmlOutput.storyCancelled(story, storyDuration);
-+    }
-+
-+    @Override
-+    public void beforeStory(Story story, boolean givenStory) {
-+
-+        this.status = TestStatus.PASSED; // assume passed at start, and then change to other if failed/pending, etc.
-+
-+        storyPath = story.getPath();
-+
-+        if (!givenStory && !storyPath.equals("BeforeStories") && !storyPath.equals("AfterStories")) {
-+            // extract version
-+            String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
-+            Pattern p = Pattern.compile(regexPattern);
-+            Matcher matcher = p.matcher(storyPath);
-+            if (matcher.matches()) {
-+                String versionStr = matcher.group(2);
-+                jiraVersion = Long.parseLong(versionStr);
-+            } else {
-+                throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
-+            }
-+        }
-+
-+        htmlOutput.beforeStory(story, givenStory);
-+    }
-+
-+    @Override
-+    public void afterStory(boolean givenStory) {
-+
-+        htmlOutput.afterStory(givenStory);
-+
-+        if (!givenStory && !storyPath.equals("BeforeStories") && !storyPath.equals("AfterStories")) {
-+
-+            // set story status
-+            if (totalScenariosFailed > 0) {
-+                this.status = TestStatus.FAILED;
-+            } else if (totalScenariosPending > 0) {
-+                this.status = TestStatus.PENDING;
-+            } else if (totalScenariosIgnored == totalScenarios) {
-+                this.status = TestStatus.IGNORED;
-+            } else {
-+                this.status = TestStatus.PASSED;
-+            }
-+
-+            String storyReport = bytesListToString(this.bytesList);
-+            sendStoryReport(storyReport);
-+        }
-+
-+    }
-+
-+    private static String bytesListToString(List<Byte> writtenBytes) {
-+
-+        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
-+        byte[] bytesArray = new byte[bytes.length];
-+        for (int i = 0; i < bytes.length; i++) {
-+            Byte aByte = bytes[i];
-+            bytesArray[i] = aByte;
-+        }
-+
-+        String str = new String(bytesArray);
-+        return str;
-+    }
-+
-+    protected void sendStoryReport(String testReport) {
-+
-+        Validate.notNull(status);
-+        Validate.notEmpty(testReport);
-+
-+        StoryReport storyHtmlReportDTO = new StoryReport(environment, storyPath, jiraVersion, status, testReport);
-+
-+        storyHtmlReportDTO.setTotalScenarios(totalScenarios);
-+        storyHtmlReportDTO.setTotalScenariosPassed(totalScenariosPassed);
-+        storyHtmlReportDTO.setTotalScenariosFailed(totalScenariosFailed);
-+        storyHtmlReportDTO.setTotalScenariosPending(totalScenariosPending);
-+        storyHtmlReportDTO.setTotalScenariosSkipped(totalScenariosIgnored);
-+        storyHtmlReportDTO.setTotalScenariosNotPerformed(totalScenariosNotPerformed);
-+
-+        // remove the version part from story path
-+        // extract version
-+        String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
-+        Pattern p = Pattern.compile(regexPattern);
-+        Matcher matcher = p.matcher(storyPath);
-+        if (matcher.matches()) {
-+            storyPath = matcher.group(1) + matcher.group(3);
-+        } else {
-+            throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
-+        }
-+
-+        String loginParams = "?os_username=admin&os_password=admin";
-+        String postUrl = (jiraBaseUrl
-+                + "/" + addTestReportPath + "/"
-+//                + jiraProject + "/"
-+                + storyPath
-+                + loginParams);
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(postUrl);
-+
-+        String response = res.accept(MediaType.APPLICATION_JSON)
-+                .type(MediaType.APPLICATION_JSON)
-+                .post(String.class, storyHtmlReportDTO);
-+
-+        System.out.println("response - " + response);
-+    }
-+
-+
-+    private static String markTableCorrectly(String text, CustomHtmlOutput htmlOutput) {
-+
-+        if (text.contains("&#9252;")) {
-+
-+            StringBuilder sb = new StringBuilder();
-+            String[] tokens = text.split("\\&#9252;");
-+
-+            for (int i = 0; i < tokens.length; i++) {
-+                String token = tokens[i];
-+                boolean isTableStartLine = false;
-+                boolean isTableEndLine = false;
-+                if (token.startsWith("|")) {
-+                    // table line
-+                    if (i == 0 || (i != 0 && !tokens[i - 1].startsWith("|"))) {
-+                        // if previous line was not a table line then open the table tag
-+                        String tableStartMarker = StepCreator.PARAMETER_TABLE_START;
-+                        tableStartMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableStartMarker)[0];
-+                        sb.append(tableStartMarker);
-+                        sb.append(token);
-+                        isTableStartLine = true;
-+                    }
-+                    if (i == tokens.length - 1 || !tokens[i + 1].startsWith("|")) {
-+                        // if this is the last line or the next line is not a table line
-+                        String beforePart = token.substring(0, token.lastIndexOf("|") + 1);
-+                        sb.append(beforePart);
-+                        String tableEndMarker = StepCreator.PARAMETER_TABLE_END;
-+                        tableEndMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableEndMarker)[0];
-+                        sb.append(tableEndMarker);
-+                        String afterPart = token.substring(token.lastIndexOf("|") + 1);
-+                        sb.append(afterPart);
-+                        isTableEndLine = true;
-+                    }
-+                    if (!isTableStartLine && !isTableEndLine) {
-+                        // table line that is not first or last line in that table
-+                        sb.append(token);
-+                    }
-+                    if (i != 0 && i != tokens.length - 1) {
-+                        sb.append("\n");
-+                    }
-+                } else {
-+                    if (i != 0) {
-+                        sb.append("\n");
-+                    }
-+                    sb.append(token);
-+                }
-+            }
-+
-+            String result = sb.toString();
-+            return result;
-+
-+        } else {
-+            return text;
-+        }
-+    }
-+
-+    private static Properties mergeOverridenPatterns(Properties outputPatterns) {
-+        Properties patterns = new CustomHTMLFormatPatterns().getPatterns();
-+        Properties overridenPatterns = overridenPatterns();
-+        patterns.putAll(overridenPatterns);
-+        patterns.putAll(outputPatterns);
-+        return patterns;
-+    }
-+
-+    public static Properties overridenPatterns() {
-+
-+        Properties patterns = new Properties();
-+
-+        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
-+        patterns.setProperty("afterScenario", "</div>\n");
-+        patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
-+
-+        patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
-+        patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
-+        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
-+        patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
-+        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
-+        patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
-+
-+        patterns.setProperty("pendingMethod", "");
-+
-+        return patterns;
++        this.preferencesManager = preferencesManager;
 +    }
 +
 +    /**
-+     * @author Maryna Stasyuk
++     * The business logic of your form.
++     * Only gets called if validation passes.
++     *
++     * @return the view to display - should usually be "success"
 +     */
-+    public static class CustomHTMLFormatPatterns {
++    @RequiresXsrfCheck
++    protected String doExecute() throws Exception {
 +
-+        public Properties getPatterns() {
-+            return patterns;
++        ApplicationUser user = authenticationContext.getUser();
++        final Preferences preferences = preferencesManager.getPreferences(user);
++
++        Map parameters = ActionContext.getParameters();
++
++        String[] showLineNumbersParam = (String[]) parameters.get(PARAM_NAME_SHOW_LINE_NUMBERS);
++        if (showLineNumbersParam != null && showLineNumbersParam.length > 0 && showLineNumbersParam[0].equals("on")) {
++            this.showLineNumbers = true;
++        } else{
++            this.showLineNumbers = false;
 +        }
-+
-+        private final Properties patterns;
-+
-+        public CustomHTMLFormatPatterns() {
-+
-+            patterns = new Properties();
-+            patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");
-+
-+            //        patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
-+            patterns.setProperty("beforeStory", "<div class=\"story\">\n");
-+
-+            //        patterns.setProperty("beforeStory", "<div class=\"story\">\n");
-+            patterns.setProperty("afterStory", "</div>\n");
-+
-+            patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
-+            patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");
-+            patterns.setProperty("metaStart", "<div class=\"meta\">\n<div class=\"keyword\">{0}</div>\n");
-+            patterns.setProperty("metaProperty", "<div class=\"property\">{0}{1} {2}</div>\n");
-+            patterns.setProperty("metaEnd", "</div>\n");
-+            patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");
-+
-+            //        patterns.setProperty("narrative", "<div class=\"narrative\"><h2>{0}</h2>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
-+            patterns.setProperty("narrative",
-+                    "<div class=\"beforeNarrative\"><span>&nbsp;</span><span style=\"display: none;\" class=\"beforeNarrativeHint\">+<span></div>" +
-+                            "<div class=\"narrative\">" +
-+                            "<div class=\"label\">" +
-+                            "{0}</div>\n" +
-+                            "<div contentEditable=\"false\" class=\"element inOrderTo\">" +
-+                            "<div style=\"display: none;\" class=\"add-icon\">+</div>" +
-+                            "<span contentEditable=\"false\" class=\"keyword inOrderTo inOrderToSpan\">{1}</span> <span></span></div>\n" +
-+
-+                            "<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n" +
-+                            "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n" +
-+                            "</div>\n"
-+            );
-+
-+            patterns.setProperty("lifecycleStart", "<div class=\"lifecycle\"><h2>{0}</h2>");
-+            patterns.setProperty("lifecycleEnd", "</div>");
-+            patterns.setProperty("lifecycleBeforeStart", "<div class=\"before\"><h3>{0}</h3>");
-+            patterns.setProperty("lifecycleBeforeEnd", "</div>");
-+            patterns.setProperty("lifecycleAfterStart", "<div class=\"after\"><h3>{0}</h3>");
-+            patterns.setProperty("lifecycleAfterEnd", "</div>");
-+            patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");
-+
-+            //        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
-+            patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"scenario-plus aui-icon aui-icon-small aui-iconfont-add\"></span><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
-+
-+            patterns.setProperty("afterScenario", "</div>\n");
-+            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
-+            patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
-+            patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
-+            patterns.setProperty("givenStory", "<div class=\"givenStory\">{0} {1}</div>\n");
-+            patterns.setProperty("givenStoriesEnd", "</div>\n");
-+
-+            patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
-+            patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
-+            patterns.setProperty("pending", "<div class=\"step pending\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0} <span class=\"keyword pending\">({1})</span></div>\n");
-+            patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
-+            patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
-+            patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
-+
-+            patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
-+            patterns.setProperty("outcomesTableHeadStart", "<thead>\n<tr>\n");
-+            patterns.setProperty("outcomesTableHeadCell", "<th>{0}</th>");
-+            patterns.setProperty("outcomesTableHeadEnd", "</tr>\n</thead>\n");
-+            patterns.setProperty("outcomesTableBodyStart", "<tbody>\n");
-+            patterns.setProperty("outcomesTableRowStart", "<tr class=\"{0}\">\n");
-+            patterns.setProperty("outcomesTableCell", "<td>{0}</td>");
-+            patterns.setProperty("outcomesTableRowEnd", "</tr>\n");
-+            patterns.setProperty("outcomesTableBodyEnd", "</tbody>\n");
-+            patterns.setProperty("outcomesTableEnd", "</table></div>\n");
-+            patterns.setProperty("beforeExamples", "<div class=\"examples\">\n<h3>{0}</h3>\n");
-+            patterns.setProperty("examplesStep", "<div class=\"step\">{0}</div>\n");
-+            patterns.setProperty("afterExamples", "</div>\n");
-+            patterns.setProperty("examplesTableStart", "<table>\n");
-+            patterns.setProperty("examplesTableHeadStart", "<thead>\n<tr>\n");
-+            patterns.setProperty("examplesTableHeadCell", "<th>{0}</th>");
-+            patterns.setProperty("examplesTableHeadEnd", "</tr>\n</thead>\n");
-+            patterns.setProperty("examplesTableBodyStart", "<tbody>\n");
-+            patterns.setProperty("examplesTableRowStart", "<tr>\n");
-+            patterns.setProperty("examplesTableCell", "<td>{0}</td>");
-+            patterns.setProperty("examplesTableRowEnd", "</tr>\n");
-+            patterns.setProperty("examplesTableBodyEnd", "</tbody>\n");
-+            patterns.setProperty("examplesTableEnd", "</table>\n");
-+            patterns.setProperty("example", "\n<h3 class=\"example\">{0} {1}</h3>\n");
-+            patterns.setProperty("parameterValueStart", "<span class=\"step parameter\">");
-+            patterns.setProperty("parameterValueEnd", "</span>");
-+            patterns.setProperty("parameterValueNewline", "<br/>");
-+        }
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    public static class StoryReport {
-+
-+        private String environment;
-+
-+        private String storyPath;
-+
-+        private Long storyVersion;
-+
-+        public TestStatus status;
-+
-+        private Integer totalScenarios;
-+
-+        private Integer totalScenariosPassed;
-+
-+        private Integer totalScenariosFailed;
-+
-+        private Integer totalScenariosPending;
-+
-+        private Integer totalScenariosSkipped;
-+
-+        private Integer totalScenariosNotPerformed;
-+
-+        private String htmlReport;
-+
-+        protected StoryReport() {
-+        }
-+
-+        public StoryReport(String environment, String storyPath,
-+                           Long storyVersion, TestStatus status, String htmlReport) {
-+            this.environment = environment;
-+            this.storyPath = storyPath;
-+            this.storyVersion = storyVersion;
-+            this.status = status;
-+            this.htmlReport = htmlReport;
-+        }
-+
-+        public String getEnvironment() {
-+            return environment;
-+        }
-+
-+        public void setEnvironment(String environment) {
-+            this.environment = environment;
-+        }
-+
-+        public String getStoryPath() {
-+            return storyPath;
-+        }
-+
-+        public void setStoryPath(String storyPath) {
-+            this.storyPath = storyPath;
-+        }
-+
-+        public Long getStoryVersion() {
-+            return storyVersion;
-+        }
-+
-+        public void setStoryVersion(Long storyVersion) {
-+            this.storyVersion = storyVersion;
-+        }
-+
-+        public TestStatus getStatus() {
-+            return status;
-+        }
-+
-+        public void setStatus(TestStatus status) {
-+            this.status = status;
-+        }
-+
-+        public String getHtmlReport() {
-+            return htmlReport;
-+        }
-+
-+        public void setHtmlReport(String htmlReport) {
-+            this.htmlReport = htmlReport;
-+        }
-+
-+        public Integer getTotalScenarios() {
-+            return totalScenarios;
-+        }
-+
-+        public void setTotalScenarios(Integer totalScenarios) {
-+            this.totalScenarios = totalScenarios;
-+        }
-+
-+        public Integer getTotalScenariosPassed() {
-+            return totalScenariosPassed;
-+        }
-+
-+        public void setTotalScenariosPassed(Integer totalScenariosPassed) {
-+            this.totalScenariosPassed = totalScenariosPassed;
-+        }
-+
-+        public Integer getTotalScenariosFailed() {
-+            return totalScenariosFailed;
-+        }
-+
-+        public void setTotalScenariosFailed(Integer totalScenariosFailed) {
-+            this.totalScenariosFailed = totalScenariosFailed;
-+        }
-+
-+        public Integer getTotalScenariosPending() {
-+            return totalScenariosPending;
-+        }
-+
-+        public void setTotalScenariosPending(Integer totalScenariosPending) {
-+            this.totalScenariosPending = totalScenariosPending;
-+        }
-+
-+        public Integer getTotalScenariosSkipped() {
-+            return totalScenariosSkipped;
-+        }
-+
-+        public void setTotalScenariosSkipped(Integer totalScenariosSkipped) {
-+            this.totalScenariosSkipped = totalScenariosSkipped;
-+        }
-+
-+        public Integer getTotalScenariosNotPerformed() {
-+            return totalScenariosNotPerformed;
-+        }
-+
-+        public void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed) {
-+            this.totalScenariosNotPerformed = totalScenariosNotPerformed;
-+        }
-+
-+        @Override
-+        public String toString() {
-+            return "JiraStoryHtmlReport{" +
-+                    "environment='" + environment + '\'' +
-+                    ", storyPath='" + storyPath + '\'' +
-+                    ", storyVersion=" + storyVersion +
-+                    ", status=" + status +
-+                    ", totalScenarios=" + totalScenarios +
-+                    ", totalScenariosPassed=" + totalScenariosPassed +
-+                    ", totalScenariosFailed=" + totalScenariosFailed +
-+                    ", totalScenariosPending=" + totalScenariosPending +
-+                    ", totalScenariosSkipped=" + totalScenariosSkipped +
-+                    ", totalScenariosNotPerformed=" + totalScenariosNotPerformed +
-+                    ", htmlReport='" + htmlReport + '\'' +
-+                    '}';
-+        }
-+
-+
-+    }
-+
-+    public static class CustomHtmlOutput extends HtmlOutput {
-+
-+        public CustomHtmlOutput(PrintStream printStream, Properties outputPatterns, LocalizedKeywords keywords,
-+                                boolean reportFailureTrace, boolean compressFailureTrace) {
-+            super(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
-+        }
-+
-+        @Override
-+        protected void print(String text) {
-+            text = GroovyStoryReporter.markTableCorrectly(text, this);
-+            super.print(text);
-+        }
-+
-+        @Override
-+        protected Object[] escape(PrintStreamOutput.Format format, Object... args) {
-+            return super.escape(format, args);
-+        }
-+    }
-+}
-+
-+
-+
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/i18n/plugin.properties
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>windows-1252
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/i18n/plugin.properties	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/i18n/plugin.properties	(revision )
-@@ -40,5 +40,17 @@
- 
- ###################################################################################################
- # Rest
-+###################################################################################################
- rest.storyResource.name=Story Resource
- rest.storyResource.description=Story Rest Resource
-+
-+###################################################################################################
-+# User Preferences
-+###################################################################################################
-+userPreferences.title=JBehave Options
-+userPreferences.showLineNumbers.label=Show line numbers in story editor
-+userPreferences.autoAlignTables.label=Auto align tabular parameters
-+userPreferences.autoInsertTabularFields.label=Auto insert tabular parameter fields
-+userPreferences.updateSuccessful.message=JBehave options updated successfully
-+
-+
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryLoader.groovy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryLoader.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStoryLoader.groovy	(revision )
-@@ -0,0 +1,89 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
-+import com.sun.jersey.api.client.Client
-+import com.sun.jersey.api.client.ClientResponse
-+import com.sun.jersey.api.client.WebResource
-+import org.jbehave.core.io.StoryLoader
-+import org.slf4j.Logger
-+import org.slf4j.LoggerFactory
-+
-+import javax.ws.rs.core.MediaType
-+import javax.ws.rs.core.Response
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStoryLoader implements StoryLoader {
-+
-+    private final Logger log = LoggerFactory.getLogger(getClass());
-+
-+    private String jiraBaseUrl;
-+
-+    private String projectKey;
-+
-+    private String downloadedStoriesDir = "src/test/resources/jira_stories";
-+
-+    private String loadStoryPath = "rest/story-res/1.0/find/for-path";
-+
-+    public GroovyStoryLoader(String jiraBaseUrl, String projectKey) {
-+        this.jiraBaseUrl = jiraBaseUrl;
-+        this.projectKey = projectKey;
-+    }
-+
-+    @Override
-+    public String loadStoryAsText(String storyPath) {
-+
-+        URI jiraSearchUrl = null;
-+        try {
-+            String fullPath = jiraBaseUrl + "/" + loadStoryPath + "/" + storyPath;
-+            fullPath += "?os_username=admin&os_password=admin";
-+            fullPath += "&versionInPath=true";
-+            fullPath += "&asString=true";
-+            log.debug("full story path is - " + fullPath);
-+            jiraSearchUrl = new URI(fullPath);
-+        } catch (URISyntaxException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(jiraSearchUrl);
-+        ClientResponse response = res.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-+        log.info("response - " + response);
-+
-+        if (response.getStatus() == 200) {
-+            String story = response.getEntity(String.class);
-+            return story;
++        preferences.setBoolean(PREFERENCE_KEY_SHOW_LINE_NUMBERS, this.showLineNumbers);
++
++        String[] autoAlignTablesParam = (String[]) parameters.get(PARAM_NAME_AUTO_ALIGN_TABLES);
++        if (autoAlignTablesParam != null && autoAlignTablesParam.length > 0 && autoAlignTablesParam[0].equals("on")) {
++            this.autoAlignTables = true;
 +        } else {
-+            int status = response.getStatus();
-+            Response.StatusType statusInfo = response.getStatusInfo();
-+            throw new RuntimeException("Error occurred while trying to find Jira story paths. " +
-+                    "Response status was - " + status + ", status info - " + statusInfo);
++            this.autoAlignTables = false;
 +        }
++        preferences.setBoolean(PREFERENCE_KEY_AUTO_ALIGN_TABLES, this.autoAlignTables);
 +
-+    }
-+
-+    private void writeModelToFile(String storyPath, String storyModel) {
-+
-+        PrintWriter pw = null;
-+        try {
-+            File storiesDir = new File(downloadedStoriesDir);
-+            File outFile = new File(storiesDir, storyPath);
-+            outFile.getParentFile().mkdirs();
-+            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-+            pw = new PrintWriter(fw);
-+
-+            // we need to insert jira story version as a meta tag into the story
-+            // the meta section may exist - in this case we add an extra attribute
-+            // if meta section doesn't exist - we create it and create one attribute containing our version
-+
-+            pw.print(storyModel);
-+
-+        } catch (IOException e) {
-+            throw new RuntimeException(e);
-+        } finally {
-+            if (pw != null) {
-+                pw.close();
-+            }
-+        }
-+
-+    }
-+
-+}
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/StepDoc.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/StepDoc.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/StepDoc.java	(revision )
-@@ -32,4 +32,20 @@
-     String getParameterGroups();
- 
-     void setParameterGroups(String parameterGroups);
-+
-+    String getParameterInfos();
-+
-+    void setParameterInfos(String parameterInfos);
-+
-+    String getParamBoundInPattern();
-+
-+    void setParamBoundInPattern(String paramBoundInPattern);
-+
-+    String getExtendedPattern();
-+
-+    void setExtendedPattern(String extendedPattern);
-+
-+    String getParamBoundInExtendPattern();
-+
-+    void setParamBoundInExtendPattern(String ParamBoundInExtendPattern);
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsSerivce.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsSerivce.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsService.java	(revision )
-@@ -2,7 +2,6 @@
- 
- import com.atlassian.activeobjects.tx.Transactional;
- import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
--import org.jbehave.core.steps.StepType;
- 
- import java.util.List;
- 
-@@ -10,11 +9,11 @@
-  * Created by Dmytro on 4/23/2014.
-  */
- @Transactional
--public interface StepDocsSerivce {
-+public interface StepDocsService {
- 
-     void createStepDocs(String projectKey, List<StepDocDTO> stepDocs);
- 
-     List<StepDocDTO> findForProject(String projectKey);
- 
--    List<StepDocDTO> findForProject(String projectKey, StepType stepType);
-+//    List<StepDocDTO> findForProject(String projectKey, StepType stepType);
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(revision )
-@@ -10,7 +10,7 @@
- import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
- import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
- import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.TestStatus;
--import org.bitbucket.jbehaveforjira.plugin.service.StepDocsSerivce;
-+import org.bitbucket.jbehaveforjira.plugin.service.StepDocsService;
- import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
- import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
- import org.slf4j.Logger;
-@@ -27,10 +27,10 @@
- 
-     private final StoryService storyService;
-     private final StoryReportService storyReportService;
--    private final StepDocsSerivce stepDocsSerivce;
-+    private final StepDocsService stepDocsSerivce;
- 
-     public StoryStatusField(StoryService storyService,
--                            StoryReportService storyReportService, StepDocsSerivce stepDocsSerivce) {
-+                            StoryReportService storyReportService, StepDocsService stepDocsSerivce) {
-         this.storyService = storyService;
-         this.storyReportService = storyReportService;
-         this.stepDocsSerivce = stepDocsSerivce;
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
-@@ -2,7 +2,10 @@
- 
- 
- import org.bitbucket.jbehaveforjira.plugin.ao.StepDoc;
-+import org.codehaus.jackson.map.DeserializationConfig;
-+import org.codehaus.jackson.map.ObjectMapper;
- 
-+import java.io.IOException;
- import java.util.ArrayList;
- import java.util.Collections;
- import java.util.List;
-@@ -20,40 +23,79 @@
-         stepDoc.setGroupedRegExpPattern(stepDocDTO.getGroupedRegExpPattern());
- 
-         List<Integer> parameterGroups = stepDocDTO.getParameterGroups();
--        if (parameterGroups != null && !parameterGroups.isEmpty()) {
--            StringBuilder sb = new StringBuilder();
--            for (int i = 0; i < parameterGroups.size(); i++) {
--                Integer parameterGroup = parameterGroups.get(i);
--                sb.append(parameterGroup.toString());
--                if (i < parameterGroups.size()-1) {
--                    sb.append(",");
--                }
--            }
--            String parameterGroupsAsString = sb.toString();
-+        String parameterGroupsAsString = asCommaSepString(parameterGroups);
--            stepDoc.setParameterGroups(parameterGroupsAsString);
-+        stepDoc.setParameterGroups(parameterGroupsAsString);
-+
-+        // set parameter group infos
-+        List<ParameterInfo> parameterInfos = stepDocDTO.getParameterInfos();
-+        if (parameterInfos != null && !parameterInfos.isEmpty()) {
-+            ObjectMapper mapper = new ObjectMapper();
-+            String parameterInfosAsString;
-+            try {
-+                parameterInfosAsString = mapper.writeValueAsString(parameterInfos);
-+            } catch (IOException e) {
-+                throw new RuntimeException(e);
--        }
-+            }
-+            stepDoc.setParameterInfos(parameterInfosAsString);
--    }
-+        }
- 
-+        List<Integer> paramBoundInPattern = stepDocDTO.getParamBoundInPattern();
-+        String paramBoundInPatternAsString = asCommaSepString(paramBoundInPattern);
-+        stepDoc.setParamBoundInPattern(paramBoundInPatternAsString);
-+
-+        String extendedPattern = stepDocDTO.getExtendedPattern();
-+        stepDoc.setExtendedPattern(extendedPattern);
-+
-+        List<Integer> paramBoundInExtendPattern = stepDocDTO.getParamBoundInExtendPattern();
-+        String paramBoundInExtendPatternAsString = asCommaSepString(paramBoundInExtendPattern);
-+        stepDoc.setParamBoundInExtendPattern(paramBoundInExtendPatternAsString);
-+    }
-+
-     public static StepDocDTO fromModelToDTO(StepDoc stepDoc) {
- 
-+        StepDocDTO stepDocDTO = new StepDocDTO();
-+
-         String startingWord = stepDoc.getStartingWord();
-         String pattern = stepDoc.getPattern();
-         String regExpPattern = stepDoc.getRegExpPattern();
-         String groupedRegExpPattern = stepDoc.getGroupedRegExpPattern();
-         String parameterGroupsStr = stepDoc.getParameterGroups();
--        List<Integer> parameterGroups;
--        if (parameterGroupsStr != null) {
--            String[] strGroups = parameterGroupsStr.split(",");
--            parameterGroups = new ArrayList<Integer>(strGroups.length);
--            for (String strGroup : strGroups) {
--                Integer intGroup = Integer.parseInt(strGroup);
--                parameterGroups.add(intGroup);
-+
-+        stepDocDTO.setId(stepDoc.getID());
-+        stepDocDTO.setStartingWord(startingWord);
-+        stepDocDTO.setPattern(pattern);
-+        stepDocDTO.setResolvedPattern(regExpPattern); // TODO - align name in DAO and DTO objects
-+        stepDocDTO.setGroupedRegExpPattern(groupedRegExpPattern);
-+
-+        List<Integer> parameterGroups = asListOfInts(parameterGroupsStr);;
-+        stepDocDTO.setParameterGroups(parameterGroups);
-+
-+        // set parameter group infos
-+        String parameterInfosAsString = stepDoc.getParameterInfos();
-+        if (parameterInfosAsString != null) {
-+            ObjectMapper mapper = new ObjectMapper();
-+            mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-+            List<ParameterInfo> parameterInfos;
-+            try {
-+                parameterInfos = mapper.readValue(parameterInfosAsString,
-+                        mapper.getTypeFactory().constructCollectionType(List.class, ParameterInfo.class));
-+            } catch (IOException e) {
-+                throw new RuntimeException(e);
-             }
--        } else {
--            parameterGroups = Collections.emptyList();
-+            stepDocDTO.setParameterInfos(parameterInfos);
-         }
- 
--        StepDocDTO stepDocDTO = new StepDocDTO(startingWord, pattern, regExpPattern, groupedRegExpPattern, parameterGroups);
-+        String paramBoundInPatternAsString = stepDoc.getParamBoundInPattern();
-+        List<Integer> paramBoundInPattern = asListOfInts(paramBoundInPatternAsString);
-+        stepDocDTO.setParamBoundInPattern(paramBoundInPattern);
-+
-+        String extendedPattern = stepDoc.getExtendedPattern();
-+        stepDocDTO.setExtendedPattern(extendedPattern);
-+
-+        String paramBoundInExtendPatternAsString = stepDoc.getParamBoundInExtendPattern();
-+        List<Integer> paramBoundInExtendPattern = asListOfInts(paramBoundInExtendPatternAsString);
-+        stepDocDTO.setParamBoundInExtendPattern(paramBoundInExtendPattern);
-+
-         return stepDocDTO;
-     }
- 
-@@ -66,5 +108,35 @@
-         }
- 
-         return results;
-+    }
-+
-+    private static String asCommaSepString(List<Integer> listOfInts) {
-+        StringBuilder sb = new StringBuilder();
-+        if (listOfInts != null ) {
-+            for (int i = 0; i < listOfInts.size(); i++) {
-+                Integer parameterGroup = listOfInts.get(i);
-+                sb.append(parameterGroup.toString());
-+                if (i < listOfInts.size() - 1) {
-+                    sb.append(",");
-+                }
-+            }
-+        }
-+        String asString = sb.toString();
-+        return asString;
-+    }
-+
-+    private static List<Integer> asListOfInts(String asCommaSepString) {
-+        List<Integer> asListOfInts;
-+        if (asCommaSepString != null && !asCommaSepString.isEmpty()) {
-+            String[] strGroups = asCommaSepString.split(",");
-+            asListOfInts = new ArrayList<Integer>(strGroups.length);
-+            for (String strGroup : strGroups) {
-+                Integer intGroup = Integer.parseInt(strGroup);
-+                asListOfInts.add(intGroup);
-+            }
++        String[] autoInsertTabularFieldsParam = (String[]) parameters.get(PARAM_NAME_AUTO_INSERT_TABLES);
++        if (autoInsertTabularFieldsParam != null && autoInsertTabularFieldsParam.length > 0 && autoInsertTabularFieldsParam[0].equals("on")) {
++            this.autoInsertTabularFields = true;
 +        } else {
-+            asListOfInts = Collections.emptyList();
++            this.autoInsertTabularFields = false;
 +        }
-+        return asListOfInts;
-     }
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
-@@ -13,23 +13,91 @@
- @XmlAccessorType(XmlAccessType.FIELD)
- public class StepDocDTO {
- 
-+    private Integer id;
-     private String startingWord;
-     private String pattern;
-     private String resolvedPattern;
-     private String groupedRegExpPattern;
-+    private String stepClassName;
-+    private String stepMethodSignature;
-+    private List<Integer> paramBoundInPattern;
-+    private String extendedPattern;
-+    private List<Integer> paramBoundInExtendPattern;
++        preferences.setBoolean(PREFERENCE_KEY_AUTO_INSERT_TABLES, this.autoInsertTabularFields);
 +
-     private List<Integer> parameterGroups = new ArrayList<Integer>();
- 
-+    private List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>();
-+
-     protected StepDocDTO() {
-     }
- 
--    public StepDocDTO(String startingWord, String pattern, String resolvedPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
-+    public List<Integer> getParamBoundInPattern() {
-+        return paramBoundInPattern;
++        // We want to redirect back to the view issue page so
++        return returnComplete("/browse/" + this.getIssue().getKey());
 +    }
 +
-+    public void setParamBoundInPattern(List<Integer> paramBoundInPattern) {
-+        this.paramBoundInPattern = paramBoundInPattern;
++    /**
++     * The initialization logic of the form.
++     * Validation does NOT happen before this.
++     *
++     * @return the view to display - should usually be "input"
++     */
++    public String doDefault() throws Exception {
++
++        ApplicationUser user = authenticationContext.getUser();
++        final Preferences preferences = preferencesManager.getPreferences(user);
++
++        this.showLineNumbers = preferences.getBoolean(PREFERENCE_KEY_SHOW_LINE_NUMBERS);
++        this.autoAlignTables = preferences.getBoolean(PREFERENCE_KEY_AUTO_ALIGN_TABLES);
++        this.autoInsertTabularFields = preferences.getBoolean(PREFERENCE_KEY_AUTO_INSERT_TABLES);
++
++        // Initialization logic
++        return INPUT;
 +    }
 +
-+    public String getExtendedPattern() {
-+        return extendedPattern;
++    /**
++     * Used by the decorator
++     */
++    public GenericValue getProject() {
++        return getIssue().getProject();
 +    }
 +
-+    public void setExtendedPattern(String extendedPattern) {
-+        this.extendedPattern = extendedPattern;
++    /**
++     * Used by the decorator
++     */
++    public Issue getIssue() {
++        return getIssueObject();
 +    }
 +
-+    public List<Integer> getParamBoundInExtendPattern() {
-+        return paramBoundInExtendPattern;
++    public Issue getIssueObject() {
++        final IssueService.IssueResult issueResult = issueService.getIssue(authenticationContext.getLoggedInUser(), id);
++        if (!issueResult.isValid()) {
++            this.addErrorCollection(issueResult.getErrorCollection());
++            return null;
++        }
++
++        return issueResult.getIssue();
 +    }
 +
-+    public void setParamBoundInExtendPattern(List<Integer> paramBoundInExtendPattern) {
-+        this.paramBoundInExtendPattern = paramBoundInExtendPattern;
-+    }
++    // Getter adn Setters for passing the form params
 +
-+    public Integer getId() {
++    public Long getId() {
 +        return id;
 +    }
 +
-+    public void setId(Integer id) {
++    public void setId(Long id) {
 +        this.id = id;
 +    }
 +
-+    public String getStepClassName() {
-+        return stepClassName;
++    public boolean isShowLineNumbers() {
++        return showLineNumbers;
 +    }
 +
-+    public void setStepClassName(String stepClassName) {
-+        this.stepClassName = stepClassName;
++    public void setShowLineNumbers(boolean showLineNumbers) {
++        this.showLineNumbers = showLineNumbers;
 +    }
 +
-+    public String getStepMethodSignature() {
-+        return stepMethodSignature;
++    public boolean isAutoAlignTables() {
++        return autoAlignTables;
 +    }
 +
-+    public void setStepMethodSignature(String stepMethodSignature) {
-+        this.stepMethodSignature = stepMethodSignature;
++    public void setAutoAlignTables(boolean autoAlignTables) {
++        this.autoAlignTables = autoAlignTables;
 +    }
 +
-+    public List<ParameterInfo> getParameterInfos() {
-+        return parameterInfos;
++    public boolean isAutoInsertTabularFields() {
++        return autoInsertTabularFields;
 +    }
 +
-+    public void setParameterInfos(List<ParameterInfo> parameterInfos) {
-+        this.parameterInfos = parameterInfos;
++    public void setAutoInsertTabularFields(boolean autoInsertTabularFields) {
++        this.autoInsertTabularFields = autoInsertTabularFields;
 +    }
-+
-+    public void setStartingWord(String startingWord) {
-         this.startingWord = startingWord;
-+    }
-+
-+    public void setPattern(String pattern) {
-         this.pattern = pattern;
--        this.resolvedPattern = resolvedPattern;
--        this.groupedRegExpPattern = groupedRegExpPattern;
--        this.parameterGroups = parameterGroups;
-     }
- 
-+    public void setResolvedPattern(String resolvedPattern) {
-+        this.resolvedPattern = resolvedPattern;
-+    }
- 
-     public String getStartingWord() {
-         return startingWord;
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStepDocReporter.groovy
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/UpdateJBehavePreferences.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStepDocReporter.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/org/bitbucket/jbehaveforjira.groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -0,0 +1,391 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
-+import com.sun.jersey.api.client.Client
-+import org.apache.commons.lang.Validate
-+import org.codehaus.jackson.map.ObjectMapper
-+import org.jbehave.core.annotations.AsParameters
-+import org.jbehave.core.annotations.Parameter
-+import org.jbehave.core.model.StepPattern
-+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser
-+import org.jbehave.core.parsers.StepMatcher
-+import org.jbehave.core.parsers.StepPatternParser
-+import org.jbehave.core.reporters.StepdocReporter
-+import org.jbehave.core.steps.StepType
-+import org.jbehave.core.steps.Stepdoc
-+
-+import javax.ws.rs.core.MediaType
-+import javax.xml.bind.annotation.XmlAccessType
-+import javax.xml.bind.annotation.XmlAccessorType
-+import javax.xml.bind.annotation.XmlRootElement
-+import java.lang.annotation.Annotation
-+import java.lang.reflect.Field
-+import java.lang.reflect.Method
-+import java.lang.reflect.ParameterizedType
-+import java.lang.reflect.Type
-+import java.util.regex.Matcher
-+import java.util.regex.Pattern
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStepDocReporter implements StepdocReporter {
-+
-+    private final String reportStepDocUrl;
-+
-+    private final StepPatternParser patternParser;
-+
-+    public GroovyStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
-+        this(jiraBaseUrl, jiraProject, jiraUserName, jiraPassword, new RegexPrefixCapturingPatternParser());
-+    }
-+
-+    public GroovyStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword, StepPatternParser stepPatternParser) {
-+        this.reportStepDocUrl = jiraBaseUrl + "/rest/story-res/1.0/step-doc/add/" + jiraProject
-+                + "?os_username=" + jiraUserName
-+                + "&os_password=" + jiraPassword;
-+        this.patternParser = stepPatternParser;
-+    }
-+
-+    @Override
-+    public void stepdocs(List<Stepdoc> stepdocs, List<Object> stepsInstances) {
-+
-+        List<StepDocDTO> stepDocDTOs = new ArrayList<StepDocDTO>(stepdocs.size());
-+
-+        for (Stepdoc stepdoc : stepdocs) {
-+
-+            StepDocDTO stepDocDTO = new StepDocDTO();
-+
-+            String pattern = stepdoc.getPattern();
-+            stepDocDTO.pattern = pattern;
-+
-+            StepType stepType = stepdoc.getStepType();
-+
-+            String startingWord = stepdoc.getStartingWord();
-+            stepDocDTO.startingWord = startingWord;
-+
-+            Object stepsInstance = stepdoc.getStepsInstance();
-+            Class<?> stepsClass = stepsInstance.getClass();
-+            String stepClassName = stepsClass.getName();
-+            stepDocDTO.stepClassName = stepClassName;
-+
-+            String methodSignature = stepdoc.getMethodSignature();
-+            stepDocDTO.stepMethodSignature = methodSignature;
-+
-+            StepMatcher stepMatcher = patternParser.parseStep(stepType, pattern);
-+            StepPattern stepPattern = stepMatcher.pattern();
-+            String resolvedPattern = stepPattern.resolved();
-+            stepDocDTO.resolvedPattern = resolvedPattern;
-+            setGroupedPatternOnStepDoc(stepDocDTO);
-+
-+            Method method = stepdoc.getMethod();
-+            Type[] genericParameterTypes = method.getGenericParameterTypes();
-+            List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>(genericParameterTypes.length);
-+
-+            for (Type genericParameterType : genericParameterTypes) {
-+                ParameterInfo parameterInfo = new ParameterInfo();
-+                if (genericParameterType instanceof ParameterizedType) {
-+                    ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
-+                    Class<?> rawType = (Class<?>) parameterizedType.getRawType();
-+                    if (rawType.getName().equals(List.class.getName())) {
-+                        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-+                        if (actualTypeArguments.length == 1) {
-+                            Type actualTypeArgument = actualTypeArguments[0];
-+                            if (actualTypeArgument instanceof Class<?>) {
-+                                Class<?> classType = (Class<?>) actualTypeArgument;
-+                                populateParameterInfo(parameterInfo, classType);
-+                                parameterInfo.isListType = true;
-+                            }
-+                        } else {
-+                            // if there are more type arguments, we ignore such cases
-+                        }
-+                    } else {
-+                        // we ignore any other generic parameter types
-+                    }
-+                } else if (genericParameterType instanceof Class) {
-+                    Class classType = (Class) genericParameterType;
-+                    populateParameterInfo(parameterInfo, classType);
-+                } else {
-+                    // we do not provide any meta information in this case
-+                }
-+                parameterInfos.add(parameterInfo);
-+            }
-+            stepDocDTO.parameterInfos = parameterInfos;
-+
-+            if (parameterInfos.size() != stepDocDTO.parameterGroups.size()) {
-+                throw new IllegalStateException("Number of resolved parameters doesn't match number of gather parameter infos");
-+            }
-+
-+            List<Integer> parameterGroups = stepDocDTO.parameterGroups;
-+            if (!parameterGroups.isEmpty()) {
-+
-+                // set parameter boundaries in pattern
-+                String groupedRegExpPattern = stepDocDTO.groupedRegExpPattern;
-+                Validate.notNull(groupedRegExpPattern);
-+                Pattern groupedPattern = Pattern.compile(groupedRegExpPattern, Pattern.DOTALL);
-+                Matcher matcher = groupedPattern.matcher(stepdoc.getPattern());
-+                boolean matches = matcher.matches();
-+                Validate.isTrue(matches, "Error - pattern should have matched");
-+                List<Integer> parameterBoundaries = new ArrayList<Integer>(parameterGroups.size() * 2);
-+                for (Integer parameterGroup : parameterGroups) {
-+                    int groupStart = matcher.start(parameterGroup);
-+                    parameterBoundaries.add(groupStart);
-+                    int groupEnd = matcher.end(parameterGroup);
-+                    parameterBoundaries.add(groupEnd);
-+                }
-+                stepDocDTO.paramBoundInPattern = parameterBoundaries;
-+
-+                // set extended pattern
-+                int totalGroups = matcher.groupCount();
-+                StringBuilder sb = new StringBuilder();
-+                int paramGroupIndex = 0;
-+                for (int i = 0; i < totalGroups; i++) {
-+                    int groupNumber = i + 1;
-+                    String groupText = matcher.group(groupNumber);
-+                    if (parameterGroups.contains(groupNumber)) {
-+                        // group is a parameter, check its parameter info
-+                        ParameterInfo parameterInfo = parameterInfos.get(paramGroupIndex);
-+                        Validate.notNull(parameterInfo);
-+                        List<TabularFieldInfo> tabularFieldInfos = parameterInfo.tabularFieldInfos;
-+                        if (tabularFieldInfos != null && !tabularFieldInfos.isEmpty()) {
-+                            // replace the parameter name with parameter field names in tabular format
-+                            int totalPipes = 0;
-+                            sb.append("\n");
-+                            sb.append("|");
-+                            totalPipes++;
-+                            for (TabularFieldInfo tabularFieldInfo : tabularFieldInfos) {
-+                                sb.append(tabularFieldInfo.fieldName);
-+                                sb.append("|");
-+                                totalPipes++;
-+                            }
-+                            sb.append("\n");
-+                            // we add another line which contains same number of pipes as an empty values row, ready for user to fil in
-+                            for (int j = 0; j < totalPipes; j++) {
-+                                sb.append("|");
-+                            }
-+                            sb.append("\n");
-+                        } else {
-+                            sb.append(groupText);
-+                        }
-+                        paramGroupIndex++;
-+                    } else {
-+                        sb.append(groupText);
-+                    }
-+                }
-+                String extendedPattern = sb.toString();
-+                stepDocDTO.extendedPattern = extendedPattern;
-+
-+                // set extended pattern parameter boundaries
-+                matcher = groupedPattern.matcher(extendedPattern);
-+                matches = matcher.matches();
-+                Validate.isTrue(matches, "Error - extended pattern should have matched");
-+                List<Integer> extendedParameterBoundaries = new ArrayList<Integer>(parameterGroups.size() * 2);
-+                for (Integer parameterGroup : parameterGroups) {
-+                    int groupStart = matcher.start(parameterGroup);
-+                    extendedParameterBoundaries.add(groupStart);
-+                    int groupEnd = matcher.end(parameterGroup);
-+                    extendedParameterBoundaries.add(groupEnd);
-+                }
-+                stepDocDTO.paramBoundInExtendPattern = extendedParameterBoundaries;
-+
-+            }
-+
-+            stepDocDTOs.add(stepDocDTO);
-+        }
-+
-+        StepDocsPayload stepDocsPayload = new StepDocsPayload();
-+        stepDocsPayload.stepDocs = stepDocDTOs;
-+        uploadToJira(stepDocsPayload);
-+    }
-+
-+    private void populateParameterInfo(ParameterInfo parameterInfo, Class classType) {
-+
-+        String parameterType = classType.getName();
-+        parameterInfo.parameterType = parameterType;
-+        String simpleName = classType.getSimpleName();
-+        parameterInfo.simpleParameterType = simpleName;
-+        Annotation asParamAnnotation = classType.getAnnotation(AsParameters.class);
-+
-+        if (asParamAnnotation != null) {
-+
-+            List<TabularFieldInfo> tabularFieldInfos = new ArrayList<TabularFieldInfo>();
-+
-+            // parameter can be represented as a table
-+            parameterInfo.isListType = true;
-+            Field[] declaredFields = classType.getDeclaredFields();
-+
-+            for (Field declaredField : declaredFields) {
-+
-+                TabularFieldInfo tabularFieldInfo = new TabularFieldInfo();
-+
-+                // field name
-+                Parameter fieldAnnotation = declaredField.getAnnotation(Parameter.class);
-+                String fieldName;
-+                if (fieldAnnotation != null) {
-+                    fieldName = fieldAnnotation.name();
-+                } else {
-+                    fieldName = declaredField.getName();
-+                }
-+                tabularFieldInfo.fieldName = fieldName;
-+
-+                // allowed field values, i.e. in case of enum
-+                Class<?> fieldType = declaredField.getType();
-+                Object[] enumConstants = fieldType.getEnumConstants();
-+                if (enumConstants != null && enumConstants.length > 0) {
-+                    List<String> allowedValues = new ArrayList<String>();
-+                    Class<? extends Enum> enumFieldType = (Class<? extends Enum>) fieldType;
-+                    for (Object enumConstant : enumConstants) {
-+                        Enum enumField = (Enum) enumConstant;
-+                        String enumName = enumField.name();
-+                        allowedValues.add(enumName);
-+                    }
-+
-+                    tabularFieldInfo.allowedValues = allowedValues;
-+                }
-+
-+                tabularFieldInfos.add(tabularFieldInfo);
-+            }
-+
-+            parameterInfo.tabularFieldInfos = tabularFieldInfos;
-+
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/UpdateJBehavePreferences.js	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/UpdateJBehavePreferences.js	(revision )
+@@ -0,0 +1,58 @@
++AJS.$(function () {
++    // Function for getting the issue key of the issu ebeing edited.
++    var getIssueKey = function () {
++        if (JIRA.IssueNavigator.isNavigator()) {
++            return JIRA.IssueNavigator.getSelectedIssueKey();
 +        } else {
-+            // not a table type, but still may be a list type
++            return AJS.$.trim(AJS.$("#key-val").text());
 +        }
-+    }
++    };
 +
-+    private void uploadToJira(StepDocsPayload stepDocsPayload) {
-+
-+        ObjectMapper mapper = new ObjectMapper();
-+        String payloadAsString;
-+        try {
-+            payloadAsString = mapper.writeValueAsString(stepDocsPayload);
-+        } catch (IOException e) {
-+            throw new RuntimeException("Error occurred while trying to serialize object of type - "
-+                    + StepDocsPayload.class.getName() + " to json.", e);
++    // Function for getting the project key of the Issue being edited.
++    var getProjectKey = function () {
++        var issueKey = getIssueKey();
++        if (issueKey) {
++            return issueKey.match("[A-Z]*")[0];
 +        }
++    };
 +
-+        Client client = Client.create();
-+        String response = client.resource(this.reportStepDocUrl)
-+                .accept(MediaType.APPLICATION_JSON)
-+                .type(MediaType.APPLICATION_JSON)
-+                .post(String.class, payloadAsString);
++    JIRA.Dialogs.scheduleIssue = new JIRA.FormDialog({
++        id: "schedule-dialog",
++        trigger: "a.issueaction-update-jbehave-preferences",
++        ajaxOptions: JIRA.Dialogs.getDefaultAjaxOptions,
++        onSuccessfulSubmit: function () {  // This method is used to define behaviour on a successful form submission.
++            // We want to get the versions specified then place them in the view.
++            // This selector will get the container for the FixFor Version for both a list of issues and the view issue page.
++//            var $fixForContainer = AJS.$("#issuerow" + JIRA.IssueNavigator.getSelectedIssueId() + " td.fixVersions, #fixfor-val");
++//            $fixForContainer.html("");  // Blank out the existing versions
++//            // Now lets construct the html to place into the container
++//            var htmlToInsert = "";
++//            // this.getContentArea() return the contents of the dialog.  From this we will get teh selected values of the select list and iterate over them.
++//            this.getContentArea().find("#fixVersions option:selected").each(function () {
++//                var $option = AJS.$(this);
++//                // We want to comma separate them
++//                if (htmlToInsert !== "") {
++//                    htmlToInsert += ", ";
++//                }
++//                var versionName = AJS.$.trim($option.text());
++//                // Construct the link and append it to the html
++//                htmlToInsert += "<a href='" + contextPath + "/browse/" + getProjectKey() + "/fixforversion/" + $option.val() + "' title='" + versionName + "'>" + versionName + "</a>";
++//            });
++//
++//            // If no options were selected, insert none.
++//            if (htmlToInsert === "") {
++//                htmlToInsert = AJS.I18n.getText("common.words.none");
++//            }
++//            // set the html of the container.
++//            $fixForContainer.html(htmlToInsert);
++            console.log("jbehave preferences successfully updated");
++        },
++        onDialogFinished: function () {  // This function is used to define behaviour after the form has finished
++            // We want to display a notification telling people that the fix version has been updated.
++            // If it is displaying in the Issue Navigator we want to also show the issue key of the issue updated.
++            JIRA.Messages.showSuccessMsg("JBehave options updated successfully");
++        },
++        autoClose: true // This tells the dialog to automatically close after a successful form submit.
 +
-+        if (!response.startsWith("success")) {
-+            throw new RuntimeException("Failed to upload step doc! Server returned error message - " + response);
-+        }
-+    }
-+
-+    @Override
-+    public void stepdocsMatching(String stepAsString, List<Stepdoc> matching, List<Object> stepsIntances) {
-+        // ignored
-+    }
-+
-+    private void setGroupedPatternOnStepDoc(StepDocDTO stepDocDTO) {
-+
-+        String resolvedPattern = stepDocDTO.resolvedPattern;
-+        StringBuilder groupedPatternBuilder = new StringBuilder();
-+        List<Integer> parameterGroups = new ArrayList<Integer>();
-+
-+        int pos = 0;
-+        int groupCount = 0;
-+        int indexOfOpenBrace = resolvedPattern.indexOf("(");
-+        while (indexOfOpenBrace != -1) {
-+
-+            // we want to group everything before that opening brace
-+            groupedPatternBuilder.append("(");
-+            groupedPatternBuilder.append(resolvedPattern.substring(pos, indexOfOpenBrace));
-+            groupedPatternBuilder.append(")");
-+            groupCount++;
-+
-+            int indexOfCloseBrace = resolvedPattern.indexOf(")", indexOfOpenBrace);
-+            Validate.isTrue(indexOfCloseBrace != -1);
-+            pos = indexOfCloseBrace + 1;
-+            groupedPatternBuilder.append(resolvedPattern.substring(indexOfOpenBrace, pos));
-+            groupCount++;
-+            parameterGroups.add(groupCount);
-+
-+            if (pos >= resolvedPattern.length()) {
-+                // we have reached the end of the pattern
-+                break;
-+            } else {
-+                indexOfOpenBrace = resolvedPattern.indexOf("(", pos);
-+                if (indexOfOpenBrace != -1) {
-+                    // we simply iterate again
-+                    continue;
-+                } else {
-+                    // there are no more parameter groups so we simply append any string into last group
-+                    groupedPatternBuilder.append("(");
-+                    groupedPatternBuilder.append(resolvedPattern.substring(pos));
-+                    groupedPatternBuilder.append(")");
-+                    groupCount++;
-+                }
-+            }
-+        }
-+
-+        String groupedPattern = groupedPatternBuilder.toString();
-+        if (groupedPattern.isEmpty()) {
-+            // reg exp pattern did not contain any groups
-+            groupedPattern = "(" + resolvedPattern + ")";
-+        }
-+        stepDocDTO.groupedRegExpPattern = groupedPattern;
-+        stepDocDTO.parameterGroups = parameterGroups;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private class TabularFieldInfo {
-+
-+        public String fieldName;
-+
-+        public List<String> allowedValues;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private class ParameterInfo {
-+
-+        public String parameterType;
-+
-+        public String simpleParameterType;
-+
-+        public boolean isListType;
-+
-+        public List<String> allowedValues;
-+
-+        public List<TabularFieldInfo> tabularFieldInfos;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private class StepDocDTO {
-+
-+        public String startingWord;
-+
-+        public String pattern;
-+
-+        public List<Integer> paramBoundInPattern;
-+
-+        public String extendedPattern;
-+
-+        public List<Integer> paramBoundInExtendPattern;
-+
-+        public String resolvedPattern;
-+
-+        public String groupedRegExpPattern;
-+
-+        public String stepClassName;
-+
-+        public String stepMethodSignature;
-+
-+        public List<Integer> parameterGroups = new ArrayList<Integer>();
-+
-+        public List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>();
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private static class StepDocsPayload {
-+
-+        public List<StepDocDTO> stepDocs;
-+    }
-+}
-+
-+
-+
-+
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
++    });
++});
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -48,7 +48,7 @@
-             extraKeys: {
-                 "Ctrl-Space": "autocomplete",
- 
--                Tab: function(cm) {
-+                Tab: function (cm) {
-                     var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-                     cm.replaceSelection(spaces, "end", "+input");
-                 },
-@@ -209,6 +209,8 @@
-             }
-         );
- 
-+        var cursorPosBefore = this.editor.getCursor(true);
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(revision )
+@@ -0,0 +1,74 @@
++<html>
++<head>
++    <title>$action.getText('scheduler-webwork-module.schedule.issue')</title>
++    #if (${action.issueObject})
++        <meta name="decorator" content="issueaction" />
++    #else
++        <meta name="decorator" content="message" />
++    #end
++</head>
++<body>
++    #if(${action.issueObject})
++    <form action="UpdateJBehavePreferencesAction.jspa" class="aui" id="update-jbehave-preferences" method="post">
++        <div class="form-body">
++            <div class="hidden">
++                <input name="atl_token" type="hidden" value="${action.xsrfToken}">
++            </div>
++            <h2 class="dialog-title">$action.getText('userPreferences.title')</h2>
++            <div class="hidden">
++                <input name="id" type="hidden" value="${action.id}">
++                <input name="returnUrl" type="hidden" value="$!{action.returnUrl}">
++            </div>
++            <fieldset class="group">
++                <div class="checkbox">
++                    <input class="checkbox"
++                           type="checkbox" name="showLineNumbers" id="showLineNumbers"
++                           #if(${action.showLineNumbers})
++                           checked="checked"
++                           #end
++                            >
++                    <label for="showLineNumbers">${action.getText('userPreferences.showLineNumbers.label')}</label>
++                </div>
++            </fieldset>
++            <fieldset class="group">
++                <div class="checkbox">
++                    <input class="checkbox" type="checkbox" name="autoAlignTables" id="autoAlignTables"
++                        #if(${action.autoAlignTables})
++                           checked="checked"
++                        #end
++                            >
++                    <label for="autoAlignTables">${action.getText('userPreferences.autoAlignTables.label')}</label>
++                </div>
++            </fieldset>
++            <fieldset class="group">
++                <div class="checkbox">
++                    <input class="checkbox" type="checkbox" name="autoInsertTabularFields" id="autoInsertTabularFields"
++                        #if(${action.autoInsertTabularFields})
++                           checked="checked"
++                        #end
++                            >
++                    <label for="autoInsertTabularFields">${action.getText('userPreferences.autoInsertTabularFields.label')}</label>
++                </div>
++            </fieldset>
++        </div>
++        <div class="buttons-container form-footer">
++            <div class="buttons">
++                <input accesskey="s" class="button" id="schedule-issue-submit"
++                       name="Update" title="Press Ctrl+Alt+s to submit this form" type="submit" value="Update">
++                <a accesskey="`" class="cancel" href="/browse/${action.issue.key}" id="schedule-issue-cancel" title="Press Ctrl+Alt+` to cancel">Cancel</a>
++            </div>
++        </div>
++    </form>
++    #else
++    <div class="remove-me">
++        <h1>${action.getText('common.words.error')}</h1>
++        <div class="aui-message error"><span class="aui-icon icon-error"></span>
++            #foreach($message in $action.flushedErrorMessages)
++                <p>$message</p>
++            #end
++        </div>
++    </div>
 +
-         // align columns
-         this.editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
-                 var lineText = lineHandle.text;
-@@ -223,6 +225,7 @@
-                     var pos = 0;
-                     for (var i = 0; i < tokens.length; i++) {
-                         var isFirstToken = i == 0;
-+                        var isLastToken = i == (tokens.length - 1);
-                         var token = tokens[i];
-                         if (!isFirstToken) {
-                             pos++; // for '|'
-@@ -230,7 +233,7 @@
-                         var tokenStartCh = pos;
-                         var tokenEndCh = tokenStartCh + token.length;
-                         var difference = maxColumnWidths[i] - token.length;
--                        if (difference > 0 && !isFirstToken) {
-+                        if (difference > 0 && !isFirstToken && !isLastToken) {
- 
-                             var spaces = "";
-                             while (difference > 0) {
-@@ -244,7 +247,7 @@
- 
-                             pos += token.length + spaces.length;
- 
--                        } else if (difference < 0 && !isFirstToken) {
-+                        } else if (difference < 0 && !isFirstToken && !isLastToken) {
-                             // this is the case when token has whitespace at the end
-                             // so we trim the whitespace
-                             token = token.replace(/\s+$/g, ''); // trim any trailing spaces
-@@ -277,6 +280,12 @@
-             }
-         );
- 
-+        var cursorPosAfter = this.editor.getCursor(true);
-+        if (cursorPosBefore.line != cursorPosAfter.line || cursorPosBefore.ch != cursorPosAfter.ch) {
-+            // cursor has been moved, set it back to original position before alignment
-+            this.editor.setCursor(cursorPosBefore);
-+        }
-+
-         storyController.alignTablesOnEdit = currentAlignValue;
- 
-         storyController.debug("# alignTableBetween");
-@@ -556,7 +565,8 @@
-         var markerStart = {line: stepStartLine, ch: 0};
-         var lastStepLineHandle = this.editor.getLineHandle(stepEndLine);
-         var markerEnd = {line: stepEndLine, ch: lastStepLineHandle.text.length};
--        var className = "matched-step";
-+        var matchedStepClassName = "matched-step";
-+        var stepParameterClassName = "step-parameter";
- 
-         // remove any matched-step markers
-         var markersBefore = this.editor.getDoc().findMarks(markerStart, markerEnd);
-@@ -564,8 +574,9 @@
-             // always remove any existing marks, so that we include newly edited text in the marked range
-             for (var m = 0; m < markersBefore.length; m++) {
-                 var marker = markersBefore[m];
--                if (marker.className == className
--                    || marker.className == "step-parameter") {
-+                var markerClassName = marker.className;
-+                if (markerClassName.substring(0, matchedStepClassName.length) == matchedStepClassName
-+                    || markerClassName.substring(0, stepParameterClassName.length) == stepParameterClassName) {
-                     marker.clear();
-                 }
-             }
-@@ -573,9 +584,11 @@
- 
-         if (findResult != null) {
- 
-+            var stepDocId = findResult.stepDoc.id;
-+
-             // set matched-step markers
-             var options = new Object();
--            options.className = className;
-+            options.className = matchedStepClassName + " " + matchedStepClassName + "-" + stepDocId;
-             this.editor.getDoc().markText(markerStart, markerEnd, options);
- 
-             // match any parameters
-@@ -636,13 +649,15 @@
-                 }
- 
-                 // mark any step parameters
-+                var parameterIndex = 0;
-                 for (var k = 0; k < parameterGroupsInfos.length; k++) {
-                     var pgi = parameterGroupsInfos[k];
-                     var paramStart = {line: pgi.startLine, ch: pgi.startLineCh};
-                     var paramEnd = {line: pgi.endLine, ch: pgi.endLineCh};
-                     var paramMarkerOptions = new Object();
--                    paramMarkerOptions.className = "step-parameter";
-+                    paramMarkerOptions.className = stepParameterClassName + " " + stepParameterClassName + "-" + parameterIndex;
-                     this.editor.getDoc().markText(paramStart, paramEnd, paramMarkerOptions);
-+                    parameterIndex++;
-                 }
- 
-             }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(revision )
-@@ -28,14 +28,14 @@
- 
-     private final StoryReportDao storyReportDao;
- 
--    private final StepDocsSerivce stepDocsSerivce;
-+    private final StepDocsService stepDocsSerivce;
- 
-     private StoryReportService storyReportService;
- 
-     public StoryServiceImpl(StoryDao storyDao, StoryReportDao storyReportDao,
-                             IssueService is,
-                             JiraAuthenticationContext authenticationContext,
--                            StepDocsSerivce stepDocsSerivce,
-+                            StepDocsService stepDocsSerivce,
-                             StoryReportService storyReportService) {
-         this.storyDao = storyDao;
-         this.storyReportDao = storyReportDao;
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -154,6 +154,34 @@
-         <styleClass>clear-story-test-button</styleClass>
-     </web-item>
-     <!-- ==================================================================================================== -->
-+    <!--JBehave Preferences-->
-+    <!-- ==================================================================================================== -->
-+    <web-item name="Update JBehave Preferences" i18n-name-key="userPreferences.title" key="update-jbehave-preferences-web-item"
-+              section="jbehave-links-section" weight="10">
-+        <description key="userPreferencesLink.description">Update JBehave Preferences</description>
-+        <label key="userPreferences.title"/>
-+        <link linkId="update-jbehave-preferences-web-item-link">/secure/UpdateJBehavePreferencesAction!default.jspa?id=${issueId}</link>
-+        <styleClass>issueaction-update-jbehave-preferences</styleClass>
-+    </web-item>
-+    <webwork1 key="update-jbehave-preferences-webwork-module" name="Update JBehave Preferences Webwork Module"
-+              i18n-name-key="scheduler-webwork-module.name">
-+        <description key="scheduler-webwork-module.description">The Scheduler Webwork Module Plugin</description>
-+        <actions>
-+            <action name="org.bitbucket.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction" alias="UpdateJBehavePreferencesAction">
-+                <view name="input">/velocity/jbehave_preferences.vm</view>
-+                <view name="error">/velocity/jbehave_preferences.vm</view>
-+            </action>
-+        </actions>
-+    </webwork1>
-+    <web-resource name="Update JBehave Preferences Web Resource"
-+                  i18n-name-key="update-jbehave-preferences-web-resource.name" key="update-jbehave-preferences-web-resource">
-+        <description key="update-jbehave-preferences-web-resource.description">Update JBehave Preferences Web Resource Plugin</description>
-+        <resource name="UpdateJBehavePreferences.js" type="download" location="js/UpdateJBehavePreferences.js">
-+            <param name="content-type" value="text/javascript"/>
-+        </resource>
-+        <context>atl.general</context>
-+    </web-resource>
-+    <!-- ==================================================================================================== -->
-     <!--Issue page - Story panel-->
-     <!-- ==================================================================================================== -->
-     <web-panel name="Story Panel" i18n-name-key="viewIssuePage.storyPanel.name"
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-@@ -0,0 +1,38 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+/**
-+ * DTO for tabular parameter fields.
-+ *
-+ * @author stasyukd
-+ * @since 6.0.0-SNAPSHOT
-+ */
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class TabularFieldInfo {
-+
-+    private String fieldName;
-+
-+    private List<String> allowedValues;
-+
-+    public String getFieldName() {
-+        return fieldName;
-+    }
-+
-+    public void setFieldName(String fieldName) {
-+        this.fieldName = fieldName;
-+    }
-+
-+    public List<String> getAllowedValues() {
-+        return allowedValues;
-+    }
-+
-+    public void setAllowedValues(List<String> allowedValues) {
-+        this.allowedValues = allowedValues;
-+    }
-+
-+}
-Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -36,6 +36,11 @@
-                     <target>${java.version}</target>
-                 </configuration>
-             </plugin>
-+            <plugin>
-+                <groupId>net.sf.alchim</groupId>
-+                <artifactId>yuicompressor-maven-plugin</artifactId>
-+                <version>0.7.1</version>
-+            </plugin>
-             <!--<plugin>-->
-             <!--<groupId>com.atlassian.maven.plugins</groupId>-->
-             <!--<artifactId>maven-amps-dispatcher-plugin</artifactId>-->
-@@ -54,6 +59,12 @@
-             <scope>provided</scope>
-         </dependency>
-         <dependency>
-+            <groupId>com.atlassian.jira</groupId>
-+            <artifactId>jira-core</artifactId>
-+            <version>${jira.version}</version>
-+            <scope>provided</scope>
-+        </dependency>
-+        <dependency>
-             <groupId>com.atlassian.activeobjects</groupId>
-             <artifactId>activeobjects-plugin</artifactId>
-             <scope>provided</scope>
-@@ -74,14 +85,14 @@
-         <!-- ================================================================================= -->
-         <!--Other dependencies-->
-         <!-- ================================================================================= -->
--        <dependency>
--            <groupId>org.bitbucket.pristrom</groupId>
--            <artifactId>jbehave-for-jira-java-client</artifactId>
--            <version>1.0.0-SNAPSHOT</version>
--            <scope>provided</scope>
--        </dependency>
-         <!--<dependency>-->
-             <!--<groupId>org.bitbucket.pristrom</groupId>-->
-+            <!--<artifactId>jbehave-for-jira-java-client</artifactId>-->
-+            <!--<version>1.0.0-SNAPSHOT</version>-->
-+            <!--<scope>provided</scope>-->
-+        <!--</dependency>-->
-+        <!--<dependency>-->
-+            <!--<groupId>org.bitbucket.pristrom</groupId>-->
-             <!--<artifactId>jbehave-for-jira-java-client-impl</artifactId>-->
-             <!--<version>1.0.0-SNAPSHOT</version>-->
-             <!--<scope>provided</scope>-->
-@@ -117,18 +128,18 @@
-             <version>1.1.1</version>
-             <scope>provided</scope>
-         </dependency>
--        <dependency>
--            <groupId>com.sun.jersey</groupId>
--            <artifactId>jersey-client</artifactId>
--            <version>1.18.1</version>
--            <scope>provided</scope>
--        </dependency>
--        <dependency>
--            <groupId>com.sun.jersey</groupId>
--            <artifactId>jersey-json</artifactId>
--            <version>1.18.1</version>
--            <scope>provided</scope>
--        </dependency>
-+        <!--<dependency>-->
-+            <!--<groupId>com.sun.jersey</groupId>-->
-+            <!--<artifactId>jersey-client</artifactId>-->
-+            <!--<version>1.18.1</version>-->
-+            <!--<scope>provided</scope>-->
-+        <!--</dependency>-->
-+        <!--<dependency>-->
-+            <!--<groupId>com.sun.jersey</groupId>-->
-+            <!--<artifactId>jersey-json</artifactId>-->
-+            <!--<version>1.18.1</version>-->
-+            <!--<scope>provided</scope>-->
-+        <!--</dependency>-->
-         <!--<dependency>-->
-         <!--<groupId>javax.xml.bind</groupId>-->
-         <!--<artifactId>jaxb-api</artifactId>-->
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
-@@ -0,0 +1,68 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+/**
-+ * Parameter info DTO object.
-+ *
-+ * @author stasyukd
-+ * @since 6.0.0-SNAPSHOT
-+ */
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class ParameterInfo {
-+
-+    private String parameterType;
-+
-+    private String simpleParameterType;
-+
-+    private boolean listType;
-+
-+    private List<String> allowedValues;
-+
-+    private List<TabularFieldInfo> tabularFieldInfos;
-+
-+    public List<TabularFieldInfo> getTabularFieldInfos() {
-+        return tabularFieldInfos;
-+    }
-+
-+    public void setTabularFieldInfos(List<TabularFieldInfo> tabularFieldInfos) {
-+        this.tabularFieldInfos = tabularFieldInfos;
-+    }
-+
-+    public String getSimpleParameterType() {
-+        return simpleParameterType;
-+    }
-+
-+    public void setSimpleParameterType(String simpleParameterType) {
-+        this.simpleParameterType = simpleParameterType;
-+    }
-+
-+    public String getParameterType() {
-+        return parameterType;
-+    }
-+
-+    public void setParameterType(String parameterType) {
-+        this.parameterType = parameterType;
-+    }
-+
-+    public boolean isListType() {
-+        return listType;
-+    }
-+
-+    public void setListType(boolean listType) {
-+        this.listType = listType;
-+    }
-+
-+    public List<String> getAllowedValues() {
-+        return allowedValues;
-+    }
-+
-+    public void setAllowedValues(List<String> allowedValues) {
-+        this.allowedValues = allowedValues;
-+    }
-+
-+}
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
-@@ -42,6 +42,9 @@
-         var wordPattern = /[\w$]+/;
-         var cur = editor.getCursor();
- 
-+        var globalFromCh = 0;
-+        var globalToCh = cur.ch;
-+
-         var curLine = editor.getLine(cur.line);
-         console.log("curLine - " + curLine);
- 
-@@ -89,7 +92,12 @@
-                     var stepPatternWithKeyword = stepStartingKeyword + stepDoc.pattern;
-                     if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
-                         var stepHint = new Object();
--                        stepHint.text = stepPatternWithKeyword;
-+                        stepHint.text = stepStartingKeyword;
-+                        if (stepDoc.extendedPattern != null) {
-+                            stepHint.text += stepDoc.extendedPattern;
-+                        } else {
-+                            stepHint.text += stepDoc.pattern;
-+                        }
-                         var pattern = stepDoc.pattern;
-                         var regExpPattern = new RegExp("(\\$[^\\s]*)", "g");
-                         pattern = pattern.replace(regExpPattern, "<span class='cm-step-body matched-step step-parameter'>$1</span>");
-@@ -105,12 +113,152 @@
-                     }
-                 }
-             }
-+
-+            // hint on parameters
-+            var matchedStepClassName = "matched-step";
-+            var stepParameterClassName = "step-parameter";
-+            var startOfCursorLine = {line: cursor.line, ch: 0};
-+            var cursorLineHandle = editor.getLineHandle(cursor.line);
-+            var endOfCursorLine = {line: cursor.line, ch: cursorLineHandle.text.length};
-+            var markers = editor.getDoc().findMarks(startOfCursorLine, endOfCursorLine);
-+            if (markers.length > 0) {
-+                var foundStepId = null;
-+                var foundParameterIndex = null;
-+                for (var m = 0; m < markers.length; m++) {
-+                    var marker = markers[m];
-+                    var markerClassName = marker.className;
-+//                    console.log("marker - " + marker);
-+                    if (markerClassName.substring(0, matchedStepClassName.length) == matchedStepClassName) {
-+                        var lastDashPos = markerClassName.lastIndexOf("-");
-+                        foundStepId = markerClassName.substring(lastDashPos + 1);
--        }
-+                    }
-+                    if (markerClassName.substring(0, stepParameterClassName.length) == stepParameterClassName) {
-+                        var lastDashPos = markerClassName.lastIndexOf("-");
-+                        foundParameterIndex = markerClassName.substring(lastDashPos + 1);
-+                    }
-+                }
-+                if (foundStepId != null && foundParameterIndex != null) {
-+                    // we can try to hint on parameter value
-+                    var stepDocWithId = null;
-+                    for (var k = 0; k < stepDocs.length; k++) {
-+                        var sd = stepDocs[k];
-+                        if (sd.id == foundStepId) {
-+                            stepDocWithId = sd;
-+                            break;
-+                        }
-+                    }
-+                    if (stepDocWithId != null && stepDocWithId.parameterInfos != null) {
-+                        var paramInfo = stepDocWithId.parameterInfos[foundParameterIndex];
-+                        var tabularFieldInfos = paramInfo.tabularFieldInfos;
-+                        if (tabularFieldInfos != null && tabularFieldInfos.length > 0) {
-+                            // can try to hint on tabular field names and values
-+                            // get current tabular column index and value
-+                            var currentLineHandle = editor.getLineHandle(cursor.line);
-+                            var currentLineText = currentLineHandle.text;
-+                            var currentLineTextUpToCursor = currentLineText.substring(0, cursor.ch);
-+                            if (currentLineTextUpToCursor.substring(0, 1) == "|" && currentLineTextUpToCursor.substring(0, 3) != "|--") {
-+                                // we subtract 2 here since we always end up with empty token before the first pipe
-+                                var columnIndex = currentLineTextUpToCursor.split("|").length - 2;
-+                                var lastPipeIndex = currentLineTextUpToCursor.lastIndexOf("|");
-+                                var columnStartPos = lastPipeIndex + 1;
-+                                var columnValue = currentLineTextUpToCursor.substring(columnStartPos);
-+                                console.log("current column index - " + columnIndex);
-+                                console.log("current column value - " + columnValue);
- 
-+                                var isFirstTableLine = true;
-+                                var actualFirstTableLine = null;
-+                                var previousLineNum = cursor.line - 1;
-+                                while(previousLineNum >= 0) {
-+                                    var previousLine = editor.getLineHandle(previousLineNum);
-+                                    var previousLineText = previousLine.text;
-+                                    if (previousLineText.length == 0 || previousLineText.trim().length == 0) {
-+                                        // empty line, do nothing
-+                                    } else if (previousLineText.substr(0, 1) == "|" && previousLineText.substr(0, 3) != "|--") {
-+                                        // current line is not the first line in the table
-+                                        isFirstTableLine = false;
-+                                        actualFirstTableLine = previousLineText;
-+                                    } else {
-+                                        // non empty and non table line
-+                                        break;
-+                                    }
-+                                    previousLineNum--;
-+                                }
-+
-+                                if (isFirstTableLine) {
-+                                    // hint on field names
-+                                    for (var t = 0; t < tabularFieldInfos.length; t++) {
-+                                        var tabularFieldInfo = tabularFieldInfos[t];
-+                                        var tabularFieldName = tabularFieldInfo.fieldName;
-+                                        if (columnValue.length == 0 || tabularFieldName.substring(0, columnValue.length) == columnValue) {
-+                                            // do the hint on field name
-+                                            var stepHint = new Object();
-+                                            stepHint.text = tabularFieldName;
-+                                            stepHint.html = "<span class='cm-step-body matched-step step-parameter'>" + tabularFieldName + "</span>";
-+                                            stepHint.render = function (element, data, self) {
-+                                                element.innerHTML = self.html;
-+                                            };
-+                                            stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
-+                                            stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
-+                                            list.push(stepHint);
-+                                            globalFromCh = stepHint.from.ch;
-+                                            globalToCh = stepHint.to.ch;
-+                                        }
-+                                    }
-+                                } else {
-+                                    // try to hint on any field allowed values
-+                                    // get column name for our current column value
-+                                    var fieldNames = actualFirstTableLine.split("|").slice(1);
-+                                    var fieldName = fieldNames[columnIndex];
-+                                    if (fieldName != null && fieldName.trim().length > 0) { // we could be hinting on column index which "exceeds" number of column headers
-+                                        fieldName = fieldName.trim();
-+                                        for (var t = 0; t < tabularFieldInfos.length; t++) {
-+                                            var tabularFieldInfo = tabularFieldInfos[t];
-+                                            var tabularFieldName = tabularFieldInfo.fieldName;
-+
-+                                            if (tabularFieldName == fieldName) {
-+                                                // we have found matching parameter info, hint on allowed values if present
-+                                                var fieldAllowedValues = tabularFieldInfo.allowedValues;
-+                                                if (fieldAllowedValues != null && fieldAllowedValues.length > 0) {
-+                                                    for (var d = 0; d < fieldAllowedValues.length; d++) {
-+                                                        var fieldAllowedValue = fieldAllowedValues[d];
-+                                                        if (columnValue.length == 0 || fieldAllowedValue.substring(0, columnValue.length) == columnValue) {
-+                                                            // do the hint on field allowed value
-+                                                            var stepHint = new Object();
-+                                                            stepHint.text = fieldAllowedValue;
-+                                                            stepHint.html = "<span class='cm-step-body matched-step step-parameter'>" + fieldAllowedValue + "</span>";
-+                                                            stepHint.render = function (element, data, self) {
-+                                                                element.innerHTML = self.html;
-+                                                            };
-+                                                            stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
-+                                                            stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
-+                                                            list.push(stepHint);
-+                                                            globalFromCh = stepHint.from.ch;
-+                                                            globalToCh = stepHint.to.ch;
-+                                                        }
-+                                                    }
-+                                                }
-+                                            }
-+
-+                                        }
-+                                    }
-+
-+                                }
-+                            } else {
-+                                // we are in table comment line, do not hint anything
-+                            }
-+                        }
-+
-+                    } else {
-+                        console.error("Failed to find step doc with id - " + foundStepId);
-+                    }
-+                }
-+            }
-+        }
-+
-         return {
-             list: list,
--            from: CodeMirror.Pos(cur.line, 0),
--            to: CodeMirror.Pos(cur.line, cur.ch)
-+            from: CodeMirror.Pos(cur.line, globalFromCh),
-+            to: CodeMirror.Pos(cur.line, globalToCh)
-         };
-     });
- });
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryResourceFind.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryResourceFind.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryResourceFind.java	(revision )
-@@ -6,7 +6,7 @@
- import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
- import org.bitbucket.jbehaveforjira.plugin.dto.story.StoriesPayload;
- import org.bitbucket.jbehaveforjira.plugin.dto.story.StoryPaths;
--import org.bitbucket.jbehaveforjira.plugin.service.StepDocsSerivce;
-+import org.bitbucket.jbehaveforjira.plugin.service.StepDocsService;
- import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
- import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
- import org.slf4j.Logger;
-@@ -35,7 +35,7 @@
- 
-     private final StoryReportService storyReportService;
- 
--    private final StepDocsSerivce stepDocsSerivce;
-+    private final StepDocsService stepDocsSerivce;
- 
-     private SearchService searchService;
- 
-@@ -43,7 +43,7 @@
- 
-     public StoryResourceFind(StoryService storyService,
-                              StoryReportService storyReportService,
--                             StepDocsSerivce stepDocsSerivce, SearchService searchService,
-+                             StepDocsService stepDocsSerivce, SearchService searchService,
-                              JiraAuthenticationContext authenticationContext) {
-         this.storyService = storyService;
-         this.storyReportService = storyReportService;
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/groovy/GroovyStepDocReporter.groovy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/groovy/GroovyStepDocReporter.groovy	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/groovy/GroovyStepDocReporter.groovy	(revision )
-@@ -42,10 +42,12 @@
-             StepType stepType = stepdoc.getStepType();
-             String startingWord = stepdoc.getStartingWord();
- 
-+            stepdoc.getMethod();
-+
-             StepMatcher stepMatcher = patternParser.parseStep(stepType, pattern);
-             StepPattern stepPattern = stepMatcher.pattern();
-             String resolvedPattern = stepPattern.resolved();
--            StepDocDTO stepDocDTO = new StepDocDTO(startingWord, pattern, resolvedPattern, null, null);
-+            StepDocDTO stepDocDTO = new StepDocDTO(startingWord, pattern, resolvedPattern);
-             stepDocDTOs.add(stepDocDTO);
-         }
- 
-@@ -77,6 +79,8 @@
-         // ignored
-     }
- 
-+
-+
-     @XmlRootElement
-     @XmlAccessorType(XmlAccessType.FIELD)
-     public static class StepDocDTO {
-@@ -88,6 +92,10 @@
-         private List<Integer> parameterGroups = new ArrayList<Integer>();
- 
-         protected StepDocDTO() {
-+        }
-+
-+        public StepDocDTO(String startingWord, String pattern, String resolvedPattern) {
-+            this(startingWord, pattern, resolvedPattern, null, null);
-         }
- 
-         public StepDocDTO(String startingWord, String pattern, String resolvedPattern, String groupedRegExpPattern, List<Integer> parameterGroups) {
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StepDocResource.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StepDocResource.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StepDocResource.java	(revision )
-@@ -4,7 +4,7 @@
- import com.atlassian.jira.security.JiraAuthenticationContext;
- import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
- import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocsPayload;
--import org.bitbucket.jbehaveforjira.plugin.service.StepDocsSerivce;
-+import org.bitbucket.jbehaveforjira.plugin.service.StepDocsService;
- import org.codehaus.jackson.map.DeserializationConfig;
- import org.codehaus.jackson.map.ObjectMapper;
- import org.slf4j.Logger;
-@@ -26,11 +26,11 @@
- 
-     private Logger log = LoggerFactory.getLogger(this.getClass());
- 
--    private StepDocsSerivce stepDocsSerivce;
-+    private StepDocsService stepDocsSerivce;
-     private SearchService searchService;
-     private JiraAuthenticationContext authenticationContext;
- 
--    public StepDocResource(StepDocsSerivce stepDocsSerivce, SearchService searchService,
-+    public StepDocResource(StepDocsService stepDocsSerivce, SearchService searchService,
-                            JiraAuthenticationContext authenticationContext) {
-         this.stepDocsSerivce = stepDocsSerivce;
-         this.searchService = searchService;
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsServiceImpl.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(revision )
-@@ -5,7 +5,6 @@
- import org.bitbucket.jbehaveforjira.plugin.ao.StepDocDao;
- import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
- import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTOUtils;
--import org.jbehave.core.steps.StepType;
- 
- import java.util.ArrayList;
- import java.util.List;
-@@ -13,7 +12,7 @@
- /**
-  * Created by Dmytro on 4/23/2014.
-  */
--public class StepDocsServiceImpl implements StepDocsSerivce {
-+public class StepDocsServiceImpl implements StepDocsService {
- 
-     private final StepDocDao stepDocDao;
- 
-@@ -33,12 +32,6 @@
-         }
- 
-         for (StepDocDTO stepDocDTO : stepDocs) {
--
--            // check if stepdoc has grouped pattern already set and if not calculate it and set it
--            if (stepDocDTO.getGroupedRegExpPattern() == null) {
--                setGroupedPatternOnStepDoc(stepDocDTO);
--            }
--
-             StepDoc stepDoc = stepDocDao.create();
-             stepDoc.setProjectKey(projectKey);
-             StepDocDTOUtils.fromDTOToModel(stepDocDTO, stepDoc);
-@@ -47,57 +40,6 @@
- 
-     }
- 
--    private void setGroupedPatternOnStepDoc(StepDocDTO stepDocDTO) {
--
--        String resolvedPattern = stepDocDTO.getResolvedPattern();
--        StringBuilder groupedPatternBuilder = new StringBuilder();
--        List<Integer> parameterGroups = new ArrayList<Integer>();
--
--        int pos = 0;
--        int groupCount = 0;
--        int indexOfOpenBrace = resolvedPattern.indexOf("(");
--        while(indexOfOpenBrace != -1) {
--
--            // we want to group everything before that opening brace
--            groupedPatternBuilder.append("(");
--            groupedPatternBuilder.append(resolvedPattern.substring(pos, indexOfOpenBrace));
--            groupedPatternBuilder.append(")");
--            groupCount++;
--
--            int indexOfCloseBrace = resolvedPattern.indexOf(")", indexOfOpenBrace);
--            Validate.isTrue(indexOfCloseBrace != -1, "Failed to find matching closing brace in pattern - " + resolvedPattern);
--            pos = indexOfCloseBrace + 1;
--            groupedPatternBuilder.append(resolvedPattern.substring(indexOfOpenBrace, pos));
--            groupCount++;
--            parameterGroups.add(groupCount);
--
--            if (pos >= resolvedPattern.length()) {
--                // we have reached the end of the pattern
--                break;
--            } else {
--                indexOfOpenBrace = resolvedPattern.indexOf("(", pos);
--                if (indexOfOpenBrace != -1) {
--                    // we simply iterate again
--                    continue;
--                } else {
--                    // there are no more parameter groups so we simply append any string into last group
--                    groupedPatternBuilder.append("(");
--                    groupedPatternBuilder.append(resolvedPattern.substring(pos));
--                    groupedPatternBuilder.append(")");
--                    groupCount++;
--                }
--            }
--        }
--
--        String groupedPattern = groupedPatternBuilder.toString();
--        if (groupedPattern.isEmpty()) {
--            // reg exp pattern did not contain any groups
--            groupedPattern = "(" + resolvedPattern + ")";
--        }
--        stepDocDTO.setGroupedRegExpPattern(groupedPattern);
--        stepDocDTO.setParameterGroups(parameterGroups);
--    }
--
-     @Override
-     public List<StepDocDTO> findForProject(String projectKey) {
- 
-@@ -105,11 +47,11 @@
-         return toDTOs(allForProject);
-     }
- 
--    @Override
--    public List<StepDocDTO> findForProject(String projectKey, StepType stepType) {
--        List<StepDoc> allForProject = this.stepDocDao.findAllForProject(projectKey, stepType);
--        return toDTOs(allForProject);
--    }
-+//    @Override
-+//    public List<StepDocDTO> findForProject(String projectKey, StepType stepType) {
-+//        List<StepDoc> allForProject = this.stepDocDao.findAllForProject(projectKey, stepType);
-+//        return toDTOs(allForProject);
-+//    }
- 
-     private List<StepDocDTO> toDTOs(List<StepDoc> allForProject) {
-         List<StepDocDTO> stepDocDTOs = new ArrayList<StepDocDTO>(allForProject.size());
++    #end
++</body>
++</html>
+\ No newline at end of file
