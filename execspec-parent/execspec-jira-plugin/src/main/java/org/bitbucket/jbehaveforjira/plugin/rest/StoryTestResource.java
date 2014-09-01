@@ -18,12 +18,6 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Contains rest api methods related to processing of Story objects.
- *
- * @author stasyukd
- * @since 2.0.0-SNAPSHOT
- */
 @Path("/story-test")
 public class StoryTestResource {
 

@@ -7,9 +7,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
-/**
- * Created by Dmytro on 4/10/2014.
- */
 @XmlRootElement(name = "stories_payload")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StoryTestReportsPayload {

@@ -3,8 +3,6 @@ package com.mycomp.execspec.jiraplugin.ao.stepdoc;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import net.java.ao.Query;
 import org.jbehave.core.steps.StepType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -12,8 +10,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 
 public final class StepDocDao {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final ActiveObjects ao;
 
@@ -44,7 +40,7 @@ public final class StepDocDao {
         return newArrayList(result);
     }
 
-    public List<StepDoc> findAllForProject(String projectKey, StepType stepType) {
+    public List<StepDoc> findByTypeForProject(StepType stepType, String projectKey) {
         String[] params = new String[]{projectKey, stepType.name()};
         Query query = Query.select().where("PROJECT_KEY = ? AND STEP_TYPE = ?", params);
         StepDoc[] result = ao.find(StepDoc.class, query);

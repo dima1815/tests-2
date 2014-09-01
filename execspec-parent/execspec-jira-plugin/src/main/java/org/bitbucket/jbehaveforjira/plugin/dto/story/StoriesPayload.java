@@ -8,11 +8,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
-/**
- * Container for lists of StoryDTO objects.
- *
- * @author stasyukd
- */
 @XmlRootElement(name = "stories_payload")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StoriesPayload {

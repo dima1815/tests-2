@@ -2,8 +2,6 @@ package org.bitbucket.jbehaveforjira.plugin.ao.story;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import net.java.ao.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -11,8 +9,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 
 public final class StoryDao {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final ActiveObjects ao;
 

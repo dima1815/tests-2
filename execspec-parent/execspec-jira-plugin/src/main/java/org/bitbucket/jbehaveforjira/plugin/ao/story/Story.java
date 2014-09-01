@@ -5,31 +5,25 @@ import net.java.ao.Entity;
 import net.java.ao.OneToMany;
 import net.java.ao.Preload;
 
-/**
- * TODO - renae this class to be different to JBehave's Story class, e.g. JiraStory
- */
 @Preload
 public interface Story extends Entity {
 
-    //    @NotNull
     String getIssueKey();
 
     void setIssueKey(String issueKey);
 
     Long getIssueId();
 
-    void setIssueLong();
+    void setIssueId(Long issueId);
 
     Long getVersion();
 
     void setVersion(Long version);
 
-    //    @NotNull
     String getProjectKey();
 
     void setProjectKey(String projectKey);
 
-    //    @NotNull
     String getAsString();
 
     void setAsString(String asString);
@@ -39,5 +33,6 @@ public interface Story extends Entity {
     void setLastEditedBy(String lastEditedBy);
 
     @OneToMany
+    StoryReport[] getStoryReports();
     StoryHtmlReport[] getStoryHtmlReports();
 }
