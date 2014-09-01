@@ -3,410 +3,145 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(date 1408351868000)
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(date 1408743694000)
 +++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision )
-@@ -2,31 +2,25 @@
+@@ -1,33 +1,98 @@
+ package org.bitbucket.jbehaveforjira.javaclient;
  
- import org.apache.commons.lang.Validate;
+-import org.apache.commons.lang.Validate;
++import com.sun.jersey.api.client.Client;
++import com.sun.jersey.api.client.ClientResponse;
++import com.sun.jersey.api.client.WebResource;
  import org.jbehave.core.io.StoryLoader;
--import org.slf4j.Logger;
--import org.slf4j.LoggerFactory;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
  
++import javax.ws.rs.core.MediaType;
++import javax.ws.rs.core.Response;
++import java.io.File;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.io.PrintWriter;
++import java.net.URI;
++import java.net.URISyntaxException;
++
  /**
   * @author Maryna Stasyuk
   */
  public class JiraStoryLoader implements StoryLoader {
  
--    private final Logger log = LoggerFactory.getLogger(getClass());
--
-     private final StoryLoader storyLoader;
+-    private final StoryLoader storyLoader;
++    private final Logger log = LoggerFactory.getLogger(getClass());
  
--    private String jiraUrl;
-+    public JiraStoryLoader(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
+-    public JiraStoryLoader(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
++    private String jiraBaseUrl;
  
--    private String projectKey;
-+        Validate.notEmpty(jiraBaseUrl);
-+        Validate.notEmpty(jiraProject);
-+        Validate.notEmpty(jiraUserName);
-+        Validate.notEmpty(jiraPassword);
+-        Validate.notEmpty(jiraBaseUrl);
+-        Validate.notEmpty(jiraProject);
+-        Validate.notEmpty(jiraUserName);
+-        Validate.notEmpty(jiraPassword);
++    private String projectKey;
  
--    public JiraStoryLoader(String jiraUrl, String projectKey) {
--        this.projectKey = projectKey;
--
--        Validate.notEmpty(jiraUrl);
--        this.jiraUrl = jiraUrl;
--
--        this.storyLoader = JiraResourceHelper.loadGroovyResource(
--                jiraUrl, "story-loader", "admin", "admin", StoryLoader.class,
--                new String[]{jiraUrl, projectKey}, "StoryLoader");
-+        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUserName, jiraPassword};
-+        this.storyLoader = GroovyResourceHelper.loadGroovyResource(
-+                jiraBaseUrl, "story-loader", jiraUserName, jiraPassword, "StoryLoader",
-+                constructorArgs);
+-        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUserName, jiraPassword};
+-        this.storyLoader = GroovyResourceHelper.loadGroovyResource(
+-                jiraBaseUrl, "story-loader", jiraUserName, jiraPassword, "StoryLoader",
+-                constructorArgs);
++    private String username;
++
++    private String password;
++
++    private String downloadedStoriesDir = "src/test/resources/jira_stories";
++
++    private String loadStoryPath = "rest/jbehave-for-jira/1.0/find/for-path/";
++
++    public JiraStoryLoader(String jiraBaseUrl, String projectKey, String username, String password) {
++        this.jiraBaseUrl = jiraBaseUrl;
++        this.projectKey = projectKey;
++        this.username = username;
++        this.password = password;
      }
  
      @Override
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryPathsFinder.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(revision )
-@@ -1,8 +1,5 @@
- package org.bitbucket.jbehaveforjira.javaclient;
+     public String loadStoryAsText(String storyPath) {
  
--import org.slf4j.Logger;
--import org.slf4j.LoggerFactory;
--
- import java.util.Collections;
- import java.util.List;
- 
-@@ -11,33 +8,26 @@
-  */
- public class JiraStoryPathsFinder implements StoryPathsFinder {
- 
--    private final Logger log = LoggerFactory.getLogger(getClass());
--
-     private final StoryPathsFinder storyPathsFinder;
- 
--    private String jiraBaseUrl;
-+    public JiraStoryPathsFinder(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
- 
--    private String jiraProject;
--
--    public JiraStoryPathsFinder(String jiraBaseUrl, String jiraProject) {
--
--        this.jiraBaseUrl = jiraBaseUrl;
--        this.jiraProject = jiraProject;
--
--        this.storyPathsFinder = JiraResourceHelper.loadGroovyResource(
--                jiraBaseUrl, "story-paths-finder", "admin", "admin", StoryPathsFinder.class,
--                new String[]{jiraBaseUrl, jiraProject}, "StoryPathsFinder");
-+        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUserName, jiraPassword};
-+        this.storyPathsFinder = GroovyResourceHelper.loadGroovyResource(
-+                jiraBaseUrl, "story-paths-finder", jiraUserName, jiraPassword,
-+                "StoryPathsFinder", constructorArgs);
+-        String storyAsText = storyLoader.loadStoryAsText(storyPath);
+-        return storyAsText;
++        URI jiraSearchUrl = null;
++        try {
++            String fullPath = jiraBaseUrl + "/" + loadStoryPath;
++            fullPath += storyPath;
++            fullPath += "?os_username=" + this.username
++                    + "&os_password=" + this.password
++                    + "&versionInPath=true" + "&asString=true";
++            log.debug("full story path is - " + fullPath);
++            jiraSearchUrl = new URI(fullPath);
++        } catch (URISyntaxException e) {
++            throw new RuntimeException(e);
++        }
++
++        Client client = Client.create();
++        WebResource res = client.resource(jiraSearchUrl);
++        ClientResponse response = res.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
++        log.info("response - " + response);
++
++        if (response.getStatus() == 200) {
++            String story = response.getEntity(String.class);
++            return story;
++        } else {
++            int status = response.getStatus();
++            Response.StatusType statusInfo = response.getStatusInfo();
++            throw new RuntimeException("Error occurred while trying to find Jira story paths. " +
++                    "Response status was - " + status + ", status info - " + statusInfo);
++        }
++
++    }
++
++    private void writeModelToFile(String storyPath, String storyModel) {
++
++        PrintWriter pw = null;
++        try {
++            File storiesDir = new File(downloadedStoriesDir);
++            File outFile = new File(storiesDir, storyPath);
++            outFile.getParentFile().mkdirs();
++            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
++            pw = new PrintWriter(fw);
++            pw.print(storyModel);
++        } catch (IOException e) {
++            throw new RuntimeException(e);
++        } finally {
++            if (pw != null) {
++                pw.close();
++            }
++        }
++
      }
  
-     @Override
-     public List<String> findPaths() {
-+
-         return this.findPaths(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-     }
- 
-     @Override
-     public List<String> findPaths(List<String> includes, List<String> excludes) {
- 
--        List<String> paths = storyPathsFinder.findPaths();
-+        List<String> paths = storyPathsFinder.findPaths(includes, excludes);
-         return paths;
-     }
- 
-Index: jbehave-for-jira/jbehave-for-jira-java-client/pom.xml
+ }
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/pom.xml	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/pom.xml	(revision )
-@@ -39,59 +39,59 @@
-             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-         </repository>
-     </distributionManagement>
--    <build>
--        <plugins>
--            <plugin>
--                <groupId>org.apache.maven.plugins</groupId>
--                <artifactId>maven-source-plugin</artifactId>
--                <executions>
--                    <execution>
--                        <id>attach-sources</id>
--                        <goals>
--                            <goal>jar</goal>
--                        </goals>
--                    </execution>
--                </executions>
--            </plugin>
--            <plugin>
--                <groupId>org.apache.maven.plugins</groupId>
--                <artifactId>maven-javadoc-plugin</artifactId>
--                <executions>
--                    <execution>
--                        <id>attach-javadocs</id>
--                        <goals>
--                            <goal>jar</goal>
--                        </goals>
--                    </execution>
--                </executions>
--            </plugin>
--            <plugin>
--                <groupId>org.apache.maven.plugins</groupId>
--                <artifactId>maven-gpg-plugin</artifactId>
--                <version>1.5</version>
--                <executions>
--                    <execution>
--                        <id>sign-artifacts</id>
--                        <phase>verify</phase>
--                        <goals>
--                            <goal>sign</goal>
--                        </goals>
--                    </execution>
--                </executions>
--            </plugin>
--            <plugin>
--                <groupId>org.sonatype.plugins</groupId>
--                <artifactId>nexus-staging-maven-plugin</artifactId>
--                <version>1.6.2</version>
--                <extensions>true</extensions>
--                <configuration>
--                    <serverId>ossrh</serverId>
--                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
--                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
--                </configuration>
--            </plugin>
--        </plugins>
--    </build>
-+    <!--<build>-->
-+        <!--<plugins>-->
-+            <!--<plugin>-->
-+                <!--<groupId>org.apache.maven.plugins</groupId>-->
-+                <!--<artifactId>maven-source-plugin</artifactId>-->
-+                <!--<executions>-->
-+                    <!--<execution>-->
-+                        <!--<id>attach-sources</id>-->
-+                        <!--<goals>-->
-+                            <!--<goal>jar</goal>-->
-+                        <!--</goals>-->
-+                    <!--</execution>-->
-+                <!--</executions>-->
-+            <!--</plugin>-->
-+            <!--<plugin>-->
-+                <!--<groupId>org.apache.maven.plugins</groupId>-->
-+                <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-+                <!--<executions>-->
-+                    <!--<execution>-->
-+                        <!--<id>attach-javadocs</id>-->
-+                        <!--<goals>-->
-+                            <!--<goal>jar</goal>-->
-+                        <!--</goals>-->
-+                    <!--</execution>-->
-+                <!--</executions>-->
-+            <!--</plugin>-->
-+            <!--<plugin>-->
-+                <!--<groupId>org.apache.maven.plugins</groupId>-->
-+                <!--<artifactId>maven-gpg-plugin</artifactId>-->
-+                <!--<version>1.5</version>-->
-+                <!--<executions>-->
-+                    <!--<execution>-->
-+                        <!--<id>sign-artifacts</id>-->
-+                        <!--<phase>verify</phase>-->
-+                        <!--<goals>-->
-+                            <!--<goal>sign</goal>-->
-+                        <!--</goals>-->
-+                    <!--</execution>-->
-+                <!--</executions>-->
-+            <!--</plugin>-->
-+            <!--<plugin>-->
-+                <!--<groupId>org.sonatype.plugins</groupId>-->
-+                <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
-+                <!--<version>1.6.2</version>-->
-+                <!--<extensions>true</extensions>-->
-+                <!--<configuration>-->
-+                    <!--<serverId>ossrh</serverId>-->
-+                    <!--<nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-+                    <!--<autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-+                <!--</configuration>-->
-+            <!--</plugin>-->
-+        <!--</plugins>-->
-+    <!--</build>-->
-     <dependencies>
-         <dependency>
-             <groupId>org.codehaus.groovy</groupId>
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java	(revision )
-@@ -0,0 +1,20 @@
-+package org.bitbucket.jbehaveforjira.javaclient;
-+
-+import java.lang.annotation.*;
-+
-+/**
-+ * Fields in the parameter types (classes annotated with @AsParameters) can be annotated with this
-+ * annotation to provide a list of suggested but not limited range of values for the annotated field. The indented usage is to
-+ * annotate non enum primitive field types with this annotation. For example 'discount' of type double
-+ * could be annotated with this annotation which would have the following allowed values: '5, 10, 15, etc.'. But user would be
-+ * allowed to enter other values outside of suggested values specified in this annotation.
-+ *
-+ * @author Maryna Stasyuk
-+ */
-+@Retention(RetentionPolicy.RUNTIME)
-+@Target({ElementType.FIELD, ElementType.PARAMETER})
-+@Documented
-+public @interface SuggestedValues {
-+
-+    String[] value();
-+}
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/StoryPathsFinder.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/StoryPathsFinder.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/StoryPathsFinder.java	(revision )
-@@ -3,7 +3,7 @@
- import java.util.List;
- 
- /**
-- * Created by Dmytro on 8/15/2014.
-+ * @author Maryna Stasyuk
-  */
- public interface StoryPathsFinder {
- 
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStepDocReporter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStepDocReporter.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStepDocReporter.java	(revision )
-@@ -10,21 +10,15 @@
-  */
- public class JiraStepDocReporter implements StepdocReporter {
- 
--    private final String jiraBaseUrl;
--
--    private final String jiraProject;
--
-     private final StepdocReporter stepdocReporter;
- 
--    private String createStepDocsPath = "rest/story-res/1.0/step-doc/add";
-+    public JiraStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
- 
--    public JiraStepDocReporter(String jiraBaseUrl, String jiraProject) {
--        this.jiraBaseUrl = jiraBaseUrl;
--        this.jiraProject = jiraProject;
--
--        this.stepdocReporter = JiraResourceHelper.loadGroovyResource(
--                jiraBaseUrl, "step-doc-reporter", "admin", "admin", StepdocReporter.class,
--                new String[]{jiraBaseUrl, jiraProject}, "StepDocReporter");
-+        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUserName, jiraPassword};
-+        this.stepdocReporter = GroovyResourceHelper.loadGroovyResource(
-+                jiraBaseUrl, "step-doc-reporter",
-+                jiraUserName, jiraPassword,
-+                "StepDocReporter", constructorArgs);
-     }
- 
-     @Override
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java	(revision )
-@@ -0,0 +1,19 @@
-+package org.bitbucket.jbehaveforjira.javaclient;
-+
-+import java.lang.annotation.*;
-+
-+/**
-+ * Fields in the parameter types (classes annotated with @AsParameters) can be annotated with this
-+ * annotation to limit the range of values allowed for the annotated field. The indented usage is to
-+ * annotate non enum primitive field types with this annotation. For example 'discount' of type double
-+ * could be annotated with this annotation which would have the following allowed values: '5, 10, 15, etc.'.
-+ *
-+ * @author Maryna Stasyuk
-+ */
-+@Retention(RetentionPolicy.RUNTIME)
-+@Target({ElementType.FIELD, ElementType.PARAMETER})
-+@Documented
-+public @interface AllowedValues {
-+
-+    String[] value();
-+}
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryReporter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryReporter.java	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryReporter.java	(revision )
-@@ -13,21 +13,16 @@
- 
-     private final StoryReporter storyReporter;
- 
--    private String jiraUrl;
-+    private final String environment;
- 
--    private String jiraProject;
-+    public JiraStoryReporter(String jiraBaseUrl, String jiraProject, String jiraUsername, String jiraPassword, String environment) {
- 
--    private String environment;
--
--    public JiraStoryReporter(String jiraUrl, String jiraProject, String environment) {
--
--        this.jiraUrl = jiraUrl;
--        this.jiraProject = jiraProject;
-         this.environment = environment;
- 
--        this.storyReporter = JiraResourceHelper.loadGroovyResource(
--                jiraUrl, "story-reporter", "admin", "admin", StoryReporter.class,
--                new String[]{jiraUrl, jiraProject, environment}, "StoryReporter");
-+        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUsername, jiraPassword, environment};
-+        this.storyReporter = GroovyResourceHelper.loadGroovyResource(
-+                jiraBaseUrl, "story-reporter", jiraUsername, jiraPassword, "StoryReporter",
-+                constructorArgs);
-     }
- 
-     @Override
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraResourceHelper.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraResourceHelper.java	(date 1408351868000)
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java	(date 1408743694000)
 +++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java	(revision )
-@@ -14,20 +14,18 @@
- /**
-  * @author Maryna Stasyuk
+@@ -16,7 +16,7 @@
   */
--class JiraResourceHelper {
-+class GroovyResourceHelper {
+ class GroovyResourceHelper {
  
-     private static String baseRestResPath = "/rest/story-res/1.0/groovy-client/";
+-    private static String baseRestResPath = "/rest/story-res/1.0/groovy-client/";
++    private static String baseRestResPath = "/rest/jbehave-for-jira/1.0/groovy-client/";
  
      public static <T> T loadGroovyResource(String jiraUrl, String resourcePath,
--                                           String username, String password, Class<T> type, Object[] constructorArgs,
--                                           String className) {
--        return loadGroovyResource(jiraUrl, baseRestResPath, resourcePath, username, password, type, constructorArgs,
--                className);
-+                                           String username, String password, String className, Object[] constructorArgs) {
-+        return loadGroovyResource(jiraUrl, baseRestResPath, resourcePath, username, password, className, constructorArgs
-+        );
-     }
- 
--    public static <T> T loadGroovyResource(String jiraUrl, String restResBasePath, String resourcePath,
--                                           String username, String password, Class<T> type, Object[] constructorArgs,
--                                           String className) {
-+    private static <T> T loadGroovyResource(String jiraUrl, String restResBasePath, String resourcePath,
-+                                           String username, String password, String className, Object[] constructorArgs) {
- 
-         URI jiraSearchUrl = null;
-         try {
-@@ -51,12 +49,11 @@
-                     "Response status was - " + status + ", status info - " + statusInfo);
+                                            String username, String password, String className, Object[] constructorArgs) {
+@@ -50,10 +50,9 @@
  
          } else {
--
              String resString = response.getEntity(String.class);
-             System.out.println("resString - " + resString);
+-            System.out.println("resString - " + resString);
  
              GroovyClassLoader gcl = new GroovyClassLoader();
--            Class clazz = gcl.parseClass(resString);
-+            Class clazz = gcl.parseClass(className, resString);
+-            Class clazz = gcl.parseClass(className, resString);
++            Class clazz = gcl.parseClass(resString, className);
              Object instance = null;
              try {
  
