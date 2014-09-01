@@ -1,1521 +1,477 @@
-Index: jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
-@@ -0,0 +1,723 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
-+import com.sun.jersey.api.client.Client
-+import com.sun.jersey.api.client.WebResource
-+import org.apache.commons.lang.Validate
-+import org.jbehave.core.i18n.LocalizedKeywords
-+import org.jbehave.core.model.*
-+import org.jbehave.core.reporters.HtmlOutput
-+import org.jbehave.core.reporters.PrintStreamOutput
-+import org.jbehave.core.reporters.StoryReporter
-+import org.jbehave.core.steps.StepCreator
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1408996119000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
+@@ -1,4 +1,5 @@
+ package org.bitbucket.jbehaveforjira.groovyclient
 +
-+import javax.ws.rs.core.MediaType
-+import javax.xml.bind.annotation.XmlAccessType
-+import javax.xml.bind.annotation.XmlAccessorType
-+import javax.xml.bind.annotation.XmlRootElement
-+import java.util.regex.Matcher
-+import java.util.regex.Pattern
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStoryReporter implements StoryReporter {
+ import com.sun.jersey.api.client.Client
+ import com.sun.jersey.api.client.WebResource
+ import org.apache.commons.lang.Validate
+@@ -15,11 +16,14 @@
+ import javax.xml.bind.annotation.XmlRootElement
+ import java.util.regex.Matcher
+ import java.util.regex.Pattern
 +
-+    public static enum TestStatus {
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class GroovyStoryReporter implements StoryReporter {
+ 
 +
-+        PASSED,
++    private String loginParams;
+     public static enum TestStatus {
+ 
+         PASSED,
+@@ -34,23 +38,26 @@
+ 
+     }
+ 
++    private String basePostPath;
 +
-+        FAILED,
+     private final HtmlOutput htmlOutput;
+ 
+     private boolean compressFailureTrace;
 +
-+        PENDING,
+     private boolean reportFailureTrace;
 +
-+        NOT_PERFORMED,
+     private LocalizedKeywords keywords;
+ 
+     private PrintStream printStream;
+ 
+     private String environment;
 +
-+        IGNORED
+     private Properties outputPatterns;
+ 
+     private String jiraBaseUrl;
+ 
+     private String jiraProject;
+ 
+-    private String addTestReportPath = "rest/story-res/1.0/story-test/add-for-path";
+-
+     private String storyPath;
+ 
+     private Long jiraVersion;
+@@ -73,9 +80,11 @@
+ 
+     private final List<Byte> bytesList;
+ 
+-    public GroovyStoryReporter(String jiraBaseUrl, String jiraProject, String environment) {
+-//        this(new Properties(), new LocalizedKeywords(), false, jiraBaseUrl, jiraProject, environment);
++    public GroovyStoryReporter(String jiraBaseUrl, String jiraProject, String username, String password, String environment) {
+ 
++        this.loginParams = "?os_username=" + username + "&os_password=" + password;
++        this.basePostPath = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/story-test/add-for-path/";
 +
+         this.bytesList = new LinkedList<Byte>();
+         OutputStream outStream = new OutputStream() {
+ 
+@@ -101,24 +110,6 @@
+         this.htmlOutput = new CustomHtmlOutput(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
+     }
+ 
+-//    public GroovyStoryReporter(Properties outputPatterns,
+-//                             Keywords keywords, boolean reportFailureTrace,
+-//                             String jiraBaseUrl, String jiraProject, String environment) {
+-//        this(new BytesListPrintStream(new LinkedList<Byte>()), outputPatterns, keywords, reportFailureTrace, false,
+-//                jiraBaseUrl, jiraProject, environment);
+-//    }
+-
+-//    public GroovyStoryReporter(BytesListPrintStream printStream, Properties outputPatterns,
+-//                             Keywords keywords, boolean reportFailureTrace,
+-//                             boolean compressFailureTrace,
+-//                             String jiraBaseUrl, String jiraProject, String environment) {
+-//        super(printStream, mergeOverridenPatterns(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
+-//        this.printStream = printStream;
+-//        this.jiraBaseUrl = jiraBaseUrl;
+-//        this.jiraProject = jiraProject;
+-//        this.environment = environment;
+-//    }
+-
+     public void narrative(Narrative narrative) {
+         htmlOutput.narrative(narrative);
+     }
+@@ -148,19 +139,19 @@
+         htmlOutput.afterScenario();
+ 
+         switch (this.currentScenarioStatus) {
+-            case PASSED:
++            case TestStatus.PASSED:
+                 totalScenariosPassed++;
+                 break;
+-            case FAILED:
++            case TestStatus.FAILED:
+                 totalScenariosFailed++;
+                 break;
+-            case PENDING:
++            case TestStatus.PENDING:
+                 totalScenariosPending++;
+                 break;
+-            case IGNORED:
++            case TestStatus.IGNORED:
+                 totalScenariosIgnored++;
+                 break;
+-            case NOT_PERFORMED:
++            case TestStatus.NOT_PERFORMED:
+                 totalScenariosNotPerformed++;
+                 break;
+         }
+@@ -353,12 +344,7 @@
+             throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
+         }
+ 
+-        String loginParams = "?os_username=admin&os_password=admin";
+-        String postUrl = (jiraBaseUrl
+-                + "/" + addTestReportPath + "/"
+-//                + jiraProject + "/"
+-                + storyPath
+-                + loginParams);
++        String postUrl = this.basePostPath + storyPath + loginParams;
+ 
+         Client client = Client.create();
+         WebResource res = client.resource(postUrl);
+@@ -371,7 +357,7 @@
+     }
+ 
+ 
+-    private static String markTableCorrectly(String text, CustomHtmlOutput htmlOutput) {
++    public static String markTableCorrectly(String text, CustomHtmlOutput htmlOutput) {
+ 
+         if (text.contains("&#9252;")) {
+ 
+@@ -455,7 +441,7 @@
+     }
+ 
+     /**
+-     * @author Maryna Stasyuk
++     * @author Maryna Pristrom
+      */
+     public static class CustomHTMLFormatPatterns {
+ 
+@@ -679,26 +665,8 @@
+             this.totalScenariosNotPerformed = totalScenariosNotPerformed;
+         }
+ 
+-        @Override
+-        public String toString() {
+-            return "JiraStoryHtmlReport{" +
+-                    "environment='" + environment + '\'' +
+-                    ", storyPath='" + storyPath + '\'' +
+-                    ", storyVersion=" + storyVersion +
+-                    ", status=" + status +
+-                    ", totalScenarios=" + totalScenarios +
+-                    ", totalScenariosPassed=" + totalScenariosPassed +
+-                    ", totalScenariosFailed=" + totalScenariosFailed +
+-                    ", totalScenariosPending=" + totalScenariosPending +
+-                    ", totalScenariosSkipped=" + totalScenariosSkipped +
+-                    ", totalScenariosNotPerformed=" + totalScenariosNotPerformed +
+-                    ", htmlReport='" + htmlReport + '\'' +
+-                    '}';
+-        }
 +    }
-+
-+    private final HtmlOutput htmlOutput;
-+
-+    private boolean compressFailureTrace;
-+    private boolean reportFailureTrace;
-+    private LocalizedKeywords keywords;
-+
-+    private PrintStream printStream;
-+
-+    private String environment;
-+    private Properties outputPatterns;
-+
-+    private String jiraBaseUrl;
-+
-+    private String jiraProject;
-+
-+    private String addTestReportPath = "rest/story-res/1.0/story-test/add-for-path";
-+
-+    private String storyPath;
-+
-+    private Long jiraVersion;
-+
-+    private TestStatus status;
-+
-+    private int totalScenarios;
-+
-+    private int totalScenariosPassed;
-+
-+    private int totalScenariosFailed;
-+
-+    private int totalScenariosPending;
-+
-+    private int totalScenariosIgnored;
-+
-+    private int totalScenariosNotPerformed;
-+
-+    private TestStatus currentScenarioStatus;
-+
-+    private final List<Byte> bytesList;
-+
-+    public GroovyStoryReporter(String jiraBaseUrl, String jiraProject, String environment) {
-+//        this(new Properties(), new LocalizedKeywords(), false, jiraBaseUrl, jiraProject, environment);
-+
-+        this.bytesList = new LinkedList<Byte>();
-+        OutputStream outStream = new OutputStream() {
-+
-+            @Override
-+            public void write(int b) throws IOException {
-+                bytesList.add((byte) b);
-+            }
-+
-+        };
-+
-+        this.printStream = new PrintStream(outStream);
-+
-+        this.jiraBaseUrl = jiraBaseUrl;
-+        this.jiraProject = jiraProject;
-+        this.environment = environment;
-+
-+        this.outputPatterns = new Properties();
-+        this.outputPatterns = mergeOverridenPatterns(outputPatterns);
-+        this.keywords = new LocalizedKeywords();
-+        this.reportFailureTrace = false;
-+        this.compressFailureTrace = false;
-+
-+        this.htmlOutput = new CustomHtmlOutput(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
-+    }
-+
-+//    public GroovyStoryReporter(Properties outputPatterns,
-+//                             Keywords keywords, boolean reportFailureTrace,
-+//                             String jiraBaseUrl, String jiraProject, String environment) {
-+//        this(new BytesListPrintStream(new LinkedList<Byte>()), outputPatterns, keywords, reportFailureTrace, false,
-+//                jiraBaseUrl, jiraProject, environment);
-+//    }
-+
-+//    public GroovyStoryReporter(BytesListPrintStream printStream, Properties outputPatterns,
-+//                             Keywords keywords, boolean reportFailureTrace,
-+//                             boolean compressFailureTrace,
-+//                             String jiraBaseUrl, String jiraProject, String environment) {
-+//        super(printStream, mergeOverridenPatterns(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
-+//        this.printStream = printStream;
-+//        this.jiraBaseUrl = jiraBaseUrl;
-+//        this.jiraProject = jiraProject;
-+//        this.environment = environment;
-+//    }
-+
-+    public void narrative(Narrative narrative) {
-+        htmlOutput.narrative(narrative);
-+    }
-+
-+    @Override
-+    public void lifecyle(Lifecycle lifecycle) {
-+        htmlOutput.lifecyle(lifecycle);
-+    }
-+
-+    @Override
-+    public void beforeScenario(String title) {
-+
-+        this.totalScenarios++;
-+        this.currentScenarioStatus = TestStatus.PASSED; // assume pass initially
-+
-+        htmlOutput.beforeScenario(title);
-+    }
-+
-+    @Override
-+    public void scenarioMeta(Meta meta) {
-+        htmlOutput.scenarioMeta(meta);
-+    }
-+
-+    @Override
-+    public void afterScenario() {
-+
-+        htmlOutput.afterScenario();
-+
-+        switch (this.currentScenarioStatus) {
-+            case PASSED:
-+                totalScenariosPassed++;
-+                break;
-+            case FAILED:
-+                totalScenariosFailed++;
-+                break;
-+            case PENDING:
-+                totalScenariosPending++;
-+                break;
-+            case IGNORED:
-+                totalScenariosIgnored++;
-+                break;
-+            case NOT_PERFORMED:
-+                totalScenariosNotPerformed++;
-+                break;
-+        }
-+    }
-+
-+    @Override
-+    public void givenStories(GivenStories givenStories) {
-+        htmlOutput.givenStories(givenStories);
-+    }
-+
-+    @Override
-+    public void givenStories(List<String> storyPaths) {
-+        htmlOutput.givenStories(storyPaths);
-+    }
-+
-+    @Override
-+    public void beforeExamples(List<String> steps, ExamplesTable table) {
-+        htmlOutput.beforeExamples(steps, table);
-+    }
-+
-+    @Override
-+    public void example(Map<String, String> tableRow) {
-+        htmlOutput.example(tableRow);
-+    }
-+
-+    @Override
-+    public void afterExamples() {
-+        htmlOutput.afterExamples();
-+    }
-+
-+    @Override
-+    public void beforeStep(String step) {
-+        htmlOutput.beforeStep(step);
-+    }
-+
-+    @Override
-+    public void scenarioNotAllowed(Scenario scenario, String filter) {
-+
-+        htmlOutput.scenarioNotAllowed(scenario, filter);
-+        if (this.currentScenarioStatus == TestStatus.PASSED /*i.e. if it has not been set to some other status yet*/) {
-+            this.currentScenarioStatus = TestStatus.IGNORED;
-+        }
-+    }
-+
-+    @Override
-+    public void successful(String step) {
-+
-+        htmlOutput.successful(step);
-+    }
-+
-+    @Override
-+    public void ignorable(String step) {
-+        htmlOutput.ignorable(step);
-+    }
-+
-+    @Override
-+    public void failed(String step, Throwable storyFailure) {
-+
-+        htmlOutput.failed(step, storyFailure);
-+        this.currentScenarioStatus = TestStatus.FAILED;
-+    }
-+
-+    @Override
-+    public void failedOutcomes(String step, OutcomesTable table) {
-+        htmlOutput.failedOutcomes(step, table);
-+    }
-+
-+    @Override
-+    public void restarted(String step, Throwable cause) {
-+        htmlOutput.restarted(step, cause);
-+    }
-+
-+    @Override
-+    public void dryRun() {
-+        htmlOutput.dryRun();
-+    }
-+
-+    @Override
-+    public void pendingMethods(List<String> methods) {
-+        htmlOutput.pendingMethods(methods);
-+    }
-+
-+    @Override
-+    public void pending(String step) {
-+
-+        htmlOutput.pending(step);
-+        if (this.currentScenarioStatus != TestStatus.FAILED) { // fail status has priority over pending
-+            this.currentScenarioStatus = TestStatus.PENDING;
-+        }
-+    }
-+
-+    @Override
-+    public void notPerformed(String step) {
-+        htmlOutput.notPerformed(step);
-+    }
-+
-+
-+    @Override
-+    public void storyNotAllowed(Story story, String filter) {
-+        htmlOutput.storyNotAllowed(story, filter);
-+    }
-+
-+    @Override
-+    public void storyCancelled(Story story, StoryDuration storyDuration) {
-+        htmlOutput.storyCancelled(story, storyDuration);
-+    }
-+
-+    @Override
-+    public void beforeStory(Story story, boolean givenStory) {
-+
-+        this.status = TestStatus.PASSED; // assume passed at start, and then change to other if failed/pending, etc.
-+
-+        storyPath = story.getPath();
-+
-+        if (!givenStory && !storyPath.equals("BeforeStories") && !storyPath.equals("AfterStories")) {
-+            // extract version
-+            String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
-+            Pattern p = Pattern.compile(regexPattern);
-+            Matcher matcher = p.matcher(storyPath);
-+            if (matcher.matches()) {
-+                String versionStr = matcher.group(2);
-+                jiraVersion = Long.parseLong(versionStr);
-+            } else {
-+                throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
-+            }
-+        }
-+
-+        htmlOutput.beforeStory(story, givenStory);
-+    }
-+
-+    @Override
-+    public void afterStory(boolean givenStory) {
-+
-+        htmlOutput.afterStory(givenStory);
-+
-+        if (!givenStory && !storyPath.equals("BeforeStories") && !storyPath.equals("AfterStories")) {
-+
-+            // set story status
-+            if (totalScenariosFailed > 0) {
-+                this.status = TestStatus.FAILED;
-+            } else if (totalScenariosPending > 0) {
-+                this.status = TestStatus.PENDING;
-+            } else if (totalScenariosIgnored == totalScenarios) {
-+                this.status = TestStatus.IGNORED;
-+            } else {
-+                this.status = TestStatus.PASSED;
-+            }
-+
-+            String storyReport = bytesListToString(this.bytesList);
-+            sendStoryReport(storyReport);
-+        }
-+
-+    }
-+
-+    private static String bytesListToString(List<Byte> writtenBytes) {
-+
-+        Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
-+        byte[] bytesArray = new byte[bytes.length];
-+        for (int i = 0; i < bytes.length; i++) {
-+            Byte aByte = bytes[i];
-+            bytesArray[i] = aByte;
-+        }
-+
-+        String str = new String(bytesArray);
-+        return str;
-+    }
-+
-+    protected void sendStoryReport(String testReport) {
-+
-+        Validate.notNull(status);
-+        Validate.notEmpty(testReport);
-+
-+        StoryReport storyHtmlReportDTO = new StoryReport(environment, storyPath, jiraVersion, status, testReport);
-+
-+        storyHtmlReportDTO.setTotalScenarios(totalScenarios);
-+        storyHtmlReportDTO.setTotalScenariosPassed(totalScenariosPassed);
-+        storyHtmlReportDTO.setTotalScenariosFailed(totalScenariosFailed);
-+        storyHtmlReportDTO.setTotalScenariosPending(totalScenariosPending);
-+        storyHtmlReportDTO.setTotalScenariosSkipped(totalScenariosIgnored);
-+        storyHtmlReportDTO.setTotalScenariosNotPerformed(totalScenariosNotPerformed);
-+
-+        // remove the version part from story path
-+        // extract version
-+        String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
-+        Pattern p = Pattern.compile(regexPattern);
-+        Matcher matcher = p.matcher(storyPath);
-+        if (matcher.matches()) {
-+            storyPath = matcher.group(1) + matcher.group(3);
-+        } else {
-+            throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
-+        }
-+
-+        String loginParams = "?os_username=admin&os_password=admin";
-+        String postUrl = (jiraBaseUrl
-+                + "/" + addTestReportPath + "/"
-+//                + jiraProject + "/"
-+                + storyPath
-+                + loginParams);
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(postUrl);
-+
-+        String response = res.accept(MediaType.APPLICATION_JSON)
-+                .type(MediaType.APPLICATION_JSON)
-+                .post(String.class, storyHtmlReportDTO);
-+
-+        System.out.println("response - " + response);
-+    }
-+
-+
-+    private static String markTableCorrectly(String text, CustomHtmlOutput htmlOutput) {
-+
-+        if (text.contains("&#9252;")) {
-+
-+            StringBuilder sb = new StringBuilder();
-+            String[] tokens = text.split("\\&#9252;");
-+
-+            for (int i = 0; i < tokens.length; i++) {
-+                String token = tokens[i];
-+                boolean isTableStartLine = false;
-+                boolean isTableEndLine = false;
-+                if (token.startsWith("|")) {
-+                    // table line
-+                    if (i == 0 || (i != 0 && !tokens[i - 1].startsWith("|"))) {
-+                        // if previous line was not a table line then open the table tag
-+                        String tableStartMarker = StepCreator.PARAMETER_TABLE_START;
-+                        tableStartMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableStartMarker)[0];
-+                        sb.append(tableStartMarker);
-+                        sb.append(token);
-+                        isTableStartLine = true;
-+                    }
-+                    if (i == tokens.length - 1 || !tokens[i + 1].startsWith("|")) {
-+                        // if this is the last line or the next line is not a table line
-+                        String beforePart = token.substring(0, token.lastIndexOf("|") + 1);
-+                        sb.append(beforePart);
-+                        String tableEndMarker = StepCreator.PARAMETER_TABLE_END;
-+                        tableEndMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableEndMarker)[0];
-+                        sb.append(tableEndMarker);
-+                        String afterPart = token.substring(token.lastIndexOf("|") + 1);
-+                        sb.append(afterPart);
-+                        isTableEndLine = true;
-+                    }
-+                    if (!isTableStartLine && !isTableEndLine) {
-+                        // table line that is not first or last line in that table
-+                        sb.append(token);
-+                    }
-+                    if (i != 0 && i != tokens.length - 1) {
-+                        sb.append("\n");
-+                    }
-+                } else {
-+                    if (i != 0) {
-+                        sb.append("\n");
-+                    }
-+                    sb.append(token);
-+                }
-+            }
-+
-+            String result = sb.toString();
-+            return result;
-+
-+        } else {
-+            return text;
-+        }
-+    }
-+
-+    private static Properties mergeOverridenPatterns(Properties outputPatterns) {
-+        Properties patterns = new CustomHTMLFormatPatterns().getPatterns();
-+        Properties overridenPatterns = overridenPatterns();
-+        patterns.putAll(overridenPatterns);
-+        patterns.putAll(outputPatterns);
-+        return patterns;
-+    }
-+
-+    public static Properties overridenPatterns() {
-+
-+        Properties patterns = new Properties();
-+
-+        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
-+        patterns.setProperty("afterScenario", "</div>\n");
-+        patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
-+
-+        patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
-+        patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
-+        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
-+        patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
-+        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
-+        patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
-+
-+        patterns.setProperty("pendingMethod", "");
-+
-+        return patterns;
-+    }
-+
-+    /**
-+     * @author Maryna Stasyuk
-+     */
-+    public static class CustomHTMLFormatPatterns {
-+
-+        public Properties getPatterns() {
-+            return patterns;
-+        }
-+
-+        private final Properties patterns;
-+
-+        public CustomHTMLFormatPatterns() {
-+
-+            patterns = new Properties();
-+            patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");
-+
-+            //        patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
-+            patterns.setProperty("beforeStory", "<div class=\"story\">\n");
-+
-+            //        patterns.setProperty("beforeStory", "<div class=\"story\">\n");
-+            patterns.setProperty("afterStory", "</div>\n");
-+
-+            patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
-+            patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");
-+            patterns.setProperty("metaStart", "<div class=\"meta\">\n<div class=\"keyword\">{0}</div>\n");
-+            patterns.setProperty("metaProperty", "<div class=\"property\">{0}{1} {2}</div>\n");
-+            patterns.setProperty("metaEnd", "</div>\n");
-+            patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");
-+
-+            //        patterns.setProperty("narrative", "<div class=\"narrative\"><h2>{0}</h2>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
-+            patterns.setProperty("narrative",
-+                    "<div class=\"beforeNarrative\"><span>&nbsp;</span><span style=\"display: none;\" class=\"beforeNarrativeHint\">+<span></div>" +
-+                            "<div class=\"narrative\">" +
-+                            "<div class=\"label\">" +
-+                            "{0}</div>\n" +
-+                            "<div contentEditable=\"false\" class=\"element inOrderTo\">" +
-+                            "<div style=\"display: none;\" class=\"add-icon\">+</div>" +
-+                            "<span contentEditable=\"false\" class=\"keyword inOrderTo inOrderToSpan\">{1}</span> <span></span></div>\n" +
-+
-+                            "<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n" +
-+                            "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n" +
-+                            "</div>\n"
-+            );
-+
-+            patterns.setProperty("lifecycleStart", "<div class=\"lifecycle\"><h2>{0}</h2>");
-+            patterns.setProperty("lifecycleEnd", "</div>");
-+            patterns.setProperty("lifecycleBeforeStart", "<div class=\"before\"><h3>{0}</h3>");
-+            patterns.setProperty("lifecycleBeforeEnd", "</div>");
-+            patterns.setProperty("lifecycleAfterStart", "<div class=\"after\"><h3>{0}</h3>");
-+            patterns.setProperty("lifecycleAfterEnd", "</div>");
-+            patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");
-+
-+            //        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
-+            patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"scenario-plus aui-icon aui-icon-small aui-iconfont-add\"></span><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
-+
-+            patterns.setProperty("afterScenario", "</div>\n");
-+            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
-+            patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
-+            patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
-+            patterns.setProperty("givenStory", "<div class=\"givenStory\">{0} {1}</div>\n");
-+            patterns.setProperty("givenStoriesEnd", "</div>\n");
-+
-+            patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
-+            patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
-+            patterns.setProperty("pending", "<div class=\"step pending\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0} <span class=\"keyword pending\">({1})</span></div>\n");
-+            patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
-+            patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
-+            patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
-+
-+            patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
-+            patterns.setProperty("outcomesTableHeadStart", "<thead>\n<tr>\n");
-+            patterns.setProperty("outcomesTableHeadCell", "<th>{0}</th>");
-+            patterns.setProperty("outcomesTableHeadEnd", "</tr>\n</thead>\n");
-+            patterns.setProperty("outcomesTableBodyStart", "<tbody>\n");
-+            patterns.setProperty("outcomesTableRowStart", "<tr class=\"{0}\">\n");
-+            patterns.setProperty("outcomesTableCell", "<td>{0}</td>");
-+            patterns.setProperty("outcomesTableRowEnd", "</tr>\n");
-+            patterns.setProperty("outcomesTableBodyEnd", "</tbody>\n");
-+            patterns.setProperty("outcomesTableEnd", "</table></div>\n");
-+            patterns.setProperty("beforeExamples", "<div class=\"examples\">\n<h3>{0}</h3>\n");
-+            patterns.setProperty("examplesStep", "<div class=\"step\">{0}</div>\n");
-+            patterns.setProperty("afterExamples", "</div>\n");
-+            patterns.setProperty("examplesTableStart", "<table>\n");
-+            patterns.setProperty("examplesTableHeadStart", "<thead>\n<tr>\n");
-+            patterns.setProperty("examplesTableHeadCell", "<th>{0}</th>");
-+            patterns.setProperty("examplesTableHeadEnd", "</tr>\n</thead>\n");
-+            patterns.setProperty("examplesTableBodyStart", "<tbody>\n");
-+            patterns.setProperty("examplesTableRowStart", "<tr>\n");
-+            patterns.setProperty("examplesTableCell", "<td>{0}</td>");
-+            patterns.setProperty("examplesTableRowEnd", "</tr>\n");
-+            patterns.setProperty("examplesTableBodyEnd", "</tbody>\n");
-+            patterns.setProperty("examplesTableEnd", "</table>\n");
-+            patterns.setProperty("example", "\n<h3 class=\"example\">{0} {1}</h3>\n");
-+            patterns.setProperty("parameterValueStart", "<span class=\"step parameter\">");
-+            patterns.setProperty("parameterValueEnd", "</span>");
-+            patterns.setProperty("parameterValueNewline", "<br/>");
-+        }
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    public static class StoryReport {
-+
-+        private String environment;
-+
-+        private String storyPath;
-+
-+        private Long storyVersion;
-+
-+        public TestStatus status;
-+
-+        private Integer totalScenarios;
-+
-+        private Integer totalScenariosPassed;
-+
-+        private Integer totalScenariosFailed;
-+
-+        private Integer totalScenariosPending;
-+
-+        private Integer totalScenariosSkipped;
-+
-+        private Integer totalScenariosNotPerformed;
-+
-+        private String htmlReport;
-+
-+        protected StoryReport() {
-+        }
-+
-+        public StoryReport(String environment, String storyPath,
-+                           Long storyVersion, TestStatus status, String htmlReport) {
-+            this.environment = environment;
-+            this.storyPath = storyPath;
-+            this.storyVersion = storyVersion;
-+            this.status = status;
-+            this.htmlReport = htmlReport;
-+        }
-+
-+        public String getEnvironment() {
-+            return environment;
-+        }
-+
-+        public void setEnvironment(String environment) {
-+            this.environment = environment;
-+        }
-+
-+        public String getStoryPath() {
-+            return storyPath;
-+        }
-+
-+        public void setStoryPath(String storyPath) {
-+            this.storyPath = storyPath;
-+        }
-+
-+        public Long getStoryVersion() {
-+            return storyVersion;
-+        }
-+
-+        public void setStoryVersion(Long storyVersion) {
-+            this.storyVersion = storyVersion;
-+        }
-+
-+        public TestStatus getStatus() {
-+            return status;
-+        }
-+
-+        public void setStatus(TestStatus status) {
-+            this.status = status;
-+        }
-+
-+        public String getHtmlReport() {
-+            return htmlReport;
-+        }
-+
-+        public void setHtmlReport(String htmlReport) {
-+            this.htmlReport = htmlReport;
-+        }
-+
-+        public Integer getTotalScenarios() {
-+            return totalScenarios;
-+        }
-+
-+        public void setTotalScenarios(Integer totalScenarios) {
-+            this.totalScenarios = totalScenarios;
-+        }
-+
-+        public Integer getTotalScenariosPassed() {
-+            return totalScenariosPassed;
-+        }
-+
-+        public void setTotalScenariosPassed(Integer totalScenariosPassed) {
-+            this.totalScenariosPassed = totalScenariosPassed;
-+        }
-+
-+        public Integer getTotalScenariosFailed() {
-+            return totalScenariosFailed;
-+        }
-+
-+        public void setTotalScenariosFailed(Integer totalScenariosFailed) {
-+            this.totalScenariosFailed = totalScenariosFailed;
-+        }
-+
-+        public Integer getTotalScenariosPending() {
-+            return totalScenariosPending;
-+        }
-+
-+        public void setTotalScenariosPending(Integer totalScenariosPending) {
-+            this.totalScenariosPending = totalScenariosPending;
-+        }
-+
-+        public Integer getTotalScenariosSkipped() {
-+            return totalScenariosSkipped;
-+        }
-+
-+        public void setTotalScenariosSkipped(Integer totalScenariosSkipped) {
-+            this.totalScenariosSkipped = totalScenariosSkipped;
-+        }
-+
-+        public Integer getTotalScenariosNotPerformed() {
-+            return totalScenariosNotPerformed;
-+        }
-+
-+        public void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed) {
-+            this.totalScenariosNotPerformed = totalScenariosNotPerformed;
-+        }
-+
-+        @Override
-+        public String toString() {
-+            return "JiraStoryHtmlReport{" +
-+                    "environment='" + environment + '\'' +
-+                    ", storyPath='" + storyPath + '\'' +
-+                    ", storyVersion=" + storyVersion +
-+                    ", status=" + status +
-+                    ", totalScenarios=" + totalScenarios +
-+                    ", totalScenariosPassed=" + totalScenariosPassed +
-+                    ", totalScenariosFailed=" + totalScenariosFailed +
-+                    ", totalScenariosPending=" + totalScenariosPending +
-+                    ", totalScenariosSkipped=" + totalScenariosSkipped +
-+                    ", totalScenariosNotPerformed=" + totalScenariosNotPerformed +
-+                    ", htmlReport='" + htmlReport + '\'' +
-+                    '}';
-+        }
-+
-+
-+    }
-+
-+    public static class CustomHtmlOutput extends HtmlOutput {
-+
-+        public CustomHtmlOutput(PrintStream printStream, Properties outputPatterns, LocalizedKeywords keywords,
-+                                boolean reportFailureTrace, boolean compressFailureTrace) {
-+            super(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
-+        }
-+
-+        @Override
-+        protected void print(String text) {
-+            text = GroovyStoryReporter.markTableCorrectly(text, this);
-+            super.print(text);
-+        }
-+
-+        @Override
-+        protected Object[] escape(PrintStreamOutput.Format format, Object... args) {
-+            return super.escape(format, args);
-+        }
-+    }
-+}
-+
-+
-+
-Index: jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
+ 
+-
+-    }
+-
+     public static class CustomHtmlOutput extends HtmlOutput {
+ 
+         public CustomHtmlOutput(PrintStream printStream, Properties outputPatterns, LocalizedKeywords keywords,
+@@ -713,7 +681,7 @@
+         }
+ 
+         @Override
+-        protected Object[] escape(PrintStreamOutput.Format format, Object... args) {
++        public Object[] escape(PrintStreamOutput.Format format, Object... args) {
+             return super.escape(format, args);
+         }
+     }
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -0,0 +1,391 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
-+import com.sun.jersey.api.client.Client
-+import org.apache.commons.lang.Validate
-+import org.codehaus.jackson.map.ObjectMapper
-+import org.jbehave.core.annotations.AsParameters
-+import org.jbehave.core.annotations.Parameter
-+import org.jbehave.core.model.StepPattern
-+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser
-+import org.jbehave.core.parsers.StepMatcher
-+import org.jbehave.core.parsers.StepPatternParser
-+import org.jbehave.core.reporters.StepdocReporter
-+import org.jbehave.core.steps.StepType
-+import org.jbehave.core.steps.Stepdoc
-+
-+import javax.ws.rs.core.MediaType
-+import javax.xml.bind.annotation.XmlAccessType
-+import javax.xml.bind.annotation.XmlAccessorType
-+import javax.xml.bind.annotation.XmlRootElement
-+import java.lang.annotation.Annotation
-+import java.lang.reflect.Field
-+import java.lang.reflect.Method
-+import java.lang.reflect.ParameterizedType
-+import java.lang.reflect.Type
-+import java.util.regex.Matcher
-+import java.util.regex.Pattern
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStepDocReporter implements StepdocReporter {
-+
-+    private final String reportStepDocUrl;
-+
-+    private final StepPatternParser patternParser;
-+
-+    public GroovyStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
-+        this(jiraBaseUrl, jiraProject, jiraUserName, jiraPassword, new RegexPrefixCapturingPatternParser());
-+    }
-+
-+    public GroovyStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword, StepPatternParser stepPatternParser) {
-+        this.reportStepDocUrl = jiraBaseUrl + "/rest/story-res/1.0/step-doc/add/" + jiraProject
-+                + "?os_username=" + jiraUserName
-+                + "&os_password=" + jiraPassword;
-+        this.patternParser = stepPatternParser;
-+    }
-+
-+    @Override
-+    public void stepdocs(List<Stepdoc> stepdocs, List<Object> stepsInstances) {
-+
-+        List<StepDocDTO> stepDocDTOs = new ArrayList<StepDocDTO>(stepdocs.size());
-+
-+        for (Stepdoc stepdoc : stepdocs) {
-+
-+            StepDocDTO stepDocDTO = new StepDocDTO();
-+
-+            String pattern = stepdoc.getPattern();
-+            stepDocDTO.pattern = pattern;
-+
-+            StepType stepType = stepdoc.getStepType();
-+
-+            String startingWord = stepdoc.getStartingWord();
-+            stepDocDTO.startingWord = startingWord;
-+
-+            Object stepsInstance = stepdoc.getStepsInstance();
-+            Class<?> stepsClass = stepsInstance.getClass();
-+            String stepClassName = stepsClass.getName();
-+            stepDocDTO.stepClassName = stepClassName;
-+
-+            String methodSignature = stepdoc.getMethodSignature();
-+            stepDocDTO.stepMethodSignature = methodSignature;
-+
-+            StepMatcher stepMatcher = patternParser.parseStep(stepType, pattern);
-+            StepPattern stepPattern = stepMatcher.pattern();
-+            String resolvedPattern = stepPattern.resolved();
-+            stepDocDTO.resolvedPattern = resolvedPattern;
-+            setGroupedPatternOnStepDoc(stepDocDTO);
-+
-+            Method method = stepdoc.getMethod();
-+            Type[] genericParameterTypes = method.getGenericParameterTypes();
-+            List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>(genericParameterTypes.length);
-+
-+            for (Type genericParameterType : genericParameterTypes) {
-+                ParameterInfo parameterInfo = new ParameterInfo();
-+                if (genericParameterType instanceof ParameterizedType) {
-+                    ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
-+                    Class<?> rawType = (Class<?>) parameterizedType.getRawType();
-+                    if (rawType.getName().equals(List.class.getName())) {
-+                        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-+                        if (actualTypeArguments.length == 1) {
-+                            Type actualTypeArgument = actualTypeArguments[0];
-+                            if (actualTypeArgument instanceof Class<?>) {
-+                                Class<?> classType = (Class<?>) actualTypeArgument;
-+                                populateParameterInfo(parameterInfo, classType);
-+                                parameterInfo.isListType = true;
-+                            }
-+                        } else {
-+                            // if there are more type arguments, we ignore such cases
-+                        }
-+                    } else {
-+                        // we ignore any other generic parameter types
-+                    }
-+                } else if (genericParameterType instanceof Class) {
-+                    Class classType = (Class) genericParameterType;
-+                    populateParameterInfo(parameterInfo, classType);
-+                } else {
-+                    // we do not provide any meta information in this case
-+                }
-+                parameterInfos.add(parameterInfo);
-+            }
-+            stepDocDTO.parameterInfos = parameterInfos;
-+
-+            if (parameterInfos.size() != stepDocDTO.parameterGroups.size()) {
-+                throw new IllegalStateException("Number of resolved parameters doesn't match number of gather parameter infos");
-+            }
-+
-+            List<Integer> parameterGroups = stepDocDTO.parameterGroups;
-+            if (!parameterGroups.isEmpty()) {
-+
-+                // set parameter boundaries in pattern
-+                String groupedRegExpPattern = stepDocDTO.groupedRegExpPattern;
-+                Validate.notNull(groupedRegExpPattern);
-+                Pattern groupedPattern = Pattern.compile(groupedRegExpPattern, Pattern.DOTALL);
-+                Matcher matcher = groupedPattern.matcher(stepdoc.getPattern());
-+                boolean matches = matcher.matches();
-+                Validate.isTrue(matches, "Error - pattern should have matched");
-+                List<Integer> parameterBoundaries = new ArrayList<Integer>(parameterGroups.size() * 2);
-+                for (Integer parameterGroup : parameterGroups) {
-+                    int groupStart = matcher.start(parameterGroup);
-+                    parameterBoundaries.add(groupStart);
-+                    int groupEnd = matcher.end(parameterGroup);
-+                    parameterBoundaries.add(groupEnd);
-+                }
-+                stepDocDTO.paramBoundInPattern = parameterBoundaries;
-+
-+                // set extended pattern
-+                int totalGroups = matcher.groupCount();
-+                StringBuilder sb = new StringBuilder();
-+                int paramGroupIndex = 0;
-+                for (int i = 0; i < totalGroups; i++) {
-+                    int groupNumber = i + 1;
-+                    String groupText = matcher.group(groupNumber);
-+                    if (parameterGroups.contains(groupNumber)) {
-+                        // group is a parameter, check its parameter info
-+                        ParameterInfo parameterInfo = parameterInfos.get(paramGroupIndex);
-+                        Validate.notNull(parameterInfo);
-+                        List<TabularFieldInfo> tabularFieldInfos = parameterInfo.tabularFieldInfos;
-+                        if (tabularFieldInfos != null && !tabularFieldInfos.isEmpty()) {
-+                            // replace the parameter name with parameter field names in tabular format
-+                            int totalPipes = 0;
-+                            sb.append("\n");
-+                            sb.append("|");
-+                            totalPipes++;
-+                            for (TabularFieldInfo tabularFieldInfo : tabularFieldInfos) {
-+                                sb.append(tabularFieldInfo.fieldName);
-+                                sb.append("|");
-+                                totalPipes++;
-+                            }
-+                            sb.append("\n");
-+                            // we add another line which contains same number of pipes as an empty values row, ready for user to fil in
-+                            for (int j = 0; j < totalPipes; j++) {
-+                                sb.append("|");
-+                            }
-+                            sb.append("\n");
-+                        } else {
-+                            sb.append(groupText);
-+                        }
-+                        paramGroupIndex++;
-+                    } else {
-+                        sb.append(groupText);
-+                    }
-+                }
-+                String extendedPattern = sb.toString();
-+                stepDocDTO.extendedPattern = extendedPattern;
-+
-+                // set extended pattern parameter boundaries
-+                matcher = groupedPattern.matcher(extendedPattern);
-+                matches = matcher.matches();
-+                Validate.isTrue(matches, "Error - extended pattern should have matched");
-+                List<Integer> extendedParameterBoundaries = new ArrayList<Integer>(parameterGroups.size() * 2);
-+                for (Integer parameterGroup : parameterGroups) {
-+                    int groupStart = matcher.start(parameterGroup);
-+                    extendedParameterBoundaries.add(groupStart);
-+                    int groupEnd = matcher.end(parameterGroup);
-+                    extendedParameterBoundaries.add(groupEnd);
-+                }
-+                stepDocDTO.paramBoundInExtendPattern = extendedParameterBoundaries;
-+
-+            }
-+
-+            stepDocDTOs.add(stepDocDTO);
-+        }
-+
-+        StepDocsPayload stepDocsPayload = new StepDocsPayload();
-+        stepDocsPayload.stepDocs = stepDocDTOs;
-+        uploadToJira(stepDocsPayload);
-+    }
-+
-+    private void populateParameterInfo(ParameterInfo parameterInfo, Class classType) {
-+
-+        String parameterType = classType.getName();
-+        parameterInfo.parameterType = parameterType;
-+        String simpleName = classType.getSimpleName();
-+        parameterInfo.simpleParameterType = simpleName;
-+        Annotation asParamAnnotation = classType.getAnnotation(AsParameters.class);
-+
-+        if (asParamAnnotation != null) {
-+
-+            List<TabularFieldInfo> tabularFieldInfos = new ArrayList<TabularFieldInfo>();
-+
-+            // parameter can be represented as a table
-+            parameterInfo.isListType = true;
-+            Field[] declaredFields = classType.getDeclaredFields();
-+
-+            for (Field declaredField : declaredFields) {
-+
-+                TabularFieldInfo tabularFieldInfo = new TabularFieldInfo();
-+
-+                // field name
-+                Parameter fieldAnnotation = declaredField.getAnnotation(Parameter.class);
-+                String fieldName;
-+                if (fieldAnnotation != null) {
-+                    fieldName = fieldAnnotation.name();
-+                } else {
-+                    fieldName = declaredField.getName();
-+                }
-+                tabularFieldInfo.fieldName = fieldName;
-+
-+                // allowed field values, i.e. in case of enum
-+                Class<?> fieldType = declaredField.getType();
-+                Object[] enumConstants = fieldType.getEnumConstants();
-+                if (enumConstants != null && enumConstants.length > 0) {
-+                    List<String> allowedValues = new ArrayList<String>();
-+                    Class<? extends Enum> enumFieldType = (Class<? extends Enum>) fieldType;
-+                    for (Object enumConstant : enumConstants) {
-+                        Enum enumField = (Enum) enumConstant;
-+                        String enumName = enumField.name();
-+                        allowedValues.add(enumName);
-+                    }
-+
-+                    tabularFieldInfo.allowedValues = allowedValues;
-+                }
-+
-+                tabularFieldInfos.add(tabularFieldInfo);
-+            }
-+
-+            parameterInfo.tabularFieldInfos = tabularFieldInfos;
-+
-+        } else {
-+            // not a table type, but still may be a list type
-+        }
-+    }
-+
-+    private void uploadToJira(StepDocsPayload stepDocsPayload) {
-+
-+        ObjectMapper mapper = new ObjectMapper();
-+        String payloadAsString;
-+        try {
-+            payloadAsString = mapper.writeValueAsString(stepDocsPayload);
-+        } catch (IOException e) {
-+            throw new RuntimeException("Error occurred while trying to serialize object of type - "
-+                    + StepDocsPayload.class.getName() + " to json.", e);
-+        }
-+
-+        Client client = Client.create();
-+        String response = client.resource(this.reportStepDocUrl)
-+                .accept(MediaType.APPLICATION_JSON)
-+                .type(MediaType.APPLICATION_JSON)
-+                .post(String.class, payloadAsString);
-+
-+        if (!response.startsWith("success")) {
-+            throw new RuntimeException("Failed to upload step doc! Server returned error message - " + response);
-+        }
-+    }
-+
-+    @Override
-+    public void stepdocsMatching(String stepAsString, List<Stepdoc> matching, List<Object> stepsIntances) {
-+        // ignored
-+    }
-+
-+    private void setGroupedPatternOnStepDoc(StepDocDTO stepDocDTO) {
-+
-+        String resolvedPattern = stepDocDTO.resolvedPattern;
-+        StringBuilder groupedPatternBuilder = new StringBuilder();
-+        List<Integer> parameterGroups = new ArrayList<Integer>();
-+
-+        int pos = 0;
-+        int groupCount = 0;
-+        int indexOfOpenBrace = resolvedPattern.indexOf("(");
-+        while (indexOfOpenBrace != -1) {
-+
-+            // we want to group everything before that opening brace
-+            groupedPatternBuilder.append("(");
-+            groupedPatternBuilder.append(resolvedPattern.substring(pos, indexOfOpenBrace));
-+            groupedPatternBuilder.append(")");
-+            groupCount++;
-+
-+            int indexOfCloseBrace = resolvedPattern.indexOf(")", indexOfOpenBrace);
-+            Validate.isTrue(indexOfCloseBrace != -1);
-+            pos = indexOfCloseBrace + 1;
-+            groupedPatternBuilder.append(resolvedPattern.substring(indexOfOpenBrace, pos));
-+            groupCount++;
-+            parameterGroups.add(groupCount);
-+
-+            if (pos >= resolvedPattern.length()) {
-+                // we have reached the end of the pattern
-+                break;
-+            } else {
-+                indexOfOpenBrace = resolvedPattern.indexOf("(", pos);
-+                if (indexOfOpenBrace != -1) {
-+                    // we simply iterate again
-+                    continue;
-+                } else {
-+                    // there are no more parameter groups so we simply append any string into last group
-+                    groupedPatternBuilder.append("(");
-+                    groupedPatternBuilder.append(resolvedPattern.substring(pos));
-+                    groupedPatternBuilder.append(")");
-+                    groupCount++;
-+                }
-+            }
-+        }
-+
-+        String groupedPattern = groupedPatternBuilder.toString();
-+        if (groupedPattern.isEmpty()) {
-+            // reg exp pattern did not contain any groups
-+            groupedPattern = "(" + resolvedPattern + ")";
-+        }
-+        stepDocDTO.groupedRegExpPattern = groupedPattern;
-+        stepDocDTO.parameterGroups = parameterGroups;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private class TabularFieldInfo {
-+
-+        public String fieldName;
-+
-+        public List<String> allowedValues;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private class ParameterInfo {
-+
-+        public String parameterType;
-+
-+        public String simpleParameterType;
-+
-+        public boolean isListType;
-+
-+        public List<String> allowedValues;
-+
-+        public List<TabularFieldInfo> tabularFieldInfos;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private class StepDocDTO {
-+
-+        public String startingWord;
-+
-+        public String pattern;
-+
-+        public List<Integer> paramBoundInPattern;
-+
-+        public String extendedPattern;
-+
-+        public List<Integer> paramBoundInExtendPattern;
-+
-+        public String resolvedPattern;
-+
-+        public String groupedRegExpPattern;
-+
-+        public String stepClassName;
-+
-+        public String stepMethodSignature;
-+
-+        public List<Integer> parameterGroups = new ArrayList<Integer>();
-+
-+        public List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>();
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    private static class StepDocsPayload {
-+
-+        public List<StepDocDTO> stepDocs;
-+    }
-+}
-+
-+
-+
-+
-Index: jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
-@@ -0,0 +1,112 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
-+
-+import com.sun.jersey.api.client.Client
-+import com.sun.jersey.api.client.ClientResponse
-+import com.sun.jersey.api.client.WebResource
-+import org.apache.commons.lang.Validate
-+import org.jbehave.core.io.StoryLoader
-+
-+import javax.ws.rs.core.MediaType
-+import javax.ws.rs.core.Response
-+import java.util.regex.Matcher
-+import java.util.regex.Pattern
-+
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStoryLoader implements StoryLoader {
-+
-+    private final String projectKey;
-+
-+    private final String downloadedStoriesDir;
-+
-+    private final String dowloadStoryPath;
-+
-+    private final String jiraUsername;
-+
-+    private final String jiraPassword;
-+
-+    private final boolean outputStoriesToFile;
-+
-+    public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String jiraUsername, String jiraPassword) {
-+        this(jiraBaseUrl, projectKey, jiraUsername, jiraPassword, false, null);
-+    }
-+
-+    public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String jiraUsername, String jiraPassword,
-+                             boolean outputStoriesToFile) {
-+        this(jiraBaseUrl, projectKey, jiraUsername, jiraPassword, outputStoriesToFile, "target/jira_stories/");
-+    }
-+
-+    public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String jiraUsername, String jiraPassword,
-+                             boolean outputStoriesToFile, String outputStoriesDir) {
-+        this.outputStoriesDir = outputStoriesDir
-+        this.projectKey = projectKey;
-+        this.jiraPassword = jiraPassword
-+        this.jiraUsername = jiraUsername
-+        this.dowloadStoryPath = jiraBaseUrl + "/rest/story-res/1.0/find/for-path/";
-+        this.outputStoriesToFile outputStoriesToFile;
-+        this.downloadedStoriesDir = outputStoriesDir;
-+    }
-+
-+    @Override
-+    public String loadStoryAsText(String storyPath) {
-+
-+        URI jiraSearchUrl = null;
-+        try {
-+            String fullPath = dowloadStoryPath + storyPath;
-+            fullPath += "?os_username=" + jiraUsername
-+            "&os_password=" + jiraPassword;
-+            fullPath += "&versionInPath=true";
-+            fullPath += "&asString=true";
-+            jiraSearchUrl = new URI(fullPath);
-+        } catch (URISyntaxException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(jiraSearchUrl);
-+        ClientResponse response = res.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-+
-+        if (response.getStatus() == 200) {
-+            String story = response.getEntity(String.class);
-+            if (this.outputStoriesToFile) {
-+                writeModelToFile(storyPath, story);
-+            }
-+            return story;
-+        } else {
-+            int status = response.getStatus();
-+            Response.StatusType statusInfo = response.getStatusInfo();
-+            throw new RuntimeException("Error occurred while trying to load Jira story for path - " + storyPath +
-+                    ". Response status was - " + status + ", status info - " + statusInfo);
-+        }
-+
-+    }
-+
-+    private void writeModelToFile(String storyPath, String storyModel) {
-+
-+        // extract story path without version
-+        String regexPattern = "(.*)(\\.[0-9]*)(\\.story)";
-+        Pattern p = Pattern.compile(regexPattern);
-+        Matcher matcher = p.matcher(storyPath);
-+        Validate.isTrue(matcher.matches());
-+        String storyPathWithoutVersion = matcher.group(1) + matcher.group(3);
-+
-+        PrintWriter pw = null;
-+        try {
-+            File storiesDir = new File(downloadedStoriesDir);
-+            File outFile = new File(storiesDir, storyPathWithoutVersion);
-+            outFile.getParentFile().mkdirs();
-+            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-+            pw = new PrintWriter(fw);
-+            pw.print(storyModel);
-+        } catch (IOException e) {
-+            throw new RuntimeException("Error occurred while trying to write story to file for story path - " + storyPath, e);
-+        } finally {
-+            if (pw != null) {
-+                pw.close();
-+            }
-+        }
-+
-+    }
-+
-+}
-Index: jbehave-for-jira/jbehave-for-jira-java-client-impl/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client-impl/pom.xml	(date 1408351868000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client-impl/pom.xml	(revision )
-@@ -4,57 +4,117 @@
-          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-     <modelVersion>4.0.0</modelVersion>
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(date 1408996119000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(revision )
+@@ -6,40 +6,45 @@
      <groupId>org.bitbucket.pristrom</groupId>
--    <artifactId>jbehave-for-jira-java-client-impl</artifactId>
-+    <artifactId>jbehave-for-jira-groovy-client</artifactId>
+     <artifactId>jbehave-for-jira-groovy-client</artifactId>
      <packaging>jar</packaging>
--    <name>JBehave For Jira - Java Client Implementation</name>
-+    <name>JBehave For Jira - Groovy Client Implementation</name>
+-    <name>JBehave For Jira - Groovy Client Implementation</name>
++    <name>JBehave For Jira - Groovy Client</name>
      <version>1.0.0-SNAPSHOT</version>
--    <description>Java client for integrating with the 'JBehave for Jira - Jira Plugin' component</description>
-+    <description>Groovy client for integrating with the 'JBehave for Jira - Jira Plugin' component</description>
+     <description>Groovy client for integrating with the 'JBehave for Jira - Jira Plugin' component</description>
      <url>https://bitbucket.org/pristrom/jbehave-for-jira-java-client-impl/overview</url>
--    <dependencies>
-+    <build>
-+        <plugins>
-+            <plugin>
-+                <groupId>org.codehaus.gmavenplus</groupId>
-+                <artifactId>gmavenplus-plugin</artifactId>
-+                <version>1.2</version>
-+                <executions>
-+                    <execution>
-+                        <goals>
-+                            <goal>compile</goal>
-+                            <goal>testCompile</goal>
-+                        </goals>
-+                        <configuration>
-+                            <sources>
-+                                <source>
-+                                    <directory>${project.basedir}/src/main/groovy</directory>
-+                                    <includes>
-+                                        <include>**/*.groovy</include>
-+                                    </includes>
-+                                </source>
-+                            </sources>
-+                        </configuration>
-+                    </execution>
-+                </executions>
-+            </plugin>
-+            <plugin>
-+                <groupId>org.apache.maven.plugins</groupId>
-+                <artifactId>maven-compiler-plugin</artifactId>
-+                <version>3.1</version>
-+            </plugin>
+     <build>
++        <resources>
++            <resource>
++                <directory>src/main/groovy</directory>
++            </resource>
++        </resources>
+         <plugins>
+-            <plugin>
+-                <groupId>org.codehaus.gmavenplus</groupId>
+-                <artifactId>gmavenplus-plugin</artifactId>
+-                <version>1.2</version>
+-                <executions>
+-                    <execution>
+-                        <goals>
+-                            <goal>compile</goal>
+-                            <goal>testCompile</goal>
+-                        </goals>
+-                        <configuration>
+-                            <sources>
+-                                <source>
+-                                    <directory>${project.basedir}/src/main/groovy</directory>
+-                                    <includes>
+-                                        <include>**/*.groovy</include>
+-                                    </includes>
+-                                </source>
+-                            </sources>
+-                        </configuration>
+-                    </execution>
+-                </executions>
+-            </plugin>
+-            <plugin>
+-                <groupId>org.apache.maven.plugins</groupId>
+-                <artifactId>maven-compiler-plugin</artifactId>
+-                <version>3.1</version>
+-            </plugin>
 +            <!--<plugin>-->
-+                <!--<groupId>com.github.wvengen</groupId>-->
-+                <!--<artifactId>proguard-maven-plugin</artifactId>-->
-+                <!--<version>2.0.6</version>-->
-+                <!--<dependencies>-->
--        <!--<dependency>-->
-+                    <!--<dependency>-->
--            <!--<groupId>org.bitbucket.pristrom</groupId>-->
--            <!--<artifactId>jbehave-for-jira-plugin</artifactId>-->
--            <!--<version>1.0.0-SNAPSHOT</version>-->
-+                        <!--<groupId>net.sf.proguard</groupId>-->
-+                        <!--<artifactId>proguard-base</artifactId>-->
-+                        <!--<version>4.10</version>-->
--        <!--</dependency>-->
-+                    <!--</dependency>-->
-+                <!--</dependencies>-->
++                <!--<groupId>org.codehaus.gmavenplus</groupId>-->
++                <!--<artifactId>gmavenplus-plugin</artifactId>-->
++                <!--<version>1.2</version>-->
 +                <!--<executions>-->
 +                    <!--<execution>-->
-+                        <!--<phase>package</phase>-->
 +                        <!--<goals>-->
-+                            <!--<goal>proguard</goal>-->
++                            <!--<goal>compile</goal>-->
++                            <!--<goal>testCompile</goal>-->
 +                        <!--</goals>-->
++                        <!--<configuration>-->
++                            <!--<sources>-->
++                                <!--<source>-->
++                                    <!--<directory>${project.basedir}/src/main/groovy</directory>-->
++                                    <!--<includes>-->
++                                        <!--<include>**/*.groovy</include>-->
++                                    <!--</includes>-->
++                                <!--</source>-->
++                            <!--</sources>-->
++                        <!--</configuration>-->
 +                    <!--</execution>-->
 +                <!--</executions>-->
-+                <!--<configuration>-->
-+                    <!--<proguardVersion>4.10</proguardVersion>-->
-+                    <!--<options>-->
-+                        <!--&lt;!&ndash;keep all public enums&ndash;&gt;-->
-+                        <!--<option>-printmapping proguard_mapping.map</option>-->
-+                        <!--&lt;!&ndash;<option>-keepparameternames</option>&ndash;&gt;-->
-+                        <!--<option>-renamesourcefileattribute SourceFile</option>-->
-+                        <!--<option>-->
-+                            <!---keepattributes Exceptions,InnerClasses,Signature,Deprecated,-->
-+                            <!--SourceFile,LineNumberTable,*Annotation*,EnclosingMethod-->
-+                        <!--</option>-->
-+                        <!--<option>-->
-+                            <!---keepclassmembers enum * {-->
-+                            <!--*;-->
-+                            <!--}-->
-+                        <!--</option>-->
-+                        <!--&lt;!&ndash;keep all public members of public classes&ndash;&gt;-->
-+                        <!--<option>-keep-->
-+                            <!--public class * {-->
-+                            <!--public *;-->
-+                            <!--}-->
-+                        <!--</option>-->
-+                        <!--&lt;!&ndash;keep all protected members of public classes&ndash;&gt;-->
-+                        <!--<option>-keep-->
-+                            <!--public class * {-->
-+                            <!--protected *;-->
-+                            <!--}-->
-+                        <!--</option>-->
-+                        <!--<option>-keep-->
-+                            <!--class * {-->
-+                            <!--public *;-->
-+                            <!--}-->
-+                        <!--</option>-->
-+                        <!--<option>-adaptresourcefilecontents **.xml</option>-->
-+                        <!--&lt;!&ndash;<option>-keepattributes *Annotation*</option>&ndash;&gt;-->
-+                        <!--&lt;!&ndash;<option>-keepattributes EnclosingMethod</option>&ndash;&gt;-->
-+                        <!--<option>-dontshrink</option>-->
-+                        <!--<option>-dontoptimize</option>-->
-+                        <!--<option>-dontpreverify</option>-->
-+                        <!--&lt;!&ndash;<option>-printmapping</option>&ndash;&gt;-->
-+                        <!--&lt;!&ndash;<option>-keepattributes Signature</option>&ndash;&gt;-->
-+                    <!--</options>-->
-+                    <!--<libs>-->
-+                        <!--<lib>${java.home}/lib/rt.jar</lib>-->
-+                        <!--<lib>${java.home}/lib/jce.jar</lib>-->
-+                    <!--</libs>-->
-+                <!--</configuration>-->
 +            <!--</plugin>-->
-+        </plugins>
-+    </build>
-+    <dependencies>
-         <dependency>
-             <groupId>org.bitbucket.pristrom</groupId>
-             <artifactId>jbehave-for-jira-java-client</artifactId>
-             <version>1.0.0-SNAPSHOT</version>
--        </dependency>
--        <dependency>
--            <groupId>org.codehaus.groovy</groupId>
--            <artifactId>groovy-all</artifactId>
--            <version>2.3.6</version>
--        </dependency>
--        <dependency>
--            <groupId>org.jbehave</groupId>
--            <artifactId>jbehave-core</artifactId>
--            <version>3.9.2</version>
--        </dependency>
--        <dependency>
--            <groupId>com.sun.jersey</groupId>
--            <artifactId>jersey-client</artifactId>
--            <version>1.18</version>
--        </dependency>
--        <dependency>
--            <groupId>com.sun.jersey</groupId>
--            <artifactId>jersey-json</artifactId>
--            <version>1.18</version>
--        </dependency>
--        <dependency>
--            <groupId>org.slf4j</groupId>
--            <artifactId>slf4j-api</artifactId>
--            <version>1.6.6</version>
--        </dependency>
--        <dependency>
--            <groupId>ch.qos.logback</groupId>
--            <artifactId>logback-core</artifactId>
--            <version>1.1.2</version>
--        </dependency>
--        <dependency>
--            <groupId>ch.qos.logback</groupId>
--            <artifactId>logback-classic</artifactId>
--            <version>1.1.2</version>
-+            <scope>provided</scope>
-         </dependency>
-         <dependency>
-             <groupId>junit</groupId>
++            <!--<plugin>-->
++                <!--<groupId>org.apache.maven.plugins</groupId>-->
++                <!--<artifactId>maven-compiler-plugin</artifactId>-->
++                <!--<version>3.1</version>-->
++            <!--</plugin>-->
+             <!--<plugin>-->
+                 <!--<groupId>com.github.wvengen</groupId>-->
+                 <!--<artifactId>proguard-maven-plugin</artifactId>-->
 \ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-java-client-impl/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(revision )
-@@ -0,0 +1,93 @@
-+package org.bitbucket.jbehaveforjira.groovyclient
-+import com.sun.jersey.api.client.Client
-+import com.sun.jersey.api.client.ClientResponse
-+import com.sun.jersey.api.client.WebResource
-+import org.apache.commons.lang.Validate
-+import org.bitbucket.jbehaveforjira.javaclient.StoryPathsFinder
-+import org.slf4j.Logger
-+import org.slf4j.LoggerFactory
-+
-+import javax.ws.rs.core.MediaType
-+import javax.ws.rs.core.Response
-+import javax.xml.bind.annotation.XmlAccessType
-+import javax.xml.bind.annotation.XmlAccessorType
-+import javax.xml.bind.annotation.XmlRootElement
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public class GroovyStoryPathsFinder implements StoryPathsFinder {
-+
-+    private final Logger log = LoggerFactory.getLogger(getClass());
-+
-+    private String jiraBaseUrl;
-+
-+    private String projectKey;
-+
-+    public GroovyStoryPathsFinder(String jiraBaseUrl, String projectKey) {
-+        this.jiraBaseUrl = jiraBaseUrl;
-+        this.projectKey = projectKey;
-+        Validate.notEmpty(projectKey);
-+    }
-+
-+    public List<String> findPaths() {
-+        return this.findPaths(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-+    }
-+
-+    public List<String> findPaths(List<String> includes, List<String> excludes) {
-+
-+        List<String> paths = new ArrayList<String>();
-+
-+        URI jiraSearchUrl = null;
-+        try {
-+            String fullPath = jiraBaseUrl + "/rest/story-res/1.0/find/story-paths/" + projectKey;
-+            fullPath += "?os_username=admin&os_password=admin";
-+            jiraSearchUrl = new URI(fullPath);
-+        } catch (URISyntaxException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(jiraSearchUrl);
-+        res.type(MediaType.APPLICATION_JSON);
-+//        res.type(MediaType.TEXT_PLAIN);
-+        ClientResponse response = res.get(ClientResponse.class);
-+        log.info("response - " + response);
-+        if (response.getStatus() == 200) {
-+
-+            int length = response.getLength();
-+            MediaType type = response.getType();
-+            StoryPaths storyPaths = response.getEntity(StoryPaths.class);
-+
-+            if (storyPaths.getPaths() != null && !storyPaths.getPaths().isEmpty()) {
-+                paths = storyPaths.getPaths();
-+            }
-+
-+        } else {
-+            int status = response.getStatus();
-+            Response.StatusType statusInfo = response.getStatusInfo();
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(date 1408996119000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(revision )
+@@ -2,10 +2,7 @@
+ import com.sun.jersey.api.client.Client
+ import com.sun.jersey.api.client.ClientResponse
+ import com.sun.jersey.api.client.WebResource
+-import org.apache.commons.lang.Validate
+ import org.bitbucket.jbehaveforjira.javaclient.StoryPathsFinder
+-import org.slf4j.Logger
+-import org.slf4j.LoggerFactory
+ 
+ import javax.ws.rs.core.MediaType
+ import javax.ws.rs.core.Response
+@@ -13,20 +10,15 @@
+ import javax.xml.bind.annotation.XmlAccessorType
+ import javax.xml.bind.annotation.XmlRootElement
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+-public class GroovyStoryPathsFinder implements StoryPathsFinder {
++public class GroovyStoryPathFinder implements StoryPathsFinder {
+ 
+-    private final Logger log = LoggerFactory.getLogger(getClass());
++    private String postUrl;
+ 
+-    private String jiraBaseUrl;
++    public GroovyStoryPathFinder(String jiraBaseUrl, String projectKey, String username, String password) {
+ 
+-    private String projectKey;
+-
+-    public GroovyStoryPathsFinder(String jiraBaseUrl, String projectKey) {
+-        this.jiraBaseUrl = jiraBaseUrl;
+-        this.projectKey = projectKey;
+-        Validate.notEmpty(projectKey);
++        this.postUrl = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/find/story-paths/" + projectKey + "?os_username=" + username + "&os_password=" + password;
+     }
+ 
+     public List<String> findPaths() {
+@@ -39,9 +31,7 @@
+ 
+         URI jiraSearchUrl = null;
+         try {
+-            String fullPath = jiraBaseUrl + "/rest/story-res/1.0/find/story-paths/" + projectKey;
+-            fullPath += "?os_username=admin&os_password=admin";
+-            jiraSearchUrl = new URI(fullPath);
++            jiraSearchUrl = new URI(postUrl);
+         } catch (URISyntaxException e) {
+             throw new RuntimeException(e);
+         }
+@@ -49,9 +39,7 @@
+         Client client = Client.create();
+         WebResource res = client.resource(jiraSearchUrl);
+         res.type(MediaType.APPLICATION_JSON);
+-//        res.type(MediaType.TEXT_PLAIN);
+         ClientResponse response = res.get(ClientResponse.class);
+-        log.info("response - " + response);
+         if (response.getStatus() == 200) {
+ 
+             int length = response.getLength();
+@@ -88,6 +76,5 @@
+     }
+ 
+ }
+-
+ 
+ 
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(date 1408996119000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
+@@ -1,5 +1,4 @@
+ package org.bitbucket.jbehaveforjira.groovyclient
+-
+ import com.sun.jersey.api.client.Client
+ import com.sun.jersey.api.client.ClientResponse
+ import com.sun.jersey.api.client.WebResource
+@@ -10,40 +9,28 @@
+ import javax.ws.rs.core.Response
+ import java.util.regex.Matcher
+ import java.util.regex.Pattern
+-
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class GroovyStoryLoader implements StoryLoader {
+ 
+-    private final String projectKey;
++    private String downloadedStoriesDir = "src/test/resources/jira_stories";
+ 
+-    private final String downloadedStoriesDir;
++    private String basePostUrl;
+ 
+-    private final String dowloadStoryPath;
++    private String loginParams;
+ 
+-    private final String jiraUsername;
+-
+-    private final String jiraPassword;
+-
+     private final boolean outputStoriesToFile;
+ 
+-    public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String jiraUsername, String jiraPassword) {
+-        this(jiraBaseUrl, projectKey, jiraUsername, jiraPassword, false, null);
+-    }
+-
+     public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String jiraUsername, String jiraPassword,
+                              boolean outputStoriesToFile) {
+         this(jiraBaseUrl, projectKey, jiraUsername, jiraPassword, outputStoriesToFile, "target/jira_stories/");
+     }
+ 
+-    public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String jiraUsername, String jiraPassword,
++    public GroovyStoryLoader(String jiraBaseUrl, String projectKey, String username, String password,
+                              boolean outputStoriesToFile, String outputStoriesDir) {
+-        this.outputStoriesDir = outputStoriesDir
+-        this.projectKey = projectKey;
+-        this.jiraPassword = jiraPassword
+-        this.jiraUsername = jiraUsername
+-        this.dowloadStoryPath = jiraBaseUrl + "/rest/story-res/1.0/find/for-path/";
++        basePostUrl = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/find/for-path/";
++        loginParams = "?os_username=" + username + "&os_password=" + password;
+         this.outputStoriesToFile outputStoriesToFile;
+         this.downloadedStoriesDir = outputStoriesDir;
+     }
+@@ -53,11 +40,7 @@
+ 
+         URI jiraSearchUrl = null;
+         try {
+-            String fullPath = dowloadStoryPath + storyPath;
+-            fullPath += "?os_username=" + jiraUsername
+-            "&os_password=" + jiraPassword;
+-            fullPath += "&versionInPath=true";
+-            fullPath += "&asString=true";
++            String fullPath = basePostUrl + storyPath + loginParams + "&versionInPath=true&asString=true";
+             jiraSearchUrl = new URI(fullPath);
+         } catch (URISyntaxException e) {
+             throw new RuntimeException(e);
+@@ -76,8 +59,8 @@
+         } else {
+             int status = response.getStatus();
+             Response.StatusType statusInfo = response.getStatusInfo();
+-            throw new RuntimeException("Error occurred while trying to load Jira story for path - " + storyPath +
+-                    ". Response status was - " + status + ", status info - " + statusInfo);
 +            throw new RuntimeException("Error occurred while trying to find Jira story paths. " +
 +                    "Response status was - " + status + ", status info - " + statusInfo);
-+        }
-+
-+        return paths;
-+    }
-+
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
-+    public static class StoryPaths {
-+
-+        private List<String> paths;
-+
-+        public List<String> getPaths() {
-+            return paths;
-+        }
-+
-+        public void setPaths(List<String> paths) {
-+            this.paths = paths;
-+        }
-+    }
-+
-+}
-+
-+
-+
+         }
+ 
+     }
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1408996119000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
+@@ -37,9 +37,9 @@
+     }
+ 
+     public GroovyStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword, StepPatternParser stepPatternParser) {
+-        this.reportStepDocUrl = jiraBaseUrl + "/rest/story-res/1.0/step-doc/add/" + jiraProject
++        this.reportStepDocUrl = (jiraBaseUrl + "/rest/jbehave-for-jira/1.0/step-doc/add/" + jiraProject
+                 + "?os_username=" + jiraUserName
+-                + "&os_password=" + jiraPassword;
++        + "&os_password=" + jiraPassword);
+         this.patternParser = stepPatternParser;
+     }
+ 
+@@ -90,7 +90,7 @@
+                             if (actualTypeArgument instanceof Class<?>) {
+                                 Class<?> classType = (Class<?>) actualTypeArgument;
+                                 populateParameterInfo(parameterInfo, classType);
+-                                parameterInfo.isListType = true;
++                                parameterInfo.listType = true;
+                             }
+                         } else {
+                             // if there are more type arguments, we ignore such cases
+@@ -207,7 +207,7 @@
+             List<TabularFieldInfo> tabularFieldInfos = new ArrayList<TabularFieldInfo>();
+ 
+             // parameter can be represented as a table
+-            parameterInfo.isListType = true;
++            parameterInfo.listType = true;
+             Field[] declaredFields = classType.getDeclaredFields();
+ 
+             for (Field declaredField : declaredFields) {
+@@ -344,7 +344,7 @@
+ 
+         public String simpleParameterType;
+ 
+-        public boolean isListType;
++        public boolean listType;
+ 
+         public List<String> allowedValues;
+ 
