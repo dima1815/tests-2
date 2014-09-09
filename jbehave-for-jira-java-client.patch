@@ -1,147 +1,87 @@
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java	(date 1409608936000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java	(date 1409608936000)
+@@ -1,19 +0,0 @@
+-package org.bitbucket.jbehaveforjira.javaclient;
+-
+-import java.lang.annotation.*;
+-
+-/**
+- * Fields in the parameter types (classes annotated with @AsParameters) can be annotated with this
+- * annotation to limit the range of values allowed for the annotated field. The indented usage is to
+- * annotate non enum primitive field types with this annotation. For example 'discount' of type double
+- * could be annotated with this annotation which would have the following allowed values: '5, 10, 15, etc.'.
+- *
+- * @author Maryna Stasyuk
+- */
+-@Retention(RetentionPolicy.RUNTIME)
+-@Target({ElementType.FIELD, ElementType.PARAMETER})
+-@Documented
+-public @interface AllowedValues {
+-
+-    String[] value();
+-}
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java	(date 1409608936000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java	(date 1409608936000)
+@@ -1,20 +0,0 @@
+-package org.bitbucket.jbehaveforjira.javaclient;
+-
+-import java.lang.annotation.*;
+-
+-/**
+- * Fields in the parameter types (classes annotated with @AsParameters) can be annotated with this
+- * annotation to provide a list of suggested but not limited range of values for the annotated field. The indented usage is to
+- * annotate non enum primitive field types with this annotation. For example 'discount' of type double
+- * could be annotated with this annotation which would have the following allowed values: '5, 10, 15, etc.'. But user would be
+- * allowed to enter other values outside of suggested values specified in this annotation.
+- *
+- * @author Maryna Stasyuk
+- */
+-@Retention(RetentionPolicy.RUNTIME)
+-@Target({ElementType.FIELD, ElementType.PARAMETER})
+-@Documented
+-public @interface SuggestedValues {
+-
+-    String[] value();
+-}
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(date 1408743694000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision )
-@@ -1,33 +1,98 @@
- package org.bitbucket.jbehaveforjira.javaclient;
- 
--import org.apache.commons.lang.Validate;
-+import com.sun.jersey.api.client.Client;
-+import com.sun.jersey.api.client.ClientResponse;
-+import com.sun.jersey.api.client.WebResource;
- import org.jbehave.core.io.StoryLoader;
-+import org.slf4j.Logger;
-+import org.slf4j.LoggerFactory;
- 
-+import javax.ws.rs.core.MediaType;
-+import javax.ws.rs.core.Response;
-+import java.io.File;
-+import java.io.FileWriter;
-+import java.io.IOException;
-+import java.io.PrintWriter;
-+import java.net.URI;
-+import java.net.URISyntaxException;
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java	(revision )
+@@ -0,0 +1,30 @@
++package org.bitbucket.jbehaveforjira.javaclient;
 +
- /**
-  * @author Maryna Stasyuk
-  */
- public class JiraStoryLoader implements StoryLoader {
- 
--    private final StoryLoader storyLoader;
-+    private final Logger log = LoggerFactory.getLogger(getClass());
- 
--    public JiraStoryLoader(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
-+    private String jiraBaseUrl;
- 
--        Validate.notEmpty(jiraBaseUrl);
--        Validate.notEmpty(jiraProject);
--        Validate.notEmpty(jiraUserName);
--        Validate.notEmpty(jiraPassword);
-+    private String projectKey;
- 
--        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUserName, jiraPassword};
--        this.storyLoader = GroovyResourceHelper.loadGroovyResource(
--                jiraBaseUrl, "story-loader", jiraUserName, jiraPassword, "StoryLoader",
--                constructorArgs);
-+    private String username;
++import java.lang.annotation.*;
 +
-+    private String password;
++/**
++ * Used to provide meta information for the JBehave parameter fields.
++ *
++ * @author Maryna Stasyuk
++ */
++@Retention(RetentionPolicy.RUNTIME)
++@Target({ElementType.FIELD, ElementType.PARAMETER})
++@Documented
++public @interface ParameterInfo {
 +
-+    private String downloadedStoriesDir = "src/test/resources/jira_stories";
-+
-+    private String loadStoryPath = "rest/jbehave-for-jira/1.0/find/for-path/";
-+
-+    public JiraStoryLoader(String jiraBaseUrl, String projectKey, String username, String password) {
-+        this.jiraBaseUrl = jiraBaseUrl;
-+        this.projectKey = projectKey;
-+        this.username = username;
-+        this.password = password;
-     }
- 
-     @Override
-     public String loadStoryAsText(String storyPath) {
- 
--        String storyAsText = storyLoader.loadStoryAsText(storyPath);
--        return storyAsText;
-+        URI jiraSearchUrl = null;
-+        try {
-+            String fullPath = jiraBaseUrl + "/" + loadStoryPath;
-+            fullPath += storyPath;
-+            fullPath += "?os_username=" + this.username
-+                    + "&os_password=" + this.password
-+                    + "&versionInPath=true" + "&asString=true";
-+            log.debug("full story path is - " + fullPath);
-+            jiraSearchUrl = new URI(fullPath);
-+        } catch (URISyntaxException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        Client client = Client.create();
-+        WebResource res = client.resource(jiraSearchUrl);
-+        ClientResponse response = res.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-+        log.info("response - " + response);
-+
-+        if (response.getStatus() == 200) {
-+            String story = response.getEntity(String.class);
-+            return story;
-+        } else {
-+            int status = response.getStatus();
-+            Response.StatusType statusInfo = response.getStatusInfo();
-+            throw new RuntimeException("Error occurred while trying to find Jira story paths. " +
-+                    "Response status was - " + status + ", status info - " + statusInfo);
-+        }
++    public static enum EmptyEnum {
 +
 +    }
 +
-+    private void writeModelToFile(String storyPath, String storyModel) {
++    boolean isMandatory() default false;
 +
-+        PrintWriter pw = null;
-+        try {
-+            File storiesDir = new File(downloadedStoriesDir);
-+            File outFile = new File(storiesDir, storyPath);
-+            outFile.getParentFile().mkdirs();
-+            FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-+            pw = new PrintWriter(fw);
-+            pw.print(storyModel);
-+        } catch (IOException e) {
-+            throw new RuntimeException(e);
-+        } finally {
-+            if (pw != null) {
-+                pw.close();
-+            }
-+        }
++    String[] allowedValues() default {};
 +
-     }
- 
- }
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java	(date 1408743694000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java	(revision )
-@@ -16,7 +16,7 @@
-  */
- class GroovyResourceHelper {
- 
--    private static String baseRestResPath = "/rest/story-res/1.0/groovy-client/";
-+    private static String baseRestResPath = "/rest/jbehave-for-jira/1.0/groovy-client/";
- 
-     public static <T> T loadGroovyResource(String jiraUrl, String resourcePath,
-                                            String username, String password, String className, Object[] constructorArgs) {
-@@ -50,10 +50,9 @@
- 
-         } else {
-             String resString = response.getEntity(String.class);
--            System.out.println("resString - " + resString);
- 
-             GroovyClassLoader gcl = new GroovyClassLoader();
--            Class clazz = gcl.parseClass(className, resString);
-+            Class clazz = gcl.parseClass(resString, className);
-             Object instance = null;
-             try {
- 
++    String[] suggestedValues() default {};
++
++    Class<? extends Enum> suggestedValuesEnum() default EmptyEnum.class;
++
++    String regExPattern() default "";
++}
++
++
