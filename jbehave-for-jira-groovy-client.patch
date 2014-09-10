@@ -3,642 +3,191 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1409608936000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
-@@ -2,11 +2,14 @@
- 
- import com.sun.jersey.api.client.Client
- import com.sun.jersey.api.client.WebResource
-+import org.apache.commons.lang.StringUtils
- import org.apache.commons.lang.Validate
-+import org.jbehave.core.configuration.Keywords
- import org.jbehave.core.i18n.LocalizedKeywords
- import org.jbehave.core.model.*
- import org.jbehave.core.reporters.HtmlOutput
- import org.jbehave.core.reporters.PrintStreamOutput
-+import org.jbehave.core.reporters.StackTraceFormatter
- import org.jbehave.core.reporters.StoryReporter
- import org.jbehave.core.steps.StepCreator
- 
-@@ -40,7 +43,7 @@
- 
-     private String basePostPath;
- 
--    private final HtmlOutput htmlOutput;
-+    private final CustomHtmlOutput htmlOutput;
- 
-     private boolean compressFailureTrace;
- 
-@@ -102,12 +105,13 @@
-         this.environment = environment;
- 
-         this.outputPatterns = new Properties();
--        this.outputPatterns = mergeOverridenPatterns(outputPatterns);
-+        this.outputPatterns = mergeCustomPatterns(outputPatterns);
-         this.keywords = new LocalizedKeywords();
--        this.reportFailureTrace = false;
-+        this.reportFailureTrace = true;
-         this.compressFailureTrace = false;
- 
--        this.htmlOutput = new CustomHtmlOutput(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
-+        this.htmlOutput = new CustomHtmlOutput(printStream, outputPatterns, keywords,
-+                reportFailureTrace, compressFailureTrace);
-     }
- 
-     public void narrative(Narrative narrative) {
-@@ -169,12 +173,21 @@
+@@ -120,8 +120,27 @@
  
      @Override
-     public void beforeExamples(List<String> steps, ExamplesTable table) {
--        htmlOutput.beforeExamples(steps, table);
-+//        htmlOutput.beforeExamples(steps, table);
-+        htmlOutput.print(htmlOutput.format("beforeExamples", "{0}\n", keywords.examplesTable()));
-+//        for (String step : steps) {
-+//            htmlOutput.print(htmlOutput.format("examplesStep", "{0}\n", step));
-+//        }
-+        htmlOutput.print(htmlOutput.format("beforeExamplesTable", ""));
-+        htmlOutput.print(htmlOutput.formatTable(table));
-+        htmlOutput.print(htmlOutput.format("afterExamplesTable", ""));
-     }
- 
-     @Override
-     public void example(Map<String, String> tableRow) {
-+
-         htmlOutput.example(tableRow);
-+//        print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));
-     }
- 
-     @Override
-@@ -196,11 +209,30 @@
-         }
-     }
- 
-+    private String[] splitIntoKeywordAndBody(String step) {
-+        int firstSpace = step.indexOf(" ");
-+        if (firstSpace != -1) {
-+            String keyword = step.substring(0, firstSpace + 1);
-+            String stepBody = step.substring(firstSpace + 1);
-+            String[] result = new String[2];
-+            result[0] = keyword;
-+            result[1] = stepBody;
-+            return result;
-+        } else {
-+            return null;
-+        }
-+    }
-+
-     @Override
-     public void successful(String step) {
- 
-+        String[] tokens = this.splitIntoKeywordAndBody(step);
-+        if (tokens != null) {
-+            htmlOutput.print(htmlOutput.format("successfulStep", "{0} {1}\n", tokens[0], tokens[1], "(SUCCESSFUL)"));
-+        } else {
--        htmlOutput.successful(step);
+     public void lifecyle(Lifecycle lifecycle) {
+-        htmlOutput.lifecyle(lifecycle);
++        if (!lifecycle.isEmpty()) {
++            htmlOutput.print(htmlOutput.format("lifecycleStart", "{0}\n", keywords.lifecycle()));
++            if (!lifecycle.getBeforeSteps().isEmpty()) {
++                htmlOutput.print(htmlOutput.format("lifecycleBeforeStart", "{0}\n", keywords.before()));
++                for (String step : lifecycle.getBeforeSteps()) {
++                    String[] tokens = splitIntoKeywordAndBody(step);
++                    htmlOutput.print(htmlOutput.format("lifecycleStep", "{0}{1}\n", tokens[0], tokens[1]));
 -    }
-+            htmlOutput.successful(step);
-+        }
-+    }
- 
-     @Override
-     public void ignorable(String step) {
-@@ -210,7 +242,26 @@
-     @Override
-     public void failed(String step, Throwable storyFailure) {
- 
-+        String[] tokens = splitIntoKeywordAndBody(step);
-+        if (tokens != null) {
--        htmlOutput.failed(step, storyFailure);
-+            htmlOutput.failed(step, storyFailure);
-+            Throwable cause = storyFailure.getCause()
-+            String stackTrace = new StackTraceFormatter(htmlOutput.compressFailureTrace()).stackTrace(cause);
-+            Throwable underlyingCause = cause;
-+            while (underlyingCause.getCause() != null) {
-+                underlyingCause = underlyingCause.getCause();
++                }
++                htmlOutput.print(htmlOutput.format("lifecycleBeforeEnd", ""));
 +            }
-+            String underlyingErrorMsg = "Underlying error - " + underlyingCause.getMessage();
-+            String timeAsString = "" + new Date().getTime()
-+            String uniqueId = timeAsString.substring(timeAsString.length() - 6);
-+            htmlOutput.print(htmlOutput.format("failedStep", "{0} {1} ({2})\n({3})\n",
-+                    tokens[0], tokens[1],
-+                    htmlOutput.keywords.failed(),
-+                    storyFailure.getCause(),
-+                    stackTrace, underlyingErrorMsg, uniqueId));
-+        } else {
-+            htmlOutput.failed(step, storyFailure);
-+        }
-         this.currentScenarioStatus = TestStatus.FAILED;
-     }
- 
-@@ -237,7 +288,13 @@
-     @Override
-     public void pending(String step) {
- 
-+        String[] tokens = this.splitIntoKeywordAndBody(step);
-+        if (tokens != null) {
-+            htmlOutput.print(htmlOutput.format("pendingStep", "{0}{1} ({2})\n", tokens[0], tokens[1], keywords.pending()));
-+        } else {
--        htmlOutput.pending(step);
-+            htmlOutput.pending(step);
-+        }
-+
-         if (this.currentScenarioStatus != TestStatus.FAILED) { // fail status has priority over pending
-             this.currentScenarioStatus = TestStatus.PENDING;
-         }
-@@ -245,8 +302,14 @@
- 
-     @Override
-     public void notPerformed(String step) {
-+
-+        String[] tokens = this.splitIntoKeywordAndBody(step);
-+        if (tokens != null) {
-+            htmlOutput.print(htmlOutput.format("notPerformedStep", "{0}{1} ({2})\n", tokens[0], tokens[1], keywords.notPerformed()));
-+        } else {
--        htmlOutput.notPerformed(step);
--    }
-+            htmlOutput.notPerformed(step);
++            if (!lifecycle.getAfterSteps().isEmpty()) {
++                htmlOutput.print(htmlOutput.format("lifecycleAfterStart", "{0}\n", keywords.after()));
++                for (String step : lifecycle.getAfterSteps()) {
++                    String[] tokens = splitIntoKeywordAndBody(step);
++                    htmlOutput.print(htmlOutput.format("lifecycleStep", "{0}{1}\n", tokens[0], tokens[1]));
++                }
++                htmlOutput.print(htmlOutput.format("lifecycleAfterEnd", ""));
++            }
++            htmlOutput.print(htmlOutput.format("lifecycleEnd", "\n"));
 +        }
 +    }
  
- 
      @Override
-@@ -280,6 +343,8 @@
-         }
+     public void beforeScenario(String title) {
+@@ -142,23 +161,48 @@
  
-         htmlOutput.beforeStory(story, givenStory);
-+        htmlOutput.description(story);
-+        htmlOutput.meta(story);
+         htmlOutput.afterScenario();
+ 
++        // replace scenario status markers
++        String currentOut = bytesListToString(this.bytesList);
++
++        String lozengeClass;
++        String lozengeText;
++
+         switch (this.currentScenarioStatus) {
+             case TestStatus.PASSED:
+                 totalScenariosPassed++;
++                lozengeClass = "aui-lozenge aui-lozenge-success";
++                lozengeText = "success";
+                 break;
+             case TestStatus.FAILED:
+                 totalScenariosFailed++;
++                lozengeClass = "aui-lozenge aui-lozenge-error";
++                lozengeText = "failed";
+                 break;
+             case TestStatus.PENDING:
+                 totalScenariosPending++;
++                lozengeClass = "aui-lozenge aui-lozenge-current";
++                lozengeText = "pending";
+                 break;
+             case TestStatus.IGNORED:
+                 totalScenariosIgnored++;
++                lozengeClass = "aui-lozenge";
++                lozengeText = "ignored";
+                 break;
+             case TestStatus.NOT_PERFORMED:
+                 totalScenariosNotPerformed++;
++                lozengeClass = "aui-lozenge";
++                lozengeText = "not performed";
+                 break;
++            default:
++                throw new IllegalArgumentException("Unknown scenario status - " + this.currentScenarioStatus);
+         }
++
++        String replacedOut = currentOut;
++        replacedOut = replacedOut.replace("[scenario_status_lozenge_class]", lozengeClass);
++        replacedOut = replacedOut.replace("[scenario_status_lozenge_text]", lozengeText);
++        List<Byte> replacedBytes = stringToBytesList(replacedOut);
++        this.bytesList.clear();
++        this.bytesList.addAll(replacedBytes);
      }
  
      @Override
-@@ -359,8 +424,16 @@
- 
-     public static String markTableCorrectly(String text, CustomHtmlOutput htmlOutput) {
- 
-+        String tableStartMarker = StepCreator.PARAMETER_TABLE_START;
-+        tableStartMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableStartMarker)[0];
-+
-+        String tableEndMarker = StepCreator.PARAMETER_TABLE_END;
-+        tableEndMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableEndMarker)[0];
-+
-         if (text.contains("&#9252;")) {
- 
-+            // use case for successful steps
-+
-             StringBuilder sb = new StringBuilder();
-             String[] tokens = text.split("\\&#9252;");
- 
-@@ -372,8 +445,6 @@
-                     // table line
-                     if (i == 0 || (i != 0 && !tokens[i - 1].startsWith("|"))) {
-                         // if previous line was not a table line then open the table tag
--                        String tableStartMarker = StepCreator.PARAMETER_TABLE_START;
--                        tableStartMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableStartMarker)[0];
-                         sb.append(tableStartMarker);
-                         sb.append(token);
-                         isTableStartLine = true;
-@@ -382,8 +453,6 @@
-                         // if this is the last line or the next line is not a table line
-                         String beforePart = token.substring(0, token.lastIndexOf("|") + 1);
-                         sb.append(beforePart);
--                        String tableEndMarker = StepCreator.PARAMETER_TABLE_END;
--                        tableEndMarker = (String) htmlOutput.escape(PrintStreamOutput.Format.HTML, tableEndMarker)[0];
-                         sb.append(tableEndMarker);
-                         String afterPart = token.substring(token.lastIndexOf("|") + 1);
-                         sb.append(afterPart);
-@@ -408,38 +477,43 @@
-             return result;
- 
+@@ -252,13 +296,11 @@
+                 underlyingCause = underlyingCause.getCause();
+             }
+             String underlyingErrorMsg = "Underlying error - " + underlyingCause.getMessage();
+-            String timeAsString = "" + new Date().getTime()
+-            String uniqueId = timeAsString.substring(timeAsString.length() - 6);
+             htmlOutput.print(htmlOutput.format("failedStep", "{0} {1} ({2})\n({3})\n",
+                     tokens[0], tokens[1],
+                     htmlOutput.keywords.failed(),
+                     storyFailure.getCause(),
+-                    stackTrace, underlyingErrorMsg, uniqueId));
++                    stackTrace, underlyingErrorMsg));
          } else {
--            return text;
-+
-+            // use case for failed steps, for some reason those do not contain the invisible character markers
-+            StringBuilder sb = new StringBuilder();
-+            String[] lines = text.split("\n");
-+            boolean inTable = false;
-+            for (int i = 0; i < lines.length; i++) {
-+                String line = lines[i];
-+                if (!inTable && line.startsWith("|")) {
-+                    inTable = true;
-+                    sb.append(tableStartMarker);
--        }
-+                }
-+                if (inTable && (i == (lines.length - 1) || !lines[i + 1].startsWith("|"))) {
-+                    // this is alst table line
-+                    int lastPipe = line.lastIndexOf("|");
-+                    sb.append(line.substring(0, lastPipe + 1));
-+                    sb.append(tableEndMarker);
-+                    sb.append(line.substring(lastPipe + 1));
-+                    inTable = false;
-+                } else {
-+                    sb.append(line);
--    }
-+                }
-+                if (i != (lines.length - 1)) {
-+                    sb.append("\n");
-+                }
-+            }
+             htmlOutput.failed(step, storyFailure);
+         }
+@@ -371,6 +413,17 @@
  
--    private static Properties mergeOverridenPatterns(Properties outputPatterns) {
-+            String result = sb.toString();
-+            return result;
-+        }
-+    }
-+
-+    private static Properties mergeCustomPatterns(Properties outputPatterns) {
-         Properties patterns = new CustomHTMLFormatPatterns().getPatterns();
--        Properties overridenPatterns = overridenPatterns();
--        patterns.putAll(overridenPatterns);
-         patterns.putAll(outputPatterns);
-         return patterns;
      }
  
--    public static Properties overridenPatterns() {
--
--        Properties patterns = new Properties();
--
--        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
--        patterns.setProperty("afterScenario", "</div>\n");
--        patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
--
--        patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
--        patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
--        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
--        patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
--        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
--        patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
--
--        patterns.setProperty("pendingMethod", "");
--
--        return patterns;
--    }
--
-     /**
-      * @author Maryna Pristrom
-      */
-@@ -454,59 +528,129 @@
-         public CustomHTMLFormatPatterns() {
- 
-             patterns = new Properties();
++    private static List<Byte> stringToBytesList(String text) {
 +
-             patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");
- 
--            //        patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
--            patterns.setProperty("beforeStory", "<div class=\"story\">\n");
-+            // story
-+            patterns.setProperty("beforeStory", "<div class=\"story-report\">\n");
- 
--            //        patterns.setProperty("beforeStory", "<div class=\"story\">\n");
--            patterns.setProperty("afterStory", "</div>\n");
-+            patterns.setProperty("description",
-+                    "<div class='cm-jb-story-description-line'>{0}</div>\n<br>")
- 
-+            patterns.setProperty("afterStory", "</div>\n");
-+            // TODO - canceled story?
-             patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
--            patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");
--            patterns.setProperty("metaStart", "<div class=\"meta\">\n<div class=\"keyword\">{0}</div>\n");
--            patterns.setProperty("metaProperty", "<div class=\"property\">{0}{1} {2}</div>\n");
--            patterns.setProperty("metaEnd", "</div>\n");
++        byte[] bytesArray = text.getBytes();
++        List<Byte> bytesList = new ArrayList<Byte>(bytesArray.length);
++        for (int i = 0; i < bytesArray.length; i++) {
++            byte b = bytesArray[i];
++            bytesList.add(b);
++        }
++        return bytesList;
++    }
 +
-+            // meta
-+            patterns.setProperty("metaStart",
-+                    "<div>\n" +
-+                            "<div class=\"cm-jb-story-meta-title\">{0}</div>\n");
-+            patterns.setProperty("metaProperty", "<div class=\"cm-jb-story-meta-field\">{0}{1} {2}</div>\n");
-+            patterns.setProperty("metaEnd", "</div>\n<br>");
-+
-+            // TODO - where is this filter?
+     private static String bytesListToString(List<Byte> writtenBytes) {
+ 
+         Byte[] bytes = writtenBytes.toArray(new Byte[writtenBytes.size()]);
+@@ -544,7 +597,7 @@
+             // meta
+             patterns.setProperty("metaStart",
+                     "<div>\n" +
+-                            "<div class=\"cm-jb-story-meta-title\">{0}</div>\n");
++                            "<div class=\"jb-story-report-meta cm-jb-story-meta-title\">{0}</div>\n");
+             patterns.setProperty("metaProperty", "<div class=\"cm-jb-story-meta-field\">{0}{1} {2}</div>\n");
+             patterns.setProperty("metaEnd", "</div>\n<br>");
+ 
+@@ -552,8 +605,8 @@
              patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");
  
--            //        patterns.setProperty("narrative", "<div class=\"narrative\"><h2>{0}</h2>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");
              patterns.setProperty("narrative",
--                    "<div class=\"beforeNarrative\"><span>&nbsp;</span><span style=\"display: none;\" class=\"beforeNarrativeHint\">+<span></div>" +
--                            "<div class=\"narrative\">" +
-+                    "<div class=\"narrative\">" +
--                            "<div class=\"label\">" +
--                            "{0}</div>\n" +
--                            "<div contentEditable=\"false\" class=\"element inOrderTo\">" +
--                            "<div style=\"display: none;\" class=\"add-icon\">+</div>" +
--                            "<span contentEditable=\"false\" class=\"keyword inOrderTo inOrderToSpan\">{1}</span> <span></span></div>\n" +
-+                            "<div class=\"cm-jb-story-narrative-title\">{0}</div>\n" +
-+                            "<div>" +
-+                            "<span class=\"cm-jb-story-narrative-field-keyword\">{1}</span> " +
-+                            "<span class=\"cm-jb-story-narrative-field-value\">{2}</span>" +
-+                            "</div>\n" +
-+                            "<div>" +
-+                            "<span class=\"cm-jb-story-narrative-field-keyword\">{3}</span> " +
-+                            "<span class=\"cm-jb-story-narrative-field-value\">{4}</span>" +
-+                            "</div>\n" +
-+                            "<div>" +
-+                            "<span class=\"cm-jb-story-narrative-field-keyword\">{5}</span> " +
-+                            "<span class=\"cm-jb-story-narrative-field-value\">{6}</span>" +
-+                            "</div>\n" +
-+                            "</div>\n<br>");
+-                    "<div class=\"narrative\">" +
+-                            "<div class=\"cm-jb-story-narrative-title\">{0}</div>\n" +
++                    "<div class=\"\">" +
++                            "<div class=\"jb-story-report-narrative cm-jb-story-narrative-title\">{0}</div>\n" +
+                             "<div>" +
+                             "<span class=\"cm-jb-story-narrative-field-keyword\">{1}</span> " +
+                             "<span class=\"cm-jb-story-narrative-field-value\">{2}</span>" +
+@@ -570,7 +623,7 @@
  
--                            "<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n" +
--                            "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n" +
--                            "</div>\n"
-+            patterns.setProperty("lifecycleStart",
-+                    "<div class=\"lifecycle\">" +
-+                            "<div class=\"cm-jb-story-lifecycle\">{0}</div>"
+             patterns.setProperty("lifecycleStart",
+                     "<div class=\"lifecycle\">" +
+-                            "<div class=\"cm-jb-story-lifecycle\">{0}</div>"
++                            "<div class=\"jb-story-report-lifecycle cm-jb-story-lifecycle\">{0}</div>"
              );
--
--            patterns.setProperty("lifecycleStart", "<div class=\"lifecycle\"><h2>{0}</h2>");
--            patterns.setProperty("lifecycleEnd", "</div>");
--            patterns.setProperty("lifecycleBeforeStart", "<div class=\"before\"><h3>{0}</h3>");
-+            patterns.setProperty("lifecycleEnd", "</div><br>");
-+            patterns.setProperty("lifecycleBeforeStart",
-+                    "<div class=\"before\">" +
-+                            "<div class=\"cm-jb-story-lifecycle-before\">{0}</div>"
-+            );
-             patterns.setProperty("lifecycleBeforeEnd", "</div>");
--            patterns.setProperty("lifecycleAfterStart", "<div class=\"after\"><h3>{0}</h3>");
-+            patterns.setProperty("lifecycleAfterStart",
-+                    "<div class=\"after\">" +
-+                            "<div class=\"cm-jb-story-lifecycle-after\">{0}</div>"
-+            );
+             patterns.setProperty("lifecycleEnd", "</div><br>");
+             patterns.setProperty("lifecycleBeforeStart",
+@@ -583,14 +636,20 @@
+                             "<div class=\"cm-jb-story-lifecycle-after\">{0}</div>"
+             );
              patterns.setProperty("lifecycleAfterEnd", "</div>");
--            patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");
-+            patterns.setProperty("lifecycleStep", "<div class=\"cm-jb-story-step-body\">{0}</div>\n");
- 
--            //        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
--            patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<div class=\"scenario-title\"><span class=\"scenario-plus aui-icon aui-icon-small aui-iconfont-add\"></span><span class=\"label\">{0}</span> <span class=\"title\">{1}</span></div>\n");
-+            patterns.setProperty("beforeScenario",
-+                    "<div>\n" +
-+                            "<div>" +
-+                            "<span class=\"cm-jb-story-scenario-keyword\">{0} </span>" +
-+                            "<span class=\"cm-jb-story-scenario-title\">{1}</span>" +
-+//                            "<span class=\"scenario_status_badge\"></span>" +
-+//                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
-+                            "</div>\n"
-+            );
-+            patterns.setProperty("afterScenario", "</div>\n<br>");
-+//            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n<br>");
-+            patterns.setProperty("afterScenarioWithFailure", "</div>\n<br>");
- 
--            patterns.setProperty("afterScenario", "</div>\n");
--            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
-             patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
-             patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
-             patterns.setProperty("givenStory", "<div class=\"givenStory\">{0} {1}</div>\n");
-             patterns.setProperty("givenStoriesEnd", "</div>\n");
- 
-+//            patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");
-+            patterns.setProperty("pendingMethod", "");
-+
-             patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
-+            patterns.setProperty("successfulStep",
+-            patterns.setProperty("lifecycleStep", "<div class=\"cm-jb-story-step-body\">{0}</div>\n");
++            patterns.setProperty("lifecycleStep",
 +                    "<div class=\"jb-story-report-step matched-step\">" +
 +                            "<span class=\"cm-jb-story-step-keyword\">{0}</span>" +
 +                            "<span class=\"cm-jb-story-step-body\">{1}</span>" +
-+                            "<div class=\"cm-jb-story-step-successful-message\">{2}</div>" +
 +                            "</div>\n");
-+
-+            patterns.setProperty("failed", "");
-+            patterns.setProperty("failedStep",
-+                    "<div class=\"jb-story-report-step matched-step\">" +
-+                            "<span class=\"cm-jb-story-step-keyword failed\">{0}</span><span class=\"cm-jb-story-step-body failed\">{1}</span>" +
-+                            "<div class=\"cm-jb-story-step-failed-keyword\">({2})</div>" +
-+                            "<div class=\"cm-jb-story-step-failed-message\">{3}</div>" +
-+                            // failure trace formatting
-+                            "<div class=\"cm-jb-story-step-failed-message\">{5} " +
-+                            "<a replace-text=\"hide trace\" " +
-+                            "class=\"failure-trace-expander-trigger\" " +
-+                            "failure-trace-container=\"failure-trace-content-{6}\">show trace</a>" +
-+                            "<div id=\"failure-trace-content-{6}\" style=\"display: none;\" class=\"cm-jb-story-step-failed-message\">" +
-+                            "<pre class=\"failure\">{4}</pre>" +
-+                            "</div>" +
-+                            "</div>" +
-+                            "</div>\n");
-+
-             patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
--            patterns.setProperty("pending", "<div class=\"step pending\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0} <span class=\"keyword pending\">({1})</span></div>\n");
-+
-+//            patterns.setProperty("pending", "<div class=\"step pending\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0} <span class=\"keyword pending\">({1})</span></div>\n");
-+            patterns.setProperty("pending", "");
-+            patterns.setProperty("pendingStep",
-+                    "<div class=\"jb-story-report-step matched-step\">" +
-+                            "<span class=\"cm-jb-story-step-keyword\">{0}</span><span class=\"cm-jb-story-step-body\">{1}</span>" +
-+                            "<div class=\"cm-jb-story-keyword-pending\">({2})" +
-+//                            "<a replace-text=\"hide signature\" class=\"pending-method-signature-expander-trigger\">show signature</a>" +
-+//                            "<div style=\"display: none;\" class=\"pending-method-signature-expander-content\">{3}</div>" +
-+                            "</div>" +
-+                            "</div>\n");
-+
-             patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
--            patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
-+            patterns.setProperty("notPerformedStep",
-+                    "<div class=\"jb-story-report-step matched-step\">" +
-+                            "<span class=\"cm-jb-story-step-keyword\">{0}</span><span class=\"cm-jb-story-step-body\">{1}</span>" +
-+                            "<div class=\"cm-jb-story-keyword-notPerformed\">({2})</div>" +
-+                            "</div>\n");
-+
-             patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
  
-             patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
-@@ -519,10 +663,15 @@
-             patterns.setProperty("outcomesTableRowEnd", "</tr>\n");
-             patterns.setProperty("outcomesTableBodyEnd", "</tbody>\n");
-             patterns.setProperty("outcomesTableEnd", "</table></div>\n");
--            patterns.setProperty("beforeExamples", "<div class=\"examples\">\n<h3>{0}</h3>\n");
+             patterns.setProperty("beforeScenario",
+                     "<div>\n" +
+-                            "<div>" +
++                            "<div class=\"jb-story-report-scenario\">" +
+                             "<span class=\"cm-jb-story-scenario-keyword\">{0} </span>" +
+                             "<span class=\"cm-jb-story-scenario-title\">{1}</span>" +
+-//                            "<span class=\"scenario_status_badge\"></span>" +
++                            " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
++//                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
 +
-+//            patterns.setProperty("beforeExamples", "<div class=\"examples\">\n<h3>{0}</h3>\n");
-+            patterns.setProperty("beforeExamples", "<div class=\"examples\">\n<div class=\"cm-jb-story-examples\">{0}</div>\n");
-+            patterns.setProperty("beforeExamplesTable", "<div class=\"cm-jb-story-examples-body\">\n");
-+            patterns.setProperty("afterExamplesTable", "</div>\n");
-             patterns.setProperty("examplesStep", "<div class=\"step\">{0}</div>\n");
-             patterns.setProperty("afterExamples", "</div>\n");
--            patterns.setProperty("examplesTableStart", "<table>\n");
-+
-+            patterns.setProperty("examplesTableStart", "<table class=\"tabular-parameter\">\n");
-             patterns.setProperty("examplesTableHeadStart", "<thead>\n<tr>\n");
-             patterns.setProperty("examplesTableHeadCell", "<th>{0}</th>");
-             patterns.setProperty("examplesTableHeadEnd", "</tr>\n</thead>\n");
-@@ -532,8 +681,11 @@
-             patterns.setProperty("examplesTableRowEnd", "</tr>\n");
-             patterns.setProperty("examplesTableBodyEnd", "</tbody>\n");
-             patterns.setProperty("examplesTableEnd", "</table>\n");
--            patterns.setProperty("example", "\n<h3 class=\"example\">{0} {1}</h3>\n");
--            patterns.setProperty("parameterValueStart", "<span class=\"step parameter\">");
-+
-+//            patterns.setProperty("example", "\n<h3 class=\"example\">{0} {1}</h3>\n");
-+            patterns.setProperty("example", "\n<div class=\"jb-scenario-example\">{0} {1}</div>\n");
-+
-+            patterns.setProperty("parameterValueStart", "<span class=\"cm-jb-story-step-body matched-step step-parameter\">");
-             patterns.setProperty("parameterValueEnd", "</span>");
-             patterns.setProperty("parameterValueNewline", "<br/>");
-         }
-@@ -669,9 +821,12 @@
+ //                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
+                             "</div>\n"
+             );
+@@ -611,7 +670,7 @@
+                     "<div class=\"jb-story-report-step matched-step\">" +
+                             "<span class=\"cm-jb-story-step-keyword\">{0}</span>" +
+                             "<span class=\"cm-jb-story-step-body\">{1}</span>" +
+-                            "<div class=\"cm-jb-story-step-successful-message\">{2}</div>" +
++//                            "<div class=\"cm-jb-story-step-successful-message\">{2}</div>" +
+                             "</div>\n");
  
-     public static class CustomHtmlOutput extends HtmlOutput {
- 
-+        protected final Keywords keywords;
-+
-         public CustomHtmlOutput(PrintStream printStream, Properties outputPatterns, LocalizedKeywords keywords,
-                                 boolean reportFailureTrace, boolean compressFailureTrace) {
-             super(printStream, outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
-+            this.keywords = keywords;
-         }
- 
-         @Override
-@@ -683,6 +838,29 @@
-         @Override
-         public Object[] escape(PrintStreamOutput.Format format, Object... args) {
-             return super.escape(format, args);
-+        }
-+
-+        @Override
-+        public void beforeStory(Story story, boolean givenStory) {
-+            print(format("beforeStory", ""));
-+        }
-+
-+        public void description(Story story) {
-+            Description desc = story.getDescription();
-+            if (desc != null && StringUtils.isNotBlank(desc.asString())) {
-+                print(format("description", "{0}\n", story.getDescription().asString()));
-+            }
-+        }
-+
-+        public void meta(Story story) {
-+            Meta meta = story.getMeta();
-+            if (meta != null && !story.getMeta().isEmpty()) {
-+                print(format("metaStart", "{0}\n", keywords.meta()));
-+                for (String name : meta.getPropertyNames()) {
-+                    print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));
-+                }
-+                print(format("metaEnd", "\n"));
-+            }
-         }
-     }
- }
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(date 1409608936000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(revision )
-@@ -11,35 +11,36 @@
-     <description>Groovy client for integrating with the 'JBehave for Jira - Jira Plugin' component</description>
-     <url>https://bitbucket.org/pristrom/jbehave-for-jira-java-client-impl/overview</url>
-     <build>
--        <resources>
--            <resource>
--                <directory>src/main/groovy</directory>
--            </resource>
--        </resources>
-+        <!--<resources>-->
-+            <!--<resource>-->
-+                <!--<directory>src/main/groovy</directory>-->
-+            <!--</resource>-->
-+        <!--</resources>-->
-+        <sourceDirectory>src/main/groovy</sourceDirectory>
-         <plugins>
--            <!--<plugin>-->
--                <!--<groupId>org.codehaus.gmavenplus</groupId>-->
--                <!--<artifactId>gmavenplus-plugin</artifactId>-->
--                <!--<version>1.2</version>-->
--                <!--<executions>-->
--                    <!--<execution>-->
--                        <!--<goals>-->
--                            <!--<goal>compile</goal>-->
--                            <!--<goal>testCompile</goal>-->
--                        <!--</goals>-->
--                        <!--<configuration>-->
--                            <!--<sources>-->
--                                <!--<source>-->
--                                    <!--<directory>${project.basedir}/src/main/groovy</directory>-->
--                                    <!--<includes>-->
--                                        <!--<include>**/*.groovy</include>-->
--                                    <!--</includes>-->
--                                <!--</source>-->
--                            <!--</sources>-->
--                        <!--</configuration>-->
--                    <!--</execution>-->
--                <!--</executions>-->
--            <!--</plugin>-->
-+            <plugin>
-+                <groupId>org.codehaus.gmavenplus</groupId>
-+                <artifactId>gmavenplus-plugin</artifactId>
-+                <version>1.2</version>
-+                <executions>
-+                    <execution>
-+                        <goals>
-+                            <goal>compile</goal>
-+                            <goal>testCompile</goal>
-+                        </goals>
-+                        <configuration>
-+                            <sources>
-+                                <source>
-+                                    <directory>${project.basedir}/src/main/groovy</directory>
-+                                    <includes>
-+                                        <include>**/*.groovy</include>
-+                                    </includes>
-+                                </source>
-+                            </sources>
-+                        </configuration>
-+                    </execution>
-+                </executions>
-+            </plugin>
-             <!--<plugin>-->
-                 <!--<groupId>org.apache.maven.plugins</groupId>-->
-                 <!--<artifactId>maven-compiler-plugin</artifactId>-->
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(date 1409608936000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(revision )
-@@ -12,11 +12,11 @@
- /**
-  * @author Maryna Pristrom
-  */
--public class GroovyStoryPathFinder implements StoryPathsFinder {
-+public class GroovyStoryPathsFinder implements StoryPathsFinder {
- 
-     private String postUrl;
- 
--    public GroovyStoryPathFinder(String jiraBaseUrl, String projectKey, String username, String password) {
-+    public GroovyStoryPathsFinder(String jiraBaseUrl, String projectKey, String username, String password) {
- 
-         this.postUrl = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/find/story-paths/" + projectKey + "?os_username=" + username + "&os_password=" + password;
-     }
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(date 1409608936000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
-@@ -31,7 +31,7 @@
-                              boolean outputStoriesToFile, String outputStoriesDir) {
-         basePostUrl = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/find/for-path/";
-         loginParams = "?os_username=" + username + "&os_password=" + password;
--        this.outputStoriesToFile outputStoriesToFile;
-+        this.outputStoriesToFile = outputStoriesToFile;
-         this.downloadedStoriesDir = outputStoriesDir;
-     }
- 
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1409608936000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -109,7 +109,11 @@
-             stepDocDTO.parameterInfos = parameterInfos;
- 
-             if (parameterInfos.size() != stepDocDTO.parameterGroups.size()) {
--                throw new IllegalStateException("Number of resolved parameters doesn't match number of gather parameter infos");
-+                // this should not happen, but it may if the developer made a mistake in matching the number of method parameters to
-+                // number of parameters in pattern
-+                System.out.println("[WARN] Number of resolved parameters doesn't match number of gathered parameter infos, for class - "
-+                        + stepDocDTO.stepClassName + " and method - " + stepDocDTO.stepMethodSignature);
-+//                throw new IllegalStateException("Number of resolved parameters doesn't match number of gathered parameter infos");
-             }
- 
-             List<Integer> parameterGroups = stepDocDTO.parameterGroups;
+             patterns.setProperty("failed", "");
+@@ -623,9 +682,8 @@
+                             // failure trace formatting
+                             "<div class=\"cm-jb-story-step-failed-message\">{5} " +
+                             "<a replace-text=\"hide trace\" " +
+-                            "class=\"failure-trace-expander-trigger\" " +
+-                            "failure-trace-container=\"failure-trace-content-{6}\">show trace</a>" +
+-                            "<div id=\"failure-trace-content-{6}\" style=\"display: none;\" class=\"cm-jb-story-step-failed-message\">" +
++                            "class=\"failure-trace-expander-trigger\">show trace</a>" +
++                            "<div style=\"display: none;\" class=\"jb-story-report-failure-trace-container cm-jb-story-step-failed-message\">" +
+                             "<pre class=\"failure\">{4}</pre>" +
+                             "</div>" +
+                             "</div>" +
