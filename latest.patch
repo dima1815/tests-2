@@ -1,7 +1,7 @@
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java	(date 1410379766000)
 @@ -1,53 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.story;
 -
@@ -56,13 +56,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -        this.asString = asString;
 -    }
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
 @@ -24,7 +24,7 @@
          stepDoc.setParameterGroups(parameterGroupsAsString);
  
@@ -85,10 +85,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
              } catch (IOException e) {
                  throw new RuntimeException(e);
              }
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java	(date 1410379766000)
 @@ -1,73 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
 -
@@ -163,26 +163,26 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -    }
 -
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision )
 @@ -1,5 +1,3 @@
 -            Story story = stories.get(0);
 -            StoryReport[] storyHtmlReports = story.getStoryReports();
  package org.bitbucket.jbehaveforjira.plugin.conditions;
  
  import com.atlassian.jira.issue.Issue;
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(revision )
 @@ -8,7 +8,7 @@
  import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
  import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
@@ -285,13 +285,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          JBehaveStoryReport[] storyTestReports = story.getStoryReports();
          for (JBehaveStoryReport storyTestReport : storyTestReports) {
              storyReportDao.delete(storyTestReport);
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(revision )
 @@ -1,5 +1,3 @@
 -            Story story = byIssueKey.get(0);
 -            StoryReport[] storyTestReports = story.getStoryReports();
@@ -352,13 +352,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                      storyReportDTOs.add(storyReportDTO);
                  }
                  return storyReportDTOs;
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(revision )
 @@ -7,8 +7,8 @@
  import com.atlassian.jira.issue.fields.config.FieldConfig;
  import com.atlassian.jira.issue.fields.config.FieldConfigItem;
@@ -390,10 +390,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                  String environment = storyTestReport.getEnvironment();
                  statusesByEnvironment.put(environment, status);
 \ No newline at end of file
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java	(date 1410379766000)
 @@ -1,82 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.rest;
 -
@@ -477,13 +477,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -        return sb.toString();
 -    }
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(revision )
 @@ -2,8 +2,6 @@
  
  import com.atlassian.activeobjects.external.ActiveObjects;
@@ -502,13 +502,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
      private final ActiveObjects ao;
  
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
 @@ -3,7 +3,7 @@
  import com.atlassian.jira.bc.issue.search.SearchService;
  import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -547,13 +547,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          Validate.notNull(savedStoryDTO.getVersion());
  
          try {
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(revision )
 @@ -3,9 +3,6 @@
  import net.java.ao.Entity;
  import net.java.ao.Preload;
@@ -564,13 +564,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  @Preload
  public interface JBehaveStepDoc extends Entity {
  
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
 @@ -20,9 +20,11 @@
      private List<Integer> paramBoundInPattern;
      private String extendedPattern;
@@ -598,13 +598,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          this.parameterInfos = parameterInfos;
      }
  
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(revision )
 @@ -4,31 +4,25 @@
  import net.java.ao.OneToMany;
  import net.java.ao.Preload;
@@ -638,10 +638,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
      String getAsString();
  
      void setAsString(String asString);
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java	(date 1410379766000)
 @@ -1,143 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
 -
@@ -786,13 +786,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -    }
 -}
 -
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
 @@ -3,9 +3,9 @@
  import com.atlassian.jira.bc.issue.search.SearchService;
  import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -865,13 +865,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
          Response response;
          if (storyDTO != null) {
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(revision )
 @@ -3,22 +3,13 @@
  import net.java.ao.Entity;
  import net.java.ao.Preload;
@@ -907,10 +907,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
      Long getStoryVersion();
  
      void setStoryVersion(Long storyVersion);
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java	(date 1410379766000)
 @@ -1,28 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
 -
@@ -940,21 +940,21 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -        return storyTestReports;
 -    }
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
 @@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(revision )
 @@ -1,24 +1,24 @@
  package org.bitbucket.jbehaveforjira.plugin.service;
  
@@ -985,13 +985,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  }
  
  
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(revision )
 @@ -4,7 +4,7 @@
  
  public class StoryReportDTOUtils {
@@ -1018,10 +1018,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
          storyReportDTO.setTotalScenarios(storyHtmlReport.getTotalScenarios());
          storyReportDTO.setTotalScenariosPassed(storyHtmlReport.getTotalScenariosPassed());
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java	(date 1410379766000)
 @@ -1,47 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
 -
@@ -1070,13 +1070,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -        this.suggestedValues = suggestedValues;
 -    }
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(revision )
 @@ -3,8 +3,6 @@
  import com.atlassian.activeobjects.external.ActiveObjects;
  import net.java.ao.Query;
@@ -1104,10 +1104,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          String[] params = new String[]{projectKey, stepType.name()};
          Query query = Query.select().where("PROJECT_KEY = ? AND STEP_TYPE = ?", params);
          JBehaveStepDoc[] result = ao.find(JBehaveStepDoc.class, query);
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java	(date 1410379766000)
 @@ -1,36 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.story;
 -
@@ -1145,13 +1145,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -    }
 -
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/pom.xml
+Index: jbehave-for-jira-plugin/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/pom.xml	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/pom.xml	(revision )
+--- jbehave-for-jira-plugin/pom.xml	(date 1410379766000)
++++ jbehave-for-jira-plugin/pom.xml	(revision )
 @@ -80,12 +80,12 @@
              <version>${jira.version}</version>
              <scope>provided</scope>
@@ -1171,10 +1171,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          <dependency>
              <groupId>com.atlassian.activeobjects</groupId>
              <artifactId>activeobjects-plugin</artifactId>
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java	(date 1410379766000)
 @@ -1,24 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.dto.story;
 -
@@ -1200,13 +1200,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -        this.paths = paths;
 -    }
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(revision )
 @@ -1,16 +1,16 @@
  package org.bitbucket.jbehaveforjira.plugin.service;
  
@@ -1227,10 +1227,10 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
      void deleteForIssue(String projectKey, String issueKey);
  }
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1410379766000)
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1410379766000)
 @@ -1,110 +0,0 @@
 -package org.bitbucket.jbehaveforjira.plugin.rest;
 -
@@ -1342,13 +1342,13 @@ Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitb
 -        return Response.ok("Successful deletion from server!").build();
 -    }
 -}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(revision )
 @@ -8,9 +8,9 @@
  
  public class StoryDTOUtils {
@@ -1361,13 +1361,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
          storyDTO.setProjectKey(story.getProjectKey());
          storyDTO.setIssueKey(story.getIssueKey());
          storyDTO.setVersion(story.getVersion());
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
 @@ -5,8 +5,8 @@
  import com.atlassian.jira.event.issue.IssueEvent;
  import com.atlassian.jira.event.type.EventType;
@@ -1403,19 +1403,19 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                      log.debug("Deleting JBehave story for issue with key - " + issueKey + " in project - " + projectKey + ", due to issue deletion");
                      storyDao.delete(story);
                  }
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm
+Index: jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(revision )
+--- jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(revision )
 @@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+Index: jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1410379766000)
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+--- jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1410379766000)
++++ jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
 @@ -1,0 +1,0 @@
