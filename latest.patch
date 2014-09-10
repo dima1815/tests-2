@@ -1,10 +1,10 @@
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
 @@ -0,0 +1,150 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
 +
@@ -156,13 +156,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    }
 +}
 +
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
 @@ -0,0 +1,62 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
 +
@@ -226,13 +226,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    }
 +
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
 @@ -0,0 +1,31 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.story;
 +
@@ -265,13 +265,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    }
 +
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
 @@ -0,0 +1,50 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.story;
 +
@@ -323,13 +323,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        this.asString = asString;
 +    }
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
 @@ -0,0 +1,32 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
 +
@@ -363,13 +363,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +    }
 +
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
 @@ -0,0 +1,25 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
 +
@@ -396,13 +396,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        return storyTestReports;
 +    }
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
 @@ -0,0 +1,80 @@
 +package org.bitbucket.jbehaveforjira.plugin.rest;
 +
@@ -484,13 +484,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        return sb.toString();
 +    }
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
 @@ -0,0 +1,104 @@
 +package org.bitbucket.jbehaveforjira.plugin.rest;
 +
@@ -596,13 +596,13 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        return Response.ok("Successful deletion from server!").build();
 +    }
 +}
-Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java
+Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
-+++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
+--- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
++++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
 @@ -0,0 +1,21 @@
 +package org.bitbucket.jbehaveforjira.plugin.dto.story;
 +
