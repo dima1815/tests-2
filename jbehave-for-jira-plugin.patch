@@ -1,674 +1,2656 @@
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/edit-story.css
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/edit-story.css	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/edit-story.css	(date 1410286683000)
+@@ -1,193 +0,0 @@
+-/*#editorSettingsContainer {*/
+-    /*border: solid #002240 thin;*/
+-    /*width: 30px;*/
+-    /*float:right;*/
+-    /*width: 5%;*/
+-    /*height: 45px;*/
+-    /*max-height: 45px;*/
+-    /*margin-left: 5px;*/
+-    /*display:inline-block;*/
+-/*}*/
+-
+-#storyEditAreaContainer {
+-    padding-top: 10px;
+-}
+-
+-#storyMsgBar {
+-    /*border: solid #ca7841 thin;*/
+-    width: 100%;
+-    /*height: 45px;*/
+-    /*max-height: 45px;*/
+-    display:inline-block;
+-}
+-
+-/*.edit-operation-link {*/
+-    /*font-weight: bold;*/
+-/*}*/
+-
+-.savingMsgDiv {
+-    display: inline;
+-    border-style: solid;
+-    border-width: 1px;
+-    border-color: green;
+-}
+-
+-.save-story-button-spinner {
+-    /*border-style: solid;*/
+-    /*border-width: 1px;*/
+-    /*border-color: red;*/
+-    /*float: left;*/
+-    display: inline;
+-}
+-
+-/*#storyEditArea.active {*/
+-    /*border: 1px solid grey;*/
+-    /*border-bottom-left-radius: 2px;*/
+-    /*border-bottom-right-radius: 2px;*/
+-    /*border-top-left-radius: 2px;*/
+-    /*border-top-right-radius: 2px;*/
+-    /*box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px;*/
+-    /*box-sizing: border-box;*/
+-    /*border-bottom-color: rgb(51, 51, 51);*/
+-    /*border-left-color: rgb(51, 51, 51);*/
+-
+-    /*border-radius: 3px;*/
+-    /*border-bottom-left-radius: 3px;*/
+-    /*border-bottom-right-radius: 3px;*/
+-    /*border-top-left-radius: 1px;*/
+-    /*border-top-right-radius: 1px;*/
+-
+-    /*border-style: solid;*/
+-    /*border-left-style: solid;*/
+-    /*border-top-style: solid;*/
+-    /*border-bottom-style: solid;*/
+-    /*border-right-style: solid;*/
+-
+-    /*border-width: 1px;*/
+-    /*border-top-width: 1px;*/
+-    /*border-bottom-width: 1px;*/
+-    /*border-left-width: 1px;*/
+-    /*border-right-width: 1px;*/
+-
+-    /*border-color: rgb(204, 204, 204);*/
+-    /*border-left-color: rgb(204, 204, 204);*/
+-    /*border-right-color: rgb(204, 204, 204);*/
+-    /*border-top-color: rgb(204, 204, 204);*/
+-    /*border-bottom-color: rgb(204, 204, 204);*/
+-
+-    /*border-collapse: separate;*/
+-    /*border-image-outset: 0px;*/
+-    /*border-image-repeat: stretch;*/
+-    /*border-image-slice: 100%;*/
+-    /*border-image-source: none;*/
+-    /*border-image-width: 1;*/
+-
+-    /*bottom: auto;*/
+-    /*box-shadow: rgb(232, 232, 232) 0px 1px 3px 0px inset;*/
+-    /*box-sizing: border-box;*/
+-/*}*/
+-
+-
+-/*#editStoryButtons {*/
+-    /*margin-top: 20px;*/
+-    /*margin-left: 0px;*/
+-/*}*/
+-
+-/*.story-editor-field {*/
+-    /*border: none;*/
+-    /*resize: none;*/
+-    /*overflow: hidden;*/
+-/*}*/
+-
+-/*.story-editor-field.focused {*/
+-    /*border: solid 1px #00cc00;*/
+-/*}*/
+-
+-/*.story-description .story-editor-field {*/
+-    /*border: none;*/
+-    /*color: forestgreen;*/
+-    /*width: 100%;*/
+-    /*resize: none;*/
+-/*}*/
+-
+-/*.narrative .story-editor-field {*/
+-    /*border: none;*/
+-    /*color: #00F;*/
+-    /*width: 100%;*/
+-    /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", sans-serif;*/
+-    /*font-size: 1em;*/
+-    /*white-space: nowrap;*/
+-/*}*/
+-
+-/*#richStoryEditContent {*/
+-    /*margin-top: 20px;*/
+-    /*margin-left: 20px;*/
+-/*}*/
+-
+-/*.insert-element-div {*/
+-    /*position: relative;*/
+-    /*margin-top: 0px;*/
+-    /*margin-bottom: 0px;*/
+-    /*border: 1px solid #008000;*/
+-
+-/*}*/
+-
+-/*.insert-element-trigger-div {*/
+-    /*position: absolute;*/
+-    /*top: 0px;*/
+-    /*left: -23px;*/
+-    /*width: 100%;*/
+-    /*border: 1px solid #006699;*/
+-/*}*/
+-
+-/*.insert-element-link-div {*/
+-    /*border: solid 1px purple;*/
+-/*}*/
+-
+-/*.insert-element-link {*/
+-    /*position: absolute;*/
+-    /*top: 0px;*/
+-    /*left: 0px;*/
+-    /*margin-left: 3px;*/
+-/*}*/
+-
+-/*.insert-element-link {*/
+-    /*color: #00cc00;*/
+-/*}*/
+-
+-/*.aui-button.aui-button-link.insert-element-link, .aui-button.aui-button-link.insert-element-link:visited {*/
+-/*color: #ff0000;*/
+-/*}*/
+-
+-/*.insert-element-link:focus, .insert-element-link:active .insert-element-link:visited {*/
+-    /*color: #00cc00;*/
+-/*}*/
+-
+-/*.story-element-container {*/
+-    /*position: relative;*/
+-    /*border: solid 1px #815b3a;*/
+-/*}*/
+-
+-/*.element-operations-container {*/
+-    /*position: absolute;*/
+-    /*top: 0px;*/
+-    /*left: 0px;*/
+-    /*border: solid 1px yellow;*/
+-/*}*/
+-
+-/*.element-content-container {*/
+-    /*margin-left: 23px;*/
+-/*}*/
+-
+-/*.remove-element-link {*/
+-    /*color: red;*/
+-/*}*/
+-
+-/*.remove-element-link:focus, .remove-element-link:active .remove-element-link:visited {*/
+-    /*color: red;*/
+-/*}*/
+-
+-/*.story-element-field-short {*/
+-    /*width: 30%;*/
+-/*}*/
+-
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1409862849000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -192,6 +192,23 @@
-         AJS.$('#storyReportsPanel').html(storyReportsContent);
-         AJS.tabs.setup();
- 
-+        // assign expand triggers for failure traces
-+        AJS.$('.failure-trace-expander-trigger').each(function (index, element) {
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
+@@ -0,0 +1,70 @@
++package org.bitbucket.jbehaveforjira.plugin.listeners;
 +
-+            AJS.$(element).click(function(eventObject) {
-+                eventObject.preventDefault();
-+                var target = eventObject.target;
-+                var targetNode = AJS.$(target)[0];
-+                var traceContainerId = targetNode.getAttribute("failure-trace-container");
-+                AJS.$("#" + traceContainerId).toggle();
-+                var replaceText =targetNode.getAttribute("replace-text");
-+                var currentHtml = AJS.$(targetNode).html();
-+                AJS.$(targetNode).html(replaceText);
-+                targetNode.setAttribute("replace-text", currentHtml);
-+            });
++import com.atlassian.event.api.EventListener;
++import com.atlassian.event.api.EventPublisher;
++import com.atlassian.jira.event.issue.IssueEvent;
++import com.atlassian.jira.event.type.EventType;
++import com.atlassian.jira.issue.Issue;
++import org.bitbucket.jbehaveforjira.plugin.ao.Story;
++import org.bitbucket.jbehaveforjira.plugin.ao.StoryDao;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.DisposableBean;
++import org.springframework.beans.factory.InitializingBean;
 +
-+        });
++import java.util.List;
 +
-         debug("# showStoryReports");
-     }
- 
-@@ -266,7 +283,7 @@
- //            AJS.$("#storyMsgBar").empty();
-             var waitingMsg = execspec.viewissuepage.showstory.renderWaitingMessage();
-             AJS.$('#storyEditedMsgContainer').html(waitingMsg);
--            AJS.$('.save-story-button-spinner').spin();
-+//            AJS.$('#save-story-button-spinner').spin();
-         }
- 
-         this.showSuccessMessage = function (saveCancelMsg) {
-@@ -585,6 +602,12 @@
-             return matchedResult != null;
-         }
- 
-+        this.startsWithAfter = function (text) {
-+            var regExpPattern = new RegExp("^(After:)");
-+            var matchedResult = regExpPattern.exec(text);
-+            return matchedResult != null;
-+        }
++/**
++ * @author Maryna Stasyuk
++ */
++public class IssueDeletedEventListener implements InitializingBean, DisposableBean {
 +
-         this.startsWithOutcome = function (text) {
-             var regExpPattern = new RegExp("^(Outcome:)\\s");
-             var matchedResult = regExpPattern.exec(text);
-@@ -755,6 +778,17 @@
-             }
-         }
- 
-+        this.lineStartsWithAfterOrOutcome = function (lineNumber) {
++    private static final Logger log = LoggerFactory.getLogger(IssueDeletedEventListener.class);
 +
-+            var lineHandle = editor.getLineHandle(lineNumber);
-+            var lineText = lineHandle.text;
-+            if (textUtils.startsWithAfter(lineText) || textUtils.startsWithOutcome(lineText)) {
-+                return true;
-+            } else {
-+                return false;
++    private EventPublisher eventPublisher;
++
++    private final StoryDao storyDao;
++
++    public IssueDeletedEventListener(EventPublisher eventPublisher, StoryDao storyDao) {
++        this.eventPublisher = eventPublisher;
++        this.storyDao = storyDao;
++    }
++
++    /**
++     * Called when the plugin has been enabled.
++     * @throws Exception
++     */
++    @Override
++    public void afterPropertiesSet() throws Exception {
++        // register ourselves with the EventPublisher
++        eventPublisher.register(this);
++    }
++
++    /**
++     * Called when the plugin is being disabled or removed.
++     * @throws Exception
++     */
++    @Override
++    public void destroy() throws Exception {
++        // unregister ourselves with the EventPublisher
++        eventPublisher.unregister(this);
++    }
++
++    @EventListener
++    public void onIssueEvent(IssueEvent issueEvent) {
++        Long eventTypeId = issueEvent.getEventTypeId();
++
++        if (eventTypeId.equals(EventType.ISSUE_DELETED_ID)) {
++            Issue issue = issueEvent.getIssue();
++            String issueKey = issue.getKey();
++            String projectKey = issue.getProjectObject().getKey();
++            List<Story> stories = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
++            if (!stories.isEmpty()) {
++                for (Story story : stories) {
++                    log.debug("Deleting JBehave story for issue with key - " + issueKey + " in project - " + projectKey + ", due to issue deletion");
++                    storyDao.delete(story);
++                }
 +            }
 +        }
-+
-         this.findTabularParameterEndingLineAfter = function (tableStartLine, notAtOrAfter) {
-             var nextLineNumber = tableStartLine + 1;
-             var lastStepLine = tableStartLine;
-@@ -781,7 +815,8 @@
-             var lastStepLine = lineNumber;
-             while (nextLineNumber < lineCount) {
-                 if (this.lineStartsWithStepKeyword(nextLineNumber)
--                    || this.lineStartsWithScenarioOrExamples(nextLineNumber)) {
-+                    || this.lineStartsWithScenarioOrExamples(nextLineNumber)
-+                    || this.lineStartsWithAfterOrOutcome(nextLineNumber)) {
-                     break;
-                 } else {
-                     lastStepLine = nextLineNumber;
-@@ -1041,7 +1076,7 @@
- 
-                 while (tableStartingLine != -1) {
-                     // we have found at least one table in the edited text
--                    var tableEndingLine = editorUtils.findTabularParameterEndingLineAfter(tableStartingLine, editor.lineCount() - 1);
-+                    var tableEndingLine = editorUtils.findTabularParameterEndingLineAfter(tableStartingLine, editor.lineCount());
-                     if (tableEndingLine > tableStartingLine) {
-                         // it actually a table, i.e. more than 1 line of text that starts with a '|'
-                         tableAligner.alignTableBetween(tableStartingLine, tableEndingLine);
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1409862849000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
-@@ -59,6 +59,8 @@
-                     allowSteps: false,
-                     allowAndStep: false,
- 
-+                    inTable: false,
-+
-                     inExamples: false,
-                     allowExamples: false,
- 
-@@ -83,35 +85,40 @@
-                     state.inLifecycleOutcome = false;
-                 }
- 
-+                state.lastTokenType = "";
-+
-                 // LINE COMMENT
--                if (stream.sol() && (stream.match(/!--.*/) || stream.match(/\|--.*/))) {
-+                if (stream.sol() && !state.inTable && (stream.match(/!--.*/) || stream.match(/\|--.*/))) {
- //                    state.lastTokenType =  "comment";
--                    state.lastTokenType = "jb-story-comment";
-+                    state.lastTokenType += " jb-story-comment";
- 
- //                    // TABLE COMMENT
--//                } else if (stream.sol() && stream.match(/\|--.*/)) {
--//                    return "comment";
-+                } else if (stream.sol() && state.inTable && stream.match(/\|--.*/)) {
-+                    state.lastTokenType += " jb-story-table-comment";
- 
-                     // META title
-                 } else if (state.allowMeta && stream.sol() && stream.match(/(Meta):/)) {
- 
-                     state.inMeta = true;
-                     state.inDescription = false;
-+                    state.inTable = false;
- 
-                     state.allowDescription = false;
-                     state.allowMeta = false;
-                     state.allowMetaField = true;
- 
--                    state.lastTokenType = "jb-story-meta-title";
-+                    state.lastTokenType += " jb-story-meta-title";
- 
-                     // META field
-                 } else if (state.allowMetaField && stream.sol() && stream.match(/@.*/)) {
- 
--                    state.lastTokenType = "jb-story-meta-field";
-+                    state.inTable = false;
-+                    state.lastTokenType += " jb-story-meta-field";
- 
-                     // Narrative - title
-                 } else if (state.allowNarrative && stream.sol() && stream.match(/Narrative:/)) {
- 
-+                    state.inTable = false;
-                     state.inDescription = false;
-                     state.inNarrative = true;
- 
-@@ -123,7 +130,7 @@
- 
-                     state.allowSteps = false;
- 
--                    state.lastTokenType = "jb-story-narrative-title";
-+                    state.lastTokenType += " jb-story-narrative-title";
- 
-                     // Narrative - In order to - keyword
-                 } else if (state.allowNarrativeInOrderTo && stream.sol() && stream.match(/(In order to )/)) {
-@@ -131,8 +138,9 @@
-                     state.allowNarrativeInOrderTo = false;
-                     state.allowNarrativeAsA = true;
-                     state.inNarrativeField = true;
-+                    state.inTable = false;
- 
--                    state.lastTokenType = "jb-story-narrative-field-keyword";
-+                    state.lastTokenType += " jb-story-narrative-field-keyword";
- 
-                     // Narrative - As a - keyword
-                 } else if (state.allowNarrativeAsA && stream.sol() && stream.match(/(As a )/)) {
-@@ -140,24 +148,27 @@
-                     state.allowNarrativeAsA = false;
-                     state.allowNarrativeIWantTo = true;
-                     state.inNarrativeField = true;
-+                    state.inTable = false;
- 
--                    state.lastTokenType = "jb-story-narrative-field-keyword";
-+                    state.lastTokenType += " jb-story-narrative-field-keyword";
- 
-                     // Narrative - I want to - keyword
-                 } else if (state.allowNarrativeIWantTo && stream.sol() && stream.match(/(I want to )/)) {
- 
-                     state.allowNarrativeIWantTo = false;
-                     state.inNarrativeField = true;
-+                    state.inTable = false;
- 
-                     state.allowScenario = true;
-                     state.allowLifecycle = true;
- 
--                    state.lastTokenType = "jb-story-narrative-field-keyword";
-+                    state.lastTokenType += " jb-story-narrative-field-keyword";
- 
-                     // Narrative - field value
-                 } else if (state.inNarrativeField && stream.match(/.*/)) {
- 
--                    state.lastTokenType = "jb-story-narrative-field-value";
-+                    state.lastTokenType += " jb-story-narrative-field-value";
-+                    state.inTable = false;
- 
-                     // Lifecycle
-                 } else if (state.allowLifecycle && stream.sol() && stream.match(/Lifecycle:/)) {
-@@ -167,8 +178,9 @@
-                     state.allowLifecycle = false;
-                     state.allowLifecycleBefore = true;
-                     state.allowLifecycleAfter = true;
-+                    state.inTable = false;
- 
--                    state.lastTokenType = "jb-story-lifecycle";
-+                    state.lastTokenType += " jb-story-lifecycle";
- 
-                     // Lifecycle - Before
-                 } else if (state.allowLifecycleBefore && stream.sol() && stream.match(/Before:/)) {
-@@ -176,6 +188,7 @@
-                     state.inStep = false;
-                     state.inLifecycleBefore = true;
-                     state.inLifecycleAfter = false;
-+                    state.inTable = false;
- 
-                     state.allowLifecycleBefore = false;
-                     state.allowSteps = true;
-@@ -185,7 +198,7 @@
-                     state.currentStepKeyword = null;
-                     state.lastStepStartedAt = null;
- 
--                    state.lastTokenType = "jb-story-lifecycle-before";
-+                    state.lastTokenType += " jb-story-lifecycle-before";
- 
-                     // Lifecycle - After
-                 } else if (state.allowLifecycleAfter && stream.sol() && stream.match(/After:/)) {
-@@ -193,6 +206,7 @@
-                     state.inStep = false;
-                     state.inLifecycleBefore = false;
-                     state.inLifecycleAfter = true;
-+                    state.inTable = false;
- 
-                     state.allowLifecycleBefore = false;
-                     state.allowLifecycleAfter = false;
-@@ -201,18 +215,19 @@
-                     state.allowSteps = false;
-                     state.allowAndStep = false;
- 
--                    state.lastTokenType = "jb-story-lifecycle-after";
-+                    state.lastTokenType += " jb-story-lifecycle-after";
- 
-                     // Lifecycle - Outcome keyword
-                 } else if (state.allowLifecycleOutcome && stream.sol() && stream.match(/Outcome: /)) {
- 
-                     state.inStep = false;
-+                    state.inTable = false;
-                     state.inLifecycleOutcome = true;
- 
-                     state.allowLifecycleOutcome = false;
-                     state.allowScenario = false;
- 
--                    state.lastTokenType = "jb-story-lifecycle-outcome-keyword";
-+                    state.lastTokenType += " jb-story-lifecycle-outcome-keyword";
- 
-                     // Lifecycle - Outcome value
-                 } else if (state.inLifecycleOutcome && !stream.sol()
-@@ -220,20 +235,22 @@
- 
-                     state.allowSteps = true;
- 
-+                    state.inTable = false;
-                     state.lastStepKeyword = null;
-                     state.currentStepKeyword = null;
-                     state.lastStepStartedAt = null;
- 
--                    state.lastTokenType = "jb-story-lifecycle-outcome-value";
-+                    state.lastTokenType += " jb-story-lifecycle-outcome-value";
- 
-                     // SCENARIO keyword
--                } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario):/)) {
-+                } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario): /)) {
- 
-                     state.inStep = false;
-                     state.inLifecycle = false;
-                     state.inLifecycleAfter = false;
-                     state.inScenario = true;
-                     state.inScenarioTitleLine = true;
-+                    state.inTable = false;
- 
-                     state.allowLifecycle = false;
-                     state.allowLifecycleBefore = false;
-@@ -247,12 +264,13 @@
-                     state.currentStepKeyword = null;
-                     state.lastStepStartedAt = null;
- 
--                    state.lastTokenType = "jb-story-scenario-keyword";
-+                    state.lastTokenType += " jb-story-scenario-keyword";
- 
-                     // SCENARIO title
-                 } else if (state.inScenarioTitleLine && !stream.sol() && stream.match(/.*/)) {
- 
--                    state.lastTokenType = "jb-story-scenario-title";
-+                    state.inTable = false;
-+                    state.lastTokenType += " jb-story-scenario-title";
- 
-                     // GIVEN
-                 } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
-@@ -274,7 +292,7 @@
-                         state.allowAndStep = true;
-                     }
- 
--
-+                    state.inTable = false;
-                     state.inStep = true;
-                     state.stepNumber++;
-                     state.stepBody = "";
-@@ -287,7 +305,7 @@
- 
-                     state.allowExamples = true;
- 
--                    state.lastTokenType = "jb-story-step-keyword given-step";
-+                    state.lastTokenType += " jb-story-step-keyword given-step";
- 
-                     // WHEN
-                 } else if (state.allowSteps && stream.sol() && stream.match(/(When )/)) {
-@@ -310,6 +328,7 @@
-                     }
-                     state.currentStepKeyword = "When";
- 
-+                    state.inTable = false;
-                     state.stepStartingKeyword = "When "; //TODO
-                     state.stepNumber++;
-                     state.stepBody = "";
-@@ -322,7 +341,7 @@
- 
-                     state.allowExamples = true;
- 
--                    state.lastTokenType = "jb-story-step-keyword when-step";
-+                    state.lastTokenType += " jb-story-step-keyword when-step";
- 
-                     // THEN
-                 } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
-@@ -346,6 +365,7 @@
- 
-                     state.allowExamples = true;
- 
-+                    state.inTable = false;
-                     state.inStep = true;
-                     state.stepNumber++;
-                     state.stepBody = "";
-@@ -356,7 +376,7 @@
- 
-                     state.currentStepNumber++;
- 
--                    state.lastTokenType = "jb-story-step-keyword then-step";
-+                    state.lastTokenType += " jb-story-step-keyword then-step";
- 
-                     // AND
-                 } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
-@@ -370,6 +390,7 @@
-                     }
- 
-                     state.inStep = true;
-+                    state.inTable = false;
- 
-                     state.stepNumber++;
-                     state.stepBody = "";
-@@ -386,25 +407,27 @@
- 
-                     state.currentStepNumber++;
- 
--                    state.lastTokenType = "jb-story-step-keyword " + state.lastStepKeyword + "-step";
-+                    state.lastTokenType += " jb-story-step-keyword " + state.lastStepKeyword + "-step";
- 
-                     // Examples
-                 }else if (state.allowExamples && stream.sol() && stream.match(/(Examples):/)) {
- 
-                     state.inExamples = true;
-                     state.inStep = false;
-+                    state.inTable = false;
- 
-                     state.allowSteps = false;
-                     state.allowAndStep = false;
-                     state.allowExamples = false;
- 
--                    state.lastTokenType = "jb-story-examples";
-+                    state.lastTokenType += " jb-story-examples";
- 
-                     // Description
-                 } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {
- 
-+                    state.inTable = false;
-                     state.inDescription = true;
--                    state.lastTokenType = "jb-story-description-line";
-+                    state.lastTokenType += " jb-story-description-line";
- 
-                     // Step body
-                 } else if (state.inStep && stream.match(/(.*)/)) {
-@@ -420,17 +443,39 @@
-                     var stepBody = state.stepBody;
-                     console.log("stepBody - " + stepBody);
- 
--                    state.lastTokenType = "jb-story-step-body";
-+                    state.lastTokenType += " jb-story-step-body";
- 
-+                    var current = stream.current();
-+                    if (current.substring(0, 1) == "|") {
-+                        state.lastTokenType += " jb-story-table-line";
-+                        if (current.substring(0, 3) != "|--" && !state.inTable) {
-+                            state.lastTokenType += " jb-story-first-table-line";
-+                            state.inTable = true;
-+                        }
-+                    } else {
-+                        state.inTable = false;
-+                    }
-+
-                     // Examples body
-                 } else if (state.inExamples && stream.match(/(.*)/)) {
- 
--                    state.lastTokenType = "jb-story-examples-body";
-+                    state.lastTokenType += " jb-story-examples-body";
- 
-+                    var current = stream.current();
-+                    if (current.substring(0, 1) == "|") {
-+                        state.lastTokenType += " jb-story-table-line";
-+                        if (current.substring(0, 3) != "|--" && !state.inTable) {
-+                            state.lastTokenType += " jb-story-first-table-line";
-+                            state.inTable = true;
-+                        }
-+                    } else {
-+                        state.inTable = false;
-+                    }
-+
-                     // Fall through
-                 } else {
-                     stream.match(/(.*)/);
--                    state.lastTokenType = "jb-story-invalid-token";
-+                    state.lastTokenType += " jb-story-invalid-token";
-                 }
- 
-                 state.current = stream.current();
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(date 1409862849000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(revision )
-@@ -31,18 +31,9 @@
- {template .renderWaitingMessage}
-  <div>
-     <div class="savingMsgDiv">Saving&nbsp;&nbsp;&nbsp;&nbsp;</div>
--    <div class="save-story-button-spinner"></div>
-+//    <div id="save-story-button-spinner" class="button-spinner"></div>
-+    <span class="aui-icon aui-icon-wait">Saving...</span>
- </div>
--//    <table>
--//        <tr>
--//            <td style="width: 100%;">
--//                Saving...
--//            </td>
--//            <td style="width: auto;">
--//                <div class='button-spinner'></div>
--//            </td>
--//        </tr>
--//    </table>
- {/template}
- 
- /**
++    }
++}
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story.css	(date 1409862849000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story.css	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story.css	(revision )
-@@ -82,10 +82,14 @@
-     font-style: italic;
- }
+@@ -159,4 +159,32 @@
  
--.cm-jb-story-step-keyword.matched-step {
-+.cm-jb-story-step-keyword.matched-step, .matched-step .cm-jb-story-step-keyword {
-     font-style: normal;
- }
- 
-+/*.matched-step.cm-jb-story-step-keyword.failed, .matched-step .cm-jb-story-step-keyword.failed {*/
-+    /*background-color: #ffb1b8;*/
+ #storyMsgBar {
+     margin-bottom: 10px;
+-}
+\ No newline at end of file
++}
++
++
++#storyEditAreaContainer {
++    padding-top: 10px;
++}
++
++/*#storyMsgBar {*/
++    /*border: solid #ca7841 thin;*/
++    /*width: 100%;*/
++    /*height: 45px;*/
++    /*max-height: 45px;*/
++    /*display:inline-block;*/
 +/*}*/
 +
- /*.hint-step-keyword {*/
- /*color: #aa5500;*/
- /*font-weight: bold;*/
-@@ -107,11 +111,27 @@
-     font-style: normal;
- }
- 
-+.cm-jb-story-step-body.matched-step, .matched-step .cm-jb-story-step-body {
-+    font-style: normal;
-+}
++/*.savingMsgDiv {*/
++    /*display: inline;*/
++    /*border-style: solid;*/
++    /*border-width: 1px;*/
++    /*border-color: green;*/
++/*}*/
 +
- .cm-jb-story-step-body.matched-step.step-parameter {
-     font-weight: bold;
-+    /*font-weight: normal;*/
-     color: purple;
- }
- 
-+.cm-jb-story-step-body.matched-step.step-parameter.cm-jb-story-table-line {
-+    /*font-weight: normal;*/
-+}
-+
-+.cm-jb-story-step-body.matched-step.step-parameter.cm-jb-story-first-table-line {
-+    /*font-weight: bold;*/
-+    /*color: lightsteelblue;*/
-+    /*font-style: italic;*/
-+    /*background-color: lightgoldenrodyellow;*/
-+}
-+
- .cm-jb-story-examples {
-     color: firebrick;
-     font-weight: bold;
-@@ -119,6 +139,7 @@
- 
- .cm-jb-story-examples-body {
-     color: purple;
-+    font-weight: bold;
- }
- 
- .savingMsgDiv {
++/*.save-story-button-spinner {*/
++    /*border-style: solid;*/
++    /*border-width: 1px;*/
++    /*border-color: red;*/
++    /*float: left;*/
++    /*display: inline;*/
++/*}*/
 \ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryEditHandler.js
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryEditHandler.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryEditHandler.js	(date 1410286683000)
+@@ -1,34 +0,0 @@
+-//var editButtonHandler;
+-//
+-//function StoryEditHandler() {
+-//
+-//    editButtonHandler = this;
+-//
+-//    this.debugOn = true;
+-//
+-//    this.debug = function (msg) {
+-//        if (this.debugOn) {
+-//            console.log("[DEBUG StoryEditHandler] " + msg);
+-//        }
+-//    }
+-//
+-//    this.init = function () {
+-//        this.debug("initialized");
+-//    }
+-//
+-//
+-//    this.saveStory = function (event) {
+-//
+-//        this.debug("> saveStory");
+-//
+-//        this.bindInputElementsToModel();
+-//
+-//        // remove the asString field as we are saving from the rich editor
+-//        storyController.currentStory.asString = null;
+-//        storyController.saveStoryAsModel();
+-//
+-//        event.preventDefault();
+-//        this.debug("# saveStory");
+-//    }
+-//
+-//}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/jbehave-core.css
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/jbehave-core.css	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/jbehave-core.css	(date 1410286683000)
+@@ -1,389 +0,0 @@
+-/*.story-report-tab .meta {*/
+-    /*text-align: left;*/
+-    /*color: #800080;*/
+-/*}*/
+-
+-/*.story-report-tab .meta .keyword{*/
+-    /*font-weight: bold;*/
+-/*}*/
+-/*.story-report-tab .narrative {*/
+-    /*text-align: left;*/
+-    /*color: #0404B4;*/
+-	/*font-family: "Times New Roman";*/
+-	/*font-size: 14px;*/
+-	/**/
+-/*}*/
+-/*.story-report-tab .scenario{*/
+-/*text-align: left;*/
+-    /*color: #298A08;*/
+-	/*}*/
+-
+-
+-/*#story-panel {*/
+-/*margin: 0;*/
+-/*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", sans-serif;*/
+-/*font-size: 0.84em;*/
+-/*color: #555;*/
+-/*text-align: left;*/
+-/*padding: 0 0 10px 0;*/
+-/*background-color: #fff;*/
+-/*}*/
+-
+-/*#story-panel h2 {*/
+-/*background-color: #ffcd13;*/
+-/*margin-bottom: 10px;*/
+-/*padding: 5px 10px;*/
+-/*}*/
+-
+-/*#story-panel body, td, select, input, li {*/
+-/*font-size: 13px;*/
+-/*}*/
+-
+-/*#story-panel a {*/
+-/*text-decoration: none;*/
+-/*}*/
+-
+-/*#story-panel a:link {*/
+-/*color: #39912b;*/
+-/*font-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel a:visited {*/
+-/*color: #39912b;*/
+-/*}*/
+-
+-/*#story-panel a:active, a:hover {*/
+-/*color: #39912b;*/
+-/*}*/
+-
+-/*#story-panel b {*/
+-/*color: #333;*/
+-/*}*/
+-
+-/*#story-panel .logo {*/
+-/*float: right;*/
+-/*margin-right: 30px;*/
+-/*}*/
+-
+-/*#story-panel .clear {*/
+-/*clear: both;*/
+-/*}*/
+-
+-/*#story-panel .left {*/
+-/*text-align: left;*/
+-/*margin-left: 10px;*/
+-/*}*/
+-
+-/*#story-panel .right {*/
+-/*text-align: right;*/
+-/*margin-right: 10px;*/
+-/*}*/
+-
+-/*#story-panel .reports {*/
+-/*margin-left: 30px;*/
+-/*margin-top: 30px;*/
+-/*text-align: left;*/
+-/*}*/
+-
+-/*#story-panel .reports h2 {*/
+-/*opacity: 0.85;*/
+-/*}*/
+-
+-/*#story-panel table {*/
+-/*border-collapse: collapse;*/
+-/*}*/
+-
+-/*#story-panel .stories {*/
+-/*border: 1px solid #000;*/
+-/*}*/
+-
+-/*#story-panel .scenarios {*/
+-/*border: 1px solid #000;*/
+-/*}*/
+-
+-/*#story-panel .steps {*/
+-/*border: 1px solid #000;*/
+-/*}*/
+-
+-/*#story-panel .totals {*/
+-/*border-top: 1px solid #000;*/
+-/*padding-top: 10px;*/
+-/*font-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .reports table {*/
+-/*border: solid;*/
+-/*}*/
+-
+-/*#story-panel .reports table th {*/
+-/*border-bottom: 1px solid #000;*/
+-/*text-align: center;*/
+-/*font-weight: bold;*/
+-/*padding: 10px;*/
+-/*}*/
+-
+-/*#story-panel .reports table td {*/
+-/*text-align: center;*/
+-/*padding: 5px;*/
+-/*}*/
+-
+-/*#story-panel .reports table td.story {*/
+-/*text-align: left;*/
+-/*padding: 5px;*/
+-/*}*/
+-
+-/*#story-panel .reports table td a {*/
+-/*color: #555;*/
+-/*}*/
+-
+-/*#story-panel .lane {*/
+-/*border-left: 1px solid #000;*/
+-/*}*/
+-
+-/*#story-panel .maps {*/
+-/*margin-left: 30px;*/
+-/*margin-top: 30px;*/
+-/*text-align: left;*/
+-/*}*/
+-
+-/*#story-panel .maps h2 {*/
+-/*opacity: 0.85;*/
+-/*}*/
+-
+-/*#story-panel .maps table {*/
+-/*border: solid;*/
+-/*}*/
+-
+-/*#story-panel .maps table th {*/
+-/*text-align: center;*/
+-/*font-weight: bold;*/
+-/*padding: 10px;*/
+-/*}*/
+-
+-/*#story-panel .maps table td {*/
+-/*text-align: center;*/
+-/*padding: 5px;*/
+-/*}*/
+-
+-/*#story-panel .maps table td.name {*/
+-/*text-align: left;*/
+-/*padding: 5px;*/
+-/*}*/
+-
+-/*#story-panel .views {*/
+-/*margin-left: 30px;*/
+-/*margin-top: 30px;*/
+-/*text-align: left;*/
+-/*}*/
+-
+-/*#story-panel .views h2 {*/
+-/*opacity: 0.85;*/
+-/*}*/
+-
+-/*#story-panel .views table {*/
+-/*border: solid;*/
+-/*}*/
+-
+-/*#story-panel .views table th {*/
+-/*text-align: center;*/
+-/*font-weight: bold;*/
+-/*padding: 10px;*/
+-/*}*/
+-
+-/*#story-panel .views table td {*/
+-/*text-align: center;*/
+-/*padding: 5px;*/
+-/*}*/
+-
+-/*#story-panel .views table td.name {*/
+-/*text-align: left;*/
+-/*padding: 5px;*/
+-/*}*/
+-
+-/*#story-panel .story {*/
+-/*text-align: left;*/
+-/*margin-left: 10px;*/
+-/*}*/
+-
+-/*#story-panel .story h2 {*/
+-/*background-color: #fff;*/
+-/*border-color: #ffcd13;*/
+-/*}*/
+-
+-/*#story-panel .meta {*/
+-/*text-align: left;*/
+-/*color: purple;*/
+-/*margin-bottom: 10px;*/
+-/*}*/
+-
+-/*#story-panel .filter {*/
+-/*text-align: left;*/
+-/*color: red;*/
+-/*margin-left: 10px;*/
+-/*margin-bottom: 10px;*/
+-/*}*/
+-
+-/*#story-panel .keyword {*/
+-/*margin-left: 10px;*/
+-/*}*/
+-
+-/*#story-panel .property {*/
+-/*margin-left: 10px;*/
+-/*}*/
+-
+-/*#story-panel .narrative {*/
+-/*text-align: left;*/
+-/*color: blue;*/
+-/*}*/
+-
+-/*#story-panel .element {*/
+-/*padding-left: 10px;*/
+-/*}*/
+-
+-/*#story-panel span.inOrderTo, span.asA, span.iWantTo {*/
+-/*font-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .givenStories, .path {*/
+-/*font-weight: bolder;*/
+-/*font-size: 16px;*/
+-/*opacity: 0.85;*/
+-/*margin-bottom: 10px;*/
+-/*padding: 5px 10px;*/
+-/*}*/
+-
+-/*#story-panel .scenario {*/
+-/*text-align: left;*/
+-/*padding-left: 1px;*/
+-/*}*/
+-
+-/*#story-panel .step {*/
+-/*color: black;*/
+-/*padding: 2px 2px 2px 20px;*/
+-/*}*/
+-
+-/*#story-panel .successful {*/
+-/*color: green;*/
+-/*}*/
+-
+-/*#story-panel .ignorable {*/
+-/*color: blue;*/
+-/*}*/
+-
+-/*#story-panel .pending {*/
+-/*color: olive;*/
+-/*}*/
+-
+-/*#story-panel .notPerformed {*/
+-/*color: brown;*/
+-/*}*/
+-
+-/*#story-panel .failed {*/
+-/*color: red;*/
+-/*}*/
+-
+-/*#story-panel .cancelled {*/
+-/*color: red;*/
+-/*}*/
+-
+-/*#story-panel .restarted {*/
+-/*color: orange;*/
+-/*}*/
+-
+-/*#story-panel .dryRun {*/
+-/*border: solid;*/
+-/*color: amber;*/
+-/*background-color: yellow;*/
+-/*margin-left: 12px;*/
+-/*padding: 10px;*/
+-/*font-size: 20px;*/
+-/*text-align: center;*/
+-/*text-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .parameter {*/
+-/*color: purple;*/
+-/*padding-left: 0px;*/
+-/*text-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .keyword {*/
+-/*text-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .examples {*/
+-/*margin-left: 10px;*/
+-/*padding-bottom: 20px;*/
+-/*}*/
+-
+-/*#story-panel .examples h3 {*/
+-/*opacity: 0.85;*/
+-/*}*/
+-
+-/*#story-panel .examples table {*/
+-/*border: 1px solid;*/
+-/*margin-top: 12px;*/
+-/*margin-left: 12px;*/
+-/*}*/
+-
+-/*#story-panel .examples table th, td {*/
+-/*text-align: center;*/
+-/*padding-left: 5px;*/
+-/*padding-right: 5px;*/
+-/*border-left: 1px solid;*/
+-/*}*/
+-
+-/*#story-panel .examples table th {*/
+-/*font-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .outcomes table {*/
+-/*border: 1px solid;*/
+-/*margin-top: 12px;*/
+-/*margin-left: 12px;*/
+-/*}*/
+-
+-/*#story-panel .outcomes table th, td {*/
+-/*text-align: center;*/
+-/*padding-left: 5px;*/
+-/*padding-right: 5px;*/
+-/*border-left: 1px solid;*/
+-/*}*/
+-
+-/*#story-panel .outcomes table th {*/
+-/*font-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel .outcomes table tr.notVerified {*/
+-/*color: red;*/
+-/*}*/
+-
+-/*#story-panel .outcomes table tr.verified {*/
+-/*color: green;*/
+-/*}*/
+-
+-/*#story-panel .outcomes {*/
+-/*padding-bottom: 20px;*/
+-/*}*/
+-
+-/*#story-panel .parameter table {*/
+-/*border: 1px solid;*/
+-/*margin-top: 12px;*/
+-/*margin-left: 12px;*/
+-/*}*/
+-
+-/*#story-panel .parameter table th, td {*/
+-/*text-align: center;*/
+-/*padding-left: 5px;*/
+-/*padding-right: 5px;*/
+-/*border-left: 1px solid;*/
+-/*}*/
+-
+-/*#story-panel .parameter table th {*/
+-/*font-weight: bold;*/
+-/*}*/
+-
+-/*#story-panel pre.failure {*/
+-/*padding-left: 10px;*/
+-/*color: red;*/
+-/*}*/
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/jbehave-edit.css
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/jbehave-edit.css	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/jbehave-edit.css	(date 1410286683000)
+@@ -1,121 +0,0 @@
+-/*.cm-description-line {*/
+-    /*color: dimgrey;*/
+-/*}*/
+-
+-/*.cm-meta-title {*/
+-    /*color: #770088;*/
+-    /*font-weight: bold;*/
+-/*}*/
+-
+-/*.cm-meta-field {*/
+-    /*color: #770088;*/
+-/*}*/
+-
+-/*.cm-narrative-title {*/
+-    /*color: #0000cc;*/
+-    /*font-weight: bold;*/
+-    /*font-size: 16px;*/
+-/*}*/
+-
+-/*.cm-narrative-field-keyword {*/
+-    /*color: #0000cc;*/
+-    /*font-weight: bold;*/
+-    /*font-size: 14px;*/
+-/*}*/
+-
+-/*.cm-narrative-field-value {*/
+-    /*color: #0000cc;*/
+-    /*font-size: 14px;*/
+-/*}*/
+-
+-/*.cm-scenario-keyword {*/
+-    /*color: green;*/
+-    /*font-weight: bold;*/
+-/*}*/
+-
+-/*.cm-scenario-title {*/
+-    /*color: green;*/
+-    /*font-weight: bold;*/
+-/*}*/
+-
+-/*.cm-step-keyword {*/
+-    /*color: #aa5500;*/
+-    /*font-weight: bold;*/
+-    /*font-style: italic;*/
+-/*}*/
+-
+-/*.cm-step-keyword.matched-step {*/
+-    /*font-style: normal;*/
+-/*}*/
+-
+-/*.hint-step-keyword {*/
+-    /*color: #aa5500;*/
+-    /*font-weight: bold;*/
+-    /*font-style: normal;*/
+-/*}*/
+-
+-/*.cm-step-body.cm-matched-step {*/
+-    /*font-style: normal;*/
+-    /*font-weight: bold;*/
+-    /*font-weight: bold;*/
+-    /*color: lightslategrey;*/
+-/*}*/
+-
+-/*.cm-step-body {*/
+-    /*font-style: italic;*/
+-/*}*/
+-
+-/*.cm-step-body.matched-step {*/
+-    /*font-style: normal;*/
+-/*}*/
+-
+-/*.cm-step-body.matched-step.step-parameter {*/
+-    /*font-weight: bold;*/
+-    /*color: purple;*/
+-/*}*/
+-
+-/*.hint-step-parameter {*/
+-    /*font-weight: bold;*/
+-    /*color: purple;*/
+-/*}*/
+-
+-
+-
+-/*.cm-unmatched-step {*/
+-    /*font-style: italic;*/
+-    /*font-weight: bold;*/
+-    /*color: dimgrey;*/
+-/*}*/
+-
+-
+-/*.cm-s-default .cm-atom {color: #219;}*/
+-/*.cm-s-default .cm-number {color: #164;}*/
+-/*.cm-s-default .cm-def {color: #00f;}*/
+-/*.cm-s-default .cm-variable,*/
+-/*.cm-s-default .cm-punctuation,*/
+-/*.cm-s-default .cm-property,*/
+-/*.cm-s-default .cm-operator {}*/
+-/*.cm-s-default .cm-variable-2 {color: #05a;}*/
+-/*.cm-s-default .cm-variable-3 {color: #085;}*/
+-/*.cm-s-default .cm-comment {color: #a50;}*/
+-/*.cm-s-default .cm-string {color: #a11;}*/
+-/*.cm-s-default .cm-string-2 {color: #f50;}*/
+-/*.cm-s-default .cm-meta {color: #555;}*/
+-/*.cm-s-default .cm-qualifier {color: #555;}*/
+-/*.cm-s-default .cm-builtin {color: #30a;}*/
+-/*.cm-s-default .cm-bracket {color: #997;}*/
+-/*.cm-s-default .cm-tag {color: #170;}*/
+-/*.cm-s-default .cm-attribute {color: #00c;}*/
+-/*.cm-s-default .cm-header {color: blue;}*/
+-/*.cm-s-default .cm-quote {color: #090;}*/
+-/*.cm-s-default .cm-hr {color: #999;}*/
+-/*.cm-s-default .cm-link {color: #00c;}*/
+-
+-/*.cm-negative {color: #d44;}*/
+-/*.cm-positive {color: #292;}*/
+-/*.cm-header, .cm-strong {font-weight: bold;}*/
+-/*.cm-em {font-style: italic;}*/
+-/*.cm-link {text-decoration: underline;}*/
+-
+-/*.cm-s-default .cm-error {color: #f00;}*/
+-/*.cm-invalidchar {color: #f00;}*/
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryService.js
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryService.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryService.js	(date 1410286683000)
+@@ -1,87 +0,0 @@
+-//var storyService;
+-//
+-//function StoryService() {
+-//
+-//    storyService = this;
+-//
+-//    this.debugOn = true;
+-//
+-//    var pathBase = "/jira/rest/jbehave-for-jira/1.0/";
+-//
+-//    // story paths
+-//    var pathSave = pathBase + "crud/save/";
+-//    var pathFind = pathBase + "find/for-issue/";
+-//    var pathDelete = pathBase + "crud/delete/";
+-//
+-//    // story reports paths
+-//    var pathFindReports = pathBase + "story-test/find/";
+-//    var pathDeleteReports = pathBase + "story-test/delete/";
+-//
+-//    // other paths
+-//    var pathAutoComplete = pathBase + "autocomplete/";
+-//
+-//    this.debug = function (msg) {
+-//        if (this.debugOn) {
+-//            console.log("[DEBUG StoryService] " + msg);
+-//        }
+-//    }
+-//
+-//    this.init = function () {
+-//
+-//        storyService.debug("> init");
+-//        storyService.debug("urlPathBase - " + pathBase);
+-//        storyService.debug("saveBaseUrl - " + pathSave);
+-//        storyService.debug("# init");
+-//    }
+-//
+-//
+-////    this.deleteStory = function (projectKey, issueKey, callBack) {
+-////
+-////        storyService.debug("> StoryService.deleteStory");
+-////        storyService.debug("haha");
+-////        storyService.debug("projectKey - " + projectKey);
+-////        storyService.debug("issueKey - " + issueKey);
+-////
+-////        var urlString = pathDelete + projectKey + "/" + issueKey;
+-////        storyService.debug("urlString - " + urlString);
+-////
+-////        var successCallBack = function () {
+-////            storyService.debug("Story deleted successfully");
+-////            callBack();
+-////        };
+-////
+-////        AJS.$.ajax({
+-////            type: "DELETE",
+-////            url: urlString,
+-////            success: successCallBack
+-////        });
+-////
+-////        storyService.debug("# StoryService.deleteStory");
+-////    }
+-//
+-////    this.deleteStoryReports = function (projectKey, issueKey, callBack) {
+-////
+-////        storyService.debug("> StoryService.deleteStoryReports");
+-////        storyService.debug("projectKey - " + projectKey);
+-////        storyService.debug("issueKey - " + issueKey);
+-////
+-////        var urlString = pathDeleteReports + projectKey + "/" + issueKey;
+-////        storyService.debug("urlString - " + urlString);
+-////
+-////        var successCallback = function () {
+-////            storyService.debug("story reports deleted successfully");
+-////            callBack();
+-////        };
+-////
+-////        AJS.$.ajax({
+-////            type: "DELETE",
+-////            url: urlString,
+-////            success: successCallback
+-////        });
+-////
+-////        storyService.debug("# StoryService.deleteStoryReports");
+-////    }
+-//
+-//
+-//
+-//}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1409862849000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(revision )
-@@ -129,7 +129,7 @@
-     @Override
-     public List<JiraStory> findByProjectKey(String projectKey) {
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -25,6 +25,7 @@
+     var textUtils = new TextUtils();
+     var stepDocUtils = new StepDocUtils();
+     var prefs = new PreferencesModel();
++    storyController.prefs = prefs;
+     this.buttonHandler = new ButtonHandler();
  
--        List<Story> stories = storyDao.findAll();
-+        List<Story> stories = storyDao.findByProjectKey(projectKey);
+     var editor = undefined;
+@@ -83,9 +84,6 @@
  
-         List<JiraStory> storyDTOs = new ArrayList<JiraStory>(stories.size());
-         for (Story story : stories) {
+                     if (curLine.substring(0, 1) == "|") {
+                         options.lineComment = "|--";
+-//                        options.uncommentFrom = 1;
+-//                        options.uncommentTo = 3;
+-//                        options.commentFrom = 1;
+                     } else {
+                         options.lineComment = "!--";
+                     }
+@@ -128,6 +126,7 @@
+     this.onUserPreferencesUpdated = function () {
+         restService.getUserPreferences(function (fetchedPreferences) {
+             prefs = fetchedPreferences;
++            storyController.prefs = prefs;
+             if (prefs.showLineNumbers) {
+                 editor.setOption("lineNumbers", true);
+             } else {
+@@ -196,11 +195,15 @@
+         AJS.$('.failure-trace-expander-trigger').each(function (index, element) {
+ 
+             AJS.$(element).click(function(eventObject) {
++                if (eventObject.preventDefault) {
+-                eventObject.preventDefault();
++                    eventObject.preventDefault();
++                } else {
++                    eventObject.returnValue = false;
++                }
+                 var target = eventObject.target;
+                 var targetNode = AJS.$(target)[0];
+-                var traceContainerId = targetNode.getAttribute("failure-trace-container");
+-                AJS.$("#" + traceContainerId).toggle();
++                var traceContainer = AJS.$(targetNode).siblings(".jb-story-report-failure-trace-container")[0];
++                AJS.$(traceContainer).toggle();
+                 var replaceText =targetNode.getAttribute("replace-text");
+                 var currentHtml = AJS.$(targetNode).html();
+                 AJS.$(targetNode).html(replaceText);
+@@ -280,10 +283,8 @@
+         }
+ 
+         this.showSavingMsg = function () {
+-//            AJS.$("#storyMsgBar").empty();
+             var waitingMsg = execspec.viewissuepage.showstory.renderWaitingMessage();
+             AJS.$('#storyEditedMsgContainer').html(waitingMsg);
+-//            AJS.$('#save-story-button-spinner').spin();
+         }
+ 
+         this.showSuccessMessage = function (saveCancelMsg) {
+@@ -924,7 +925,7 @@
+                     var lineOffset = keywordPart.split("\n").length - 1;
+                     for (var j = 1; j < findResult.result.length; j++) {
+                         var matchedGroup = findResult.result[j];
+-                        if (parameterGroups.indexOf(j) > -1) {
++                        if (indexOf(parameterGroups, j) > -1) {
+                             var pgi = new Object();
+                             pgi.number = j;
+                             pgi.text = matchedGroup;
+@@ -1157,7 +1158,11 @@
+         this.saveStoryHandler = function (event) {
+ 
+             debug("> saveStoryHandler");
++            if (event.preventDefault) {
+-            event.preventDefault();
++                event.preventDefault();
++            } else {
++                event.returnValue = false;
++            }
+ 
+             var storyModel = new StoryModel();
+             storyModel.projectKey = loadedStory.projectKey;
+@@ -1174,12 +1179,43 @@
+ 
+         this.cancelEditHandler = function (event) {
+             debug("> cancelEditingStory");
++            if (event.preventDefault) {
+-            event.preventDefault();
++                event.preventDefault();
++            } else {
++                event.returnValue = false;
++            }
+             storyController.showStory(loadedStory);
+             msgBar.clear();
+             debug("# cancelEditingStory");
+         }
+     }
++
++    function indexOf(array, elt) {
++        for (var i = 0; i < array.length; ++i)
++            if (array[i] == elt) return i;
++        return -1;
++    }
++
++//    var indexOf = function(needle) {
++//        if(typeof Array.prototype.indexOf === 'function') {
++//            indexOf = Array.prototype.indexOf;
++//        } else {
++//            indexOf = function(needle) {
++//                var i = -1, index = -1;
++//
++//                for(i = 0; i < this.length; i++) {
++//                    if(this[i] === needle) {
++//                        index = i;
++//                        break;
++//                    }
++//                }
++//
++//                return index;
++//            };
++//        }
++//
++//        return indexOf.call(this, needle);
++//    }
+ }
+ 
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryView.js
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryView.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryView.js	(date 1410286683000)
+@@ -1,703 +0,0 @@
+-//function StoryView(storyController) {
+-//
+-//    this.debugOn = true;
+-//
+-//    this.autoCompleteEntries = AutoCompleteEntryModel[0];
+-//
+-//    this.storyEditHandler = new StoryEditHandler();
+-//    this.storyEditHandler.init();
+-//
+-//    this.debug = function (msg) {
+-//        if (this.debugOn) {
+-//            console.log("[DEBUG StoryView] " + msg);
+-//        }
+-//    }
+-//
+-//    this.init = function () {
+-//
+-//        this.debug("> StoryView.init");
+-//
+-//        // update button menu links
+-//        AJS.$("#add-jbehave-story-link").click(
+-//            function (event) {
+-//                event.preventDefault();
+-//                storyView.debug("> add-jbehave-story-link clicked");
+-//                storyController.addStory();
+-//                storyView.debug("# add-jbehave-story-link clicked");
+-//            }
+-//        );
+-//        AJS.$("#edit-jbehave-story-link").click(
+-//            function (event) {
+-//                event.preventDefault();
+-//                storyView.debug("> edit-jbehave-story-link clicked");
+-//                storyController.editStoryHandler();
+-//                storyView.debug("# edit-jbehave-story-link clicked");
+-//            }
+-//        )
+-//        AJS.$("#delete-jbehave-story-link").click(
+-//            function (event) {
+-//                event.preventDefault();
+-//                storyView.debug("> delete-jbehave-story-link clicked");
+-//                storyController.deleteStory();
+-//                storyView.debug("# delete-jbehave-story-link clicked");
+-//            }
+-//        );
+-//        AJS.$("#clear-jbehave-story-tests-link").click(
+-//            function (event) {
+-//                event.preventDefault();
+-//                storyView.debug("> clear-jbehave-story-tests-link clicked");
+-//                storyController.clearStoryTests();
+-//                storyView.debug("# clear-jbehave-story-tests-link clicked");
+-//            }
+-//        );
+-//
+-//        AJS.$("#story-panel").html(execspec.viewissuepage.storytoolbar.renderStoryToolbar());
+-//
+-//
+-////        this.editor = null;
+-//
+-//
+-////        AJS.$("#testMouseOver").mouseover(function() {
+-////            storyView.debug("Mouse over event fired!");
+-////        });
+-//
+-////        YUI().use('editor-base', function (Y) {
+-////
+-////            var content = execspec.viewissuepage.showstory.renderEditStoryArea2();
+-//////            var extraCss = execspec.viewissuepage.editstory.renderExtraCss();
+-////
+-////            var editor = new Y.EditorBase({
+-////                content: content
+-//////                extracss: extraCss
+-////            });
+-////            storyView.editor = editor;
+-////
+-////            //Add the BiDi plugin
+-////            editor.plug(Y.Plugin.EditorBidi);
+-////
+-////            Y.mix(Y.Plugin.ExecCommand.COMMANDS, {
+-////                foo: function (cmd, val) {
+-////                    storyView.debug('You clicked on Foo');
+-////                    var inst = this.getInstance();
+-////                    inst.one('body').setStyle('backgroundColor', 'yellow');
+-////                },
+-////                setContent: function (cmd, val) {
+-////                    storyView.debug('You clicked on setContent');
+-////                    storyView.debug('cmd - ' + cmd);
+-////                    storyView.debug('val - ' + val);
+-////                    var inst = this.getInstance();
+-////
+-////                    var editorNode = inst.one('.story-panel');
+-////                    editorNode.setContent(val);
+-//////                    inst.one('#storyRichTextEditArea').html('HAHA');
+-//////                    inst.one('body').setStyle('backgroundColor', 'yellow');
+-////
+-//////                    AJS.$(".narrative").mouseover(function() {
+-//////                        storyView.debug('mouseOver event from JQuery fired');
+-//////                    });
+-////
+-////                    inst.one('.inOrderTo').on('mouseover', function () {
+-////                        storyView.debug("mouse over fired on .inOrderTo");
+-//////                        inst.one('.scenario-plus').show();
+-////                        inst.one('.add-icon').show();
+-////
+-////                    });
+-////                    inst.one('.inOrderTo').on('mouseleave', function () {
+-////                        storyView.debug("mouse leave fired on .inOrderTo");
+-////                        var attr = inst.one('.inOrderTo').get("contentEditable");
+-////                        storyView.debug("attr - " + attr);
+-////                        inst.one('.add-icon').hide();
+-////                    });
+-////
+-////                    inst.one('.inOrderToSpan').on('focus', function () {
+-////                        storyView.debug("on focus fired on .inOrderToSpan");
+-////                    });
+-////
+-////                }
+-////            });
+-////
+-////            Y.each(Y.Frame.DOM_EVENTS, function (v, k) {
+-////                editor.on('dom:' + k, function (e) {
+-////                    var tag = e.frameTarget.get('tagName').toLowerCase();
+-////                    storyView.debug('Event: ' + e.type + ' on element (' + tag + ')');
+-////                });
+-////            });
+-////
+-////            //Focusing the Editor when the frame is ready..
+-////            editor.on('frame:ready', function () {
+-////                this.focus();
+-//////                var height = AJS.$("iframe").contents().height() + 40;
+-//////                storyView.debug("setting editor height to - " + height);
+-//////                AJS.$("#storyEditContainer").height(height);
+-////            });
+-////
+-////            //Rendering the Editor.
+-////            editor.render('#storyEditContainer');
+-////
+-////        });
+-//
+-////        var storyEditArea = execspec.viewissuepage.showstory.renderEditStoryArea2();
+-////        AJS.$("#storyEditContainer").html(storyEditArea);
+-//
+-////        {
+-////            // keyboard events handling
+-////            storyView.isCtrDown = false;
+-////
+-////            AJS.$("#story-edit-text-area").keydown(function (event) {
+-////                storyView.debug("keydown, event.keyCode - " + event.keyCode);
+-////                if (event.keyCode == 17) {
+-////                    storyView.isCtrDown = true;
+-////                }
+-////            });
+-////
+-////            AJS.$("#story-edit-text-area").keyup(function (event) {
+-////                storyView.debug("keyup, event.keyCode - " + event.keyCode);
+-////                if (event.keyCode == 17) {
+-////                    storyView.isCtrDown = false;
+-////                } else if (event.keyCode == 32 /*space key*/ && storyView.isCtrDown) {
+-////                    storyController.showAutoCompleteHandler();
+-////                    storyView.isCtrDown = false;
+-////                }
+-////            });
+-////        }
+-//
+-//        // prepare auto complete area
+-////        var storyPanelWidth = AJS.$("#story-panel").width();
+-////
+-////        this.autoCompleteDialog = AJS.InlineDialog(AJS.$("#story-edit-text-area"),
+-////            "autoCompleteDialog",
+-////            function (content, trigger, showPopup) {
+-////
+-////                storyView.debug("> StoryView.autoCompleteDialog.contentProvider");
+-////                var autoCompleteHtml = storyView.fetchAutoCompleteContent();
+-////                content
+-//////                    .css({"padding-left": "10px", "padding-top": "2px", "padding-right": "10px", "padding-bottom": "2px"})
+-////                    .html(autoCompleteHtml);
+-////                showPopup();
+-////                storyView.debug("# StoryView.autoCompleteDialog.contentProvider");
+-////                return false;
+-////            },
+-////            {
+-////                noBind: true,
+-////                cacheContent: false,
+-////                displayShadow: false,
+-////                width: AJS.$("#story-panel").width() - 90,
+-//////                width: AJS.$("#story-edit-text-area").css("width") + 75,
+-////                container: AJS.$("#autoCompleteContainer1"),
+-//////                arrowOffsetX: 100,
+-//////                arrowOffsetY: 100,
+-//////                persistent: true,
+-//////                gravity: 'n',
+-//////                initCallback: function () {
+-////////                    alert("Hello World");
+-//////                    AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+-//////                },
+-////                calculatePositions: function getPosition(popup, targetPosition, mousePosition, opts) {
+-////                    return {
+-////                        displayAbove: true,
+-////                        popupCss: {
+-//////                            left: mousePosition.x,
+-//////                            top: mousePosition.y + 20,
+-//////                            right: mousePosition.y + 100
+-////                            left: 10,
+-////                            top: storyView.getAutoCompleteYPos(),
+-////                            right: 100
+-////                        },
+-////                        arrowCss: {
+-////                            left: 20,
+-////                            top: -16
+-////                        }
+-////                    }
+-////                }
+-////            }
+-////        );
+-//
+-//        storyView.debug("# StoryView.init");
+-//    }
+-//
+-//    this.showAddStory = function () {
+-//
+-//        storyView.debug("> showAddStory");
+-//
+-//        var buttonsForAddStory = execspec.viewissuepage.storytoolbar.renderButtonsForAddStory();
+-//        AJS.$("#storyButtons").html(buttonsForAddStory);
+-//
+-//        storyView.debug("# showAddStory");
+-//    }
+-//
+-//    this.editStory = function (story) {
+-//
+-//        this.debug("> editStory");
+-//
+-//        this.debug("story:\n" + JSON.stringify(story, null, "\t"));
+-//
+-////        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(story);
+-////        AJS.$("#storyButtons").html(buttonsForStory);
+-//
+-//        var editContainerContent = execspec.viewissuepage.editstory.renderEditStoryContainer();
+-//        AJS.$("#storyEditContainer").html(editContainerContent);
+-//
+-//        // set content for rich editor as well as raw editor
+-//        var templateObj = new Object();
+-//        templateObj.story = story;
+-//        var richEditStoryContent = execspec.viewissuepage.editstory.rich.renderRichEditStoryContent(templateObj);
+-//        AJS.$("#richEditStoryContainer").html(richEditStoryContent);
+-//        editButtonHandler.assignRichEditorHandlers(story);
+-//
+-//        // set raw editor content
+-//        var rawEditStoryContent = execspec.viewissuepage.editstory.rawEditorContent(templateObj);
+-//        AJS.$("#rawEditStoryContainer").html(rawEditStoryContent);
+-//
+-//
+-////        AJS.$("#richTextEditorButton").click();
+-//        AJS.$("#rawTextEditorButton").click();
+-//
+-//        this.updateStoryTabButton("edit", null);
+-//
+-////        AJS.$("#editStoryButton").attr("aria-pressed", "true");
+-////        AJS.$("#storyContainer").hide();
+-////        AJS.$("#storyEditContainer").show();
+-//
+-//        CodeMirror.commands.autocomplete = function(cm) {
+-////            cm.showHint({hint: CodeMirror.hint.anyword});
+-//            cm.showHint({hint: CodeMirror.hint.jbehave});
+-//        }
+-//        var editor = CodeMirror.fromTextArea(document.getElementById("rawStoryEditor"), {
+-////            lineNumbers: true,
+-//            mode: "jbehave",
+-//            extraKeys: {"Ctrl-Space": "autocomplete"}
+-//        });
+-//
+-//        this.debug("# editStory");
+-//    }
+-//
+-//
+-//
+-//    this.fetchAutoCompleteContent = function () {
+-//
+-//        storyView.debug("> StoryView.fetchAutoCompleteContent");
+-//
+-//        var templateObject = new Object();
+-//        templateObject.entries = this.autoCompleteEntries;
+-//        var autoCompleteHtml = execspec.viewissuepage.showstory.renderAutoComplete(templateObject);
+-//
+-////        var autoCompleteHtml = "<ul class='autoCompleteEntries'>";
+-////        for (var i = 0; i < this.autoCompleteEntries.length; i++) {
+-////            var entry = this.autoCompleteEntries[i];
+-////            autoCompleteHtml += "<li class='autoCompleteEntry'>";
+-////            autoCompleteHtml += entry.suggestion;
+-////            autoCompleteHtml += "</li>";
+-////        }
+-////        autoCompleteHtml += "</ul>";
+-//
+-//        storyView.debug("autoCompleteHtml - " + autoCompleteHtml);
+-//        storyView.debug("# StoryView.fetchAutoCompleteContent");
+-//
+-//        return autoCompleteHtml;
+-//    }
+-//
+-//    this.getAutoCompleteYPos = function () {
+-//
+-//        storyView.debug("> StoryView.getAutoCompleteYPos");
+-//
+-//        var storyInputAsString = storyView.getStoryInputAsString();
+-//        var caretPosition = storyView.getStoryInputCaretPosition();
+-//        storyView.debug("caretPosition - " + caretPosition);
+-//        var substring = storyInputAsString.substr(0, caretPosition);
+-//        storyView.debug("substring - " + substring);
+-//        var lines = substring.split("\n");
+-//        var lineNumber = lines.length;
+-//        storyView.debug("lineNumber - " + lineNumber);
+-//
+-//        var scrollTop = AJS.$("#story-edit-text-area").prop("scrollTop");
+-//        storyView.debug("scrollTop - " + scrollTop);
+-//
+-////        var position = 8; // with the arrow present
+-//        var position = 2; // without the arrow present
+-//        position += (lineNumber * 6) + lineNumber * (parseInt(AJS.$("#story-edit-text-area").css('font-size')));
+-//        if (scrollTop != undefined && scrollTop > 0) {
+-//            position = position - scrollTop;
+-//        }
+-//
+-//        storyView.debug("position - " + position);
+-//        storyView.debug("# StoryView.getAutoCompleteYPos");
+-//
+-//        return  position;
+-//    }
+-//
+-//    this.getStoryInputAsString = function () {
+-//
+-//        storyView.debug("> StoryView.getStoryInputAsString");
+-//
+-//        var asString = AJS.$("#story-edit-text-area").val();
+-//        storyView.debug("asString - " + asString);
+-//        return asString;
+-//
+-//        storyView.debug("# StoryView.getStoryInputAsString");
+-//    }
+-//
+-//    this.getStoryInputCaretPosition = function () {
+-//        var caretPos = AJS.$("#story-edit-text-area").caret();
+-//        return caretPos;
+-//    }
+-//
+-//    this.updateSelectedButton = function (clickedElementId) {
+-//        storyView.debug("> StoryView.updateSelectedButton");
+-//        AJS.$(".story-container-button").removeClass("selected-story-container-button");
+-//        AJS.$("#" + clickedElementId).addClass("selected-story-container-button");
+-//        storyView.debug("# StoryView.updateSelectedButton");
+-//    }
+-//
+-//    this.removeStory = function () {
+-//        AJS.$("#storyButtons").html("");
+-//        AJS.$("#storyReportButtons").html("");
+-//        AJS.$("#storyViewContainer").html("");
+-//    }
+-//
+-//    this.showStoryButton = function (story) {
+-//
+-//        storyView.debug("> StoryView.showStoryButton");
+-//
+-//        // add the story button link
+-//        var storyButtonHtml = execspec.viewissuepage.showstory.renderStoryButton(story);
+-//        AJS.$("#storyButtons").html(storyButtonHtml);
+-//        // set story button onClick handler
+-//        AJS.$("#show-story-button").click(
+-//            function (event) {
+-//                event.preventDefault();
+-//                storyController.showStoryHandler();
+-//            }
+-//        );
+-//
+-//        storyView.debug("# StoryView.showStoryButton");
+-//    }
+-//
+-//    this.showStoryButtons = function(storyPayload) {
+-//
+-//        storyView.debug("> showStoryButtons");
+-//
+-//        var buttonsForStory = execspec.viewissuepage.storytoolbar.renderButtonsForStory(storyPayload);
+-//        AJS.$("#storyButtons").html(buttonsForStory);
+-//
+-//        var buttonsForTestReports = execspec.viewissuepage.storytoolbar.renderButtonsForTestReports(storyPayload);
+-//        AJS.$("#storyTestReportButtons").html(buttonsForTestReports);
+-//
+-//        storyView.debug("# showStoryButtons");
+-//    }
+-//
+-////    this.showStoryReportButtons = function (story) {
+-////
+-////        storyView.debug("> showStoryReportButtons");
+-////
+-////        var buttonsForTestReports = execspec.viewissuepage.storytoolbar.renderButtonsForTestReports(story);
+-////        AJS.$("#storyTestReportButtons").html(buttonsForTestReports);
+-////
+-////        storyView.debug("# showStoryReportButtons");
+-////
+-////    }
+-//
+-//    this.showStoryReport = function (storyReport, currentStoryVersion) {
+-//
+-//        storyView.debug("> showStoryReport");
+-//        storyView.debug("currentStoryVersion - " + currentStoryVersion);
+-//        storyView.debug("storyReport:\n" + JSON.stringify(storyReport, null, "\t"));
+-//
+-//        var templateObj = new Object();
+-//        templateObj.storyReport = storyReport;
+-//        templateObj.storyVersion = currentStoryVersion;
+-//        var reportHtml = execspec.viewissuepage.showstoryreports.renderStoryReport(templateObj);
+-//        AJS.$("#storyReportContainer").html(reportHtml);
+-//
+-//        this.updateStoryTabButton("report", storyReport.environment);
+-//
+-//        storyView.debug("# showStoryReport");
+-//    }
+-//
+-//    this.showStory = function (story) {
+-//
+-//        storyView.debug("> showStory");
+-//
+-//        var templateObj = new Object();
+-//        templateObj.story = story;
+-//        var storyHtml = execspec.viewissuepage.showstory.renderStoryAsString(templateObj);
+-//
+-//        AJS.$("#storyContainer").html(storyHtml);
+-//
+-//        this.updateStoryTabButton("view", null);
+-//
+-//        storyView.debug("# showStory");
+-//    }
+-//
+-//    this.updateStoryTabButton = function (mode, reportForEnv) {
+-//
+-//        if (mode == "view") {
+-//
+-//            AJS.$(".story-report-button").attr("aria-pressed", "false");
+-//            AJS.$("#storyReportContainer").hide();
+-//
+-//            AJS.$("#editStoryButton").attr("aria-pressed", "false");
+-//            AJS.$("#storyEditContainer").hide();
+-//
+-//            AJS.$("#showStoryButton").attr("aria-pressed", "true");
+-//            AJS.$("#storyContainer").show();
+-//
+-//        } else if (mode == "edit") {
+-//
+-//            AJS.$(".story-report-button").attr("aria-pressed", "false");
+-//            AJS.$("#storyReportContainer").hide();
+-//
+-//            AJS.$("#editStoryButton").attr("aria-pressed", "true");
+-//            AJS.$("#storyEditContainer").show();
+-//
+-//            AJS.$("#showStoryButton").attr("aria-pressed", "false");
+-//            AJS.$("#storyContainer").hide();
+-//
+-//        } else if (mode == "report") {
+-//
+-//            AJS.$("#editStoryButton").attr("aria-pressed", "false");
+-//            AJS.$("#storyEditContainer").hide();
+-//
+-//            AJS.$("#showStoryButton").attr("aria-pressed", "false");
+-//            AJS.$("#storyContainer").hide();
+-//
+-//            AJS.$(".story-report-button").each(
+-//                function (index, element) {
+-//                    var buttonReportEnv = AJS.$(element).attr("environment");
+-//                    if (buttonReportEnv == reportForEnv) {
+-//                        AJS.$(element).attr("aria-pressed", "true");
+-//                    } else {
+-//                        AJS.$(element).attr("aria-pressed", "false");
+-//                    }
+-//                }
+-//            );
+-////            AJS.$(".story-report-button").attr("aria-pressed", "false");
+-//
+-//            AJS.$("#storyReportContainer").show();
+-//
+-//        } else {
+-//            console.error("Unsupported mode - " + mode);
+-//        }
+-//    }
+-//
+-////    this.showStory = function (story, editMode) {
+-////
+-////        storyView.debug("> StoryView.showStory");
+-////        storyView.debug("story.asString - " + story.asString);
+-////        storyView.debug("editMode - " + editMode);
+-////
+-////        if (editMode != undefined && editMode == true) {
+-////
+-////            var lines = story.asString.split("\n");
+-////            var lineCount = lines.length;
+-////            var storyAsString = story.asString;
+-////            var storyAsHTML = story.asHTML;
+-////
+-////            // hide story and story reports view
+-////            AJS.$("#storyContainer").hide();
+-////            AJS.$("#storyReportContainer").hide();
+-////
+-////            // show edit area
+-//////            AJS.$("#story-edit-text-area").val(storyAsString);
+-//////            AJS.$("#story-edit-text-area").attr("rows", lineCount);
+-////
+-////
+-//////            AJS.$("#storyRichTextEditArea").html(storyAsString);
+-//////            var editorContainer = this.editor.one('storyRichTextEditArea');
+-//////            editorContainer.html(storyAsString);
+-////            this.editor.execCommand("setContent", storyAsHTML);
+-////
+-////            var height = AJS.$("iframe").contents().height() + 40;
+-////            storyView.debug("setting editor height to - " + height);
+-////            AJS.$("#storyEditContainer").height(height);
+-////
+-////            AJS.$("#storyEditContainer").show();
+-////
+-////            var height = AJS.$("iframe").contents().height() + 40;
+-////            storyView.debug("setting editor height to - " + height);
+-////            AJS.$("#storyEditContainer").height(height);
+-////
+-////            AJS.$("#testMouseOver").mouseover(function () {
+-////                storyView.debug("Mouse over event fired on test container!");
+-////            });
+-//
+-////            AJS.$("#inOrderTo").mouseover(function() {
+-////                storyView.debug("Mouse over event fired on inOrderTo!");
+-////            });
+-//
+-////            AJS.$("#story-edit-text-area").keyup(function (event) {
+-////
+-////                storyView.debug("keyup, event.keyCode - " + event.keyCode);
+-////                var caretPos = AJS.$("#story-edit-text-area").caret();
+-////                storyView.debug("caretPos - " + caretPos);
+-////
+-////
+-////                if (event.keyCode == 17) {
+-////                    storyView.debug("control key pressed");
+-//////                    AJS.InlineDialog(AJS.$("#popupLink"), 1,
+-//////                        function(content, trigger, showPopup) {
+-//////                            content.css({"padding":"20px"}).html('<h2>Inline dialog</h2><p>The inline dialog is a wrapper for secondary content/controls to be displayed on user request. Consider this component as displayed in context to the triggering control with the dialog overlaying the page content.</p><button class="aui-button">Done</button></form>');
+-//////                            showPopup();
+-//////                            return false;
+-//////                        }
+-//////                    );
+-////                    var dialog = AJS.InlineDialog(AJS.$("#story-edit-text-area"),
+-////                        "myDialog",
+-////                        function (content, trigger, showPopup) {
+-////                            content.css({"padding": "20px"}).html('<h2>Inline dialog</h2><p>Content.</p>');
+-////                            showPopup();
+-////                            return false;
+-////                        },
+-////                        {
+-////                            noBind: true
+-////                        }
+-////                    );
+-////                    dialog.show();
+-////
+-////                }
+-////
+-//////                var newY = AJS.$("#story-edit-text-area").textAreaHelper('caretPos').top
+-//////                    + (parseInt(AJS.$("#story-edit-text-area").css('font-size'), 10) * 1.5);
+-//////                var newX = AJS.$("#story-edit-text-area").textAreaHelper('caretPos').left;
+-//////                var posString = "left+" + newX + "px top+" + newY + "px";
+-//////                storyView.debug("posString - " + posString);
+-//////                AJS.$("#story-edit-text-area").autocomplete("option", "position", {
+-//////                    my: "left top",
+-//////                    at: posString
+-//////                });
+-////            });
+-//
+-//    // add the auto complete
+-////            AJS.$("#story-edit-text-area").autocomplete({
+-////                autoFocus: true,
+-////                position: {
+-////                    my: "left top",
+-////                    at: "left+100px top+100px"
+-////                },
+-////                source: [ "c++", "java", "php", "coldfusion", "javascript", "asp", "ruby" ]
+-////            });
+-//
+-////            AJS.$("#story-edit-text-area").autocomplete("option", "position", {
+-////                my: "left top",
+-////                at: "left+" + 100 + "px top+" + 100 + "px"
+-////            });
+-//
+-////        } else {
+-////
+-////            AJS.$("#storyReportContainer").hide();
+-////            AJS.$("#storyEditContainer").hide();
+-////
+-//////            AJS.$("#storyContainer").html(story.asHTML);
+-////            var templateObject = new Object();
+-////            templateObject.story = story;
+-////            templateObject.story.asJson = JSON.stringify(story);
+-////            var editStoryContent = execspec.viewissuepage.editstory.renderEditStory(templateObject);
+-////            AJS.$("#storyContainer").html(editStoryContent);
+-////
+-////            AJS.$("#storyContainer").show();
+-////
+-////            AJS.$(".beforeNarrative").mouseover(function () {
+-////                storyView.debug("mouse over on - beforeNarrative")
+-////                AJS.$(".beforeNarrativeHint").show();
+-////            });
+-////
+-////            AJS.$(".beforeNarrative").mouseout(function () {
+-////                storyView.debug("mouse out on - beforeNarrative")
+-////                AJS.$(".beforeNarrativeHint").hide();
+-////            });
+-////
+-////        }
+-////
+-////        this.updateSelectedButton("show-story-button");
+-////
+-////        storyView.debug("# StoryView.showStory");
+-////    }
+-//
+-////    this.showStoryReportButtons = function (story) {
+-////
+-////        storyView.debug("> StoryView.showStoryReportButtons");
+-////
+-////        var storyVersion = story.version;
+-////        storyView.debug("storyVersion - " + storyVersion);
+-////
+-////        // add the story reports
+-////        var storyReportButtons = execspec.viewissuepage.showstory.renderStoryReportButtons(story);
+-////        AJS.$("#storyReportButtons").html(storyReportButtons);
+-////        // set the story report button onClick handlers
+-////        var storyReports = story.storyReports;
+-////        for (var i = 0; i < storyReports.length; i++) {
+-////            var storyReport = storyReports[i];
+-////            var linkId = "show-story-report-" + storyReport.environment;
+-////            AJS.$("#" + linkId).click(
+-////                function (event) {
+-////
+-////                    storyView.debug("> show story report button clicked");
+-////                    event.preventDefault();
+-////
+-////                    var attributes = event.target.attributes;
+-////                    var environmentNode = attributes["environment"];
+-////                    var environment = environmentNode.nodeValue;
+-////                    storyController.showStoryReport(environment);
+-////
+-////                    storyView.debug("# show story report button clicked");
+-////                }
+-////            );
+-////        }
+-////
+-////        storyView.debug("# StoryView.showStoryReportButtons");
+-////    }
+-//
+-////    this.showStoryReport = function (storyReport, storyVersion) {
+-////
+-////        storyView.debug("> StoryView.showStoryReport");
+-////        storyView.debug("storyReport.environment - " + storyReport.environment);
+-////
+-////        var reportToShowTemplateModel = new Object();
+-////        reportToShowTemplateModel.storyReport = storyReport;
+-////        var storyReportHTML = execspec.viewissuepage.showstory.renderStoryReport(reportToShowTemplateModel);
+-////        AJS.$("#storyReportContainer").html(storyReportHTML);
+-////
+-////        if (storyVersion > storyReport.storyVersion) {
+-////            AJS.messages.generic("#reportMessageContainer", {
+-////                title: "Story has been modified since last run",
+-////                closeable: false
+-////            });
+-////        }
+-////
+-////        AJS.$("#storyContainer").hide();
+-////        AJS.$("#storyEditContainer").hide();
+-////        AJS.$("#storyReportContainer").show();
+-////
+-////        this.updateSelectedButton("show-story-report-" + storyReport.environment);
+-////        storyView.debug("# StoryView.showStoryReport");
+-////    }
+-//
+-//    this.showAutoComplete = function (entries) {
+-//
+-//        storyView.debug("> StoryView.showAutoComplete");
+-//        storyView.debug("entries - " + entries);
+-//
+-//        this.autoCompleteEntries = entries;
+-//
+-//        this.autoCompleteDialog.refresh();
+-////        AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+-////        AJS.$("#arrow-autoCompleteDialog").addClass("aui-css-arrow");
+-//        this.autoCompleteDialog.show();
+-////        AJS.$("#arrow-autoCompleteDialog").removeClass("aui-bottom-arrow");
+-////        AJS.$("#arrow-autoCompleteDialog").addClass("aui-css-arrow");
+-////        AJS.$("#arrow-autoCompleteDialog").addClass("aui-top-arrow");
+-////        AJS.$("#arrow-autoCompleteDialog").rotate(90);
+-//
+-//
+-//        var autoCompleteHtml = storyView.autoCompleteDialog.html();
+-//        storyView.debug("autoCompleteHtml - " + autoCompleteHtml);
+-//
+-////        AJS.$("#autoCompleteHtml").html(autoCompleteHtml);
+-////        AJS.$("#arrow-autoCompleteDialog")
+-//
+-//        storyView.debug("# StoryView.showAutoComplete");
+-//    }
+-//
+-//}
+-//
+-//
+-//
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesEditStory.soy
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesEditStory.soy	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesEditStory.soy	(date 1410286683000)
+@@ -1,83 +0,0 @@
+-{namespace execspec.viewissuepage.editstory}
+-
+-/**
+- * Renders story edit container.
+- */
+-{template .renderEditStoryContainer}
+-    <div id="editStoryButtons" class="aui-toolbar2">
+-        <div class="aui-toolbar2-inner">
+-            <div class="aui-toolbar2-primary">
+-                <div id="editorTypeButtons" class="aui-buttons">
+-                    <button id="richTextEditorButton" class="aui-button"
+-                        onclick="editButtonHandler.richTextEditorClicked(event)">
+-                        <b>Rich</b>
+-                    </button>
+-                    <button id="rawTextEditorButton" class="aui-button"
+-                        onclick="editButtonHandler.rawTextEditorClicked(event)">
+-                        <b>Text</b>
+-                    </button>
+-                </div>
+-                <div id="editorOperationsButtons" class="aui-buttons">
+-//                    <button id="insertTableButton" class="aui-button">
+-//                        <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Table Parameter</span>
+-//                    </button>
+-//                    <button id="formatTablesButton" class="aui-button">
+-////                        <span class="aui-icon aui-icon-small aui-iconfont-view-card">Format Tables</span>
+-//                        <b>F</b>
+-//                    </button>
+-                </div>
+-            </div>
+-            <div class="aui-toolbar2-secondary">
+-                <div id="saveOrCancelButtons" class="aui-buttons">
+-                    <span class="aui-buttons">
+-                        <button id="saveStoryButton" onclick="editButtonHandler.saveStory(event)" class="aui-button">
+-                            <span class="aui-icon aui-icon-small aui-iconfont-success">Save </span> Save
+-                        </button>
+-                    </span>
+-                    <span class="aui-buttons">
+-                        <button id="cancelEditButton" onclick="storyController.cancelEdit(event)" class="aui-button">
+-                            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Cancel </span> Cancel
+-                        </button>
+-                    </span>
+-                </div>
+-            </div>
+-        </div>
+-    </div>
+-    <div id="richEditStoryContainer" style="display: none">Rich editor container</div>
+-    <div id="rawEditStoryContainer" style="display: none">Raw editor container</div>
+-{/template}
+-
+-/**
+- * Renders story edit buttons.
+- */
+-{template .renderRawEditorOperationButtons}
+-    <button id="insertTableButton" class="aui-button">
+-        <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Table Parameter</span>
+-    </button>
+-    <button id="formatTablesButton" class="aui-button">
+-//                        <span class="aui-icon aui-icon-small aui-iconfont-view-card">Format Tables</span>
+-        <b>F</b>
+-    </button>
+-    <button id="validateStoryButton" class="aui-button">
+-    //                        <span class="aui-icon aui-icon-small aui-iconfont-view-card">Format Tables</span>
+-        <b>V</b>
+-    </button>
+-{/template}
+-
+-/**
+- * Renders raw story editor.
+- * @param story
+- */
+-{template .rawEditorContent}
+-    Test RAW edit here: {\n}{\n}
+-//    {$story.asString|changeNewlineToBr}
+-    {\n}{\n}
+-    <textarea id="rawStoryEditor"
+-//        class="textarea story-editor-field story-multiline-edit-field"
+-//            name="{$fieldName}"
+-            rows="10"
+-//            wrap="off"
+-            placeholder="enter text here">{$story.asString}</textarea>
+-{/template}
+-
+-
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryReportModel.js
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryReportModel.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryReportModel.js	(date 1410286683000)
+@@ -1,14 +0,0 @@
+-//function StoryReportModel() {
+-//
+-//    this.environment = "";
+-//    this.storyPath = "";
+-//    this.storyVersion = "";
+-//    this.status = "";
+-//    this.totalScenarios = "";
+-//    this.totalScenariosPassed = "";
+-//    this.totalScenariosFailed = "";
+-//    this.totalScenariosPending = "";
+-//    this.totalScenariosSkipped = "";
+-//    this.totalScenariosNotPerformed = "";
+-//    this.htmlReport = "";
+-//}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
+@@ -24,7 +24,7 @@
+         <!--other codemirror plugins-->
+         <!--<resource type="download" name="fullscreen.css" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.css"/>-->
+         <!--<resource type="download" name="fullscreen.js" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.js"/>-->
+-        <resource type="download" name="placeholder.js" location="/3rdparty/codemirror-4.3/addon/display/placeholder.js"/>
++        <!--<resource type="download" name="placeholder.js" location="/3rdparty/codemirror-4.3/addon/display/placeholder.js"/>-->
+         <resource type="download" name="comment.js" location="/3rdparty/codemirror-4.3/addon/comment/comment.js"/>
+         <!--<resource type="download" name="continuecomment.js" location="/3rdparty/codemirror-4.3/addon/comment/continuecomment.js"/>-->
+     </web-resource>
+@@ -38,34 +38,17 @@
+         <!--js-->
+         <!--these custom scripts need to be loaded first as jbehave-hint has dependency on story service-->
+         <!--<resource type="download" name="PageUtils.js" location="/js/PageUtils.js"/>-->
+-        <resource type="download" name="StoryService.js" location="/js/StoryService.js"/>
+         <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
+-        <resource type="download" name="StoryModel.js" location="/js/StoryModel.js"/>
+-        <resource type="download" name="StoryReportModel.js" location="/js/StoryReportModel.js"/>
+-        <resource type="download" name="StoryView.js" location="/js/StoryView.js"/>
+-        <resource type="download" name="StoryEditHandler.js" location="/js/StoryEditHandler.js"/>
+         <!--soy-->
+         <resource type="download" name="TemplatesShowStory.soy.js" location="/soy/TemplatesShowStory.soy"/>
+-        <resource type="download" name="TemplatesEditStory.soy.js" location="/soy/TemplatesEditStory.soy"/>
+-        <resource type="download" name="TemplatesEditStoryRich.soy.js" location="/soy/TemplatesEditStoryRich.soy"/>
+         <resource type="download" name="TemplatesShowStoryReports.soy.js" location="/soy/TemplatesShowStoryReports.soy"/>
+-        <resource type="download" name="TemplatesStoryToolbar.soy.js" location="/soy/TemplatesStoryToolbar.soy"/>
+         <!-- CSS -->
+         <resource type="download" name="story.css" location="css/story.css">
+             <param name="content-type" value="text/css"/>
+         </resource>
+-        <!--<resource type="download" name="edit-story.css" location="css/edit-story.css">-->
+-            <!--<param name="content-type" value="text/css"/>-->
+-        <!--</resource>-->
+         <resource type="download" name="story-report.css" location="css/story-report.css">
+             <param name="content-type" value="text/css"/>
+         </resource>
+-        <!--<resource type="download" name="jbehave-core.css" location="css/jbehave-core.css">-->
+-            <!--<param name="content-type" value="text/css"/>-->
+-        <!--</resource>-->
+-        <!--<resource type="download" name="jbehave-edit.css" location="css/jbehave-edit.css">-->
+-            <!--<param name="content-type" value="text/css"/>-->
+-        <!--</resource>-->
+         <!--other-->
+         <resource type="download" name="img/" location="img">
+             <!--<param name="content-type" value="image/gif"/>-->
+@@ -92,70 +75,6 @@
+                  location="opsbar-operations" weight="20">
+         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
+     </web-section>
+-    <!--<web-item name="Ad JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"-->
+-    <!--key="viewIssuePage.webItem.createStory.key"-->
+-    <!--section="jbehave-links-section" weight="10">-->
+-    <!--<description key="viewIssuePage.webItem.createStory.description">Create Story Web Item</description>-->
+-    <!--<conditions type="and">-->
+-    <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+-    <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+-    <!--<param name="permission" value="edit"/>-->
+-    <!--</condition>-->
+-    <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition" invert="true">-->
+-    <!--</condition>-->
+-    <!--</conditions>-->
+-    <!--<label key="viewIssuePage.webItem.createStory.label"/>-->
+-    <!--<link linkId="add-jbehave-story-link">/add-jbehave-story</link>-->
+-    <!--<styleClass>add-new-story-button</styleClass>-->
+-    <!--</web-item>-->
+-    <!--<web-item name="Edit JBehave Story" i18n-name-key="viewIssuePage.webItem.editStory.name"-->
+-    <!--key="viewIssuePage.webItem.editStory.key"-->
+-    <!--section="jbehave-links-section" weight="20">-->
+-    <!--<description key="viewIssuePage.webItem.editStory.description">The Edit Story Web Item</description>-->
+-    <!--<conditions type="and">-->
+-    <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+-    <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+-    <!--<param name="permission" value="edit"/>-->
+-    <!--</condition>-->
+-    <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">-->
+-    <!--</condition>-->
+-    <!--</conditions>-->
+-    <!--<label key="viewIssuePage.webItem.editStory.label"/>-->
+-    <!--<link linkId="edit-jbehave-story-link">/edit-jbehave-story</link>-->
+-    <!--<styleClass>edit-story-button</styleClass>-->
+-    <!--</web-item>-->
+-    <!--<web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"-->
+-    <!--key="viewIssuePage.webItem.deleteStory.key"-->
+-    <!--section="jbehave-links-section" weight="30">-->
+-    <!--<description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>-->
+-    <!--<conditions type="and">-->
+-    <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+-    <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+-    <!--<param name="permission" value="edit"/>-->
+-    <!--</condition>-->
+-    <!--<condition class="com.mycomp.execspec.jiraplugin.contextproviders.JiraIssueHasStoryCondition">-->
+-    <!--</condition>-->
+-    <!--</conditions>-->
+-    <!--<label key="viewIssuePage.webItem.deleteStory.label"/>-->
+-    <!--<link linkId="delete-jbehave-story-link">/delete-jbehave-story</link>-->
+-    <!--<styleClass>delete-story-button</styleClass>-->
+-    <!--</web-item>-->
+-    <!--<web-item name="Clear JBehave Story Tests" i18n-name-key="viewIssuePage.webItem.clearStoryTest.name"-->
+-              <!--key="viewIssuePage.webItem.clearStoryTest.key"-->
+-              <!--section="jbehave-links-section" weight="30">-->
+-        <!--<description key="viewIssuePage.webItem.clearStoryTest.description">The Clear Story Test Web Item</description>-->
+-        <!--<conditions type="and">-->
+-            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>-->
+-            <!--<condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">-->
+-                <!--<param name="permission" value="edit"/>-->
+-            <!--</condition>-->
+-            <!--<condition class="org.bitbucket.jbehaveforjira.plugin.conditions.JiraIssueHasStoryReportsCondition">-->
+-            <!--</condition>-->
+-        <!--</conditions>-->
+-        <!--<label key="viewIssuePage.webItem.clearStoryTest.label"/>-->
+-        <!--<link linkId="clear-jbehave-story-tests-link">/clear-jbehave-story-tests</link>-->
+-        <!--<styleClass>clear-story-test-button</styleClass>-->
+-    <!--</web-item>-->
+     <!-- ==================================================================================================== -->
+     <!--JBehave Preferences-->
+     <!-- ==================================================================================================== -->
+@@ -198,7 +117,7 @@
+     <!--Issue page - Story reports panel-->
+     <web-panel name="Story Reports Panel" i18n-name-key="viewIssuePage.storyReportsPanel.name"
+                key="viewIssuePage.storyReportsPanel.key"
+-               location="atl.jira.view.issue.left.context" weight="230">
++               location="atl.jira.view.issue.left.context" weight="320">
+         <description key="viewIssuePage.storyReportsPanel.description">JBehave Story Reports Panel</description>
+         <context-provider class="org.bitbucket.jbehaveforjira.plugin.contextproviders.StoryReportsPanelContextProvider"/>
+         <resource name="view" type="velocity" location="/velocity/story_reports_panel.vm"/>
+@@ -224,6 +143,13 @@
+     <component key="tx-processor" name="Transactional Annotation Processor"
+                class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+         <decription>Processes @Transactional annotations.</decription>
++    </component>
++    <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
++    <!-- ==================================================================================================== -->
++    <!-- Event listenders -->
++    <!-- ==================================================================================================== -->
++    <component key="eventListener" class="org.bitbucket.jbehaveforjira.plugin.listeners.IssueDeletedEventListener">
++            <description>Class that processes the incoming JIRA issue events.</description>
+     </component>
+     <!-- ==================================================================================================== -->
+     <!-- Custom components -->
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesEditStoryRich.soy
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesEditStoryRich.soy	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesEditStoryRich.soy	(date 1410286683000)
+@@ -1,426 +0,0 @@
+-{namespace execspec.viewissuepage.editstory.rich}
+-
+-/**
+- * Render the step filter
+- */
+-{template .renderStepFilterElement}
+-    <li>
+-        <span
+-//        style="width: 100%;"
+-        >
+-//            Filter:
+-            <input
+-                style="width: 695px;"
+-                class="text long-field interactive step-filter-input"
+-                type="text"></input>
+-    //                        Comment
+-        </span>
+-</li>
+-{/template}
+-
+-
+-
+-/**
+- * Renders the text area type editable field.
+- * @param fieldName
+- * @param displayValue
+- * @param fieldValue
+- */
+-{template .renderMultiLineField}
+-    <textarea class="textarea story-editor-field story-multiline-edit-field"
+-        name="{$fieldName}"
+-        rows="1"
+-        wrap="off"
+-        placeholder="enter '{$displayValue}' here">
+-        {if $fieldValue != null}
+-            {$fieldValue}
+-        {/if}
+-    </textarea>
+-{/template}
+-
+-/**
+- * Renders the text field type editable field.
+- * @param fieldName
+- * @param displayValue
+- * @param fieldValue
+- */
+-{template .renderLongSingleLineField}
+-    {call .renderSingleLineField}
+-        {param fieldName: $fieldName /}
+-        {param displayValue: $displayValue /}
+-        {param fieldValue: $fieldValue /}
+-        {param isLongField: true /}
+-    {/call}
+-{/template}
+-
+-/**
+- * Renders the text field type editable field.
+- * @param fieldName
+- * @param displayValue
+- * @param fieldValue
+- */
+-{template .renderShortSingleLineField}
+-    {call .renderSingleLineField}
+-        {param fieldName: $fieldName /}
+-        {param displayValue: $displayValue /}
+-        {param fieldValue: $fieldValue /}
+-        {param isLongField: false /}
+-    {/call}
+-{/template}
+-
+-/**
+- * Renders the text field type editable field.
+- * @param fieldName
+- * @param displayValue
+- * @param fieldValue
+- * @param isLongField
+- */
+-{template .renderSingleLineField}
+-    {if $fieldValue != null}
+-        {if $isLongField == true}
+-            <input
+-                class="text story-editor-field long-field story-element-field-long"
+-                name="{$fieldName}"
+-                title="{$fieldName}" type="text"
+-                placeholder="enter '{$displayValue}' here"
+-                value="{$fieldValue}"/>
+-        {else}
+-            <input
+-                class="text story-editor-field story-element-field-short"
+-                name="{$fieldName}"
+-                title="{$fieldName}" type="text"
+-                placeholder="enter '{$displayValue}' here"
+-                value="{$fieldValue}"/>
+-        {/if}
+-
+-    {else}
+-        {if $isLongField == true}
+-            <input
+-                class="text story-editor-field long-field story-element-field-long"
+-                name="{$fieldName}"
+-                title="{$fieldName}" type="text"
+-                placeholder="enter '{$displayValue}' here"/>
+-        {else}
+-            <input
+-                class="text story-editor-field story-element-field-short"
+-                name="{$fieldName}"
+-                title="{$fieldName}" type="text"
+-                placeholder="enter '{$displayValue}' here"/>
+-        {/if}
+-    {/if}
+-{/template}
+-
+-/**
+- * Renders story description input field.
+- * @param description
+- */
+-{template .renderStoryDescriptionField}
+-    <div class="story-element-container">
+-        <div class="element-operations-container"
+-            style="display: none">
+-            <a class="remove-element-link"
+-                  href="#"
+-                  onclick="editButtonHandler.removeElement(event, 'description')"
+-                >
+-                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+-            </a>
+-        </div>
+-        <div class="element-content-container story-description">
+-            {call .renderMultiLineField}
+-                {param fieldName: 'description' /}
+-                {param displayValue: 'Description' /}
+-                {param fieldValue: $description /}
+-            {/call}
+-        </div>
+-    </div>
+-{/template}
+-
+-/**
+- * Renders story meta input field.
+- * @param meta
+- */
+-{template .renderStoryMeta}
+-    <div class="story-element-container">
+-        <div class="element-operations-container"
+-            style="display: none">
+-            <a class="remove-element-link"
+-                  href="#"
+-                  onclick="editButtonHandler.removeElement(event, 'meta')"
+-                >
+-                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+-            </a>
+-        </div>
+-        <div class="element-content-container story-meta">
+-            <div class="story-meta-keyword">
+-                {$meta.keyword}
+-            </div>
+-            {if $meta.properties != null}
+-                <div class="story-meta-properties">
+-                    {foreach $metaProperty in $meta.properties}
+-                        <div class="story-element-container">
+-                            <div class="element-operations-container"
+-                                style="display: none">
+-                                <a class="remove-element-link"href="#"
+-                                      onclick="editButtonHandler.removeElement(event, 'metaField', '{index($metaProperty)}')">
+-                                    <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+-                                </a>
+-                            </div>
+-                            <div class="story-meta-property element-content-container">
+-                                <span class="meta-property-start-symbol">@</span>
+-                                <span class="meta-property-name">
+-                                    {call .renderShortSingleLineField}
+-                                        {param fieldName: 'meta.properties['+ index($metaProperty) + '].name' /}
+-                                        {param displayValue: 'Property key' /}
+-                                        {param fieldValue: $metaProperty.name /}
+-                                    {/call}
+-                                </span>
+-                                &nbsp;
+-                                <span class="meta-preperty-value">
+-                                    {call .renderShortSingleLineField}
+-                                        {param fieldName: 'meta.properties['+ index($metaProperty) + '].value' /}
+-                                        {param displayValue: 'Property value' /}
+-                                        {param fieldValue: $metaProperty.value /}
+-                                    {/call}
+-                                </span>
+-                            </div>
+-                        </div>
+-                    {/foreach}
+-                </div>
+-            {/if}
+-            <div id="insertLinkContainerMetaProperty"/>
+-        </div>
+-    </div>
+-{/template}
+-
+-
+-/** Renders narrative
+- * @param narrative
+- */
+-{template .renderNarrative}
+-    <div class="narrative">
+-        <div class="title">{$narrative.keyword}</div>
+-        <div class="inOrderTo">
+-            <table>
+-                <tr>
+-                    <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+-                        <span class="keyword">{$narrative.inOrderTo.keyword}</span>
+-                    </td>
+-                    <td style="text-align: left;">
+-                        {call .renderLongSingleLineField}
+-                            {param fieldName: 'narrative.inOrderTo.value' /}
+-                            {param displayValue: 'In order to' /}
+-                            {param fieldValue: $narrative.inOrderTo.value /}
+-                        {/call}
+-                    </td>
+-                </tr>
+-            </table>
+-        </div>
+-        <div class="asA">
+-            <table>
+-                <tr>
+-                    <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+-                        <span class="keyword">{$narrative.asA.keyword}</span>
+-                    </td>
+-                    <td style="text-align: left;">
+-                        {call .renderLongSingleLineField}
+-                            {param fieldName: 'narrative.asA.value' /}
+-                            {param displayValue: 'As a' /}
+-                            {param fieldValue: $narrative.asA.value /}
+-                        {/call}
+-                    </td>
+-                </tr>
+-            </table>
+-        </div>
+-        <div class="iWantTo">
+-            <table>
+-                <tr>
+-                    <td style="vertical-align: top; text-align: left; width: 1%; white-space:nowrap;">
+-                        <span class="keyword">{$narrative.iWantTo.keyword}</span>
+-                    </td>
+-                    <td style="text-align: left;">
+-                        {call .renderLongSingleLineField}
+-                            {param fieldName: 'narrative.iWantTo.value' /}
+-                            {param displayValue: 'I Want to' /}
+-                            {param fieldValue: $narrative.iWantTo.value /}
+-                        {/call}
+-                    </td>
+-                </tr>
+-            </table>
+-        </div>
+-    </div>
+-{/template}
+-
+-/** Renders scenarios
+- * @param scenarios
+- */
+-{template .renderScenarios}
+-    <div class="story-scenarios">
+-        {foreach $scenario in $scenarios}
+-            // title line
+-            <div class="story-element-container">
+-                <div class="element-operations-container" style="display: none">
+-                    <a class="remove-element-link" href="#"
+-                        onclick="editButtonHandler.removeElement(event, 'scenario', '{index($scenario)}')"
+-                    >
+-                        <span class="aui-icon aui-icon-small aui-iconfont-close-dialog"></span>
+-                    </a>
+-                </div>
+-                <div class="story-scenario element-content-container">
+-                    <span class="story-scenario-keyword">{$scenario.keyword}</span>
+-                    <span class="story-scenario-title">
+-                        {call .renderLongSingleLineField}
+-                            {param fieldName: 'scenarios[' + index($scenario) + '].title' /}
+-                            {param displayValue: 'scenario title' /}
+-                            {param fieldValue: $scenario.title/}
+-                        {/call}
+-                    </span>
+-                </div>
+-            </div>
+-            // steps
+-            {if $scenario.steps != null}
+-                <div class="scenario-steps">
+-                    {foreach $step in $scenario.steps}
+-                        <div class="scenario-step">
+-                            {$step}
+-                        </div>
+-                    {/foreach}
+-                </div>
+-            {/if}
+-            <div class="insert-link-container-after-scenario-steps"/>
+-        {/foreach}
+-    </div>
+-{/template}
+-
+-/**
+- * Renders story.
+- * @param story
+- */
+-{template .renderRichEditStoryContent}
+-<div id="richStoryEditContent">
+-    {let $clickHere: '[click here to edit]' /}
+-
+-    <div id="storyDescriptionContainer">
+-        {if $story.description != null}
+-            {call .renderStoryDescriptionField}
+-                {param description: $story.description /}
+-            {/call}
+-        {/if}
+-    </div>
+-
+-    <div id="insertLinkContainerBeforeMeta"/>
+-
+-    <div id="storyMetaContainer">
+-        {if $story.meta != null}
+-            {call .renderStoryMeta}
+-                {param meta: $story.meta /}
+-            {/call}
+-        {/if}
+-    </div>
+-
+-    <div id="insertLinkContainerBeforeNarrative"/>
+-
+-    <div id="storyNarrativeContainer">
+-        {if $story.narrative != null}
+-            {call .renderNarrative}
+-                {param narrative: $story.narrative /}
+-            {/call}
+-        {/if}
+-    </div>
+-
+-    <div id="insertLinkContainerBeforeGiventStories"/>
+-
+-    {if $story.givenStories != null}
+-        <div class="story-given-stories">
+-            <div class="story-given-stories-keyword">
+-                {$story.givenStories.keyword}
+-            </div>
+-        </div>
+-    {/if}
+-
+-    <div id="insertLinkContainerBeforeLifecycle"/>
+-
+-    {if $story.lifecycle != null}
+-        <div class="story-lifecycle">
+-            <div class="story-lifecycle-keyword">
+-                {$story.lifecycle.keyword}
+-            </div>
+-        </div>
+-    {/if}
+-
+-    <div id="storyScenariosContainer">
+-        {if $story.scenarios != null}
+-            {call .renderScenarios}
+-                {param scenarios: $story.scenarios /}
+-            {/call}
+-        {/if}
+-    </div>
+-
+-    <div id="insertLinkContainerAfterScenarios"/>
+-//    {call .renderInsertLinkDiv}
+-//        {param triggerDivId: 'anotherTriggerDivId' /}
+-//        {param dropdownDivId: 'anotherDropdownDivId' /}
+-//        {param dropdownItems: [
+-//            $insertGivenStoriesLinkInfo,
+-//            $insertLifecycleLinkInfo,
+-//            $insertScenarioLinkInfo
+-//            ]
+-//         /}
+-//    {/call}
+-
+-//    {if $story.givenStories == null and $story.lifecycle == null and $story.scenarios.length == 0}
+-//        {call .renderInsertLinkDiv}
+-//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//            {param dropdownItems: [
+-//                $insertGivenStoriesLinkInfo,
+-//                $insertLifecycleLinkInfo,
+-//                $insertScenarioLinkInfo
+-//            ] /}
+-//        {/call}
+-//    {elseif $story.givenStories == null and $story.lifecycle == null}
+-//        {call .renderInsertLinkDiv}
+-//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//            {param dropdownItems: [
+-//                $insertGivenStoriesLinkInfo,
+-//                $insertLifecycleLinkInfo
+-//            ] /}
+-//        {/call}
+-//    {elseif $story.givenStories == null and $story.scenarios.length == 0}
+-//            {call .renderInsertLinkDiv}
+-//                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//                {param dropdownItems: [$insertGivenStoriesLinkInfo, $insertScenarioLinkInfo] /}
+-//            {/call}
+-//    {elseif $story.givenStories == null}
+-//        {call .renderInsertLinkDiv}
+-//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//            {param dropdownItems: [$insertGivenStoriesLinkInfo,] /}
+-//        {/call}
+-//    {elseif $story.lifecycle == null and $story.scenarios.length == 0}
+-//            {call .renderInsertLinkDiv}
+-//                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//                {param dropdownItems: [$insertLifecycleLinkInfo, $insertScenarioLinkInfo] /}
+-//            {/call}
+-//    {elseif $story.lifecycle == null}
+-//        {call .renderInsertLinkDiv}
+-//            {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//            {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//            {param dropdownItems: [$insertLifecycleLinkInfo,] /}
+-//        {/call}
+-//    {elseif $story.scenarios.length == 0}
+-//            {call .renderInsertLinkDiv}
+-//                {param triggerDivId: 'insertAfterNarrativeTriggerDiv' /}
+-//                {param dropdownDivId: 'insertAfterNarrativeDropdownDiv' /}
+-//                {param dropdownItems: [$insertScenarioLinkInfo,] /}
+-//            {/call}
+-//    {/if}
+-
+-
+-
+-</div>
+-{/template}
+-
+-
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryModel.js
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryModel.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryModel.js	(date 1410286683000)
+@@ -1,6 +0,0 @@
+-//function StoryModel() {
+-//    this.projectKey = null;
+-//    this.issueKey = null;
+-//    this.version = null;
+-//    this.asString = null;
+-//}
+\ No newline at end of file
 Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1409862849000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -13,7 +13,8 @@
-         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-         <amps.version>4.2.10</amps.version>
-         <ao.version>0.19.7</ao.version>
--        <jira.version>6.1</jira.version>
-+        <!--<jira.version>6.1</jira.version>-->
-+        <jira.version>6.0.8</jira.version>
-         <java.version>1.6</java.version>
-     </properties>
-     <build>
+@@ -47,6 +47,27 @@
+             <!--<artifactId>maven-amps-dispatcher-plugin</artifactId>-->
+             <!--<version>${amps.version}</version>-->
+             <!--</plugin>-->
++            <plugin>
++                <groupId>com.samaxes.maven</groupId>
++                <artifactId>minify-maven-plugin</artifactId>
++                <version>1.7.4</version>
++                <executions>
++                    <execution>
++                        <id>default-minify</id>
++                        <configuration>
++                            <cssSourceFiles>
++                                <cssSourceFile>css/story.css</cssSourceFile>
++                            </cssSourceFiles>
++                            <jsSourceFiles>
++                                <jsSourceFile>js/StoryController.js</jsSourceFile>
++                            </jsSourceFiles>
++                        </configuration>
++                        <goals>
++                            <goal>minify</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+         </plugins>
+     </build>
+     <dependencies>
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1409862849000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -13,7 +13,7 @@
- 
- .aui-badge.pending {
-     /*background-color: #4A6785;*/
--    background-color: #FFD351;
-+    background-color: orange;
+@@ -137,3 +137,10 @@
+     padding-top: 10px;
  }
  
- .aui-badge.skipped {
-@@ -22,12 +22,12 @@
- 
- /* Story report */
- .aui-badge.not-performed {
--    /*background-color: #fffe54;*/
-+    background-color: dimgrey;
-     /*apply default jira color scheme*/
- }
- 
- /*pre.pending {*/
--    /*padding-left: 20px;*/
-+/*padding-left: 20px;*/
- /*}*/
- 
- /*.story-report-tab {*/
-@@ -58,4 +58,82 @@
- /*font-size: 20px;*/
- /*font-weight: bold;*/
- /*padding-bottom: 5px;*/
--/*}*/
-\ No newline at end of file
-+/*}*/
-+
-+/*.story-report .cm-jb-story-description-line {*/
-+/*padding-bottom: 10px;*/
-+/*}*/
-+
-+/*table.tabular-parameter {*/
-+/*border: 1px solid black;*/
-+/*padding: 0px;*/
-+/*margin: 0px;*/
-+/*}*/
-+
-+/*table.tabular-parameter th {*/
-+/*border: 1px solid black;*/
-+/*margin: 0px;*/
-+/*padding: 0px;*/
-+/*}*/
-+
-+/*table.tabular-parameter td {*/
-+/*border: 1px solid black;*/
-+/*margin: 0px;*/
-+/*padding: 0px;*/
-+/*}*/
-+/*table.tabular-parameter   {*/
-+/*display: table; border-collapse: collapse;*/
-+/*}*/
-+/*tr {*/
-+/*display: table-row; border: 1px solid #000;*/
-+/*}*/
-+/*td {*/
-+/*display: table-cell;*/
-+/*}*/
-+table.tabular-parameter {
-+    border: solid 1px purple;
-+    /*margin: 0px;*/
-+    /*padding: 0px;*/
-+    border-collapse: collapse;
++.jb-story-report-scenario, .jb-story-report-narrative, .jb-story-report-lifecycle, .jb-story-report-meta {
++    font-size: 20px;
 +}
 +
-+table.tabular-parameter td, th {
-+    border-left: solid 1px purple;
-+    /*border: solid 1px black;*/
-+    font-weight: normal;
-+    margin: 0px;
-+    padding: 4px;
++.aui-lozenge {
++    vertical-align: middle;
 +}
-+
-+.cm-jb-story-step-failed-keyword {
-+    /*font-weight: bold;*/
-+    color: #ff0000;
-+}
-+
-+.cm-jb-story-keyword-notPerformed {
-+    color: #808080;
-+}
-+
-+.cm-jb-story-step-failed-message {
-+    color: #ff0000;
-+}
-+
-+.cm-jb-story-step-successful-message {
-+
-+    color: green;
-+}
-+
-+.cm-jb-story-keyword-pending {
-+    color: orange;
-+}
-+
-+.jb-story-report-step {
-+    padding-top: 5px;
-+}
-+
-+.jb-scenario-example {
-+    color: firebrick;
-+    font-weight: bold;
-+    padding-top: 10px;
-+}
-+
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
+@@ -392,7 +392,7 @@
+                     if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
+                         var stepHint = new Object();
+                         stepHint.text = stepStartingKeyword;
+-                        if (stepDoc.extendedPattern != null) {
++                        if (storyController.prefs != null && storyController.prefs.autoInsertTabularFields && stepDoc.extendedPattern != null) {
+                             stepHint.text += stepDoc.extendedPattern;
+                         } else {
+                             stepHint.text += stepDoc.pattern;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesStoryToolbar.soy
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesStoryToolbar.soy	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesStoryToolbar.soy	(date 1410286683000)
+@@ -1,75 +0,0 @@
+-{namespace execspec.viewissuepage.storytoolbar}
+-
+-/**
+- * Render story button toolbar
+- */
+-{template .renderStoryToolbar}
+-    <div class="aui-toolbar2">
+-        <div class="aui-toolbar2-inner">
+-            <div class="aui-toolbar2-primary">
+-                <div id="storyButtons" class="aui-buttons"></div>
+-            </div>
+-            <div class="aui-toolbar2-secondary">
+-                <div id="storyTestReportButtons" class="aui-buttons"></div>
+-            </div>
+-        </div>
+-    </div>
+-    <div id="storyContainer" class="story-container" style="display: none;"></div>
+-    <div id="storyEditContainer" style="display: none;"></div>
+-    <div id="storyReportContainer" class="story-container" style="display: none;"></div>
+-{/template}
+-
+-/**
+- * Render story panel
+- */
+-{template .renderButtonsForAddStory}
+-    <button id="add-story-button" onclick="storyController.addStoryHandler(event)" class="aui-button aui-button-subtle">
+-        <span class="aui-icon aui-icon-small aui-iconfont-add">View </span> Add Story
+-    </button>
+-{/template}
+-
+-/**
+- * Render story button
+- * @param story
+- */
+-{template .renderButtonsForStory}
+-    <button id="showStoryButton"
+-        onclick="storyController.showStoryHandler(event)"
+-        class="aui-button story-container-button selected-story-container-button">{$story.path}</button>
+-//    <button id="edit-story-button"
+-//            class="aui-button aui-button-subtle story-container-button selected-story-container-button">{$path}</button>
+-//aria-pressed="true"
+-    <button id="editStoryButton"
+-        onclick="storyController.editStoryHandler(event)"
+-        class="aui-button"><span class="aui-icon aui-icon-small aui-iconfont-edit">Edit </span></button>
+-//    {call aui.buttons.button}
+-//        {param text: '' /}
+-//        {param iconType: 'aui' /}
+-//        {param iconClass: 'aui-icon-small aui-iconfont-edit' /}
+-//        {param iconText: 'View' /}
+-//    {/call}
+-{/template}
+-
+-/**
+- * Render story test report buttons
+- * @param testReports
+- */
+-{template .renderButtonsForTestReports}
+-    {foreach $storyReport in $testReports}
+-//        <button
+-//            onclick="storyController.showStoryReport(event, '{$testReport.environment}')"
+-//            class="aui-button story-report-button"
+-//            environment="{$testReport.environment}"
+-//            >{$testReport.environment}</button>
+-        <button id="show-story-report-{$storyReport.environment}"
+-                environment="{$storyReport.environment}"
+-                onclick="storyController.showStoryReport(event, '{$storyReport.environment}')"
+-                class="aui-button story-report-button">{$storyReport.environment}{if $storyReport.totalScenariosPassed > 0}<span
+-                class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{/if}{if $storyReport.totalScenariosFailed > 0}<span
+-                class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
+-                class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
+-                class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
+-                class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}</span>
+-        </button>
+-    {/foreach}
+-{/template}
