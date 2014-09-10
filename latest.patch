@@ -1,0 +1,1421 @@
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoryDTO.java	(date 1410379766000)
+@@ -1,53 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
+-
+-/**
+- * @author Maryna Stasyuk
+- */
+-@XmlRootElement
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class JBehaveStoryDTO {
+-
+-    private String projectKey;
+-
+-    private String issueKey;
+-
+-    private Long version;
+-
+-    private String asString;
+-
+-    public String getIssueKey() {
+-        return issueKey;
+-    }
+-
+-    public void setIssueKey(String issueKey) {
+-        this.issueKey = issueKey;
+-    }
+-
+-    public String getProjectKey() {
+-        return projectKey;
+-    }
+-
+-    public void setProjectKey(String projectKey) {
+-        this.projectKey = projectKey;
+-    }
+-
+-    public Long getVersion() {
+-        return version;
+-    }
+-
+-    public void setVersion(Long version) {
+-        this.version = version;
+-    }
+-
+-    public String getAsString() {
+-        return asString;
+-    }
+-
+-    public void setAsString(String asString) {
+-        this.asString = asString;
+-    }
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
+@@ -24,7 +24,7 @@
+         stepDoc.setParameterGroups(parameterGroupsAsString);
+ 
+         // set parameter group infos
+-        List<ParameterInfoDTO> parameterInfos = stepDocDTO.getParameterInfos();
++        List<ParameterInfo> parameterInfos = stepDocDTO.getParameterInfos();
+         if (parameterInfos != null && !parameterInfos.isEmpty()) {
+             ObjectMapper mapper = new ObjectMapper();
+             String parameterInfosAsString;
+@@ -72,10 +72,10 @@
+         if (parameterInfosAsString != null) {
+             ObjectMapper mapper = new ObjectMapper();
+             mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+-            List<ParameterInfoDTO> parameterInfos;
++            List<ParameterInfo> parameterInfos;
+             try {
+                 parameterInfos = mapper.readValue(parameterInfosAsString,
+-                        mapper.getTypeFactory().constructCollectionType(List.class, ParameterInfoDTO.class));
++                        mapper.getTypeFactory().constructCollectionType(List.class, ParameterInfo.class));
+             } catch (IOException e) {
+                 throw new RuntimeException(e);
+             }
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfoDTO.java	(date 1410379766000)
+@@ -1,73 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
+-import java.util.List;
+-
+-/**
+- * Parameter info DTO object.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+-@XmlRootElement
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class ParameterInfoDTO {
+-
+-    private String parameterType;
+-    private String simpleParameterType;
+-    private boolean listType;
+-    private List<String> allowedValues;
+-    private List<String> suggestedValues;
+-    private List<TabularFieldInfoDTO> tabularFieldInfos;
+-
+-    public List<String> getSuggestedValues() {
+-        return suggestedValues;
+-    }
+-
+-    public void setSuggestedValues(List<String> suggestedValues) {
+-        this.suggestedValues = suggestedValues;
+-    }
+-
+-    public List<TabularFieldInfoDTO> getTabularFieldInfos() {
+-        return tabularFieldInfos;
+-    }
+-
+-    public void setTabularFieldInfos(List<TabularFieldInfoDTO> tabularFieldInfos) {
+-        this.tabularFieldInfos = tabularFieldInfos;
+-    }
+-
+-    public String getSimpleParameterType() {
+-        return simpleParameterType;
+-    }
+-
+-    public void setSimpleParameterType(String simpleParameterType) {
+-        this.simpleParameterType = simpleParameterType;
+-    }
+-
+-    public String getParameterType() {
+-        return parameterType;
+-    }
+-
+-    public void setParameterType(String parameterType) {
+-        this.parameterType = parameterType;
+-    }
+-
+-    public boolean isListType() {
+-        return listType;
+-    }
+-
+-    public void setListType(boolean listType) {
+-        this.listType = listType;
+-    }
+-
+-    public List<String> getAllowedValues() {
+-        return allowedValues;
+-    }
+-
+-    public void setAllowedValues(List<String> allowedValues) {
+-        this.allowedValues = allowedValues;
+-    }
+-
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision )
+@@ -1,5 +1,3 @@
+-            Story story = stories.get(0);
+-            StoryReport[] storyHtmlReports = story.getStoryReports();
+ package org.bitbucket.jbehaveforjira.plugin.conditions;
+ 
+ import com.atlassian.jira.issue.Issue;
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(revision )
+@@ -8,7 +8,7 @@
+ import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+ import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+ import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JBehaveStoryDTO;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+ import org.bitbucket.jbehaveforjira.plugin.dto.story.StoryDTOUtils;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+@@ -46,7 +46,7 @@
+     }
+ 
+     @Override
+-    public synchronized JBehaveStoryDTO saveOrUpdate(JBehaveStoryDTO storyDTO) {
++    public synchronized JiraStory saveOrUpdate(JiraStory storyDTO) {
+ 
+         String issueKey = storyDTO.getIssueKey();
+         User user = authenticationContext.getLoggedInUser();
+@@ -81,7 +81,7 @@
+         }
+     }
+ 
+-    private JBehaveStoryDTO create(JBehaveStoryDTO storyDTO, String userName) {
++    private JiraStory create(JiraStory storyDTO, String userName) {
+ 
+         final JBehaveStory story = storyDao.create();
+         story.setVersion(1L);
+@@ -91,11 +91,11 @@
+         story.setLastEditedBy(userName);
+         story.save();
+ 
+-        JBehaveStoryDTO byId = this.findById(story.getID());
++        JiraStory byId = this.findById(story.getID());
+         return byId;
+     }
+ 
+-    private JBehaveStoryDTO update(JBehaveStory story, JBehaveStoryDTO storyDTO, String userName) {
++    private JiraStory update(JBehaveStory story, JiraStory storyDTO, String userName) {
+ 
+         long currentVersion = story.getVersion();
+         long rolledVersion = currentVersion + 1;
+@@ -105,12 +105,12 @@
+         story.setLastEditedBy(userName);
+         story.save();
+ 
+-        JBehaveStoryDTO byId = this.findById(story.getID());
++        JiraStory byId = this.findById(story.getID());
+         return byId;
+     }
+ 
+     @Override
+-    public JBehaveStoryDTO findByProjectAndIssueKey(String projectKey, String issueKey) {
++    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
+ 
+         List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+         if (byIssueKey.isEmpty()) {
+@@ -121,19 +121,19 @@
+ 
+             JBehaveStory story = byIssueKey.get(0);
+ 
+-            JBehaveStoryDTO storyDTO = StoryDTOUtils.toDTO(story);
++            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
+             return storyDTO;
+         }
+     }
+ 
+     @Override
+-    public List<JBehaveStoryDTO> findByProjectKey(String projectKey) {
++    public List<JiraStory> findByProjectKey(String projectKey) {
+ 
+         List<JBehaveStory> stories = storyDao.findByProjectKey(projectKey);
+ 
+-        List<JBehaveStoryDTO> storyDTOs = new ArrayList<JBehaveStoryDTO>(stories.size());
++        List<JiraStory> storyDTOs = new ArrayList<JiraStory>(stories.size());
+         for (JBehaveStory story : stories) {
+-            JBehaveStoryDTO storyDTO = StoryDTOUtils.toDTO(story);
++            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
+             storyDTOs.add(storyDTO);
+         }
+ 
+@@ -141,11 +141,11 @@
+     }
+ 
+     @Override
+-    public JBehaveStoryDTO findById(int storyId) {
++    public JiraStory findById(int storyId) {
+ 
+         JBehaveStory story = storyDao.get(storyId);
+ 
+-        JBehaveStoryDTO storyModel = StoryDTOUtils.toDTO(story);
++        JiraStory storyModel = StoryDTOUtils.toDTO(story);
+         return storyModel;
+     }
+ 
+@@ -166,7 +166,6 @@
+     private void deleteStory(JBehaveStory story) {
+ 
+         // delete story reports
+-        StoryReport[] storyTestReports = story.getStoryReports();
+         JBehaveStoryReport[] storyTestReports = story.getStoryReports();
+         for (JBehaveStoryReport storyTestReport : storyTestReports) {
+             storyReportDao.delete(storyTestReport);
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(revision )
+@@ -1,5 +1,3 @@
+-            Story story = byIssueKey.get(0);
+-            StoryReport[] storyTestReports = story.getStoryReports();
+ package org.bitbucket.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.jira.bc.issue.IssueService;
+@@ -8,7 +6,7 @@
+ import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+ import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+ import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JBehaveStoryReportDTO;
++import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+ import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.StoryReportDTOUtils;
+ 
+ import java.util.ArrayList;
+@@ -29,7 +27,7 @@
+         this.storyReportDao = storyReportDao;
+     }
+ 
+-    public void addStoryTestReport(String projectKey, String issueKey, JBehaveStoryReportDTO storyReportDTO) {
++    public void addStoryTestReport(String projectKey, String issueKey, JiraStoryHtml storyReportDTO) {
+ 
+         List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+         if (byIssueKey.isEmpty()) {
+@@ -42,7 +40,7 @@
+             JBehaveStory story = byIssueKey.get(0);
+ 
+             // first we delete any storyReport that exists for the same environment as in the received reportDTO
+-            StoryReport[] storyHtmlReports = story.getStoryReports();
++            JBehaveStoryReport[] storyHtmlReports = story.getStoryReports();
+             String reportedEnvironment = storyReportDTO.getEnvironment();
+             if (storyHtmlReports.length > 0) {
+                 // find one for the reportedEnvironment if exists and delete it since it will be replaced by the one received
+@@ -64,7 +62,7 @@
+     }
+ 
+     @Override
+-    public List<JBehaveStoryReportDTO> findStoryReports(String projectKey, String issueKey) {
++    public List<JiraStoryHtml> findStoryReports(String projectKey, String issueKey) {
+         List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+         if (byIssueKey.isEmpty()) {
+             return Collections.emptyList();
+@@ -73,14 +71,14 @@
+         } else {
+             JBehaveStory story = byIssueKey.get(0);
+ 
+-            StoryReport[] storyTestReports = story.getStoryReports();
++            JBehaveStoryReport[] storyTestReports = story.getStoryReports();
+             if (storyTestReports.length == 0) {
+                 // createStoryReport a new report
+                 return Collections.emptyList();
+             } else {
+-                List<JBehaveStoryReportDTO> storyReportDTOs = new ArrayList<JBehaveStoryReportDTO>(storyTestReports.length);
++                List<JiraStoryHtml> storyReportDTOs = new ArrayList<JiraStoryHtml>(storyTestReports.length);
+                 for (JBehaveStoryReport storyTestReport : storyTestReports) {
+-                    JBehaveStoryReportDTO storyReportDTO = StoryReportDTOUtils.fromModelToDTO(storyTestReport);
++                    JiraStoryHtml storyReportDTO = StoryReportDTOUtils.fromModelToDTO(storyTestReport);
+                     storyReportDTOs.add(storyReportDTO);
+                 }
+                 return storyReportDTOs;
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(revision )
+@@ -7,8 +7,8 @@
+ import com.atlassian.jira.issue.fields.config.FieldConfig;
+ import com.atlassian.jira.issue.fields.config.FieldConfigItem;
+ import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JBehaveStoryDTO;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JBehaveStoryReportDTO;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
++import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+ import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.TestStatus;
+ import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
+ import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
+@@ -48,15 +48,15 @@
+         String projectKey = issue.getProjectObject().getKey();
+         String issueKey = issue.getKey();
+ 
+-        JBehaveStoryDTO story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
++        JiraStory story = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+ 
+         if (story != null) {
+ 
+-            List<JBehaveStoryReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
++            List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+             Map<String, TestStatus> statusesByEnvironment = new HashMap<String, TestStatus>(storyTestReports.size());
+             EnvironmentTestStatuses environmentTestStatuses = new EnvironmentTestStatuses(statusesByEnvironment);
+ 
+-            for (JBehaveStoryReportDTO storyTestReport : storyTestReports) {
++            for (JiraStoryHtml storyTestReport : storyTestReports) {
+                 TestStatus status = storyTestReport.getStatus();
+                 String environment = storyTestReport.getEnvironment();
+                 statusesByEnvironment.put(environment, status);
+\ No newline at end of file
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientResource.java	(date 1410379766000)
+@@ -1,82 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
+-
+-import org.apache.commons.lang.Validate;
+-
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
+-import java.io.BufferedReader;
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.InputStreamReader;
+-
+-/**
+- * Created by Dmytro on 8/15/2014.
+- */
+-@Path("/groovy-client")
+-public class GroovyClientResource {
+-
+-    @GET
+-    @Path("/story-paths-finder")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStoryPathsFinder() {
+-
+-        String scriptPath = "groovy/GroovyStoryPathsFinder.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    @GET
+-    @Path("/story-loader")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStoryLoader() {
+-
+-        String scriptPath = "groovy/GroovyStoryLoader.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    @GET
+-    @Path("/step-doc-reporter")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStepDocReporter() {
+-
+-        String scriptPath = "groovy/GroovyStepDocReporter.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    @GET
+-    @Path("/story-reporter")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStoryReporter() {
+-
+-        String scriptPath = "groovy/GroovyStoryReporter.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    private String loadScript(String scriptPath) {
+-
+-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(scriptPath);
+-        Validate.notNull(inputStream);
+-
+-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+-        StringBuilder sb = new StringBuilder();
+-        String line = null;
+-        try {
+-            line = br.readLine();
+-            while (line != null) {
+-                System.out.println("line = " + line);
+-                sb.append(line);
+-                sb.append("\n");
+-                line = br.readLine();
+-            }
+-        } catch (IOException e) {
+-            throw new RuntimeException(e);
+-        }
+-
+-        return sb.toString();
+-    }
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(revision )
+@@ -2,8 +2,6 @@
+ 
+ import com.atlassian.activeobjects.external.ActiveObjects;
+ import net.java.ao.Query;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+ 
+ import java.util.List;
+ 
+@@ -11,8 +9,6 @@
+ import static com.google.common.collect.Lists.newArrayList;
+ 
+ public final class JBehaveStoryDao {
+-
+-    private final Logger log = LoggerFactory.getLogger(getClass());
+ 
+     private final ActiveObjects ao;
+ 
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
+@@ -3,7 +3,7 @@
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JBehaveStoryDTO;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+ import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+@@ -36,7 +36,7 @@
+     @Path("/save/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.TEXT_PLAIN)
+-    public JBehaveStoryDTO save(@PathParam("projectKey") String projectKey,
++    public JiraStory save(@PathParam("projectKey") String projectKey,
+                           @PathParam("issueKey") String issueKey,
+                           String storyPayload) {
+ 
+@@ -45,16 +45,16 @@
+ 
+         // TODO - decide what to do about the null parameters below?
+         ObjectMapper mapper = new ObjectMapper();
+-        JBehaveStoryDTO storyDTO = null;
++        JiraStory storyDTO = null;
+         try {
+-            storyDTO = mapper.readValue(storyPayload, JBehaveStoryDTO.class);
++            storyDTO = mapper.readValue(storyPayload, JiraStory.class);
+         } catch (IOException e) {
+             throw new RuntimeException(e);
+         }
+ 
+         log.debug("saving story:\n" + storyDTO);
+ 
+-        JBehaveStoryDTO savedStoryDTO = storyService.saveOrUpdate(storyDTO);
++        JiraStory savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+         Validate.notNull(savedStoryDTO.getVersion());
+ 
+         try {
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(revision )
+@@ -3,9 +3,6 @@
+ import net.java.ao.Entity;
+ import net.java.ao.Preload;
+ 
+-/**
+- * Created by Dmytro on 4/23/2014.
+- */
+ @Preload
+ public interface JBehaveStepDoc extends Entity {
+ 
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
+@@ -20,9 +20,11 @@
+     private List<Integer> paramBoundInPattern;
+     private String extendedPattern;
+     private List<Integer> paramBoundInExtendPattern;
++
+     private List<Integer> parameterGroups = new ArrayList<Integer>();
+-    private List<ParameterInfoDTO> parameterInfos = new ArrayList<ParameterInfoDTO>();
+ 
++    private List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>();
++
+     protected StepDocDTO() {
+     }
+ 
+@@ -74,11 +76,11 @@
+         this.stepMethodSignature = stepMethodSignature;
+     }
+ 
+-    public List<ParameterInfoDTO> getParameterInfos() {
++    public List<ParameterInfo> getParameterInfos() {
+         return parameterInfos;
+     }
+ 
+-    public void setParameterInfos(List<ParameterInfoDTO> parameterInfos) {
++    public void setParameterInfos(List<ParameterInfo> parameterInfos) {
+         this.parameterInfos = parameterInfos;
+     }
+ 
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(revision )
+@@ -4,31 +4,25 @@
+ import net.java.ao.OneToMany;
+ import net.java.ao.Preload;
+ 
+-/**
+- * @author Maryna Stasyuk
+- */
+ @Preload
+ public interface JBehaveStory extends Entity {
+ 
+-    //    @NotNull
+     String getIssueKey();
+ 
+     void setIssueKey(String issueKey);
+ 
+     Long getIssueId();
+ 
+-    void setIssueLong();
++    void setIssueId(Long issueId);
+ 
+     Long getVersion();
+ 
+     void setVersion(Long version);
+ 
+-    //    @NotNull
+     String getProjectKey();
+ 
+     void setProjectKey(String projectKey);
+ 
+-    //    @NotNull
+     String getAsString();
+ 
+     void setAsString(String asString);
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportDTO.java	(date 1410379766000)
+@@ -1,143 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
+-
+-/**
+- * @author Maryna Stasyuk
+- */
+-@XmlRootElement
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class JBehaveStoryReportDTO {
+-
+-    private String environment;
+-    private String storyPath;
+-    private Long storyVersion;
+-    public TestStatus status;
+-    private Integer totalScenarios;
+-    private Integer totalScenariosPassed;
+-    private Integer totalScenariosFailed;
+-    private Integer totalScenariosPending;
+-    private Integer totalScenariosSkipped;
+-    private Integer totalScenariosNotPerformed;
+-    private String htmlReport;
+-
+-    protected JBehaveStoryReportDTO() {
+-    }
+-
+-    public JBehaveStoryReportDTO(String environment, String storyPath,
+-                                 Long storyVersion, TestStatus status, String htmlReport) {
+-        this.environment = environment;
+-        this.storyPath = storyPath;
+-        this.storyVersion = storyVersion;
+-        this.status = status;
+-        this.htmlReport = htmlReport;
+-    }
+-
+-    public String getEnvironment() {
+-        return environment;
+-    }
+-
+-    public void setEnvironment(String environment) {
+-        this.environment = environment;
+-    }
+-
+-    public String getStoryPath() {
+-        return storyPath;
+-    }
+-
+-    public void setStoryPath(String storyPath) {
+-        this.storyPath = storyPath;
+-    }
+-
+-    public Long getStoryVersion() {
+-        return storyVersion;
+-    }
+-
+-    public void setStoryVersion(Long storyVersion) {
+-        this.storyVersion = storyVersion;
+-    }
+-
+-    public TestStatus getStatus() {
+-        return status;
+-    }
+-
+-    public void setStatus(TestStatus status) {
+-        this.status = status;
+-    }
+-
+-    public String getHtmlReport() {
+-        return htmlReport;
+-    }
+-
+-    public void setHtmlReport(String htmlReport) {
+-        this.htmlReport = htmlReport;
+-    }
+-
+-    public Integer getTotalScenarios() {
+-        return totalScenarios;
+-    }
+-
+-    public void setTotalScenarios(Integer totalScenarios) {
+-        this.totalScenarios = totalScenarios;
+-    }
+-
+-    public Integer getTotalScenariosPassed() {
+-        return totalScenariosPassed;
+-    }
+-
+-    public void setTotalScenariosPassed(Integer totalScenariosPassed) {
+-        this.totalScenariosPassed = totalScenariosPassed;
+-    }
+-
+-    public Integer getTotalScenariosFailed() {
+-        return totalScenariosFailed;
+-    }
+-
+-    public void setTotalScenariosFailed(Integer totalScenariosFailed) {
+-        this.totalScenariosFailed = totalScenariosFailed;
+-    }
+-
+-    public Integer getTotalScenariosPending() {
+-        return totalScenariosPending;
+-    }
+-
+-    public void setTotalScenariosPending(Integer totalScenariosPending) {
+-        this.totalScenariosPending = totalScenariosPending;
+-    }
+-
+-    public Integer getTotalScenariosSkipped() {
+-        return totalScenariosSkipped;
+-    }
+-
+-    public void setTotalScenariosSkipped(Integer totalScenariosSkipped) {
+-        this.totalScenariosSkipped = totalScenariosSkipped;
+-    }
+-
+-    public Integer getTotalScenariosNotPerformed() {
+-        return totalScenariosNotPerformed;
+-    }
+-
+-    public void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed) {
+-        this.totalScenariosNotPerformed = totalScenariosNotPerformed;
+-    }
+-
+-    @Override
+-    public String toString() {
+-        return "JiraStoryHtmlReport{" +
+-                "environment='" + environment + '\'' +
+-                ", storyPath='" + storyPath + '\'' +
+-                ", storyVersion=" + storyVersion +
+-                ", status=" + status +
+-                ", totalScenarios=" + totalScenarios +
+-                ", totalScenariosPassed=" + totalScenariosPassed +
+-                ", totalScenariosFailed=" + totalScenariosFailed +
+-                ", totalScenariosPending=" + totalScenariosPending +
+-                ", totalScenariosSkipped=" + totalScenariosSkipped +
+-                ", totalScenariosNotPerformed=" + totalScenariosNotPerformed +
+-                ", htmlReport='" + htmlReport + '\'' +
+-                '}';
+-    }
+-}
+-
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
+@@ -3,9 +3,9 @@
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JBehaveStoriesPayload;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JBehaveStoryDTO;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.StoryPathsPayload;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.StoriesPayload;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.StoryPaths;
+ import org.bitbucket.jbehaveforjira.plugin.service.StepDocsService;
+ import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
+ import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
+@@ -49,15 +49,15 @@
+     @GET
+     @Path("/story-paths/{projectKey}")
+     @Produces({MediaType.APPLICATION_JSON})
+-    public StoryPathsPayload listStoryPaths(@PathParam("projectKey") String projectKey,
++    public StoryPaths listStoryPaths(@PathParam("projectKey") String projectKey,
+                                      @QueryParam("appendVersionToPath")
+                                      @DefaultValue("true") boolean includeVersionInPath) {
+ 
+         Validate.notEmpty(projectKey);
+ 
+-        List<JBehaveStoryDTO> stories = storyService.findByProjectKey(projectKey);
++        List<JiraStory> stories = storyService.findByProjectKey(projectKey);
+         List<String> paths = new ArrayList<String>(stories.size());
+-        for (JBehaveStoryDTO story : stories) {
++        for (JiraStory story : stories) {
+             StringBuilder storyPathSb = new StringBuilder(story.getProjectKey() + "/" + story.getIssueKey());
+             if (includeVersionInPath) {
+                 Long version = story.getVersion();
+@@ -68,7 +68,7 @@
+             String storyPath = storyPathSb.toString();
+             paths.add(storyPath);
+         }
+-        StoryPathsPayload pathsModel = new StoryPathsPayload();
++        StoryPaths pathsModel = new StoryPaths();
+         pathsModel.setPaths(paths);
+ 
+         return pathsModel;
+@@ -77,9 +77,9 @@
+     @GET
+     @Path("/for-project/{projectKey}")
+     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+-    public JBehaveStoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
+-        List<JBehaveStoryDTO> stories = storyService.findByProjectKey(projectKey);
+-        JBehaveStoriesPayload payload = new JBehaveStoriesPayload(stories);
++    public StoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
++        List<JiraStory> stories = storyService.findByProjectKey(projectKey);
++        StoriesPayload payload = new StoriesPayload(stories);
+         return payload;
+     }
+ 
+@@ -90,7 +90,7 @@
+             @PathParam("projectKey") String projectKey,
+             @PathParam("issueKey") String issueKey) {
+ 
+-        JBehaveStoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
++        JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+ 
+         Response response;
+         if (storyDTO != null) {
+@@ -131,7 +131,7 @@
+         Validate.notNull(storyPath);
+         Validate.isTrue(storyPath.endsWith(".story"));
+ 
+-        JBehaveStoryDTO storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
++        JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+ 
+         Response response;
+         if (storyDTO != null) {
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(revision )
+@@ -3,22 +3,13 @@
+ import net.java.ao.Entity;
+ import net.java.ao.Preload;
+ 
+-/**
+- * Represents story test report, received as from the JBehave story run.
+- */
+ @Preload
+ public interface JBehaveStoryReport extends Entity {
+ 
+-    //    @NotNull
+     JBehaveStory getStory();
+ 
+     void setStory(JBehaveStory story);
+ 
+-    /**
+-     * Environment where the story test was run, e.g. DEV, TEST, UAT, etc.
+-     *
+-     * @return
+-     */
+     String getEnvironment();
+ 
+     void setEnvironment(String environment);
+@@ -27,11 +18,6 @@
+ 
+     void setStatus(String testStatus);
+ 
+-    /**
+-     * Version of the Story entity at which the story was execute and hence to which report relates.
+-     *
+-     * @return
+-     */
+     Long getStoryVersion();
+ 
+     void setStoryVersion(Long storyVersion);
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JBehaveStoryReportsPayload.java	(date 1410379766000)
+@@ -1,28 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
+-
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
+-import java.util.List;
+-
+-/**
+- * Created by Dmytro on 4/10/2014.
+- */
+-@XmlRootElement(name = "stories_payload")
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class JBehaveStoryReportsPayload {
+-
+-    private List<JBehaveStoryReportDTO> storyTestReports;
+-
+-    protected JBehaveStoryReportsPayload() {
+-    }
+-
+-    public JBehaveStoryReportsPayload(List<JBehaveStoryReportDTO> storyTestReports) {
+-        this.storyTestReports = storyTestReports;
+-    }
+-
+-    public List<JBehaveStoryReportDTO> getStoryTestReports() {
+-        return storyTestReports;
+-    }
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(revision )
+@@ -1,24 +1,24 @@
+ package org.bitbucket.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.activeobjects.tx.Transactional;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JBehaveStoryDTO;
++import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+ 
+ import java.util.List;
+ 
+ @Transactional
+ public interface StoryService {
+ 
+-    JBehaveStoryDTO findByProjectAndIssueKey(String projectKey, String issueKey);
++    JiraStory findByProjectAndIssueKey(String projectKey, String issueKey);
+ 
+-    List<JBehaveStoryDTO> findByProjectKey(String projectKey);
++    List<JiraStory> findByProjectKey(String projectKey);
+ 
+-    JBehaveStoryDTO findById(int storyId);
++    JiraStory findById(int storyId);
+ 
+     void delete(Long storyId);
+ 
+     void delete(String projectKey, String issueKey);
+ 
+-    JBehaveStoryDTO saveOrUpdate(JBehaveStoryDTO storyDTO);
++    JiraStory saveOrUpdate(JiraStory storyDTO);
+ }
+ 
+ 
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(revision )
+@@ -4,7 +4,7 @@
+ 
+ public class StoryReportDTOUtils {
+ 
+-    public static void fromDTOToModel(JBehaveStoryReportDTO storyHtmlReportDTO, JBehaveStoryReport storyHtmlReport) {
++    public static void fromDTOToModel(JiraStoryHtml storyHtmlReportDTO, JBehaveStoryReport storyHtmlReport) {
+ 
+         storyHtmlReport.setStatus(storyHtmlReportDTO.getStatus().name());
+         storyHtmlReport.setStoryVersion(storyHtmlReportDTO.getStoryVersion());
+@@ -20,14 +20,14 @@
+ 
+     }
+ 
+-    public static JBehaveStoryReportDTO fromModelToDTO(JBehaveStoryReport storyHtmlReport) {
++    public static JiraStoryHtml fromModelToDTO(JBehaveStoryReport storyHtmlReport) {
+ 
+         String environment = storyHtmlReport.getEnvironment();
+         String storyPath = storyHtmlReport.getStory().getIssueKey();
+         Long storyVersion = storyHtmlReport.getStoryVersion();
+         TestStatus status = TestStatus.valueOf(storyHtmlReport.getStatus());
+         String htmlReport = storyHtmlReport.getHtmlReport();
+-        JBehaveStoryReportDTO storyReportDTO = new JBehaveStoryReportDTO(environment, storyPath, storyVersion, status, htmlReport);
++        JiraStoryHtml storyReportDTO = new JiraStoryHtml(environment, storyPath, storyVersion, status, htmlReport);
+ 
+         storyReportDTO.setTotalScenarios(storyHtmlReport.getTotalScenarios());
+         storyReportDTO.setTotalScenariosPassed(storyHtmlReport.getTotalScenariosPassed());
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfoDTO.java	(date 1410379766000)
+@@ -1,47 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
+-import java.util.List;
+-
+-/**
+- * DTO for tabular parameter fields.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+-@XmlRootElement
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class TabularFieldInfoDTO {
+-
+-    private String fieldName;
+-
+-    private List<String> allowedValues;
+-
+-    private List<String> suggestedValues;
+-
+-    public String getFieldName() {
+-        return fieldName;
+-    }
+-
+-    public void setFieldName(String fieldName) {
+-        this.fieldName = fieldName;
+-    }
+-
+-    public List<String> getAllowedValues() {
+-        return allowedValues;
+-    }
+-
+-    public void setAllowedValues(List<String> allowedValues) {
+-        this.allowedValues = allowedValues;
+-    }
+-
+-    public List<String> getSuggestedValues() {
+-        return suggestedValues;
+-    }
+-
+-    public void setSuggestedValues(List<String> suggestedValues) {
+-        this.suggestedValues = suggestedValues;
+-    }
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(revision )
+@@ -3,8 +3,6 @@
+ import com.atlassian.activeobjects.external.ActiveObjects;
+ import net.java.ao.Query;
+ import org.jbehave.core.steps.StepType;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+ 
+ import java.util.List;
+ 
+@@ -13,8 +11,6 @@
+ 
+ public final class JBehaveStepDocDao {
+ 
+-    private final Logger log = LoggerFactory.getLogger(getClass());
+-
+     private final ActiveObjects ao;
+ 
+     public JBehaveStepDocDao(ActiveObjects ao) {
+@@ -44,7 +40,7 @@
+         return newArrayList(result);
+     }
+ 
+-    public List<JBehaveStepDoc> findAllForProject(String projectKey, StepType stepType) {
++    public List<JBehaveStepDoc> findByTypeForProject(StepType stepType, String projectKey) {
+         String[] params = new String[]{projectKey, stepType.name()};
+         Query query = Query.select().where("PROJECT_KEY = ? AND STEP_TYPE = ?", params);
+         JBehaveStepDoc[] result = ao.find(JBehaveStepDoc.class, query);
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JBehaveStoriesPayload.java	(date 1410379766000)
+@@ -1,36 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
+-
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlElement;
+-import javax.xml.bind.annotation.XmlRootElement;
+-import java.util.List;
+-
+-/**
+- * Container for lists of StoryDTO objects.
+- *
+- * @author stasyukd
+- */
+-@XmlRootElement(name = "stories_payload")
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class JBehaveStoriesPayload {
+-
+-    @XmlElement
+-    private List<JBehaveStoryDTO> stories;
+-
+-    /**
+-     * Constructor for use via reflection.
+-     */
+-    protected JBehaveStoriesPayload() {
+-    }
+-
+-    public JBehaveStoriesPayload(List<JBehaveStoryDTO> stories) {
+-        this.stories = stories;
+-    }
+-
+-    public List<JBehaveStoryDTO> getStories() {
+-        return stories;
+-    }
+-
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/pom.xml	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -80,12 +80,12 @@
+             <version>${jira.version}</version>
+             <scope>provided</scope>
+         </dependency>
+-        <!--<dependency>-->
+-            <!--<groupId>com.atlassian.jira</groupId>-->
+-            <!--<artifactId>jira-core</artifactId>-->
+-            <!--<version>${jira.version}</version>-->
+-            <!--<scope>provided</scope>-->
+-        <!--</dependency>-->
++        <dependency>
++            <groupId>com.atlassian.jira</groupId>
++            <artifactId>jira-core</artifactId>
++            <version>${jira.version}</version>
++            <scope>provided</scope>
++        </dependency>
+         <dependency>
+             <groupId>com.atlassian.activeobjects</groupId>
+             <artifactId>activeobjects-plugin</artifactId>
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPathsPayload.java	(date 1410379766000)
+@@ -1,24 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
+-
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
+-import java.util.List;
+-
+-/**
+- * @author Maryna Stasyuk
+- */
+-@XmlRootElement
+-@XmlAccessorType(XmlAccessType.FIELD)
+-public class StoryPathsPayload {
+-
+-    private List<String> paths;
+-
+-    public List<String> getPaths() {
+-        return paths;
+-    }
+-
+-    public void setPaths(List<String> paths) {
+-        this.paths = paths;
+-    }
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(revision )
+@@ -1,16 +1,16 @@
+ package org.bitbucket.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.activeobjects.tx.Transactional;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JBehaveStoryReportDTO;
++import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+ 
+ import java.util.List;
+ 
+ @Transactional
+ public interface StoryReportService {
+ 
+-    void addStoryTestReport(String projectKey, String issueKey, JBehaveStoryReportDTO storyReportDTO);
++    void addStoryTestReport(String projectKey, String issueKey, JiraStoryHtml storyReportDTO);
+ 
+-    List<JBehaveStoryReportDTO> findStoryReports(String projectKey, String issueKey);
++    List<JiraStoryHtml> findStoryReports(String projectKey, String issueKey);
+ 
+     void deleteForIssue(String projectKey, String issueKey);
+ }
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1410379766000)
+@@ -1,110 +0,0 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
+-
+-import com.atlassian.jira.bc.issue.search.SearchService;
+-import com.atlassian.jira.security.JiraAuthenticationContext;
+-import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JBehaveStoryReportDTO;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JBehaveStoryReportsPayload;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
+-import org.codehaus.jackson.map.ObjectMapper;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-
+-import javax.ws.rs.*;
+-import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
+-import java.io.IOException;
+-import java.util.List;
+-
+-/**
+- * Contains rest api methods related to processing of Story objects.
+- *
+- * @author stasyukd
+- * @since 2.0.0-SNAPSHOT
+- */
+-@Path("/story-report")
+-public class StoryReportResource {
+-
+-    private Logger log = LoggerFactory.getLogger(this.getClass());
+-
+-    private final StoryService storyService;
+-
+-    private final StoryReportService storyReportService;
+-
+-    private SearchService searchService;
+-    private JiraAuthenticationContext authenticationContext;
+-
+-    public StoryReportResource(StoryService storyService,
+-                               StoryReportService storyReportService,
+-                               SearchService searchService,
+-                               JiraAuthenticationContext authenticationContext) {
+-        this.storyService = storyService;
+-        this.storyReportService = storyReportService;
+-        this.searchService = searchService;
+-        this.authenticationContext = authenticationContext;
+-    }
+-
+-    @POST
+-    @Path("/add/{projectKey}/{issueKey}")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    @Consumes(MediaType.APPLICATION_JSON)
+-    public String addStoryTestReport(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("issueKey") String issueKey,
+-            String payload) {
+-
+-        ObjectMapper mapper = new ObjectMapper();
+-        JBehaveStoryReportDTO storyReportDTO = null;
+-        try {
+-            storyReportDTO = mapper.readValue(payload, JBehaveStoryReportDTO.class);
+-        } catch (IOException e) {
+-            throw new RuntimeException(e);
+-        }
+-
+-        storyReportService.addStoryTestReport(projectKey, issueKey, storyReportDTO);
+-        return "success";
+-    }
+-
+-    @POST
+-    @Path("/add-for-path/{projectKey}/{storyPath}")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    @Consumes(MediaType.APPLICATION_JSON)
+-    public String addStoryTestReportForPath(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("storyPath") String storyPath,
+-            String payload) {
+-
+-        Validate.notNull(storyPath);
+-        Validate.isTrue(storyPath.endsWith(".story"));
+-        String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
+-
+-        return this.addStoryTestReport(projectKey, issueKey, payload);
+-    }
+-
+-
+-
+-    @GET
+-    @Path("/find/{projectKey}/{issueKey}")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    @Consumes(MediaType.APPLICATION_JSON)
+-    public JBehaveStoryReportsPayload findStoryTestReport(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("issueKey") String issueKey) {
+-
+-        List<JBehaveStoryReportDTO> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+-
+-        JBehaveStoryReportsPayload storyTestReportsPayloadDTO = new JBehaveStoryReportsPayload(storyTestReports);
+-        return storyTestReportsPayloadDTO;
+-    }
+-
+-    @DELETE
+-    @Path("/delete/{projectKey}/{issueKey}")
+-    public Response deleteStoryTestReport(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("issueKey") String issueKey) {
+-
+-        storyReportService.deleteForIssue(projectKey, issueKey);
+-        return Response.ok("Successful deletion from server!").build();
+-    }
+-}
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(revision )
+@@ -8,9 +8,9 @@
+ 
+ public class StoryDTOUtils {
+ 
+-    public static JBehaveStoryDTO toDTO(JBehaveStory story) {
++    public static JiraStory toDTO(JBehaveStory story) {
+ 
+-        JBehaveStoryDTO storyDTO = new JBehaveStoryDTO();
++        JiraStory storyDTO = new JiraStory();
+         storyDTO.setProjectKey(story.getProjectKey());
+         storyDTO.setIssueKey(story.getIssueKey());
+         storyDTO.setVersion(story.getVersion());
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
+@@ -5,8 +5,8 @@
+ import com.atlassian.jira.event.issue.IssueEvent;
+ import com.atlassian.jira.event.type.EventType;
+ import com.atlassian.jira.issue.Issue;
+-import org.bitbucket.jbehaveforjira.plugin.ao.Story;
+-import org.bitbucket.jbehaveforjira.plugin.ao.StoryDao;
++import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
++import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.DisposableBean;
+@@ -23,9 +23,9 @@
+ 
+     private EventPublisher eventPublisher;
+ 
+-    private final StoryDao storyDao;
++    private final JBehaveStoryDao storyDao;
+ 
+-    public IssueDeletedEventListener(EventPublisher eventPublisher, StoryDao storyDao) {
++    public IssueDeletedEventListener(EventPublisher eventPublisher, JBehaveStoryDao storyDao) {
+         this.eventPublisher = eventPublisher;
+         this.storyDao = storyDao;
+     }
+@@ -58,9 +58,9 @@
+             Issue issue = issueEvent.getIssue();
+             String issueKey = issue.getKey();
+             String projectKey = issue.getProjectObject().getKey();
+-            List<Story> stories = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
++            List<JBehaveStory> stories = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+             if (!stories.isEmpty()) {
+-                for (Story story : stories) {
++                for (JBehaveStory story : stories) {
+                     log.debug("Deleting JBehave story for issue with key - " + issueKey + " in project - " + projectKey + ", due to issue deletion");
+                     storyDao.delete(story);
+                 }
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1410379766000)
++++ jbehave-for-jira/sync_repo/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -1,0 +1,0 @@
