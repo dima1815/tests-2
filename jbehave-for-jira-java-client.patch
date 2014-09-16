@@ -1,87 +1,129 @@
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java	(date 1409608936000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/AllowedValues.java	(date 1409608936000)
-@@ -1,19 +0,0 @@
--package org.bitbucket.jbehaveforjira.javaclient;
--
--import java.lang.annotation.*;
--
--/**
-- * Fields in the parameter types (classes annotated with @AsParameters) can be annotated with this
-- * annotation to limit the range of values allowed for the annotated field. The indented usage is to
-- * annotate non enum primitive field types with this annotation. For example 'discount' of type double
-- * could be annotated with this annotation which would have the following allowed values: '5, 10, 15, etc.'.
-- *
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision )
+@@ -17,7 +17,7 @@
+ import java.net.URISyntaxException;
+ 
+ /**
 - * @author Maryna Stasyuk
-- */
--@Retention(RetentionPolicy.RUNTIME)
--@Target({ElementType.FIELD, ElementType.PARAMETER})
--@Documented
--public @interface AllowedValues {
--
--    String[] value();
--}
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java	(date 1409608936000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/SuggestedValues.java	(date 1409608936000)
-@@ -1,20 +0,0 @@
--package org.bitbucket.jbehaveforjira.javaclient;
--
--import java.lang.annotation.*;
--
--/**
-- * Fields in the parameter types (classes annotated with @AsParameters) can be annotated with this
-- * annotation to provide a list of suggested but not limited range of values for the annotated field. The indented usage is to
-- * annotate non enum primitive field types with this annotation. For example 'discount' of type double
-- * could be annotated with this annotation which would have the following allowed values: '5, 10, 15, etc.'. But user would be
-- * allowed to enter other values outside of suggested values specified in this annotation.
-- *
-- * @author Maryna Stasyuk
-- */
--@Retention(RetentionPolicy.RUNTIME)
--@Target({ElementType.FIELD, ElementType.PARAMETER})
--@Documented
--public @interface SuggestedValues {
--
--    String[] value();
--}
++ * @author Maryna Pristrom
+  */
+ public class JiraStoryLoader implements StoryLoader {
+ 
 Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java	(revision )
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/ParameterInfo.java	(revision )
-@@ -0,0 +1,30 @@
-+package org.bitbucket.jbehaveforjira.javaclient;
-+
-+import java.lang.annotation.*;
-+
-+/**
-+ * Used to provide meta information for the JBehave parameter fields.
-+ *
-+ * @author Maryna Stasyuk
-+ */
-+@Retention(RetentionPolicy.RUNTIME)
-+@Target({ElementType.FIELD, ElementType.PARAMETER})
-+@Documented
-+public @interface ParameterInfo {
-+
-+    public static enum EmptyEnum {
-+
-+    }
-+
-+    boolean isMandatory() default false;
-+
-+    String[] allowedValues() default {};
-+
-+    String[] suggestedValues() default {};
-+
-+    Class<? extends Enum> suggestedValuesEnum() default EmptyEnum.class;
-+
-+    String regExPattern() default "";
-+}
-+
-+
+@@ -5,7 +5,7 @@
+ /**
+  * Used to provide meta information for the JBehave parameter fields.
+  *
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ @Retention(RetentionPolicy.RUNTIME)
+ @Target({ElementType.FIELD, ElementType.PARAMETER})
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryPathsFinder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(revision )
+@@ -4,7 +4,7 @@
+ import java.util.List;
+ 
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class JiraStoryPathsFinder implements StoryPathsFinder {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-java-client/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/pom.xml	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/pom.xml	(revision )
+@@ -24,7 +24,7 @@
+     <developers>
+         <developer>
+             <id>pristrom</id>
+-            <name>Maryna Stasyuk</name>
++            <name>Maryna Pristrom</name>
+             <email>m.pristrom@gmail.com</email>
+         </developer>
+     </developers>
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/StoryPathsFinder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/StoryPathsFinder.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/StoryPathsFinder.java	(revision )
+@@ -3,7 +3,7 @@
+ import java.util.List;
+ 
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public interface StoryPathsFinder {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStepDocReporter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStepDocReporter.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStepDocReporter.java	(revision )
+@@ -6,7 +6,7 @@
+ import java.util.List;
+ 
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class JiraStepDocReporter implements StepdocReporter {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/GroovyResourceHelper.java	(revision )
+@@ -12,7 +12,7 @@
+ import java.net.URISyntaxException;
+ 
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ class GroovyResourceHelper {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryReporter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryReporter.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/org/bitbucket/jbehaveforjira/javaclient/JiraStoryReporter.java	(revision )
+@@ -7,7 +7,7 @@
+ import java.util.Map;
+ 
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class JiraStoryReporter implements StoryReporter {
+ 
