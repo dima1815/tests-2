@@ -3,260 +3,94 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Format.java	(revision )
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Format.java	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Format.java	(revision )
-@@ -0,0 +1,12 @@
-+package org.bitbucket.jbehaveforjira.exampleproject;
-+
-+/**
-+ * @author Maryna Stasyuk
-+ */
-+public enum Format {
-+
-+    Hardcover,
-+    Paperback,
-+    Audible,
-+    eBook
-+}
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookGenre.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookGenre.java	(date 1409146074000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Genre.java	(revision )
-@@ -3,7 +3,7 @@
+@@ -1,7 +1,7 @@
+ package org.bitbucket.jbehaveforjira.exampleproject;
+ 
  /**
-  * @author Maryna Stasyuk
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
   */
--public enum BookGenre {
-+public enum Genre {
-     Fiction,
-     Drama,
-     Romance,
+ public enum Format {
+ 
 Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1409146074000)
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java	(revision )
-@@ -1,6 +1,10 @@
- package org.bitbucket.jbehaveforjira.exampleproject;
+@@ -20,7 +20,7 @@
+ import java.util.List;
  
--import org.bitbucket.jbehaveforjira.javaclient.*;
-+import org.bitbucket.jbehaveforjira.groovyclient.GroovyStepDocReporter;
-+import org.bitbucket.jbehaveforjira.groovyclient.GroovyStoryLoader;
-+import org.bitbucket.jbehaveforjira.groovyclient.GroovyStoryPathsFinder;
-+import org.bitbucket.jbehaveforjira.groovyclient.GroovyStoryReporter;
-+import org.bitbucket.jbehaveforjira.javaclient.StoryPathsFinder;
- import org.jbehave.core.configuration.MostUsefulConfiguration;
- import org.jbehave.core.embedder.Embedder;
- import org.jbehave.core.junit.JUnitStories;
-@@ -35,7 +39,8 @@
-                 new StoryReporterBuilder() {
-                     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
-                         if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
--                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-+//                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-+                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-                         } else {
-                             return super.reporterFor(storyPath, format);
-                         }
-@@ -50,11 +55,13 @@
-         );
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class BookStoreTest extends JUnitStories {
  
-         // set Jira story loader
--        JiraStoryLoader jiraLoader = new JiraStoryLoader(jiraUrl, jiraProject, "admin", "admin");
-+//        JiraStoryLoader jiraLoader = new JiraStoryLoader(jiraUrl, jiraProject, "admin", "admin");
-+        GroovyStoryLoader jiraLoader = new GroovyStoryLoader(jiraUrl, jiraProject, "admin", "admin", true);
-         configuration.useStoryLoader(jiraLoader);
- 
-         // set Jira step doc reporter
--        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
-+//        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
-+        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
- //        StepdocReporter stepDocReporter = new org.bitbucket.jbehaveforjira.javaclient.GroovyStepDocReporter(jiraUrl, jiraProject);
-         configuration.useStepdocReporter(stepDocReporter);
- 
-@@ -67,6 +74,8 @@
-         Embedder embedder = configuredEmbedder();
-         try {
-             embedder.runStoriesAsPaths(storyPaths());
-+        } catch (Exception e) {
-+            e.printStackTrace();
-         } finally {
-             // report step docs
-             List<CandidateSteps> candidateSteps = embedder.stepsFactory().createCandidateSteps();
-@@ -82,7 +91,8 @@
-     @Override
-     protected List<String> storyPaths() {
- 
--        JiraStoryPathsFinder storyFinder = new JiraStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
-+//        JiraStoryPathsFinder storyFinder = new JiraStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
-+        StoryPathsFinder storyFinder = new GroovyStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
-         List<String> paths = storyFinder.findPaths();
-         return paths;
-     }
-Index: jbehave-for-jira/jbehave-for-jira-example-project/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(date 1409146074000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(revision )
-@@ -78,7 +78,13 @@
-             <groupId>org.bitbucket.pristrom</groupId>
-             <artifactId>jbehave-for-jira-java-client</artifactId>
-             <version>1.0.0-SNAPSHOT</version>
--            <scope>test</scope>
-+            <!--<scope>test</scope>-->
-+        </dependency>
-+        <dependency>
-+            <groupId>org.bitbucket.pristrom</groupId>
-+            <artifactId>jbehave-for-jira-groovy-client</artifactId>
-+            <version>1.0.0-SNAPSHOT</version>
-+            <!--<scope>test</scope>-->
-         </dependency>
-         <dependency>
-             <groupId>org.jbehave</groupId>
 Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookStore.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookStore.java	(date 1409146074000)
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookStore.java	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookStore.java	(revision )
-@@ -31,7 +31,7 @@
-         return books;
-     }
+@@ -5,7 +5,7 @@
+ import java.util.List;
  
--    public List<Book> findAllByGenre(BookGenre genre) {
-+    public List<Book> findAllByGenre(Genre genre) {
-         List<Book> results = new ArrayList<Book>();
-         for (Book book : books) {
-             if (book.getGenre().equals(genre)) {
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class BookStore {
+ 
 Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java	(date 1409146074000)
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java	(revision )
-@@ -1,6 +1,9 @@
- package org.bitbucket.jbehaveforjira.exampleproject;
- 
-+import org.jbehave.core.annotations.Alias;
- import org.jbehave.core.annotations.Given;
-+import org.jbehave.core.annotations.Named;
-+import org.jbehave.core.annotations.When;
- 
+@@ -8,7 +8,7 @@
  import java.util.List;
  
-@@ -11,6 +14,11 @@
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public class BookRelatedSteps {
  
-     private BookStore bookStore = new BookStore();
- 
-+    @When("something happens")
-+    public void whenSomething() {
-+
-+    }
-+
-     @Given("the following book: $book")
-     public void givenBook(Book book) {
- 
-@@ -21,6 +29,12 @@
-     public void givenBooks(List<Book> books) {
- 
-         bookStore.add(books);
-+    }
-+
-+    @Given("a stock of symbol $symbol and a threshold of $threshold")
-+    @Alias("a stock of symbol <symbol> and a threshold of <threshold>")
-+    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
-+        // ...
-     }
- 
- }
 Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java	(date 1409146074000)
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java	(date 1410286683000)
 +++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java	(revision )
-@@ -1,30 +1,52 @@
- package org.bitbucket.jbehaveforjira.exampleproject;
+@@ -7,7 +7,7 @@
+ import java.util.List;
  
-+import org.bitbucket.jbehaveforjira.javaclient.ParameterInfo;
- import org.jbehave.core.annotations.AsParameters;
- import org.jbehave.core.annotations.Parameter;
- 
-+import java.util.List;
-+
  /**
-  * @author Maryna Stasyuk
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
   */
  @AsParameters
  public class Book {
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Genre.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Genre.java	(date 1410286683000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Genre.java	(revision )
+@@ -1,7 +1,7 @@
+ package org.bitbucket.jbehaveforjira.exampleproject;
  
-+    @ParameterInfo(isMandatory = true)
-     @Parameter(name = "Title")
-     private String title;
- 
-     @Parameter(name = "Genre")
--    private BookGenre genre;
-+    private Genre genre;
- 
-+    @ParameterInfo(isMandatory = true)
-     @Parameter(name = "Author")
-     private String author;
- 
-+    @ParameterInfo(suggestedValues = {"1.99", "9.93", "12.50"})
-     private Double price;
- 
-+    @Parameter(name = "discount")
-+    @ParameterInfo(allowedValues = {"10", "15", "30"})
-+    private Double discount;
-+
-+    @ParameterInfo(regExPattern = "")
-     private Integer ISBN;
- 
-+    @ParameterInfo(suggestedValues = {"1990", "1991", "1992", "1993", "1994", "1995"})
-     @Parameter(name = "Year pub.")
-     private Integer yearPublished;
- 
-+    private Boolean inStock;
-+
-+    @Parameter(name = "Formats")
-+    @ParameterInfo(suggestedValuesEnum = Format.class)
-+    private List<String> formats;
-+
-+    public Double getDiscount() {
-+        return discount;
-+    }
-+
-     public Integer getYearPublished() {
-         return yearPublished;
-     }
-@@ -33,7 +55,7 @@
-         return title;
-     }
- 
--    public BookGenre getGenre() {
-+    public Genre getGenre() {
-         return genre;
-     }
- 
-@@ -47,6 +69,14 @@
- 
-     public Integer getISBN() {
-         return ISBN;
-+    }
-+
-+    public Boolean getInStock() {
-+        return inStock;
-+    }
-+
-+    public List<String> getFormats() {
-+        return formats;
-     }
- 
-     @Override
+ /**
+- * @author Maryna Stasyuk
++ * @author Maryna Pristrom
+  */
+ public enum Genre {
+     Fiction,
