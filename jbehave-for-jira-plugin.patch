@@ -1,593 +1,956 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(revision )
+@@ -1,13 +1,13 @@
+-package org.bitbucket.jbehaveforjira.plugin.service;
++package com.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.jira.bc.issue.IssueService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.StoryReportDTOUtils;
++import com.jbehaveforjira.plugin.ao.JBehaveStory;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryReport;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
++import com.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
++import com.jbehaveforjira.plugin.dto.storyreport.StoryReportDTOUtils;
+ 
+ import java.util.ArrayList;
+ import java.util.Collections;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
++package com.jbehaveforjira.plugin.dto.story;
+ 
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocsPayload.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocsPayload.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocsPayload.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
++package com.jbehaveforjira.plugin.dto.stepdoc;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/contextproviders/StoryReportsPanelContextProvider.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/contextproviders/StoryReportsPanelContextProvider.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryReportsPanelContextProvider.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.contextproviders;
++package com.jbehaveforjira.plugin.contextproviders;
+ 
+ import com.atlassian.crowd.embedded.api.User;
+ import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
++package com.jbehaveforjira.plugin.dto.story;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
+@@ -1,14 +1,14 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
++package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.StoriesPayload;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.StoryPaths;
+-import org.bitbucket.jbehaveforjira.plugin.service.StepDocsService;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.dto.story.StoriesPayload;
++import com.jbehaveforjira.plugin.dto.story.StoryPaths;
++import com.jbehaveforjira.plugin.service.StepDocsService;
++import com.jbehaveforjira.plugin.service.StoryReportService;
++import com.jbehaveforjira.plugin.service.StoryService;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
+@@ -1,12 +1,12 @@
+-package org.bitbucket.jbehaveforjira.plugin.listeners;
++package com.jbehaveforjira.plugin.listeners;
+ 
+ import com.atlassian.event.api.EventListener;
+ import com.atlassian.event.api.EventPublisher;
+ import com.atlassian.jira.event.issue.IssueEvent;
+ import com.atlassian.jira.event.type.EventType;
+ import com.atlassian.jira.issue.Issue;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.ao.JBehaveStory;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.DisposableBean;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.preferences;
++package com.jbehaveforjira.plugin.dto.preferences;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1410434732000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1410954072000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -33,7 +33,10 @@
-     var stepDocs = undefined;
- 
-     var storyChanged = false;
-+    var initialized = false;
- 
-+    var currentStoryInput = "current input";
-+
+@@ -40,6 +40,7 @@
      // initialization sequence
      restService.getUserPreferences(function (fetchedPreferences) {
          prefs = fetchedPreferences;
-@@ -46,6 +49,12 @@
-         });
-     });
++        storyController.prefs = prefs;
+         restService.fetchStepDocs(pageUtils.getProjectKey(), function (foundStepDocs) {
+             stepDocs = foundStepDocs;
+             restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), function (fetchedStory) {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReportDao.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReportDao.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReportDao.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
  
-+    this.updateCurrentStoryInput = function () {
-+        if (initialized) {
-+            currentStoryInput = editor.getValue();
-+        }
-+    }
-+
-     this.initEditor = function () {
-         // initialize story panel
-         var storyPanelContent = execspec.viewissuepage.showstory.renderStoryPanel();
-@@ -55,7 +64,7 @@
-         CodeMirror.commands.autocomplete = function (cm) {
-             cm.showHint({hint: CodeMirror.hint.jbehave});
-         }
--        var editor = CodeMirror.fromTextArea(document.getElementById("storyTextArea"), {
-+        var editor = CodeMirror.fromTextArea(document.getElementById("jbStoryTextArea"), {
-             mode: "jbehave",
- //            lineComment: "!--",
-             lineNumbers: prefs.showLineNumbers,
-@@ -107,9 +116,21 @@
+ import com.atlassian.activeobjects.external.ActiveObjects;
+ import org.slf4j.Logger;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
++package com.jbehaveforjira.plugin.dto.storyreport;
  
-         editor.on("change", storyController.onEditorChangeHandler);
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryServiceImpl.java	(revision )
+@@ -1,15 +1,15 @@
+-package org.bitbucket.jbehaveforjira.plugin.service;
++package com.jbehaveforjira.plugin.service;
  
-+        editor.on("focus", storyController.onEditorFocusHandler);
-+        editor.on("blur", storyController.onEditorBlurHandler);
-+
-         return editor;
-     }
+ import com.atlassian.crowd.embedded.api.User;
+ import com.atlassian.jira.bc.issue.IssueService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.StoryDTOUtils;
++import com.jbehaveforjira.plugin.ao.JBehaveStory;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryReport;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.dto.story.StoryDTOUtils;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
  
-+    this.onEditorFocusHandler = function (editor, changeObj) {
-+        console.log("#### editor focused");
-+        AJS.$("#myDiv").focus();
-+    }
-+
-+    this.onEditorBlurHandler = function (editor, changeObj) {
-+        console.log("#### editor blurred");
-+    }
-+
-     this.onEditorChangeHandler = function (editor, changeObj) {
-         debug("> onEditorChangeHandler");
- 
-@@ -135,6 +156,32 @@
-         });
-     }
- 
-+    this.reshowStory = function () {
-+
-+        debug("> reshowStory");
-+
-+        if (initialized) {
-+
-+            editor = storyController.initEditor();
-+
-+            editor.off("change", storyController.onEditorChangeHandler);
-+            editor.setValue(currentStoryInput);
-+            editor.on("change", storyController.onEditorChangeHandler);
-+
-+            storyController.remarkAllSteps();
-+            if (loadedStory.version != null) {
-+                storyController.fetchAndShowStoryReports();
-+            }
-+
-+            msgBar.reshowCurrentMsg();
-+
-+        } else {
-+            // we have not initialized our first run
-+        }
-+
-+        debug("# reshowStory");
-+    }
-+
-     this.showStory = function (storyModel) {
- 
-         debug("> showStory");
-@@ -148,35 +195,44 @@
- 
-         editor.setOption("readOnly", false);
- 
--        debug("# showStory");
-+        storyController.remarkAllSteps();
-+        if (storyModel.version != null) {
-+            storyController.fetchAndShowStoryReports();
-+        }
- 
--        var stepStartingLine = editorUtils.findStepStartingLineAfter(-1);
--        while (stepStartingLine > -1) {
--            var stepEndingLine = editorUtils.findLastStepLineFrom(stepStartingLine);
--            editorUtils.remarkStepBetween(stepStartingLine, stepEndingLine);
--            if (stepEndingLine >= editor.lineCount()) {
--                stepStartingLine = -1;
--            } else {
--                stepStartingLine = editorUtils.findStepStartingLineAfter(stepEndingLine);
-+        debug("# showStory");
--            }
-+    }
--        }
- 
--        if (storyModel.version != null) {
-+    this.fetchAndShowStoryReports = function () {
--            // this is NOT a new story, so check and show any story reports
--            restService.findStoryReports(pageUtils.getProjectKey(), pageUtils.getIssueKey(),
--                function (storyReportsPayload) {
--                    debug("> findStoryReports.callback");
--                    if (storyReportsPayload != undefined && storyReportsPayload.storyTestReports.length != 0) {
--                        debug("found storyReportsPayload - " + JSON.stringify(storyReportsPayload, null, "\t"));
--                        storyController.showStoryReports(storyReportsPayload.storyTestReports);
--                    } else {
--                        debug("no story reports were found for project");
--                    }
-+        // this is NOT a new story, so check and show any story reports
-+        restService.findStoryReports(pageUtils.getProjectKey(), pageUtils.getIssueKey(),
-+            function (storyReportsPayload) {
-+                debug("> findStoryReports.callback");
-+                if (storyReportsPayload != undefined && storyReportsPayload.storyTestReports.length != 0) {
-+                    debug("found storyReportsPayload - " + JSON.stringify(storyReportsPayload, null, "\t"));
-+                    storyController.showStoryReports(storyReportsPayload.storyTestReports);
-+                } else {
-+                    debug("no story reports were found for project");
-+                }
-+                initialized = true;
--                    debug("# findStoryReports.callback");
--                }
--            );
--        }
-+                debug("# findStoryReports.callback");
-+            }
-+        );
-+    }
-+
-+    this.remarkAllSteps = function () {
-+
-+        var stepStartingLine = editorUtils.findStepStartingLineAfter(-1);
-+        while (stepStartingLine > -1) {
-+            var stepEndingLine = editorUtils.findLastStepLineFrom(stepStartingLine);
-+            editorUtils.remarkStepBetween(stepStartingLine, stepEndingLine);
-+            if (stepEndingLine >= editor.lineCount()) {
-+                stepStartingLine = -1;
-+            } else {
-+                stepStartingLine = editorUtils.findStepStartingLineAfter(stepEndingLine);
--    }
-+            }
-+        }
-+    }
- 
-     this.showStoryReports = function (storyTestReports) {
- 
-@@ -194,7 +250,7 @@
-         // assign expand triggers for failure traces
-         AJS.$('.failure-trace-expander-trigger').each(function (index, element) {
- 
--            AJS.$(element).click(function(eventObject) {
-+            AJS.$(element).click(function (eventObject) {
-                 if (eventObject.preventDefault) {
-                     eventObject.preventDefault();
-                 } else {
-@@ -204,7 +260,7 @@
-                 var targetNode = AJS.$(target)[0];
-                 var traceContainer = AJS.$(targetNode).siblings(".jb-story-report-failure-trace-container")[0];
-                 AJS.$(traceContainer).toggle();
--                var replaceText =targetNode.getAttribute("replace-text");
-+                var replaceText = targetNode.getAttribute("replace-text");
-                 var currentHtml = AJS.$(targetNode).html();
-                 AJS.$(targetNode).html(replaceText);
-                 targetNode.setAttribute("replace-text", currentHtml);
-@@ -267,10 +323,17 @@
- 
-     function MsgBar() {
- 
-+        var currentMsgContent = "";
-+
-         this.clear = function () {
-             AJS.$("#storyMsgBar").empty();
-+            currentMsgContent = AJS.$("#storyMsgBar").html();
-         }
- 
-+        this.reshowCurrentMsg = function () {
-+            AJS.$("#storyMsgBar").html(currentMsgContent);
-+        }
-+
-         this.showSaveCancelMsg = function () {
-             var saveCancelContent = execspec.viewissuepage.showstory.renderSaveCancelMsg();
-             AJS.$("#storyMsgBar").empty();
-@@ -280,15 +343,16 @@
-                 body: saveCancelContent,
-                 closeable: false
-             });
-+            currentMsgContent = AJS.$("#storyMsgBar").html();
-         }
- 
-         this.showSavingMsg = function () {
-             var waitingMsg = execspec.viewissuepage.showstory.renderWaitingMessage();
-             AJS.$('#storyEditedMsgContainer').html(waitingMsg);
-+            currentMsgContent = AJS.$("#storyMsgBar").html();
-         }
- 
-         this.showSuccessMessage = function (saveCancelMsg) {
--
-             AJS.$("#storyMsgBar").empty();
-             AJS.messages.success("#storyMsgBar", {
-                 title: null,
-@@ -297,6 +361,7 @@
-                 body: saveCancelMsg,
-                 closeable: true
-             });
-+            currentMsgContent = AJS.$("#storyMsgBar").html();
-         }
-     }
- 
-@@ -1039,7 +1104,7 @@
-             var nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
-             var startsWithAnd;
-             if (nextStepStartLine != -1) {
--                startsWithAnd= this.lineStartsWithAndKeyword(nextStepStartLine);
-+                startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
-             }
-             while (nextStepStartLine != -1 && (nextStepStartLine <= toLine || startsWithAnd)) {
-                 scanStartLine = nextStepStartLine;
-@@ -1226,8 +1291,9 @@
- 
-     // handling page updates in response to inline editing of other jira fields
-     JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, context, reason) {
-+        storyController.updateCurrentStoryInput();
--        if (reason != "inlineEditStarted ") {
-+        if (reason != "inlineEditStarted") {
--            storyController = new StoryController();
-+            storyController.reshowStory();
-         }
- //        if (reason == JIRA.CONTENT_ADDED_REASON.pageLoad) {
- //        if (storyController == null) {
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(date 1410434732000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(revision )
-@@ -1,57 +1,27 @@
- <div id="story-panel"><!--DEFAULT content!--></div>
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
+@@ -320,6 +320,19 @@
+         }
  
--##<div class="mod-content">
--##    <div id="jbehave-story-val" class="field-ignore-highlight editable-field inactive">
--##        <form id="jbehaveStoryForm" class="" action="#">
--##            <div id="story-panel-container">
--##                <div id="story-panel"><!--DEFAULT content!--></div>
--##            </div>
--##            <span onclick="storyController.onEditorFocusHandler()" id="overlayIconContainer"
--##                  class="overlay-icon icon icon-edit-sml"></span>
-+##<div id="story-panel">
-+##    <div id="myDiv" tabindex="-1" class="editable-field active">
-+##        <script type="text/javascript">
-+##            var counter = 0;
-+##            counter++;
-+##//            alert("hello world - " + counter);
- ##
--##            <div id="storyEditorButtons" style="display: none;" tabindex="1" class="save-options">
--##                <button id="saveStoryButton" onclick="storyController.saveStoryHandler(event)"
--##                        type="submit" class="aui-button submit" accesskey="s"
--##                        title="Press Alt+s to submit this form"><span class="icon icon-save">Save</span></button>
--##                <button id="cancelEditStoryButton" onclick="storyController.cancelEditHandler(event)" type="cancel"
--##                        class="aui-button cancel"
--##                        accesskey="`" title="Press Alt+` to cancel"><span
--##                        class="icon icon-cancel">Cancel</span></button>
-+##//            AJS.$(function () {
-+##//                alert("Alert on window load event");
-+##//            });
-+##        </script>
-+##        <textarea rows="10" >Test area</textarea><br><br>
-+##        <span class="overlay-icon icon icon-edit-sml"></span>
--##            </div>
-+##    </div>
--##        </form>
-+##    <div id="storyContainer" class="editable-field active">
-+##        <div id="storyMsgBar"></div>
-+##        <div id="storyEditAreaContainer">
-+##            <textarea id="jbStoryTextArea"
-+##                      rows="10"
-+####                      style="display: none;"
-+##                      placeholder="enter story text here"></textarea>
--##    </div>
-+##        </div>
--##</div>
-+##    </div>
--
--##<div class="mod-content">
--##    <div id="jbehave-story-val" class="field-ignore-highlight editable-field active">
--##        <form class="ajs-dirty-warning-exempt aui" action="#">
--##            <div id="story-panel-container" class="active">
--##                <div id="story-panel" style="width: 100%"><!--DEFAULT content!--></div>
--##            </div>
-+##</div>
--##            <span class="overlay-icon throbber"></span>
--##            <div tabindex="1" class="save-options">
--##                <button type="submit" class="aui-button submit" accesskey="s"
--##                        title="Press Alt+s to submit this form"><span class="icon icon-save">Save</span></button>
--##                <button type="cancel" class="aui-button cancel" accesskey="`" title="Press Alt+` to cancel"><span
--##                        class="icon icon-cancel">Cancel</span></button>
--##            </div>
--##        </form>
--##    </div>
--##</div>
+         /**
++         * Examples:
++         */
++        hint = "Examples:";
++        if (currentState.allowExamples && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
++            var stepHint = new Object();
++            stepHint.text = hint;
++            stepHint.render = function (element, data, self) {
++                element.innerHTML = "<span class='cm-jb-story-examples'>" + self.text + "</span>";
++            };
++            list.push(stepHint);
++        }
++
++        /**
+          * Given
+          */
+         hint = "Given ";
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
+@@ -1,7 +1,7 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
++package com.jbehaveforjira.plugin.dto.stepdoc;
  
--##<div class="mod-content">
--##    <div id="jbehave-story-val" class="field-ignore-highlight editable-field active saving">
--##        <form class="ajs-dirty-warning-exempt aui" action="#">
--##            <div id="story-panel-container" class="active">
--##                <div id="story-panel" style="width: 100%"><!--DEFAULT content!--></div>
--##            </div>
--##            <span class="overlay-icon throbber"></span>
--##            <div tabindex="1" class="save-options">
--##                <button type="submit" class="aui-button submit" accesskey="s"
--##                        title="Press Alt+s to submit this form"><span class="icon icon-save">Save</span></button>
--##                <button type="cancel" class="aui-button cancel" accesskey="`" title="Press Alt+` to cancel"><span
--##                        class="icon icon-cancel">Cancel</span></button>
--##            </div>
--##        </form>
--##    </div>
--##</div>
+ 
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStepDoc;
++import com.jbehaveforjira.plugin.ao.JBehaveStepDoc;
+ import org.codehaus.jackson.map.DeserializationConfig;
+ import org.codehaus.jackson.map.ObjectMapper;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(revision )
+@@ -1,6 +1,6 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
++package com.jbehaveforjira.plugin.dto.story;
+ 
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
++import com.jbehaveforjira.plugin.ao.JBehaveStory;
+ import org.jbehave.core.steps.StepCreator;
+ 
+ import java.util.List;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin-marketing.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin-marketing.xml	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin-marketing.xml	(revision )
+@@ -0,0 +1,26 @@
++<atlassian-plugin-marketing>
++
++    <!--Describe names and versions of compatible applications -->
++    <compatibility>
++        <product name="jira" min="6.0.8" max="6.3.6"/>
++    </compatibility>
++
++    <!-- Describe your add-on logo and banner. The banner is only displayed in the UPM. -->
++    <logo image="images/marketing/plugin_logo.jpg"/>
++    <banner image="images/marketing/banner.png"/>
++
++    <!-- Describe highlight and cropped highlight image assets, in order. -->
++    <highlights>
++        <highlight image="images/marketing/highlight_1.png" cropped="images/marketing/highlight_1_cropped.png"/>
++        <highlight image="images/marketing/highlight_2.png" cropped="images/marketing/highlight_2_cropped.png"/>
++        <highlight image="images/marketing/highlight_3.png" cropped="images/marketing/highlight_3_cropped.png"/>
++    </highlights>
++
++    <!-- Describe additional screenshots you'd like listed on your add-on listing. -->
++    <screenshots>
++        <screenshot image="images/marketing/additional_screenshot_1.png"/>
++        <screenshot image="images/marketing/additional_screenshot_2.png"/>
++        <screenshot image="images/marketing/additional_screenshot_3.png"/>
++    </screenshots>
++
++</atlassian-plugin-marketing>
 \ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.css	(date 1410434732000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.css	(revision )
-@@ -428,6 +428,16 @@
-     z-index: 1;
- }
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
  
-+/*.CodeMirror-focused  {*/
-+    /*border: 2px solid green;*/
-+    /*box-sizing: border-box;*/
-+    /*border-spacing: 0;*/
-+    /*box-shadow: 0 0 0 0 transparent;*/
-+    /*border: 1px solid #ccc;*/
-+    /*border-radius: 3.01px;*/
-+    /*border-radius: 2.01px;*/
-+/*}*/
-+
- .CodeMirror-focused div.CodeMirror-cursors {
-     visibility: visible;
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
+ import net.java.ao.Entity;
+ import net.java.ao.Preload;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(date 1410434732000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(revision )
-@@ -5,9 +5,34 @@
-  */
- {template .renderStoryPanel}
- <div id="storyContainer">
--    <div id="storyMsgBar"></div>
-+    <div id="storyMsgBar">
-+//            <div id="storyModifiedMessage">
-+//                {call aui.message.warning}
-+//                    {param title: '' /}
-+//                    {param closeable: 'true' /}
-+////                    {param id: 'messageIDattribute' /}
-+//                    {param content}
-+//                         <span>Story has been modified! <span
-+//                            class="edit-operation-link"><a href="#" onclick="storyController.buttonHandler.saveStoryHandler(event)">Save</a></span> or <span
-+//                            class="edit-operation-link"><a href="#" onclick="storyController.buttonHandler.cancelEditHandler(event)">Cancel</a></span></span>
-+//                    {/param}
-+//                {/call}
-+//            </div>
-+//            <div id="storySavingMessage" class="aui-message aui-message-error">
-+//                <p>Saving</p>
-+//                <span class="aui-icon aui-icon-wait" class="save-story-button-spinner">Saving...</span>
-+//            </div>
-+//            <div id="storySavedMessage" class="aui-message aui-message-success">
-+//                <p>Story was saved successfully!</p>
-+//            </div>
-+//            <div class="aui-message success closeable shadowed">
-+//            	<p class="title">
-+//            	    <span class="aui-icon icon-success"></span><strong></strong></p>Story was saved successfully!
-+//            	    <span class="aui-icon icon-close" role="button" tabindex="0"></span>
-+//            </div>
-+    </div>
-     <div id="storyEditAreaContainer">
--        <textarea id="storyTextArea"
-+        <textarea id="jbStoryTextArea"
-             rows="10"
-             placeholder="enter story text here"></textarea>
-     </div>
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1410434732000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
-@@ -15,7 +15,7 @@
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryReportService.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportService.java	(revision )
+@@ -1,7 +1,7 @@
+-package org.bitbucket.jbehaveforjira.plugin.service;
++package com.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.activeobjects.tx.Transactional;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
++import com.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+ 
  import java.util.List;
  
- /**
-- * @author Maryna Stasyuk
-+ * @author Maryna Pristrom
-  */
- public class IssueDeletedEventListener implements InitializingBean, DisposableBean {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/test/java/org/bitbucket/jbehaveforjira/plugin/ao/StoryServiceImplTest.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/test/java/org/bitbucket/jbehaveforjira/plugin/ao/StoryServiceImplTest.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/test/java/com/jbehaveforjira/plugin/ao/StoryServiceImplTest.java	(revision )
+@@ -1,8 +1,8 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
  
+ import com.atlassian.activeobjects.external.ActiveObjects;
+ import com.atlassian.activeobjects.test.TestActiveObjects;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
++import com.jbehaveforjira.plugin.service.StoryService;
+ import junit.framework.Assert;
+ import net.java.ao.EntityManager;
+ import net.java.ao.test.jdbc.Data;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/test/java/org/bitbucket/jbehaveforjira/plugin/ao/HsqlDbFileJdbcConfiguration.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/test/java/org/bitbucket/jbehaveforjira/plugin/ao/HsqlDbFileJdbcConfiguration.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/test/java/com/jbehaveforjira/plugin/ao/HsqlDbFileJdbcConfiguration.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
+ 
+ import net.java.ao.test.jdbc.JdbcConfiguration;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
+@@ -20,6 +20,7 @@
+                     state.stepBody += "\n";
+                 }
+             },
++
+             startState: function () {
+                 return {
+ 
+@@ -28,40 +29,40 @@
+                     currentStepNumber: 0,
+ 
+                     inDescription: false,
+-                    allowDescription: true,
+-
+                     inMeta: false,
++                    inNarrative: false,
++                    inLifecycle: false,
++                    inLifecycleBefore: false,
++                    inLifecycleAfter: false,
++                    inLifecycleOutcome: false,
++                    inScenario: false,
++                    inStep: false,
++                    inTable: false,
++                    inExamples: false,
++                    inExamplesBody: false,
++
++                    allowDescription: true,
+                     allowMeta: true,
+                     allowMetaField: false,
+ 
+-                    inNarrative: false,
+                     allowNarrative: true,
+                     allowNarrativeInOrderTo: false,
+                     allowNarrativeAsA: false,
+                     allowNarrativeIWantTo: false,
+ 
+-                    inLifecycle: false,
+                     allowLifecycle: false,
+ 
+-                    inLifecycleBefore: false,
+                     allowLifecycleBefore: false,
+ 
+-                    inLifecycleAfter: false,
+                     allowLifecycleAfter: false,
+ 
+-                    inLifecycleOutcome: false,
+                     allowLifecycleOutcome: false,
+ 
+-                    inScenario: false,
+                     allowScenario: false,
+ 
+-                    inStep: false,
+                     allowSteps: false,
+                     allowAndStep: false,
+ 
+-                    inTable: false,
+-
+-                    inExamples: false,
+                     allowExamples: false,
+ 
+                     lastStepKeyword: null,
+@@ -78,6 +79,21 @@
+             },
+             token: function (stream, state) {
+ 
++                var resetInFields = function () {
++                    state.inDescription = false;
++                    state.inMeta = false;
++                    state.inNarrative = false;
++                    state.inLifecycle = false;
++                    state.inLifecycleBefore = false;
++                    state.inLifecycleAfter = false;
++                    state.inLifecycleOutcome = false;
++                    state.inScenario = false;
++                    state.inStep = false;
++                    state.inTable = false;
++                    state.inExamples = false;
++                    state.inExamplesBody = false;
++                }
++
+                 if (stream.sol()) {
+                     state.lineNumber++;
+                     state.inScenarioTitleLine = false;
+@@ -89,7 +105,6 @@
+ 
+                 // LINE COMMENT
+                 if (stream.sol() && !state.inTable && (stream.match(/!--.*/) || stream.match(/\|--.*/))) {
+-//                    state.lastTokenType =  "comment";
+                     state.lastTokenType += " jb-story-comment";
+ 
+ //                    // TABLE COMMENT
+@@ -410,9 +425,11 @@
+                     state.lastTokenType += " jb-story-step-keyword " + state.lastStepKeyword + "-step";
+ 
+                     // Examples
+-                }else if (state.allowExamples && stream.sol() && stream.match(/(Examples):/)) {
++                } else if (state.allowExamples && stream.sol() && stream.match(/(Examples):/)) {
+ 
+                     state.inExamples = true;
++                    state.inExamplesBody = false;
++
+                     state.inStep = false;
+                     state.inTable = false;
+ 
+@@ -460,6 +477,7 @@
+                 } else if (state.inExamples && stream.match(/(.*)/)) {
+ 
+                     state.lastTokenType += " jb-story-examples-body";
++                    state.inExamplesBody = true;
+ 
+                     var current = stream.current();
+                     if (current.substring(0, 1) == "|") {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
++package com.jbehaveforjira.plugin.dto.storyreport;
+ 
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
++package com.jbehaveforjira.plugin.rest;
+ 
+ import org.apache.commons.lang.Validate;
+ 
+@@ -14,7 +14,7 @@
+ @Path("/groovy-client")
+ public class GroovyClientDownload {
+ 
+-    private final String baseDir = "org/bitbucket/jbehaveforjira/groovyclient/";
++    private final String baseDir = "com/jbehaveforjira/groovyclient/";
+ 
+     @GET
+     @Path("/story-paths-finder")
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
++package com.jbehaveforjira.plugin.dto.stepdoc;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.story;
++package com.jbehaveforjira.plugin.dto.story;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStory.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStory.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
+ 
+ import net.java.ao.Entity;
+ import net.java.ao.OneToMany;
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1410434732000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1410954072000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -4,8 +4,14 @@
+@@ -1,17 +1,18 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ 
+-<atlassian-plugin key="org.bitbucket.jbehaveforjira.plugin" name="JBehave for Jira"
++<atlassian-plugin key="com.jbehaveforjira.plugin" name="JBehave for Jira"
                    plugins-version="2">
      <plugin-info>
          <description>Provides integration with JBehave BDD framework</description>
--        <version>1.0.0</version>
-+        <version>1.0.1</version>
-         <vendor name="Maryna Pristrom" url="https://bitbucket.org/pristrom/jbehave-for-jira-java-client/wiki/Home"/>
-+        <param name="atlassian-licensing-enabled">true</param>
-+        <!--<param name="plugin-icon">images/marketing/pluginIcon.jpg</param>-->
-+        <param name="plugin-logo">images/marketing/pluginLogo.jpg</param>
-+        <param name="plugin-banner">images/marketing/pluginBanner.jpg</param>
-+        <param name="vendor-icon">images/marketing/vendorIcon.jpg</param>
-+        <param name="vendor-logo">images/marketing/vendorLogo.jpg</param>
+         <version>1.0.1</version>
+-        <vendor name="Maryna Pristrom" url="https://bitbucket.org/pristrom/jbehave-for-jira-java-client/wiki/Home"/>
++        <vendor name="Maryna Pristrom" url="http://www.jbehaveforjira.com"/>
+         <param name="atlassian-licensing-enabled">true</param>
+         <!--<param name="plugin-icon">images/marketing/pluginIcon.jpg</param>-->
+-        <param name="plugin-logo">images/marketing/pluginLogo.jpg</param>
+-        <param name="plugin-banner">images/marketing/pluginBanner.jpg</param>
+-        <param name="vendor-icon">images/marketing/vendorIcon.jpg</param>
+-        <param name="vendor-logo">images/marketing/vendorLogo.jpg</param>
++        <param name="plugin-icon">images/marketing/plugin_icon.jpg</param>
++        <param name="plugin-logo">images/marketing/plugin_logo.jpg</param>
++        <param name="plugin-banner">images/marketing/banner.jpg</param>
++        <param name="vendor-icon">images/marketing/vendor_icon.jpg</param>
++        <param name="vendor-logo">images/marketing/vendor_logo.jpg</param>
      </plugin-info>
      <!-- ==================================================================================================== -->
      <!--3rd party scripts-->
-@@ -43,14 +49,14 @@
-         <resource type="download" name="TemplatesShowStory.soy.js" location="/soy/TemplatesShowStory.soy"/>
-         <resource type="download" name="TemplatesShowStoryReports.soy.js" location="/soy/TemplatesShowStoryReports.soy"/>
-         <!-- CSS -->
--        <resource type="download" name="story.css" location="css/story.css">
-+        <resource type="download" name="story-report.css" location="css/story-report.css">
-             <param name="content-type" value="text/css"/>
-         </resource>
--        <resource type="download" name="story-report.css" location="css/story-report.css">
-+        <resource type="download" name="show-story.css" location="css/show-story.css">
-             <param name="content-type" value="text/css"/>
-         </resource>
-         <!--other-->
--        <resource type="download" name="img/" location="img">
-+        <resource type="download" name="images/" location="images">
-             <!--<param name="content-type" value="image/gif"/>-->
-         </resource>
-         <context>jira.view.issue</context>
-@@ -145,6 +151,7 @@
-         <decription>Processes @Transactional annotations.</decription>
-     </component>
-     <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
-+    <component-import key="pluginLicenseManager" interface="com.atlassian.upm.api.license.PluginLicenseManager"/>
+@@ -95,7 +96,7 @@
+               i18n-name-key="scheduler-webwork-module.name">
+         <description key="scheduler-webwork-module.description">The Scheduler Webwork Module Plugin</description>
+         <actions>
+-            <action name="org.bitbucket.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction" alias="UpdateJBehavePreferencesAction">
++            <action name="com.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction" alias="UpdateJBehavePreferencesAction">
+                 <view name="input">/velocity/jbehave_preferences.vm</view>
+                 <view name="error">/velocity/jbehave_preferences.vm</view>
+             </action>
+@@ -116,7 +117,7 @@
+                key="viewIssuePage.storyPanel.key"
+                location="atl.jira.view.issue.left.context" weight="220">
+         <description key="viewIssuePage.storyPanel.description">JBehave Story Panel</description>
+-        <context-provider class="org.bitbucket.jbehaveforjira.plugin.contextproviders.StoryPanelContextProvider"/>
++        <context-provider class="com.jbehaveforjira.plugin.contextproviders.StoryPanelContextProvider"/>
+         <resource name="view" type="velocity" location="/velocity/story_panel.vm"/>
+         <label key="viewIssuePage.storyPanel.label"/>
+     </web-panel>
+@@ -125,7 +126,7 @@
+                key="viewIssuePage.storyReportsPanel.key"
+                location="atl.jira.view.issue.left.context" weight="320">
+         <description key="viewIssuePage.storyReportsPanel.description">JBehave Story Reports Panel</description>
+-        <context-provider class="org.bitbucket.jbehaveforjira.plugin.contextproviders.StoryReportsPanelContextProvider"/>
++        <context-provider class="com.jbehaveforjira.plugin.contextproviders.StoryReportsPanelContextProvider"/>
+         <resource name="view" type="velocity" location="/velocity/story_reports_panel.vm"/>
+         <label key="viewIssuePage.storyReportsPanel.label"/>
+     </web-panel>
+@@ -155,32 +156,32 @@
      <!-- ==================================================================================================== -->
      <!-- Event listenders -->
      <!-- ==================================================================================================== -->
+-    <component key="eventListener" class="org.bitbucket.jbehaveforjira.plugin.listeners.IssueDeletedEventListener">
++    <component key="eventListener" class="com.jbehaveforjira.plugin.listeners.IssueDeletedEventListener">
+             <description>Class that processes the incoming JIRA issue events.</description>
+     </component>
+     <!-- ==================================================================================================== -->
+     <!-- Custom components -->
+     <!-- ==================================================================================================== -->
+     <!--DAOs-->
+-    <component key="story-dao" name="Story DAO" class="org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao"/>
++    <component key="story-dao" name="Story DAO" class="com.jbehaveforjira.plugin.ao.JBehaveStoryDao"/>
+     <component key="story-test-report-dao" name="Story Test Report DAO"
+-               class="org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReportDao"/>
++               class="com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao"/>
+     <component key="story-step-doc-dao" name="Story Step Doc DAO"
+-               class="org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStepDocDao"/>
++               class="com.jbehaveforjira.plugin.ao.JBehaveStepDocDao"/>
+     Services
+     <component key="story-service" name="Story Service"
+-               class="org.bitbucket.jbehaveforjira.plugin.service.StoryServiceImpl"/>
++               class="com.jbehaveforjira.plugin.service.StoryServiceImpl"/>
+     <component key="story-report-service" name="Story Report Service"
+-               class="org.bitbucket.jbehaveforjira.plugin.service.StoryReportServiceImpl"/>
++               class="com.jbehaveforjira.plugin.service.StoryReportServiceImpl"/>
+     <component key="step-doc-service" name="Step Doc Service"
+-               class="org.bitbucket.jbehaveforjira.plugin.service.StepDocsServiceImpl"/>
++               class="com.jbehaveforjira.plugin.service.StepDocsServiceImpl"/>
+     <!-- ==================================================================================================== -->
+     <!--Active Objects-->
+     <!-- ==================================================================================================== -->
+     <ao key="ao-module">
+         <description>JBehave for Jira Active Objects module</description>
+-        <entity>org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory</entity>
+-        <entity>org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport</entity>
+-        <entity>org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStepDoc</entity>
++        <entity>com.jbehaveforjira.plugin.ao.JBehaveStory</entity>
++        <entity>com.jbehaveforjira.plugin.ao.JBehaveStoryReport</entity>
++        <entity>com.jbehaveforjira.plugin.ao.JBehaveStepDoc</entity>
+     </ao>
+ </atlassian-plugin>
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.contextproviders;
++package com.jbehaveforjira.plugin.contextproviders;
+ 
+ import com.atlassian.crowd.embedded.api.User;
+ import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
 Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1410434732000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1410954072000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -6,7 +6,7 @@
-     <artifactId>jbehave-for-jira-plugin</artifactId>
+@@ -2,13 +2,13 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+-    <groupId>org.bitbucket.pristrom</groupId>
+-    <artifactId>jbehave-for-jira-plugin</artifactId>
++    <groupId>com.jbehaveforjira</groupId>
++    <artifactId>jira-plugin</artifactId>
      <packaging>atlassian-plugin</packaging>
-     <name>JBehave For Jira - Plugin</name>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1</version>
+-    <name>JBehave For Jira - Plugin</name>
++    <name>JBehave For Jira - Jira Plugin</name>
+     <version>1.0.1</version>
      <description>Jira plugin for JBehave</description>
-     <url>https://bitbucket.org/pristrom/jbehave-for-jira-plugin/overview</url>
+-    <url>https://bitbucket.org/pristrom/jbehave-for-jira-plugin/overview</url>
++    <url>http://www.jbehaveforjira.com</url>
      <properties>
-@@ -27,6 +27,8 @@
-                 <configuration>
-                     <productVersion>${jira.version}</productVersion>
-                     <productDataVersion>${jira.version}</productDataVersion>
-+                    <compressCss>true</compressCss>
-+                    <compressJs>true</compressJs>
-                 </configuration>
-             </plugin>
-             <plugin>
-@@ -56,10 +58,10 @@
-                         <id>default-minify</id>
-                         <configuration>
-                             <cssSourceFiles>
--                                <cssSourceFile>css/story.css</cssSourceFile>
-+                                <!--<cssSourceFile>css/show-story.css</cssSourceFile>-->
-                             </cssSourceFiles>
-                             <jsSourceFiles>
--                                <jsSourceFile>js/StoryController.js</jsSourceFile>
-+                                <!--<jsSourceFile>js/StoryController.js</jsSourceFile>-->
-                             </jsSourceFiles>
-                         </configuration>
-                         <goals>
-@@ -75,6 +77,18 @@
-         <!--Jira provided dependencies-->
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <amps.version>4.2.10</amps.version>
+@@ -122,16 +122,10 @@
+         <!--Other dependencies-->
          <!-- ================================================================================= -->
          <dependency>
-+            <groupId>com.atlassian.upm</groupId>
-+            <artifactId>licensing-api</artifactId>
-+            <version>2.0.1</version>
-+            <scope>provided</scope>
-+        </dependency>
-+        <dependency>
-+            <groupId>com.atlassian.upm</groupId>
-+            <artifactId>upm-api</artifactId>
-+            <version>2.0.1</version>
-+            <scope>provided</scope>
-+        </dependency>
-+        <dependency>
-             <groupId>com.atlassian.jira</groupId>
-             <artifactId>jira-api</artifactId>
-             <version>${jira.version}</version>
-@@ -114,7 +128,7 @@
+-            <groupId>org.bitbucket.pristrom</groupId>
+-            <artifactId>jbehave-for-jira-groovy-client</artifactId>
++            <groupId>com.jbehaveforjira</groupId>
++            <artifactId>groovy-client</artifactId>
+             <version>1.0.0-SNAPSHOT</version>
          </dependency>
-         <!--<dependency>-->
-             <!--<groupId>org.bitbucket.pristrom</groupId>-->
--            <!--<artifactId>jbehave-for-jira-java-client-impl</artifactId>-->
-+            <!--<artifactId>jbehave-for-jira-ja`va-client-impl</artifactId>-->
-             <!--<version>1.0.0-SNAPSHOT</version>-->
-             <!--<scope>provided</scope>-->
-         <!--</dependency>-->
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
+-        <!--<dependency>-->
+-            <!--<groupId>org.bitbucket.pristrom</groupId>-->
+-            <!--<artifactId>jbehave-for-jira-ja`va-client-impl</artifactId>-->
+-            <!--<version>1.0.0-SNAPSHOT</version>-->
+-            <!--<scope>provided</scope>-->
+-        <!--</dependency>-->
+         <dependency>
+             <groupId>org.jbehave</groupId>
+             <artifactId>jbehave-core</artifactId>
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/EnvironmentTestStatuses.java
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1410434732000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -144,3 +144,7 @@
- .aui-lozenge {
-     vertical-align: middle;
- }
-+
-+.jb-story-report-description {
-+    padding-top: 10px;
-+}
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story.css
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/EnvironmentTestStatuses.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/customfields/EnvironmentTestStatuses.java	(revision )
+@@ -1,7 +1,7 @@
+-package org.bitbucket.jbehaveforjira.plugin.customfields;
++package com.jbehaveforjira.plugin.customfields;
+ 
+ 
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.TestStatus;
++import com.jbehaveforjira.plugin.dto.storyreport.TestStatus;
+ 
+ import java.util.*;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story.css	(date 1410434732000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
-@@ -8,7 +8,7 @@
- }
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.actions;
++package com.jbehaveforjira.plugin.actions;
  
- .cm-jb-story-invalid-token {
--    background: url(img/underline.gif) bottom repeat-x;
-+    background: url(images/ui/underline.gif) bottom repeat-x;
- }
+ import com.atlassian.core.user.preferences.Preferences;
+ import com.atlassian.jira.bc.issue.IssueService;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDocDao.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
  
- .cm-jb-story-description-line {
-@@ -143,10 +143,10 @@
- }
+ import com.atlassian.activeobjects.external.ActiveObjects;
+ import net.java.ao.Query;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/TestStatus.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/TestStatus.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
++package com.jbehaveforjira.plugin.dto.storyreport;
  
- .savingMsgDiv {
--    display: inline;
--    border-style: solid;
--    border-width: 1px;
--    border-color: green;
-+    /*display: inline;*/
-+    /*border-style: solid;*/
-+    /*border-width: 1px;*/
-+    /*border-color: green;*/
- }
+ public enum TestStatus {
  
- .save-story-button-spinner {
-@@ -154,7 +154,8 @@
-     /*border-width: 1px;*/
-     /*border-color: red;*/
-     /*float: left;*/
--    display: inline;
-+    /*display: inline;*/
-+    /*position: relative;*/
- }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
++package com.jbehaveforjira.plugin.dto.stepdoc;
  
- #storyMsgBar {
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(revision )
+@@ -1,6 +1,6 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
++package com.jbehaveforjira.plugin.dto.storyreport;
+ 
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+ 
+ public class StoryReportDTOUtils {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision )
+@@ -1,12 +1,12 @@
+-package org.bitbucket.jbehaveforjira.plugin.conditions;
++package com.jbehaveforjira.plugin.conditions;
+ 
+ import com.atlassian.jira.issue.Issue;
+ import com.atlassian.jira.project.Project;
+ import com.atlassian.plugin.PluginParseException;
+ import com.atlassian.plugin.web.Condition;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryReport;
++import com.jbehaveforjira.plugin.ao.JBehaveStory;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+ import org.apache.commons.lang.Validate;
+ 
+ import java.util.List;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/UserPreferencesResource.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(revision )
+@@ -1,11 +1,11 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
++package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.core.user.preferences.Preferences;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import com.atlassian.jira.user.ApplicationUser;
+ import com.atlassian.jira.user.preferences.UserPreferencesManager;
+-import org.bitbucket.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction;
+-import org.bitbucket.jbehaveforjira.plugin.dto.preferences.UserPreferencesDTO;
++import com.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction;
++import com.jbehaveforjira.plugin.dto.preferences.UserPreferencesDTO;
+ 
+ import javax.ws.rs.GET;
+ import javax.ws.rs.Path;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(revision )
+@@ -1,11 +1,11 @@
+-package org.bitbucket.jbehaveforjira.plugin.conditions;
++package com.jbehaveforjira.plugin.conditions;
+ 
+ import com.atlassian.jira.issue.Issue;
+ import com.atlassian.jira.project.Project;
+ import com.atlassian.plugin.PluginParseException;
+ import com.atlassian.plugin.web.Condition;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStory;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.ao.JBehaveStory;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+ 
+ import java.util.List;
+ import java.util.Map;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StoryService.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryService.java	(revision )
+@@ -1,7 +1,7 @@
+-package org.bitbucket.jbehaveforjira.plugin.service;
++package com.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.activeobjects.tx.Transactional;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
+ 
+ import java.util.List;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
+@@ -1,10 +1,10 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
++package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.service.StoryService;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/customfields/StoryStatusField.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/customfields/StoryStatusField.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.customfields;
++package com.jbehaveforjira.plugin.customfields;
+ 
+ import com.atlassian.jira.issue.Issue;
+ import com.atlassian.jira.issue.customfields.impl.CalculatedCFType;
+@@ -7,11 +7,11 @@
+ import com.atlassian.jira.issue.fields.config.FieldConfig;
+ import com.atlassian.jira.issue.fields.config.FieldConfigItem;
+ import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+-import org.bitbucket.jbehaveforjira.plugin.dto.story.JiraStory;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.TestStatus;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
++import com.jbehaveforjira.plugin.dto.storyreport.TestStatus;
++import com.jbehaveforjira.plugin.service.StoryReportService;
++import com.jbehaveforjira.plugin.service.StoryService;
+ 
+ import javax.annotation.Nullable;
+ import java.util.HashMap;
 \ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
+ 
+ import com.atlassian.activeobjects.external.ActiveObjects;
+ import net.java.ao.Query;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsServiceImpl.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(revision )
+@@ -1,10 +1,10 @@
+-package org.bitbucket.jbehaveforjira.plugin.service;
++package com.jbehaveforjira.plugin.service;
+ 
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStepDoc;
+-import org.bitbucket.jbehaveforjira.plugin.ao.JBehaveStepDocDao;
+-import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
+-import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTOUtils;
++import com.jbehaveforjira.plugin.ao.JBehaveStepDoc;
++import com.jbehaveforjira.plugin.ao.JBehaveStepDocDao;
++import com.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
++import com.jbehaveforjira.plugin.dto.stepdoc.StepDocDTOUtils;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsService.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/service/StepDocsService.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsService.java	(revision )
+@@ -1,7 +1,7 @@
+-package org.bitbucket.jbehaveforjira.plugin.service;
++package com.jbehaveforjira.plugin.service;
+ 
+ import com.atlassian.activeobjects.tx.Transactional;
+-import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
++import com.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
+ 
+ import java.util.List;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.conditions;
++package com.jbehaveforjira.plugin.conditions;
+ 
+ import com.atlassian.plugin.PluginParseException;
+ import com.atlassian.plugin.web.Condition;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
+@@ -1,12 +1,12 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
++package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import org.apache.commons.lang.Validate;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+-import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.StoryTestReportsPayload;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
+-import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
++import com.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
++import com.jbehaveforjira.plugin.dto.storyreport.StoryTestReportsPayload;
++import com.jbehaveforjira.plugin.service.StoryReportService;
++import com.jbehaveforjira.plugin.service.StoryService;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
++package com.jbehaveforjira.plugin.dto.stepdoc;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(revision )
+@@ -1,4 +1,4 @@
+-package org.bitbucket.jbehaveforjira.plugin.ao;
++package com.jbehaveforjira.plugin.ao;
+ 
+ import net.java.ao.Entity;
+ import net.java.ao.Preload;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StepDocResource.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StepDocResource.java	(date 1410954072000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java	(revision )
+@@ -1,10 +1,10 @@
+-package org.bitbucket.jbehaveforjira.plugin.rest;
++package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+-import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
+-import org.bitbucket.jbehaveforjira.plugin.dto.stepdoc.StepDocsPayload;
+-import org.bitbucket.jbehaveforjira.plugin.service.StepDocsService;
++import com.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
++import com.jbehaveforjira.plugin.dto.stepdoc.StepDocsPayload;
++import com.jbehaveforjira.plugin.service.StepDocsService;
+ import org.codehaus.jackson.map.DeserializationConfig;
+ import org.codehaus.jackson.map.ObjectMapper;
+ 
