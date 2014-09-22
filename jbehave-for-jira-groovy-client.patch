@@ -1,109 +1,163 @@
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(date 1410899865000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.groovyclient
-+package com.jbehaveforjira.groovyclient
- import com.sun.jersey.api.client.Client
- import com.sun.jersey.api.client.ClientResponse
- import com.sun.jersey.api.client.WebResource
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1410899865000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1410985045000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.groovyclient
-+package com.jbehaveforjira.groovyclient
- import com.sun.jersey.api.client.Client
- import org.apache.commons.lang.Validate
- import org.codehaus.jackson.map.ObjectMapper
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
+@@ -250,6 +250,17 @@
+ 
+         } else {
+             // not a table type, but still may be a list type
++            // check if enum
++            if (classType.isEnum()) {
++                Object[] enumConstants = classType.getEnumConstants();
++                List<String> allowedvalues = new ArrayList<>(enumConstants.length);
++                for (Object enumConstant : enumConstants) {
++                    Enum e = (Enum)enumConstant;
++                    allowedvalues.add(e.name());
++                }
++                parameterInfo.allowedValues = allowedvalues;
++            }
++
+         }
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1410899865000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1410985045000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.groovyclient
-+package com.jbehaveforjira.groovyclient
+@@ -588,26 +588,39 @@
+             patterns.setProperty("beforeStory", "<div class=\"story-report\">\n");
  
- import com.sun.jersey.api.client.Client
- import com.sun.jersey.api.client.WebResource
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/org/bitbucket/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(date 1410899865000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(revision )
-@@ -1,8 +1,8 @@
--package org.bitbucket.jbehaveforjira.groovyclient
-+package com.jbehaveforjira.groovyclient
- import com.sun.jersey.api.client.Client
- import com.sun.jersey.api.client.ClientResponse
- import com.sun.jersey.api.client.WebResource
--import org.bitbucket.jbehaveforjira.javaclient.StoryPathsFinder
-+import com.jbehaveforjira.javaclient.StoryPathsFinder
+             patterns.setProperty("description",
+-                    "<div class=\"jb-story-report-description cm-jb-story-description-line\">{0}</div>\n<br>")
++                    "<div class=\"jb-story-report-description\">{0}</div>\n")
  
- import javax.ws.rs.core.MediaType
- import javax.ws.rs.core.Response
+             patterns.setProperty("afterStory", "</div>\n");
+             // TODO - canceled story?
+             patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
+ 
+-            // meta
+             patterns.setProperty("metaStart",
+-                    "<div>\n" +
+-                            "<div class=\"jb-story-report-meta cm-jb-story-meta-title\">{0}</div>\n");
++                    "<div class=\"jb-story-report-meta jb-story-ele-exp-container\">\n" +
++                            "<div>" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++                            "<span class=\"jb-story-report-meta-keyword\">{0}</span>" +
++                            "</a>" +
++                            "</div>\n" +
++                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">\n"
++
++            );
++            // meta
+             patterns.setProperty("metaProperty", "<div class=\"cm-jb-story-meta-field\">{0}{1} {2}</div>\n");
+-            patterns.setProperty("metaEnd", "</div>\n<br>");
++            patterns.setProperty("metaEnd", "</div>\n</div>\n");
+ 
+             // TODO - where is this filter?
+             patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");
+ 
+             patterns.setProperty("narrative",
+-                    "<div class=\"\">" +
+-                            "<div class=\"jb-story-report-narrative cm-jb-story-narrative-title\">{0}</div>\n" +
++                    "<div class=\"jb-story-report-narrative jb-story-ele-exp-container\">" +
+                             "<div>" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++                            "<span class=\"jb-story-report-narrative-keyword\">{0}</span>" +
++                            "</a>" +
++                            "</div>\n" +
++
++                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">" +
++                            "<div>" +
+                             "<span class=\"cm-jb-story-narrative-field-keyword\">{1}</span> " +
+                             "<span class=\"cm-jb-story-narrative-field-value\">{2}</span>" +
+                             "</div>\n" +
+@@ -619,16 +632,22 @@
+                             "<span class=\"cm-jb-story-narrative-field-keyword\">{5}</span> " +
+                             "<span class=\"cm-jb-story-narrative-field-value\">{6}</span>" +
+                             "</div>\n" +
+-                            "</div>\n<br>");
++                            "</div>\n" +
++                            "</div>\n");
+ 
+             patterns.setProperty("lifecycleStart",
+-                    "<div class=\"lifecycle\">" +
+-                            "<div class=\"jb-story-report-lifecycle cm-jb-story-lifecycle\">{0}</div>"
++                    "<div class=\"jb-story-report-lifecycle jb-story-ele-exp-container\">" +
++                            "<div>" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++                            "<span class=\"jb-story-report-lifecycle-keyword\">{0}</span>" +
++                            "</a>" +
++                            "</div>" +
++                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">"
+             );
+-            patterns.setProperty("lifecycleEnd", "</div><br>");
++            patterns.setProperty("lifecycleEnd", "</div>\n</div>\n");
+             patterns.setProperty("lifecycleBeforeStart",
+                     "<div class=\"before\">" +
+-                            "<div class=\"cm-jb-story-lifecycle-before\">{0}</div>"
++                            "<div class=\"cm-jb-story-lifecycle-before\">{0}</div>\n"
+             );
+             patterns.setProperty("lifecycleBeforeEnd", "</div>");
+             patterns.setProperty("lifecycleAfterStart",
+@@ -643,19 +662,21 @@
+                             "</div>\n");
+ 
+             patterns.setProperty("beforeScenario",
+-                    "<div>\n" +
+-                            "<div class=\"jb-story-report-scenario\">" +
++                    "<div class=\"jb-story-ele-exp-container\">\n" +
++                            "<div class=\"jb-story-report-scenario-title\">" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
+                             "<span class=\"cm-jb-story-scenario-keyword\">{0} </span>" +
+                             "<span class=\"cm-jb-story-scenario-title\">{1}</span>" +
++                            "</a>" +
+                             " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
+-//                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
++                            //                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
+-
+-//                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
++                            //                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
+-                            "</div>\n"
++                            "</div>\n" +
++                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">"
+             );
+-            patterns.setProperty("afterScenario", "</div>\n<br>");
+-//            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n<br>");
+-            patterns.setProperty("afterScenarioWithFailure", "</div>\n<br>");
++            patterns.setProperty("afterScenario", "</div>\n</div>\n");
++//            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
++            patterns.setProperty("afterScenarioWithFailure", "</div>\n");
+ 
+             patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
+             patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
 Index: jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(date 1410899865000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(date 1410985045000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(revision )
-@@ -3,20 +3,19 @@
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-     <modelVersion>4.0.0</modelVersion>
--    <groupId>org.bitbucket.pristrom</groupId>
--    <artifactId>jbehave-for-jira-groovy-client</artifactId>
-+    <groupId>com.jbehaveforjira</groupId>
-+    <artifactId>groovy-client</artifactId>
-     <packaging>jar</packaging>
-     <name>JBehave For Jira - Groovy Client</name>
-     <version>1.0.0-SNAPSHOT</version>
-     <description>Groovy client for integrating with the 'JBehave for Jira - Jira Plugin' component</description>
--    <url>https://bitbucket.org/pristrom/jbehave-for-jira-java-client-impl/overview</url>
-+    <url>http://www.jbehaveforjira.com</url>
-     <build>
--        <!--<resources>-->
--            <!--<resource>-->
--                <!--<directory>src/main/groovy</directory>-->
--            <!--</resource>-->
--        <!--</resources>-->
--        <sourceDirectory>src/main/groovy</sourceDirectory>
-+        <resources>
-+            <resource>
-+                <directory>src/main/groovy</directory>
-+            </resource>
-+        </resources>
+@@ -16,6 +16,7 @@
+                 <directory>src/main/groovy</directory>
+             </resource>
+         </resources>
++        <!--<sourceDirectory>src/main/groovy</sourceDirectory>-->
          <plugins>
              <plugin>
                  <groupId>org.codehaus.gmavenplus</groupId>
-@@ -26,7 +25,6 @@
-                     <execution>
-                         <goals>
-                             <goal>compile</goal>
--                            <goal>testCompile</goal>
-                         </goals>
-                         <configuration>
-                             <sources>
-@@ -37,6 +35,7 @@
+@@ -35,7 +36,7 @@
                                      </includes>
                                  </source>
                              </sources>
-+                            <outputDirectory>target/compiled-groovy</outputDirectory>
+-                            <outputDirectory>target/compiled-groovy</outputDirectory>
++                            <!--<outputDirectory>target/compiled-groovy</outputDirectory>-->
                          </configuration>
                      </execution>
                  </executions>
-@@ -117,8 +116,8 @@
-     </build>
-     <dependencies>
-         <dependency>
--            <groupId>org.bitbucket.pristrom</groupId>
--            <artifactId>jbehave-for-jira-java-client</artifactId>
-+            <groupId>com.jbehaveforjira</groupId>
-+            <artifactId>java-client</artifactId>
-             <version>1.0.0-SNAPSHOT</version>
-             <scope>provided</scope>
-         </dependency>
 \ No newline at end of file
