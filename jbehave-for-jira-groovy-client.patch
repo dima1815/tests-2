@@ -3,161 +3,341 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1410985045000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1411365814000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -250,6 +250,17 @@
+@@ -1,4 +1,6 @@
+ package com.jbehaveforjira.groovyclient
++
++import com.jbehaveforjira.javaclient.ParameterInfo
+ import com.sun.jersey.api.client.Client
+ import org.apache.commons.lang.Validate
+ import org.codehaus.jackson.map.ObjectMapper
+@@ -76,10 +78,10 @@
+ 
+             Method method = stepdoc.getMethod();
+             Type[] genericParameterTypes = method.getGenericParameterTypes();
+-            List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>(genericParameterTypes.length);
++            List<ParameterMetaInfo> parameterInfos = new ArrayList<ParameterMetaInfo>(genericParameterTypes.length);
+ 
+             for (Type genericParameterType : genericParameterTypes) {
+-                ParameterInfo parameterInfo = new ParameterInfo();
++                ParameterMetaInfo parameterInfo = new ParameterMetaInfo();
+                 if (genericParameterType instanceof ParameterizedType) {
+                     ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
+                     Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+@@ -144,16 +146,16 @@
+                     String groupText = matcher.group(groupNumber);
+                     if (parameterGroups.contains(groupNumber)) {
+                         // group is a parameter, check its parameter info
+-                        ParameterInfo parameterInfo = parameterInfos.get(paramGroupIndex);
++                        ParameterMetaInfo parameterInfo = parameterInfos.get(paramGroupIndex);
+                         Validate.notNull(parameterInfo);
+-                        List<TabularFieldInfo> tabularFieldInfos = parameterInfo.tabularFieldInfos;
++                        List<TabularFieldMetaInfo> tabularFieldInfos = parameterInfo.tabularFieldInfos;
+                         if (tabularFieldInfos != null && !tabularFieldInfos.isEmpty()) {
+                             // replace the parameter name with parameter field names in tabular format
+                             int totalPipes = 0;
+                             sb.append("\n");
+                             sb.append("|");
+                             totalPipes++;
+-                            for (TabularFieldInfo tabularFieldInfo : tabularFieldInfos) {
++                            for (TabularFieldMetaInfo tabularFieldInfo : tabularFieldInfos) {
+                                 sb.append(tabularFieldInfo.fieldName);
+                                 sb.append("|");
+                                 totalPipes++;
+@@ -198,25 +200,25 @@
+         uploadToJira(stepDocsPayload);
+     }
+ 
+-    private void populateParameterInfo(ParameterInfo parameterInfo, Class classType) {
++    private void populateParameterInfo(ParameterMetaInfo parameterMetaInfo, Class classType) {
+ 
+         String parameterType = classType.getName();
+-        parameterInfo.parameterType = parameterType;
++        parameterMetaInfo.parameterType = parameterType;
+         String simpleName = classType.getSimpleName();
+-        parameterInfo.simpleParameterType = simpleName;
++        parameterMetaInfo.simpleParameterType = simpleName;
+         Annotation asParamAnnotation = classType.getAnnotation(AsParameters.class);
+ 
+         if (asParamAnnotation != null) {
+ 
+-            List<TabularFieldInfo> tabularFieldInfos = new ArrayList<TabularFieldInfo>();
++            List<TabularFieldMetaInfo> tabularFieldInfos = new ArrayList<TabularFieldMetaInfo>();
+ 
+             // parameter can be represented as a table
+-            parameterInfo.listType = true;
++            parameterMetaInfo.listType = true;
+             Field[] declaredFields = classType.getDeclaredFields();
+ 
+             for (Field declaredField : declaredFields) {
+ 
+-                TabularFieldInfo tabularFieldInfo = new TabularFieldInfo();
++                TabularFieldMetaInfo tabularFieldInfo = new TabularFieldMetaInfo();
+ 
+                 // field name
+                 Parameter fieldAnnotation = declaredField.getAnnotation(Parameter.class);
+@@ -228,6 +230,8 @@
+                 }
+                 tabularFieldInfo.fieldName = fieldName;
+ 
++                ParameterInfo parameterInfo = declaredField.getAnnotation(ParameterInfo.class);
++
+                 // allowed field values, i.e. in case of enum
+                 Class<?> fieldType = declaredField.getType();
+                 Object[] enumConstants = fieldType.getEnumConstants();
+@@ -241,12 +245,21 @@
+                     }
+ 
+                     tabularFieldInfo.allowedValues = allowedValues;
++                } else {
++                    // not an enum type check for allowed values annotation
++                    if (parameterInfo != null && parameterInfo.allowedValues().length > 0) {
++                        List<String> allowedValues = Arrays.asList(parameterInfo.allowedValues());
++                        tabularFieldInfo.allowedValues = allowedValues;
++                    } else if (parameterInfo != null && parameterInfo.suggestedValues().length > 0) {
++                        List<String> suggestedValues = Arrays.asList(parameterInfo.suggestedValues());
++                        tabularFieldInfo.suggestedValues = suggestedValues;
+-                }
++                    }
++                }
+ 
+                 tabularFieldInfos.add(tabularFieldInfo);
+             }
+ 
+-            parameterInfo.tabularFieldInfos = tabularFieldInfos;
++            parameterMetaInfo.tabularFieldInfos = tabularFieldInfos;
  
          } else {
              // not a table type, but still may be a list type
-+            // check if enum
-+            if (classType.isEnum()) {
-+                Object[] enumConstants = classType.getEnumConstants();
-+                List<String> allowedvalues = new ArrayList<>(enumConstants.length);
-+                for (Object enumConstant : enumConstants) {
-+                    Enum e = (Enum)enumConstant;
-+                    allowedvalues.add(e.name());
-+                }
-+                parameterInfo.allowedValues = allowedvalues;
-+            }
-+
+@@ -258,7 +271,7 @@
+                     Enum e = (Enum)enumConstant;
+                     allowedvalues.add(e.name());
+                 }
+-                parameterInfo.allowedValues = allowedvalues;
++                parameterMetaInfo.allowedValues = allowedvalues;
+             }
+ 
          }
+@@ -344,16 +357,22 @@
+ 
+     @XmlRootElement
+     @XmlAccessorType(XmlAccessType.FIELD)
+-    private class TabularFieldInfo {
++    private class TabularFieldMetaInfo {
+ 
+         public String fieldName;
+ 
++        public boolean mandatory;
++
+         public List<String> allowedValues;
++
++        public List<String> suggestedValues;
++
++        public String format;
      }
  
+     @XmlRootElement
+     @XmlAccessorType(XmlAccessType.FIELD)
+-    private class ParameterInfo {
++    private class ParameterMetaInfo {
+ 
+         public String parameterType;
+ 
+@@ -363,7 +382,11 @@
+ 
+         public List<String> allowedValues;
+ 
+-        public List<TabularFieldInfo> tabularFieldInfos;
++        public List<String> suggestedValues;
++
++        public String format;
++
++        public List<TabularFieldMetaInfo> tabularFieldInfos;
+     }
+ 
+     @XmlRootElement
+@@ -390,7 +413,7 @@
+ 
+         public List<Integer> parameterGroups = new ArrayList<Integer>();
+ 
+-        public List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>();
++        public List<ParameterMetaInfo> parameterInfos = new ArrayList<ParameterMetaInfo>();
+     }
+ 
+     @XmlRootElement
 Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1410985045000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1411365814000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
-@@ -588,26 +588,39 @@
-             patterns.setProperty("beforeStory", "<div class=\"story-report\">\n");
+@@ -164,45 +164,25 @@
+         // replace scenario status markers
+         String currentOut = bytesListToString(this.bytesList);
  
-             patterns.setProperty("description",
--                    "<div class=\"jb-story-report-description cm-jb-story-description-line\">{0}</div>\n<br>")
-+                    "<div class=\"jb-story-report-description\">{0}</div>\n")
+-        String lozengeClass;
+-        String lozengeText;
+-
+         switch (this.currentScenarioStatus) {
+             case TestStatus.PASSED:
+                 totalScenariosPassed++;
+-                lozengeClass = "aui-lozenge aui-lozenge-success";
+-                lozengeText = "success";
+                 break;
+             case TestStatus.FAILED:
+                 totalScenariosFailed++;
+-                lozengeClass = "aui-lozenge aui-lozenge-error";
+-                lozengeText = "failed";
+                 break;
+             case TestStatus.PENDING:
+                 totalScenariosPending++;
+-                lozengeClass = "aui-lozenge aui-lozenge-current";
+-                lozengeText = "pending";
+                 break;
+             case TestStatus.IGNORED:
+                 totalScenariosIgnored++;
+-                lozengeClass = "aui-lozenge";
+-                lozengeText = "ignored";
+                 break;
+             case TestStatus.NOT_PERFORMED:
+                 totalScenariosNotPerformed++;
+-                lozengeClass = "aui-lozenge";
+-                lozengeText = "not performed";
+                 break;
+             default:
+                 throw new IllegalArgumentException("Unknown scenario status - " + this.currentScenarioStatus);
+         }
+-
+-        String replacedOut = currentOut;
+-        replacedOut = replacedOut.replace("[scenario_status_lozenge_class]", lozengeClass);
+-        replacedOut = replacedOut.replace("[scenario_status_lozenge_text]", lozengeText);
+-        List<Byte> replacedBytes = stringToBytesList(replacedOut);
+-        this.bytesList.clear();
+-        this.bytesList.addAll(replacedBytes);
+     }
  
-             patterns.setProperty("afterStory", "</div>\n");
-             // TODO - canceled story?
-             patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
- 
--            // meta
+     @Override
+@@ -597,11 +577,11 @@
              patterns.setProperty("metaStart",
--                    "<div>\n" +
--                            "<div class=\"jb-story-report-meta cm-jb-story-meta-title\">{0}</div>\n");
-+                    "<div class=\"jb-story-report-meta jb-story-ele-exp-container\">\n" +
-+                            "<div>" +
-+                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
-+                            "<span class=\"jb-story-report-meta-keyword\">{0}</span>" +
-+                            "</a>" +
-+                            "</div>\n" +
-+                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">\n"
-+
-+            );
-+            // meta
-             patterns.setProperty("metaProperty", "<div class=\"cm-jb-story-meta-field\">{0}{1} {2}</div>\n");
--            patterns.setProperty("metaEnd", "</div>\n<br>");
-+            patterns.setProperty("metaEnd", "</div>\n</div>\n");
- 
-             // TODO - where is this filter?
-             patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");
- 
-             patterns.setProperty("narrative",
--                    "<div class=\"\">" +
--                            "<div class=\"jb-story-report-narrative cm-jb-story-narrative-title\">{0}</div>\n" +
-+                    "<div class=\"jb-story-report-narrative jb-story-ele-exp-container\">" +
+                     "<div class=\"jb-story-report-meta jb-story-ele-exp-container\">\n" +
                              "<div>" +
-+                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
-+                            "<span class=\"jb-story-report-narrative-keyword\">{0}</span>" +
-+                            "</a>" +
-+                            "</div>\n" +
-+
-+                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">" +
-+                            "<div>" +
+-                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger expanded\" style=\"text-decoration: none;\">" +
+                             "<span class=\"jb-story-report-meta-keyword\">{0}</span>" +
+                             "</a>" +
+                             "</div>\n" +
+-                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">\n"
++                            "<div class=\"jb-story-ele-exp-content\">\n"
+ 
+             );
+             // meta
+@@ -614,12 +594,12 @@
+             patterns.setProperty("narrative",
+                     "<div class=\"jb-story-report-narrative jb-story-ele-exp-container\">" +
+                             "<div>" +
+-                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger expanded\" style=\"text-decoration: none;\">" +
+                             "<span class=\"jb-story-report-narrative-keyword\">{0}</span>" +
+                             "</a>" +
+                             "</div>\n" +
+ 
+-                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">" +
++                            "<div class=\"jb-story-ele-exp-content\">" +
+                             "<div>" +
                              "<span class=\"cm-jb-story-narrative-field-keyword\">{1}</span> " +
                              "<span class=\"cm-jb-story-narrative-field-value\">{2}</span>" +
-                             "</div>\n" +
-@@ -619,16 +632,22 @@
-                             "<span class=\"cm-jb-story-narrative-field-keyword\">{5}</span> " +
-                             "<span class=\"cm-jb-story-narrative-field-value\">{6}</span>" +
-                             "</div>\n" +
--                            "</div>\n<br>");
-+                            "</div>\n" +
-+                            "</div>\n");
- 
+@@ -638,11 +618,11 @@
              patterns.setProperty("lifecycleStart",
--                    "<div class=\"lifecycle\">" +
--                            "<div class=\"jb-story-report-lifecycle cm-jb-story-lifecycle\">{0}</div>"
-+                    "<div class=\"jb-story-report-lifecycle jb-story-ele-exp-container\">" +
-+                            "<div>" +
-+                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
-+                            "<span class=\"jb-story-report-lifecycle-keyword\">{0}</span>" +
-+                            "</a>" +
-+                            "</div>" +
-+                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">"
+                     "<div class=\"jb-story-report-lifecycle jb-story-ele-exp-container\">" +
+                             "<div>" +
+-                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger expanded\" style=\"text-decoration: none;\">" +
+                             "<span class=\"jb-story-report-lifecycle-keyword\">{0}</span>" +
+                             "</a>" +
+                             "</div>" +
+-                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">"
++                            "<div class=\"jb-story-ele-exp-content\">"
              );
--            patterns.setProperty("lifecycleEnd", "</div><br>");
-+            patterns.setProperty("lifecycleEnd", "</div>\n</div>\n");
+             patterns.setProperty("lifecycleEnd", "</div>\n</div>\n");
              patterns.setProperty("lifecycleBeforeStart",
-                     "<div class=\"before\">" +
--                            "<div class=\"cm-jb-story-lifecycle-before\">{0}</div>"
-+                            "<div class=\"cm-jb-story-lifecycle-before\">{0}</div>\n"
-             );
-             patterns.setProperty("lifecycleBeforeEnd", "</div>");
-             patterns.setProperty("lifecycleAfterStart",
-@@ -643,19 +662,21 @@
+@@ -662,13 +642,13 @@
                              "</div>\n");
  
              patterns.setProperty("beforeScenario",
--                    "<div>\n" +
--                            "<div class=\"jb-story-report-scenario\">" +
-+                    "<div class=\"jb-story-ele-exp-container\">\n" +
-+                            "<div class=\"jb-story-report-scenario-title\">" +
-+                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
+-                    "<div class=\"jb-story-ele-exp-container\">\n" +
++                    "<div class=\"jb-story-ele-exp-container jb-story-report-scenario\">\n" +
+                             "<div class=\"jb-story-report-scenario-title\">" +
+                             "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
                              "<span class=\"cm-jb-story-scenario-keyword\">{0} </span>" +
                              "<span class=\"cm-jb-story-scenario-title\">{1}</span>" +
-+                            "</a>" +
-                             " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
--//                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
-+                            //                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
--
--//                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
-+                            //                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
--                            "</div>\n"
-+                            "</div>\n" +
-+                            "<div class=\"jb-story-ele-exp-content\" style=\"display: none;\">"
+                             "</a>" +
+-                            " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
++//                            " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
+                             //                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
+                             //                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
+                             "</div>\n" +
+@@ -676,7 +656,7 @@
              );
--            patterns.setProperty("afterScenario", "</div>\n<br>");
--//            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n<br>");
--            patterns.setProperty("afterScenarioWithFailure", "</div>\n<br>");
-+            patterns.setProperty("afterScenario", "</div>\n</div>\n");
-+//            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
-+            patterns.setProperty("afterScenarioWithFailure", "</div>\n");
+             patterns.setProperty("afterScenario", "</div>\n</div>\n");
+ //            patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
+-            patterns.setProperty("afterScenarioWithFailure", "</div>\n");
++            patterns.setProperty("afterScenarioWithFailure", "</div>\n</div>\n");
  
              patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
              patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(date 1410985045000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/pom.xml	(revision )
-@@ -16,6 +16,7 @@
-                 <directory>src/main/groovy</directory>
-             </resource>
-         </resources>
-+        <!--<sourceDirectory>src/main/groovy</sourceDirectory>-->
-         <plugins>
-             <plugin>
-                 <groupId>org.codehaus.gmavenplus</groupId>
-@@ -35,7 +36,7 @@
-                                     </includes>
-                                 </source>
-                             </sources>
--                            <outputDirectory>target/compiled-groovy</outputDirectory>
-+                            <!--<outputDirectory>target/compiled-groovy</outputDirectory>-->
-                         </configuration>
-                     </execution>
-                 </executions>
-\ No newline at end of file
+@@ -688,7 +668,7 @@
+ 
+             patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
+             patterns.setProperty("successfulStep",
+-                    "<div class=\"jb-story-report-step matched-step\">" +
++                    "<div class=\"jb-story-report-step jb-story-report-step-successful matched-step\">" +
+                             "<span class=\"cm-jb-story-step-keyword\">{0}</span>" +
+                             "<span class=\"cm-jb-story-step-body\">{1}</span>" +
+ //                            "<div class=\"cm-jb-story-step-successful-message\">{2}</div>" +
+@@ -696,17 +676,22 @@
+ 
+             patterns.setProperty("failed", "");
+             patterns.setProperty("failedStep",
+-                    "<div class=\"jb-story-report-step matched-step\">" +
++                    "<div class=\"jb-story-report-step jb-story-report-step-failed matched-step\">" +
+                             "<span class=\"cm-jb-story-step-keyword failed\">{0}</span><span class=\"cm-jb-story-step-body failed\">{1}</span>" +
+-                            "<div class=\"cm-jb-story-step-failed-keyword\">({2})</div>" +
+-                            "<div class=\"cm-jb-story-step-failed-message\">{3}</div>" +
++
++                            "<div>"+
++                            "<span class=\"cm-jb-story-step-failed-keyword\">({2})</span> " +
++//                            "<div class=\"cm-jb-story-step-failed-message\">{3}</div>" +
+                             // failure trace formatting
+-                            "<div class=\"cm-jb-story-step-failed-message\">{5} " +
++                            "<span class=\"cm-jb-story-step-failed-message\">{5} " +
+                             "<a replace-text=\"hide trace\" " +
+                             "class=\"failure-trace-expander-trigger\">show trace</a>" +
++
+                             "<div style=\"display: none;\" class=\"jb-story-report-failure-trace-container cm-jb-story-step-failed-message\">" +
+                             "<pre class=\"failure\">{4}</pre>" +
+                             "</div>" +
++
++//                            "</div>" +
+                             "</div>" +
+                             "</div>\n");
+ 
+@@ -715,7 +700,7 @@
+ //            patterns.setProperty("pending", "<div class=\"step pending\"><span class=\"aui-icon aui-icon-small aui-iconfont-add\"></span>{0} <span class=\"keyword pending\">({1})</span></div>\n");
+             patterns.setProperty("pending", "");
+             patterns.setProperty("pendingStep",
+-                    "<div class=\"jb-story-report-step matched-step\">" +
++                    "<div class=\"jb-story-report-step jb-story-report-step-pending matched-step\">" +
+                             "<span class=\"cm-jb-story-step-keyword\">{0}</span><span class=\"cm-jb-story-step-body\">{1}</span>" +
+                             "<div class=\"cm-jb-story-keyword-pending\">({2})" +
+ //                            "<a replace-text=\"hide signature\" class=\"pending-method-signature-expander-trigger\">show signature</a>" +
+@@ -725,7 +710,7 @@
+ 
+             patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
+             patterns.setProperty("notPerformedStep",
+-                    "<div class=\"jb-story-report-step matched-step\">" +
++                    "<div class=\"jb-story-report-step jb-story-report-step-not-performed matched-step\">" +
+                             "<span class=\"cm-jb-story-step-keyword\">{0}</span><span class=\"cm-jb-story-step-body\">{1}</span>" +
+                             "<div class=\"cm-jb-story-keyword-notPerformed\">({2})</div>" +
+                             "</div>\n");
