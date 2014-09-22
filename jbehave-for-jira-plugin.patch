@@ -3,864 +3,329 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1411119678000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1411365815000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -45,6 +45,7 @@
-             stepDocs = foundStepDocs;
-             restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), function (fetchedStory) {
-                 editor = storyController.initEditor();
-+                storyController.editor = editor;
-                 storyController.showStory(fetchedStory);
-             });
-         });
-@@ -69,6 +70,7 @@
-             mode: "jbehave",
- //            lineComment: "!--",
-             lineNumbers: prefs.showLineNumbers,
-+//            gutters: ["errors-gutter", "CodeMirror-linenumbers"],
-             extraKeys: {
-                 "Ctrl-Space": "autocomplete",
- 
-@@ -142,6 +144,20 @@
- 
-         editorUtils.remarkStepsOnChange(changeObj);
- 
-+//        var spanElement = document.createElement("SPAN");
-+//        AJS.$(spanElement).html("");
-+//        spanElement.setAttribute("title", "my tool tip");
-+//        AJS.$(spanElement).addClass("aui-icon");
-+//        AJS.$(spanElement).addClass("aui-icon-small");
-+//        AJS.$(spanElement).addClass("aui-iconfont-remove");
-+////        AJS.$(spanElement).addClass("gutter-error-icon");
-+//
-+////        <span class="aui-icon aui-icon-small aui-iconfont-remove"></span>
-+//
-+//        editor.setGutterMarker(0, "errors-gutter", spanElement);
-+//
-+//        $('.aui-iconfont-remove').tooltipsy({offset: [5, 0]});
-+
-         debug("# onEditorChangeHandler");
+@@ -251,6 +251,18 @@
+         }
      }
  
-@@ -269,6 +285,48 @@
++    var createScenarioLozenge = function(text, type) {
++        var lozengeContainer = document.createElement("SPAN");
++        AJS.$(lozengeContainer).addClass("jb-story-report-lozenge-container");
++        var lozengeElement = document.createElement("SPAN");
++        AJS.$(lozengeElement).html(text);
++        AJS.$(lozengeElement).addClass("aui-lozenge");
++        AJS.$(lozengeElement).addClass("aui-lozenge-" + type);
++        AJS.$(lozengeElement).addClass("jb-story-report-lozenge");
++        AJS.$(lozengeContainer).append(lozengeElement);
++        return lozengeContainer;
++    }
++
+     this.showStoryReports = function (storyTestReports) {
  
-         });
- 
-+        // assign expand collapse triggers
-+        AJS.$('.jb-story-ele-exp-trigger').each(function (index, element) {
+         debug("> showStoryReports");
+@@ -325,6 +337,44 @@
+         AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
+             var target = AJS.$(event.target)[0];
+             AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
++        });
 +
-+            AJS.$(element).click(function (eventObject) {
-+                if (eventObject.preventDefault) {
-+                    eventObject.preventDefault();
-+                } else {
-+                    eventObject.returnValue = false;
-+                }
-+                var target = eventObject.target;
-+                var targetNode = AJS.$(target)[0];
++        // expand failed and pending scenarios
 +
-+                var isCollapsed = AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").hasClass("collapsed");
-+                if (isCollapsed) {
-+                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("collapsed");
-+                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("expanded");
-+                } else {
-+                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("expanded");
-+                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("collapsed");
-+                }
++        // append scenario status lozenge, depending on the step
++        AJS.$('.jb-story-report-scenario').each(function(index, element) {
 +
-+                var contentDiv = AJS.$(targetNode).closest(".jb-story-ele-exp-container").children(".jb-story-ele-exp-content")[0];
-+//                var contentDiv = AJS.$(targetNode).(".jb-story-ele-exp-content")[0];
++            var failedSteps = AJS.$(element).find(".jb-story-report-step-failed");
++            if (failedSteps != null && failedSteps.length > 0) {
++                // story has failed
++                var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
++                AJS.$(titleContainer).append(createScenarioLozenge("failed", "error"));
++
++                AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
++                AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
++                var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
 +                AJS.$(contentDiv).toggle();
-+//                var replaceText = targetNode.getAttribute("replace-text");
-+//                var currentHtml = AJS.$(targetNode).html();
-+//                AJS.$(targetNode).html(replaceText);
-+//                targetNode.setAttribute("replace-text", currentHtml);
-+            });
 +
-+        });
++            } else {
++                // check for pending steps
++                var pendingSteps = AJS.$(element).find(".jb-story-report-step-pending");
++                if (pendingSteps != null && pendingSteps.length > 0) {
++                    // story has failed
++                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
++                    AJS.$(titleContainer).append(createScenarioLozenge("pending", "current"));
 +
-+        AJS.$('.jb-story-ele-exp-trigger').mouseover(function (event) {
-+            var target = AJS.$(event.target)[0];
-+            AJS.$(target).closest(".jb-story-ele-exp-trigger").addClass("mouse-over");
-+        });
++                    AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
++                    AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
++                    var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
++                    AJS.$(contentDiv).toggle();
 +
-+        AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
-+            var target = AJS.$(event.target)[0];
-+            AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
-+        });
++                } else {
++                    // check for successful steps
++                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
++                    AJS.$(titleContainer).append(createScenarioLozenge("success", "success"));
++                }
++            }
 +
+         });
+ 
          debug("# showStoryReports");
-     }
- 
-@@ -492,7 +550,7 @@
-             editor.getDoc().eachLine(tableStartLine, tableEndLine + 1, function (lineHandle) {
-                     var lineText = lineHandle.text;
-                     lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
--                    if (lineText.substring("|--".length) == "|--") {
-+                    if (lineText.substring(0, 3) == "|--") {
-                         // ignore table comment line
-                     } else if (lineText.length == 0) {
-                         // ignore empty lines
-@@ -520,7 +578,7 @@
-                     var lineText = lineHandle.text;
-                     lineText = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
-                     var currentLine = lineHandle.lineNo();
--                    if (lineText.substring("|--".length) == "|--") {
-+                    if (lineText.substring(0, 3) == "|--") {
-                         // ignore table comment line
-                     } else if (lineText.length == 0) {
-                         // ignore empty lines
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1411119678000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
-@@ -2,13 +2,14 @@
- 
- import com.atlassian.jira.bc.issue.search.SearchService;
- import com.atlassian.jira.security.JiraAuthenticationContext;
--import org.apache.commons.lang.Validate;
-+import com.atlassian.upm.api.license.PluginLicenseManager;
- import com.jbehaveforjira.plugin.dto.story.JiraStory;
- import com.jbehaveforjira.plugin.dto.story.StoriesPayload;
- import com.jbehaveforjira.plugin.dto.story.StoryPaths;
- import com.jbehaveforjira.plugin.service.StepDocsService;
- import com.jbehaveforjira.plugin.service.StoryReportService;
- import com.jbehaveforjira.plugin.service.StoryService;
-+import org.apache.commons.lang.Validate;
- import org.slf4j.Logger;
- import org.slf4j.LoggerFactory;
- 
-@@ -35,15 +36,18 @@
- 
-     private JiraAuthenticationContext authenticationContext;
- 
-+    private final PluginLicenseManager pluginLicenseManager;
-+
-     public StoryFindResource(StoryService storyService,
-                              StoryReportService storyReportService,
-                              StepDocsService stepDocsSerivce, SearchService searchService,
--                             JiraAuthenticationContext authenticationContext) {
-+                             JiraAuthenticationContext authenticationContext, PluginLicenseManager pluginLicenseManager) {
-         this.storyService = storyService;
-         this.storyReportService = storyReportService;
-         this.stepDocsSerivce = stepDocsSerivce;
-         this.searchService = searchService;
-         this.authenticationContext = authenticationContext;
-+        this.pluginLicenseManager = pluginLicenseManager;
-     }
- 
-     @GET
-@@ -53,6 +57,11 @@
-                                      @QueryParam("appendVersionToPath")
-                                      @DefaultValue("true") boolean includeVersionInPath) {
- 
-+//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
-+//        if (!(license.isDefined() && license.get().isValid())) {
-+//             throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
-+//        }
-+
-         Validate.notEmpty(projectKey);
- 
-         List<JiraStory> stories = storyService.findByProjectKey(projectKey);
-@@ -78,6 +87,12 @@
-     @Path("/for-project/{projectKey}")
-     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-     public StoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
-+
-+//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
-+//        if (!(license.isDefined() && license.get().isValid())) {
-+//            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
-+//        }
-+
-         List<JiraStory> stories = storyService.findByProjectKey(projectKey);
-         StoriesPayload payload = new StoriesPayload(stories);
-         return payload;
-@@ -90,6 +105,11 @@
-             @PathParam("projectKey") String projectKey,
-             @PathParam("issueKey") String issueKey) {
- 
-+//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
-+//        if (!(license.isDefined() && license.get().isValid())) {
-+//            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
-+//        }
-+
-         JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
- 
-         Response response;
-@@ -111,6 +131,11 @@
-             @DefaultValue("false") boolean versionInPath,
-             @QueryParam("asString")
-             @DefaultValue("false") boolean asString) {
-+
-+//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
-+//        if (!(license.isDefined() && license.get().isValid())) {
-+//            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
-+//        }
- 
-         String issueKey;
-         if (versionInPath) {
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js	(revision )
-@@ -0,0 +1,20 @@
-+/* tooltipsy by Brian Cray
-+ * Lincensed under GPL2 - http://www.gnu.org/licenses/gpl-2.0.html
-+ * Option quick reference:
-+ * - alignTo: "element" or "cursor" (Defaults to "element")
-+ * - offset: Tooltipsy distance from element or mouse cursor, dependent on alignTo setting. Set as array [x, y] (Defaults to [0, -1])
-+ * - content: HTML or text content of tooltip. Defaults to "" (empty string), which pulls content from target element's title attribute
-+ * - show: function(event, tooltip) to show the tooltip. Defaults to a show(100) effect
-+ * - hide: function(event, tooltip) to hide the tooltip. Defaults to a fadeOut(100) effect
-+ * - delay: A delay in milliseconds before showing a tooltip. Set to 0 for no delay. Defaults to 200
-+ * - css: object containing CSS properties and values. Defaults to {} to use stylesheet for styles
-+ * - className: DOM class for styling tooltips with CSS. Defaults to "tooltipsy"
-+ * - showEvent: Set a custom event to bind the show function. Defaults to mouseenter
-+ * - hideEvent: Set a custom event to bind the show function. Defaults to mouseleave
-+ * Method quick reference:
-+ * - $('element').data('tooltipsy').show(): Force the tooltip to show
-+ * - $('element').data('tooltipsy').hide(): Force the tooltip to hide
-+ * - $('element').data('tooltipsy').destroy(): Remove tooltip from DOM
-+ * More information visit http://tooltipsy.com/
-+ */
-+;(function(a){a.tooltipsy=function(c,b){this.options=b;this.$el=a(c);this.title=this.$el.attr("title")||"";this.$el.attr("title","");this.random=parseInt(Math.random()*10000);this.ready=false;this.shown=false;this.width=0;this.height=0;this.delaytimer=null;this.$el.data("tooltipsy",this);this.init()};a.tooltipsy.prototype={init:function(){var e=this,d,b=e.$el,c=b[0];e.settings=d=a.extend({},e.defaults,e.options);d.delay=+d.delay;if(typeof d.content==="function"){e.readify()}if(d.showEvent===d.hideEvent&&d.showEvent==="click"){b.toggle(function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}if(d.delay>0){e.delaytimer=window.setTimeout(function(){e.show(f)},d.delay)}else{e.show(f)}},function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}window.clearTimeout(e.delaytimer);e.delaytimer=null;e.hide(f)})}else{b.bind(d.showEvent,function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}e.delaytimer=window.setTimeout(function(){e.show(f)},d.delay||0)}).bind(d.hideEvent,function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}window.clearTimeout(e.delaytimer);e.delaytimer=null;e.hide(f)})}},show:function(i){if(this.ready===false){this.readify()}var b=this,f=b.settings,h=b.$tipsy,k=b.$el,d=k[0],g=b.offset(d);if(b.shown===false){if((function(m){var l=0,e;for(e in m){if(m.hasOwnProperty(e)){l++}}return l})(f.css)>0){b.$tip.css(f.css)}b.width=h.outerWidth();b.height=h.outerHeight()}if(f.alignTo==="cursor"&&i){var j=[i.clientX+f.offset[0],i.clientY+f.offset[1]];if(j[0]+b.width>a(window).width()){var c={top:j[1]+"px",right:j[0]+"px",left:"auto"}}else{var c={top:j[1]+"px",left:j[0]+"px",right:"auto"}}}else{var j=[(function(){if(f.offset[0]<0){return g.left-Math.abs(f.offset[0])-b.width}else{if(f.offset[0]===0){return g.left-((b.width-k.outerWidth())/2)}else{return g.left+k.outerWidth()+f.offset[0]}}})(),(function(){if(f.offset[1]<0){return g.top-Math.abs(f.offset[1])-b.height}else{if(f.offset[1]===0){return g.top-((b.height-b.$el.outerHeight())/2)}else{return g.top+b.$el.outerHeight()+f.offset[1]}}})()]}h.css({top:j[1]+"px",left:j[0]+"px"});b.settings.show(i,h.stop(true,true))},hide:function(c){var b=this;if(b.ready===false){return}if(c&&c.relatedTarget===b.$tip[0]){b.$tip.bind("mouseleave",function(d){if(d.relatedTarget===b.$el[0]){return}b.settings.hide(d,b.$tipsy.stop(true,true))});return}b.settings.hide(c,b.$tipsy.stop(true,true))},readify:function(){this.ready=true;this.$tipsy=a('<div id="tooltipsy'+this.random+'" style="position:fixed;z-index:2147483647;display:none">').appendTo("body");this.$tip=a('<div class="'+this.settings.className+'">').appendTo(this.$tipsy);this.$tip.data("rootel",this.$el);var c=this.$el;var b=this.$tip;this.$tip.html(this.settings.content!=""?(typeof this.settings.content=="string"?this.settings.content:this.settings.content(c,b)):this.title)},offset:function(b){return this.$el[0].getBoundingClientRect()},destroy:function(){if(this.$tipsy){this.$tipsy.remove();a.removeData(this.$el,"tooltipsy")}},defaults:{alignTo:"element",offset:[0,-1],content:"",show:function(c,b){b.fadeIn(100)},hide:function(c,b){b.fadeOut(100)},css:{},className:"tooltipsy",delay:200,showEvent:"mouseenter",hideEvent:"mouseleave"}};a.fn.tooltipsy=function(b){return this.each(function(){new a.tooltipsy(this,b)})}})(jQuery);
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1411119678000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
-@@ -53,18 +53,28 @@
-         StepDocDTO stepDocDTO = new StepDocDTO();
- 
-         String startingWord = stepDoc.getStartingWord();
-+
-         String pattern = stepDoc.getPattern();
-+//        if (pattern != null) {
-+//            // encode any html tags
-+//            pattern = pattern.replace("<", "&lt;");
-+//            pattern = pattern.replace(">", "&gt;");
-+//            pattern = pattern.replace("&", "&amp;");
-+//        }
-+        stepDocDTO.setPattern(pattern);
-+
-         String regExpPattern = stepDoc.getRegExpPattern();
-         String groupedRegExpPattern = stepDoc.getGroupedRegExpPattern();
-         String parameterGroupsStr = stepDoc.getParameterGroups();
- 
-         stepDocDTO.setId(stepDoc.getID());
-         stepDocDTO.setStartingWord(startingWord);
--        stepDocDTO.setPattern(pattern);
-+
-         stepDocDTO.setResolvedPattern(regExpPattern); // TODO - align name in DAO and DTO objects
-         stepDocDTO.setGroupedRegExpPattern(groupedRegExpPattern);
- 
--        List<Integer> parameterGroups = asListOfInts(parameterGroupsStr);;
-+        List<Integer> parameterGroups = asListOfInts(parameterGroupsStr);
-+        ;
-         stepDocDTO.setParameterGroups(parameterGroups);
- 
-         // set parameter group infos
-@@ -87,7 +97,14 @@
-         stepDocDTO.setParamBoundInPattern(paramBoundInPattern);
- 
-         String extendedPattern = stepDoc.getExtendedPattern();
-+//        if (extendedPattern != null) {
-+//            // encode any html tags
-+//            extendedPattern = extendedPattern.replace("<", "&lt;");
-+//            extendedPattern = extendedPattern.replace(">", "&gt;");
-+//            extendedPattern = extendedPattern.replace("&", "&amp;");
-+//        }
-         stepDocDTO.setExtendedPattern(extendedPattern);
-+
- 
-         String paramBoundInExtendPatternAsString = stepDoc.getParamBoundInExtendPattern();
-         List<Integer> paramBoundInExtendPattern = asListOfInts(paramBoundInExtendPatternAsString);
-@@ -109,7 +126,7 @@
- 
-     private static String asCommaSepString(List<Integer> listOfInts) {
-         StringBuilder sb = new StringBuilder();
--        if (listOfInts != null ) {
-+        if (listOfInts != null) {
-             for (int i = 0; i < listOfInts.size(); i++) {
-                 Integer parameterGroup = listOfInts.get(i);
-                 sb.append(parameterGroup.toString());
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/LicenseIsValidCondition.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/LicenseIsValidCondition.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/LicenseIsValidCondition.java	(revision )
-@@ -0,0 +1,41 @@
-+package com.jbehaveforjira.plugin.conditions;
-+
-+import com.atlassian.plugin.PluginParseException;
-+import com.atlassian.plugin.web.Condition;
-+import com.atlassian.upm.api.license.PluginLicenseManager;
-+import com.atlassian.upm.api.license.entity.PluginLicense;
-+import com.atlassian.upm.api.util.Option;
-+import com.jbehaveforjira.plugin.listeners.IssueDeletedEventListener;
-+import org.slf4j.Logger;
-+import org.slf4j.LoggerFactory;
-+
-+import java.util.Map;
-+
-+public class LicenseIsValidCondition implements Condition {
-+
-+    private static final Logger log = LoggerFactory.getLogger(IssueDeletedEventListener.class);
-+
-+    private final PluginLicenseManager pluginLicenseManager;
-+
-+    public LicenseIsValidCondition(PluginLicenseManager pluginLicenseManager) {
-+        this.pluginLicenseManager = pluginLicenseManager;
-+    }
-+
-+    @Override
-+    public void init(Map<String, String> params) throws PluginParseException {
-+    }
-+
-+    @Override
-+    public boolean shouldDisplay(Map<String, Object> context) {
-+
-+        Option<PluginLicense> license = pluginLicenseManager.getLicense();
-+
-+        if (license.isDefined()&& license.get().isValid()) {
-+            return true;
-+        } else {
-+            log.warn("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
-+            return false;
-+        }
-+
-+    }
-+}
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1411119678000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -4,7 +4,7 @@
-                   plugins-version="2">
-     <plugin-info>
-         <description>Provides integration with JBehave BDD framework</description>
--        <version>1.0.1</version>
-+        <version>1.0.2</version>
-         <vendor name="Maryna Pristrom" url="http://www.jbehaveforjira.com"/>
-         <param name="atlassian-licensing-enabled">true</param>
-         <!--<param name="plugin-icon">images/marketing/pluginIcon.jpg</param>-->
-@@ -34,6 +34,7 @@
-         <!--<resource type="download" name="placeholder.js" location="/3rdparty/codemirror-4.3/addon/display/placeholder.js"/>-->
-         <resource type="download" name="comment.js" location="/3rdparty/codemirror-4.3/addon/comment/comment.js"/>
-         <!--<resource type="download" name="continuecomment.js" location="/3rdparty/codemirror-4.3/addon/comment/continuecomment.js"/>-->
-+        <resource type="download" name="tooltipsy.min.js" location="/3rdparty/tooltipsy/tooltipsy.min.js"/>
-     </web-resource>
-     <!--Custom javascript and css-->
-     <web-resource name="View Issue Page Resources" key="jbehave-for-jira-view-issue-page-resources">
-@@ -120,6 +121,7 @@
-         <context-provider class="com.jbehaveforjira.plugin.contextproviders.StoryPanelContextProvider"/>
-         <resource name="view" type="velocity" location="/velocity/story_panel.vm"/>
-         <label key="viewIssuePage.storyPanel.label"/>
-+        <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
-     </web-panel>
-     <!--Issue page - Story reports panel-->
-     <web-panel name="Story Reports Panel" i18n-name-key="viewIssuePage.storyReportsPanel.name"
-@@ -129,6 +131,7 @@
-         <context-provider class="com.jbehaveforjira.plugin.contextproviders.StoryReportsPanelContextProvider"/>
-         <resource name="view" type="velocity" location="/velocity/story_reports_panel.vm"/>
-         <label key="viewIssuePage.storyReportsPanel.label"/>
-+        <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
-     </web-panel>
-     <!-- ==================================================================================================== -->
-     <!--Custom customfields-->
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1411119678000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1411365815000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
-@@ -2,11 +2,12 @@
-     /*font-weight: bold;*/
- /*}*/
+@@ -165,7 +165,7 @@
  
--.cm-jb-story-comment {
-+.cm-jb-story-comment, .cm-jb-story-table-comment {
-     font-style: italic;
-     color: #808080;
+ 
+ #storyEditAreaContainer {
+-    padding-top: 10px;
++    padding-top: 5px;
  }
  
-+
- .cm-jb-story-invalid-token {
-     background: url(images/ui/underline.gif) bottom repeat-x;
- }
-@@ -188,4 +189,41 @@
-     /*border-color: red;*/
-     /*float: left;*/
-     /*display: inline;*/
--/*}*/
-\ No newline at end of file
-+/*}*/
-+
-+.errors-gutter {
-+    width: 14px;
-+    /*background-color: lightgoldenrodyellow;*/
-+    background-color: #ffffff;
-+    /*background-color: lightsteelblue;*/
-+}
-+
-+.CodeMirror-gutter-wrapper {
-+    border: 1px solid green;
-+}
-+
-+.CodeMirror-linenumbers {
-+    background-color: #ffffff;
-+}
-+
-+.aui-iconfont-remove {
-+    color: red;
-+}
-+
-+.gutter-error-icon {
-+    background: url(images/ui/gutter_icon_error.png) right top;
-+    width:14px;
-+    height:14px;
-+    display: block;
-+    float: left;
-+}
-+
-+.tooltipsy
-+{
-+    padding: 12px;
-+    max-width: 200px;
-+    color: #303030;
-+    background-color: #f5f5b5;
-+    border: 1px solid #deca7e;
-+}
-+
-Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1411119678000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -6,7 +6,7 @@
-     <artifactId>jira-plugin</artifactId>
-     <packaging>atlassian-plugin</packaging>
-     <name>JBehave For Jira - Jira Plugin</name>
--    <version>1.0.1</version>
-+    <version>1.0.2</version>
-     <description>Jira plugin for JBehave</description>
-     <url>http://www.jbehaveforjira.com</url>
-     <properties>
+ /*#storyMsgBar {*/
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1411119678000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1411365815000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -13,7 +13,8 @@
- 
- .aui-badge.pending {
-     /*background-color: #4A6785;*/
--    background-color: orange;
-+    /*background-color: orange;*/
-+    background-color: #ffd351;
- }
- 
- .aui-badge.skipped {
-@@ -27,7 +28,7 @@
- }
- 
- /*pre.pending {*/
--/*padding-left: 20px;*/
-+/*padding-left: 16px;*/
- /*}*/
- 
- /*.story-report-tab {*/
-@@ -55,7 +56,7 @@
- /*}*/
- 
- /*.story-report-tab .narrative .label {*/
--/*font-size: 20px;*/
-+/*font-size: 16px;*/
- /*font-weight: bold;*/
- /*padding-bottom: 5px;*/
- /*}*/
-@@ -124,7 +125,8 @@
- }
- 
- .cm-jb-story-keyword-pending {
--    color: orange;
-+    /*color: orange;*/
-+    color: #ffd351;
+@@ -130,19 +130,23 @@
  }
  
  .jb-story-report-step {
-@@ -137,14 +139,72 @@
-     padding-top: 10px;
++    /*padding-top: 5px;*/
++}
++
++.jb-story-report-scenario {
+     padding-top: 5px;
  }
  
--.jb-story-report-scenario, .jb-story-report-narrative, .jb-story-report-lifecycle, .jb-story-report-meta {
--    font-size: 20px;
-+/*.jb-story-report-scenario-title, */
-+.jb-story-report-meta {
-+    color: #770088;
-+    /*padding-left: 14px;*/
+ .jb-scenario-example {
+     color: firebrick;
+     font-weight: bold;
+-    padding-top: 10px;
++    padding-top: 5px;
  }
  
-+.jb-story-report-meta-keyword {
-+    font-size: 16px;
-+    color: #770088;
-+    font-weight: bold;
-+    /*padding-left: 14px;*/
+ /*.jb-story-report-scenario-title, */
+ .jb-story-report-meta {
+     color: #770088;
+-    /*padding-left: 14px;*/
++    padding-top: 5px;
+ }
+ 
+ .jb-story-report-meta-keyword {
+@@ -152,6 +156,10 @@
+     /*padding-left: 14px;*/
+ }
+ 
++.jb-story-report-lifecycle {
++    padding-top: 5px;
 +}
 +
-+.jb-story-report-lifecycle-keyword {
-+    color: #594300;
-+    font-size: 16px;
-+    font-weight: bold;
-+}
-+
-+.jb-story-report-narrative {
-+    color: #0000cc;
-+}
-+
-+.jb-story-report-narrative-keyword {
-+    font-size: 16px;
-+    font-weight: bold;
-+    color: #0000cc;
-+}
-+
- .aui-lozenge {
-     vertical-align: middle;
+ .jb-story-report-lifecycle-keyword {
+     color: #594300;
+     font-size: 16px;
+@@ -160,6 +168,7 @@
+ 
+ .jb-story-report-narrative {
+     color: #0000cc;
++    padding-top: 5px;
+ }
+ 
+ .jb-story-report-narrative-keyword {
+@@ -173,7 +182,7 @@
  }
  
  .jb-story-report-description {
-     padding-top: 10px;
+-    padding-top: 10px;
++    padding-top: 5px;
+ }
+ 
+ .jb-story-ele-exp-trigger {
+@@ -206,5 +215,14 @@
+ .jb-story-report-description {
+     color: #d04437;
+     padding-left: 16px;
+-    padding-bottom: 10px;
++    /*padding-bottom: 10px;*/
 +}
 +
-+.jb-story-ele-exp-trigger {
-+    font-size: 16px;
-+    /*padding-left: 14px;*/
++.jb-story-report-lozenge {
++    vertical-align: text-top;
 +}
 +
-+.jb-story-ele-exp-trigger {
-+    text-decoration: none;
-+    padding-left: 16px;
-+}
-+
-+.jb-story-ele-exp-trigger.collapsed {
-+    /*background: url(your_image_url) no-repeat;*/
-+    background: url(images/ui/collapsed_icon.png) no-repeat left center;
-+}
-+
-+.jb-story-ele-exp-trigger.expanded.mouse-over {
-+    background: url(images/ui/expanded_icon.png) no-repeat left center;
-+}
-+
-+/*.jb-story-report-scenario-content.collapsed {*/
-+    /*display: none;*/
-+/*}*/
-+
-+.jb-story-ele-exp-content {
-+    padding-left: 16px;
-+}
-+
-+.jb-story-report-description {
-+    color: #d04437;
-+    padding-left: 16px;
-+    padding-bottom: 10px;
++.jb-story-report-lozenge-container {
++    margin-left: 4px;
++    /*vertical-align: text-top;*/
 -}
-\ No newline at end of file
 +}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(date 1411365815000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
+@@ -11,8 +11,14 @@
+ 
+     private String fieldName;
+ 
++    public boolean mandatory;
++
+     private List<String> allowedValues;
+ 
++    public List<String> suggestedValues;
++
++    public String format;
++
+     public String getFieldName() {
+         return fieldName;
+     }
+@@ -29,4 +35,27 @@
+         this.allowedValues = allowedValues;
+     }
+ 
++    public boolean isMandatory() {
++        return mandatory;
++    }
++
++    public void setMandatory(boolean mandatory) {
++        this.mandatory = mandatory;
++    }
++
++    public List<String> getSuggestedValues() {
++        return suggestedValues;
++    }
++
++    public void setSuggestedValues(List<String> suggestedValues) {
++        this.suggestedValues = suggestedValues;
++    }
++
++    public String getFormat() {
++        return format;
++    }
++
++    public void setFormat(String format) {
++        this.format = format;
++    }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(date 1411365815000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
+@@ -17,6 +17,10 @@
+ 
+     private List<String> allowedValues;
+ 
++    public List<String> suggestedValues;
++
++    public String format;
++
+     private List<TabularFieldInfo> tabularFieldInfos;
+ 
+     public List<TabularFieldInfo> getTabularFieldInfos() {
+@@ -59,4 +63,19 @@
+         this.allowedValues = allowedValues;
+     }
+ 
++    public List<String> getSuggestedValues() {
++        return suggestedValues;
++    }
++
++    public void setSuggestedValues(List<String> suggestedValues) {
++        this.suggestedValues = suggestedValues;
++    }
++
++    public String getFormat() {
++        return format;
++    }
++
++    public void setFormat(String format) {
++        this.format = format;
++    }
+ }
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1411119678000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1411365815000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
-@@ -239,7 +239,7 @@
-         /**
-          * Lifecycle - Outcome value
-          */
--        if (currentState.inLifecycleOutcome && currentToken.type != null){
-+        if (currentState.inLifecycleOutcome && currentToken.type != null) {
- 
-             var currentToken = currentState.current;
- 
-@@ -391,48 +391,23 @@
-         var stepKeyword = currentState.currentStepKeyword;
-         if (lineTextTrimmed.length > 0 && stepKeyword != null) {
- 
--            /**
--             * hint on steps
--             */
--            for (var k = 0; k < stepDocs.length; k++) {
--                var stepDoc = stepDocs[k];
- 
--                if (stepDoc.startingWord == stepKeyword) {
- 
--                    var stepStartingKeyword = currentState.stepStartingKeyword;
-+            // hint on examples table values
- 
--                    var stepPatternWithKeyword = stepStartingKeyword + stepDoc.pattern;
--                    if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
--                        var stepHint = new Object();
--                        stepHint.text = stepStartingKeyword;
--                        if (storyController.prefs != null && storyController.prefs.autoInsertTabularFields && stepDoc.extendedPattern != null) {
--                            stepHint.text += stepDoc.extendedPattern;
--                        } else {
--                            stepHint.text += stepDoc.pattern;
--                        }
--                        var pattern = stepDoc.pattern;
--                        var regExpPattern = new RegExp("(\\$[^\\s]*)", "g");
--                        pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
--                        stepHint.markedPattern = pattern;
--                        stepHint.stepStartingKeyword = stepStartingKeyword;
--                        stepHint.stepDoc = stepDoc;
--                        stepHint.render = function (element, data, self) {
--                            element.innerHTML =
--                                "<span class='cm-jb-story-step-keyword matched-step'>" + self.stepStartingKeyword + "</span>"
--                                + self.markedPattern;
--                        };
--                        list.push(stepHint);
--                    }
--                }
--            }
-+            var hintedOnTabularParameter = false;
-+            var hintedOnRegularParameter = false;
-+            var hintedOnStep = false;
- 
--            // hint on parameters
-+
-+            // hint on tabular parameters
-             var matchedStepClassName = "matched-step";
-             var stepParameterClassName = "step-parameter";
--            var startOfCursorLine = {line: cursor.line, ch: 0};
-+//            var startOfCursorLine = {line: cursor.line, ch: 0};
-             var cursorLineHandle = editor.getLineHandle(cursor.line);
--            var endOfCursorLine = {line: cursor.line, ch: cursorLineHandle.text.length};
--            var markers = editor.getDoc().findMarks(startOfCursorLine, endOfCursorLine);
-+//            var endOfCursorLine = {line: cursor.line, ch: cursorLineHandle.text.length};
-+//            var markers = editor.getDoc().findMarks(startOfCursorLine, endOfCursorLine);
-+            var markers = editor.getDoc().findMarksAt(cursor);
-             if (markers.length > 0) {
-                 var foundStepId = null;
-                 var foundParameterIndex = null;
-@@ -460,14 +435,17 @@
-                         }
-                     }
-                     if (stepDocWithId != null && stepDocWithId.parameterInfos != null) {
-+
-                         var paramInfo = stepDocWithId.parameterInfos[foundParameterIndex];
-                         var tabularFieldInfos = paramInfo.tabularFieldInfos;
--                        if (tabularFieldInfos != null && tabularFieldInfos.length > 0) {
--                            // can try to hint on tabular field names and values
--                            // get current tabular column index and value
-+
--                            var currentLineHandle = editor.getLineHandle(cursor.line);
--                            var currentLineText = currentLineHandle.text;
--                            var currentLineTextUpToCursor = currentLineText.substring(0, cursor.ch);
-+                        var currentLineHandle = editor.getLineHandle(cursor.line);
-+                        var currentLineText = currentLineHandle.text;
-+                        var currentLineTextUpToCursor = currentLineText.substring(0, cursor.ch);
-+
-+                        if (tabularFieldInfos != null && tabularFieldInfos.length > 0) {
-+                            // can try to hint on tabular field names and values
-+                            // get current tabular column index and value
-                             if (currentLineTextUpToCursor.substring(0, 1) == "|" && currentLineTextUpToCursor.substring(0, 3) != "|--") {
-                                 // we subtract 2 here since we always end up with empty token before the first pipe
-                                 var columnIndex = currentLineTextUpToCursor.split("|").length - 2;
-@@ -512,6 +490,7 @@
-                                             stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
-                                             stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
-                                             list.push(stepHint);
-+                                            hintedOnTabularParameter = true;
-                                             globalFromCh = stepHint.from.ch;
-                                             globalToCh = stepHint.to.ch;
-                                         }
-@@ -544,6 +523,7 @@
-                                                             stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
-                                                             stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
-                                                             list.push(stepHint);
-+                                                            hintedOnTabularParameter = true;
-                                                             globalFromCh = stepHint.from.ch;
+@@ -528,8 +528,30 @@
                                                              globalToCh = stepHint.to.ch;
                                                          }
-@@ -558,10 +538,132 @@
-                             } else {
-                                 // we are in table comment line, do not hint anything
-                             }
-+                        } else {
-+
-+                            // this is not a tabular parameter, try to hint on allowed values if present
-+
-+                            // get the boundaries of the parameter marker
-+                            var isMultiLineParameter = false;
-+                            var parameterReplaceFrom = null;
-+                            var parameterReplaceTo = null;
-+                            for (var m = 0; m < markers.length; m++) {
-+                                var marker = markers[m];
-+                                var markerClassName = marker.className;
-+                                var parameterMarkerClassName = stepParameterClassName + "-" + foundParameterIndex;
-+                                if (markerClassName.indexOf(parameterMarkerClassName) > -1) {
-+                                    var lines = marker.lines;
-+                                    if (lines.length == 1) {
-+                                        var line = lines[0];
-+                                        var markedSpans = line.markedSpans;
-+                                        for (var p = 0; p < markedSpans.length; p++) {
-+                                            var markedSpan = markedSpans[p];
-+                                            if (markedSpan.marker.className.indexOf(parameterMarkerClassName) > -1) {
-+                                                parameterReplaceFrom = markedSpan.from;
-+                                                parameterReplaceTo = markedSpan.to;
-+                                                break;
--                        }
+                                                     }
++                                                }else {
++                                                    var fieldSuggestedValues = tabularFieldInfo.suggestedValues;
++                                                    if (fieldSuggestedValues != null && fieldSuggestedValues.length > 0) {
++                                                        for (var d = 0; d < fieldSuggestedValues.length; d++) {
++                                                            var fieldSuggestedValue = fieldSuggestedValues[d];
++                                                            if (columnValue.length == 0 || fieldSuggestedValue.substring(0, columnValue.length) == columnValue) {
++                                                                // do the hint on field suggested value
++                                                                var stepHint = new Object();
++                                                                stepHint.text = fieldSuggestedValue;
++                                                                stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + fieldSuggestedValue + "</span>";
++                                                                stepHint.render = function (element, data, self) {
++                                                                    element.innerHTML = self.html;
++                                                                };
++                                                                stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
++                                                                stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
++                                                                list.push(stepHint);
++                                                                hintedOnTabularParameter = true;
++                                                                globalFromCh = stepHint.from.ch;
++                                                                globalToCh = stepHint.to.ch;
+-                                                }
+-                                            }
++                                                            }
++                                                        }
++                                                    }
++                                                }
 +                                            }
-+                                        }
-+                                    } else {
-+                                        // we cannot hint on multi line parameters
-+                                        isMultiLineParameter = true;
+ 
+                                         }
+                                     }
+@@ -604,6 +626,36 @@
+                                         hintedOnRegularParameter = true;
+                                         globalFromCh = stepHint.from.ch;
+                                         globalToCh = stepHint.to.ch;
 +                                    }
- 
-+                                }
-+                            }
++                                } else {
++                                    var suggestedValues = paramInfo.suggestedValues;
++                                    if (suggestedValues != null && suggestedValues.length > 0) {
++                                        for (var i = 0; i < suggestedValues.length; i++) {
++                                            var suggestedValue = suggestedValues[i];
++                                            var stepHint = new Object();
++                                            stepHint.text = suggestedValue;
++                                            stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + suggestedValue + "</span>";
++                                            stepHint.render = function (element, data, self) {
++                                                element.innerHTML = self.html;
++                                            };
 +
-+                            if (!isMultiLineParameter) {
++                                            if (parameterReplaceFrom != null && parameterReplaceTo != null) {
++                                                var fromPosition = CodeMirror.Pos(cursor.line, parameterReplaceFrom);
++                                                stepHint.from = fromPosition;
++                                                var toPosition = CodeMirror.Pos(cursor.line, parameterReplaceTo);
++                                                stepHint.to = toPosition;
++                                                editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
++                                                    {line: toPosition.line, ch: toPosition.ch});
 +
-+                                // hint on allowed values
-+
-+                                var allowedValues = paramInfo.allowedValues;
-+                                if (allowedValues != null && allowedValues.length > 0) {
-+                                    for (var i = 0; i < allowedValues.length; i++) {
-+                                        var allowedValue = allowedValues[i];
-+                                        var stepHint = new Object();
-+                                        stepHint.text = allowedValue;
-+                                        stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + allowedValue + "</span>";
-+                                        stepHint.render = function (element, data, self) {
-+                                            element.innerHTML = self.html;
-+                                        };
-+
-+                                        if (parameterReplaceFrom != null && parameterReplaceTo != null) {
-+
-+                                            var fromPosition = CodeMirror.Pos(cursor.line, parameterReplaceFrom);
-+                                            stepHint.from = fromPosition;
-+                                            var toPosition = CodeMirror.Pos(cursor.line, parameterReplaceTo);
-+                                            stepHint.to = toPosition;
-+                                            editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
-+                                                {line: toPosition.line, ch: toPosition.ch});
-+
--                    } else {
-+                                        } else {
-+                                            stepHint.from = CodeMirror.Pos(cursor.line, cursor.ch);
-+                                            stepHint.to = CodeMirror.Pos(cursor.line, cursor.ch);
++                                            } else {
++                                                stepHint.from = CodeMirror.Pos(cursor.line, cursor.ch);
++                                                stepHint.to = CodeMirror.Pos(cursor.line, cursor.ch);
++                                            }
++                                            list.push(stepHint);
++                                            hintedOnRegularParameter = true;
++                                            globalFromCh = stepHint.from.ch;
++                                            globalToCh = stepHint.to.ch;
 +                                        }
-+
-+                                        list.push(stepHint);
-+                                        hintedOnRegularParameter = true;
-+                                        globalFromCh = stepHint.from.ch;
-+                                        globalToCh = stepHint.to.ch;
-+                                    }
-+                                }
-+                            }
-+
-+                        }
-+
-+                    } else {
-                         console.error("Failed to find step doc with id - " + foundStepId);
-+                    }
-+                }
-+            }
-+
-+            if (hintedOnRegularParameter == false && hintedOnTabularParameter == false) {
-+                /**
-+                 * hint on steps
-+                 */
-+                for (var k = 0; k < stepDocs.length; k++) {
-+                    var stepDoc = stepDocs[k];
-+
-+                    if (stepDoc.startingWord == stepKeyword) {
-+
-+                        var stepStartingKeyword = currentState.stepStartingKeyword;
-+
-+                        var stepPatternWithKeyword = stepStartingKeyword + stepDoc.pattern;
-+                        if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
-+                            var stepHint = new Object();
-+                            stepHint.text = stepStartingKeyword;
-+                            if (storyController.prefs != null && storyController.prefs.autoInsertTabularFields && stepDoc.extendedPattern != null) {
-+                                stepHint.text += stepDoc.extendedPattern;
-+                            } else {
-+                                stepHint.text += stepDoc.pattern;
-+                            }
-+                            var pattern = stepDoc.pattern;
-+
-+                            // replace any html tags, used in parameterized scenarios
-+                            var regExpPattern = new RegExp("&", "g");
-+                            pattern = pattern.replace(regExpPattern, "&amp;");
-+                            regExpPattern = new RegExp("<", "g");
-+                            pattern = pattern.replace(regExpPattern, "&lt;");
-+                            regExpPattern = new RegExp(">", "g");
-+                            pattern = pattern.replace(regExpPattern, "&gt;");
-+
-+                            regExpPattern = new RegExp("(\\$[^\\s]*)", "g");
-+                            pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
-+
-+                            // replace any parameterized scenario arguments
-+                            regExpPattern = new RegExp("(&lt;[^\\s]*&gt;)", "g");
-+                            pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
-+
-+                            stepHint.markedPattern = pattern;
-+                            stepHint.stepStartingKeyword = stepStartingKeyword;
-+                            stepHint.stepDoc = stepDoc;
-+                            stepHint.render = function (element, data, self) {
-+                                element.innerHTML =
-+                                    "<span class='cm-jb-story-step-keyword matched-step'>" + self.stepStartingKeyword + "</span>"
-+                                        + self.markedPattern;
-+                            };
-+                            list.push(stepHint);
-+                            hintedOnStep = true;
-+                        }
-                     }
-                 }
-             }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryTestResource.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryTestResource.java	(date 1411119678000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
-@@ -15,6 +15,8 @@
- import javax.ws.rs.core.MediaType;
- import javax.ws.rs.core.Response;
- import java.io.IOException;
-+import java.util.Collections;
-+import java.util.Comparator;
- import java.util.List;
- 
- @Path("/story-test")
-@@ -87,6 +89,13 @@
-             @PathParam("issueKey") String issueKey) {
- 
-         List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
-+
-+        Collections.sort(storyTestReports, new Comparator<JiraStoryHtml>() {
-+            @Override
-+            public int compare(JiraStoryHtml o1, JiraStoryHtml o2) {
-+                return o1.getEnvironment().compareTo(o2.getEnvironment());
-+            }
-+        });
- 
-         StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
-         return storyTestReportsPayloadDTO;
+                                     }
+                                 }
+                             }
