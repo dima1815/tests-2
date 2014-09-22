@@ -1,1 +1,194 @@
-
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/ExampleSteps.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/ExampleSteps.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/ExampleSteps.java	(revision )
+@@ -0,0 +1,66 @@
++package com.jbehaveforjira.exampleproject;
++
++import org.jbehave.core.annotations.*;
++
++public class ExampleSteps {
++
++    @Given("a step that is executed before each scenario")
++    public void givenBeforeStep() {
++
++    }
++
++    @Given("a step that is executed after each scenario regardless of outcome")
++    public void givenAfterStep() {
++
++    }
++
++    @Given("a step that is executed after each successful scenario")
++    public void givenAfterSuccessfulStep() {
++
++    }
++
++    @Given("a step that is executed after each failed scenario")
++    public void givenAfterFailedStep() {
++
++    }
++
++    @Given("step represents a precondition to an event")
++    public void givenPreconditionStep() {
++
++    }
++
++    @When("step represents the occurrence of the event")
++    public void whenEventOccurs() {
++
++    }
++
++    @Then("step represents the outcome of the event")
++    public void thenOutcomeShouldBe() {
++
++    }
++
++    @Given("some $precondition")
++    @Alias("some <precondition>")
++    public void stepWithPrecondition(@Named("precondition") String precondition) {
++
++    }
++
++    @When("a negative event occurs")
++    public void whenNegativeEvent() {
++
++    }
++
++    @Then("the outcome should $be_captured")
++    @Alias("the outcome should <be-captured> ")
++    public void thenOutcomeShouldBeCaptureD(String be_captured) {
++       throw new RuntimeException("This step is hardcoded to always fail!");
++    }
++
++    @When("I execute a step that always fails")
++    public void stepThatAlwaysFails() {
++        throw new RuntimeException("This step is hardcoded to always fail");
++    }
++
++
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1411365815000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(revision )
+@@ -78,6 +78,12 @@
+     public void run() throws Throwable {
+ 
+         Embedder embedder = configuredEmbedder();
++
++        embedder.embedderControls()
++                .doIgnoreFailureInStories(false)
++                .doIgnoreFailureInView(true)
++                .useStoryTimeoutInSecs(Long.MAX_VALUE);
++
+         try {
+             embedder.runStoriesAsPaths(storyPaths());
+         } catch (Exception e) {
+@@ -91,7 +97,7 @@
+ 
+     @Override
+     public InjectableStepsFactory stepsFactory() {
+-        return new InstanceStepsFactory(configuration(), new BookRelatedSteps(), new TransactionSteps());
++        return new InstanceStepsFactory(configuration(), new BookRelatedSteps(), new TransactionSteps(), new ExampleSteps());
+     }
+ 
+     @Override
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java	(date 1411365815000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java	(revision )
+@@ -1,11 +1,16 @@
+ package com.jbehaveforjira.exampleproject;
+ 
++import com.jbehaveforjira.javaclient.ParameterInfo;
++import org.jbehave.core.annotations.AsParameters;
+ import org.jbehave.core.annotations.Given;
++import org.jbehave.core.annotations.Parameter;
+ 
++import java.util.Date;
++
+ public class TransactionSteps {
+ 
+     @Given("an FX transaction to buy $amount of $currency")
+-    public void givenFxTransaction(Double amount, Currency currency) {
++    public void givenFxTransaction(@ParameterInfo(suggestedValues = {"100", "200", "300", "1000", "10000"}) Double amount, Currency currency) {
+         //
+     }
+ 
+@@ -14,4 +19,65 @@
+         //
+     }
+ 
++    @Given("an FX transaction with the following fields: $transactionFields")
++    public void givenFxTransaction(FxTransaction fxTransaction) {
++
++    }
++
++}
++
++enum FXType {
++    SPOT,
++    FORWARD,
++    SWAP
++
++}
++
++enum BuySellIndicator {
++    Buy,
++    Sell
++}
++
++@AsParameters
++class FxTransaction {
++
++    @Parameter(name = "Trader name")
++    @ParameterInfo(suggestedValues = {"Andrew", "George", "Susan", "Helen"})
++    String traderName;
++
++    @Parameter(name = "Counterparty")
++    String counterpartyName;
++
++    @Parameter(name = "Counterparty BIC")
++    String counterpartyBic;
++
++    @Parameter(name = "FX Type")
++    FXType fxType;
++
++    @Parameter(name = "Buy/Sell")
++    BuySellIndicator buyOrSellIndicator;
++
++    @Parameter(name = "Buy Currency")
++    Currency buyCurrency;
++
++    @Parameter(name = "Sell Currency")
++    Currency sellCurrency;
++
++    @Parameter(name = "rate")
++    double rate;
++
++    @Parameter(name = "Amount")
++    double amount;
++
++    @Parameter(name = "Tx. Date")
++    Date transactionDate;
++
++    @Parameter(name = "Sett. Date")
++    Date settlementDate;
++
++    @Parameter(name = "Account")
++    String account;
++
++    @Parameter(name = "Reference")
++    Long reference;
+ }
