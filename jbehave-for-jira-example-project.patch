@@ -1,168 +1,112 @@
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(revision )
-@@ -1,10 +1,9 @@
--package org.bitbucket.jbehaveforjira.exampleproject;
-+package com.jbehaveforjira.exampleproject;
- 
--import org.bitbucket.jbehaveforjira.groovyclient.GroovyStepDocReporter;
--import org.bitbucket.jbehaveforjira.groovyclient.GroovyStoryLoader;
--import org.bitbucket.jbehaveforjira.groovyclient.GroovyStoryPathsFinder;
--import org.bitbucket.jbehaveforjira.groovyclient.GroovyStoryReporter;
--import org.bitbucket.jbehaveforjira.javaclient.StoryPathsFinder;
-+import com.jbehaveforjira.javaclient.JiraStepDocReporter;
-+import com.jbehaveforjira.javaclient.JiraStoryLoader;
-+import com.jbehaveforjira.javaclient.JiraStoryPathsFinder;
-+import com.jbehaveforjira.javaclient.JiraStoryReporter;
- import org.jbehave.core.configuration.MostUsefulConfiguration;
- import org.jbehave.core.embedder.Embedder;
- import org.jbehave.core.junit.JUnitStories;
-@@ -39,8 +38,8 @@
-                 new StoryReporterBuilder() {
-                     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
-                         if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
--//                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
--                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-+                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-+//                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-                         } else {
-                             return super.reporterFor(storyPath, format);
-                         }
-@@ -55,14 +54,13 @@
-         );
- 
-         // set Jira story loader
--//        JiraStoryLoader jiraLoader = new JiraStoryLoader(jiraUrl, jiraProject, "admin", "admin");
--        GroovyStoryLoader jiraLoader = new GroovyStoryLoader(jiraUrl, jiraProject, "admin", "admin", true);
-+        JiraStoryLoader jiraLoader = new JiraStoryLoader(jiraUrl, jiraProject, "admin", "admin");
-+//        GroovyStoryLoader jiraLoader = new GroovyStoryLoader(jiraUrl, jiraProject, "admin", "admin", true);
-         configuration.useStoryLoader(jiraLoader);
- 
-         // set Jira step doc reporter
--//        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
--        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
--//        StepdocReporter stepDocReporter = new org.bitbucket.jbehaveforjira.javaclient.GroovyStepDocReporter(jiraUrl, jiraProject);
-+        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
-+//        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
-         configuration.useStepdocReporter(stepDocReporter);
- 
-         useConfiguration(configuration);
-@@ -91,8 +89,8 @@
-     @Override
-     protected List<String> storyPaths() {
- 
--//        JiraStoryPathsFinder storyFinder = new JiraStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
--        StoryPathsFinder storyFinder = new GroovyStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
-+        JiraStoryPathsFinder storyFinder = new JiraStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
-+//        StoryPathsFinder storyFinder = new GroovyStoryPathsFinder(jiraUrl, jiraProject, "admin", "admin");
-         List<String> paths = storyFinder.findPaths();
-         return paths;
-     }
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/org/bitbucket/jbehaveforjira/exampleproject/BookRelatedSteps.java	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookRelatedSteps.java	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.exampleproject;
-+package com.jbehaveforjira.exampleproject;
- 
- import org.jbehave.core.annotations.Alias;
- import org.jbehave.core.annotations.Given;
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Format.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Format.java	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/Format.java	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.exampleproject;
-+package com.jbehaveforjira.exampleproject;
- 
- /**
-  * @author Maryna Pristrom
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookStore.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/BookStore.java	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/BookStore.java	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.exampleproject;
-+package com.jbehaveforjira.exampleproject;
- 
- import java.util.ArrayList;
- import java.util.Collection;
-Index: jbehave-for-jira/jbehave-for-jira-example-project/pom.xml
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(revision )
-@@ -3,15 +3,15 @@
-          xmlns="http://maven.apache.org/POM/4.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-     <modelVersion>4.0.0</modelVersion>
--    <groupId>org.bitbucket.pristrom</groupId>
--    <artifactId>jbehave-for-jira-example-project</artifactId>
-+    <groupId>com.jbehaveforjira</groupId>
-+    <artifactId>example-project</artifactId>
-     <packaging>jar</packaging>
-     <name>JBehave For Jira - Example Project</name>
-     <version>1.0.0-SNAPSHOT</version>
-     <description>Example project demonstrating how to make use of the 'JBehave for Jira - Java Client' to integrate with
-         'JBehave for Jira' plugin.
-     </description>
--    <url>https://bitbucket.org/pristrom/jbehave-for-jira-java-client/wiki/Home</url>
-+    <url>http://www.jbehaveforjira.com</url>
-     <build>
-         <plugins>
-             <plugin>
-@@ -75,14 +75,14 @@
-             <version>1.1.2</version>
-         </dependency>
-         <dependency>
--            <groupId>org.bitbucket.pristrom</groupId>
--            <artifactId>jbehave-for-jira-java-client</artifactId>
-+            <groupId>com.jbehaveforjira</groupId>
-+            <artifactId>java-client</artifactId>
-             <version>1.0.0-SNAPSHOT</version>
-             <!--<scope>test</scope>-->
-         </dependency>
-         <dependency>
--            <groupId>org.bitbucket.pristrom</groupId>
--            <artifactId>jbehave-for-jira-groovy-client</artifactId>
-+            <groupId>com.jbehaveforjira</groupId>
-+            <artifactId>groovy-client</artifactId>
-             <version>1.0.0-SNAPSHOT</version>
-             <!--<scope>test</scope>-->
-         </dependency>
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Book.java	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/Book.java	(revision )
-@@ -1,6 +1,6 @@
--package org.bitbucket.jbehaveforjira.exampleproject;
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java	(revision )
+@@ -0,0 +1,17 @@
 +package com.jbehaveforjira.exampleproject;
- 
--import org.bitbucket.jbehaveforjira.javaclient.ParameterInfo;
-+import com.jbehaveforjira.javaclient.ParameterInfo;
- import org.jbehave.core.annotations.AsParameters;
- import org.jbehave.core.annotations.Parameter;
- 
-@@ -30,7 +30,7 @@
-     @ParameterInfo(allowedValues = {"10", "15", "30"})
-     private Double discount;
- 
--    @ParameterInfo(regExPattern = "")
-+    @ParameterInfo(formatPattern = "")
-     private Integer ISBN;
- 
-     @ParameterInfo(suggestedValues = {"1990", "1991", "1992", "1993", "1994", "1995"})
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Genre.java
++
++import org.jbehave.core.annotations.Given;
++
++public class TransactionSteps {
++
++    @Given("an FX transaction to buy $amount of $currency")
++    public void givenFxTransaction(Double amount, Currency currency) {
++        //
++    }
++
++    @Given("an FX transaction to sell $sellCurrency and buy $buyCurrency")
++    public void givenBuySellTransaction(Currency sellCurrency, Currency buyCurrency) {
++        //
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/Currency.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/org/bitbucket/jbehaveforjira/exampleproject/Genre.java	(date 1410899864000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/Genre.java	(revision )
-@@ -1,4 +1,4 @@
--package org.bitbucket.jbehaveforjira.exampleproject;
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/Currency.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/Currency.java	(revision )
+@@ -0,0 +1,9 @@
 +package com.jbehaveforjira.exampleproject;
++
++public enum Currency {
++
++    USD,
++    EUR,
++    GBP,
++    TZS
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1410985045000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(revision )
+@@ -1,9 +1,9 @@
+ package com.jbehaveforjira.exampleproject;
  
- /**
-  * @author Maryna Pristrom
+-import com.jbehaveforjira.javaclient.JiraStepDocReporter;
++import com.jbehaveforjira.groovyclient.GroovyStepDocReporter;
++import com.jbehaveforjira.groovyclient.GroovyStoryReporter;
+ import com.jbehaveforjira.javaclient.JiraStoryLoader;
+ import com.jbehaveforjira.javaclient.JiraStoryPathsFinder;
+-import com.jbehaveforjira.javaclient.JiraStoryReporter;
+ import org.jbehave.core.configuration.MostUsefulConfiguration;
+ import org.jbehave.core.embedder.Embedder;
+ import org.jbehave.core.junit.JUnitStories;
+@@ -27,10 +27,18 @@
+ 
+     private final String jiraProject = "TESTING";
+ 
+-    private final String environment = "TEST";
++    private final String DEFAULT_ENVIRONMENT = "TEST";
+ 
+     public BookStoreTest() {
+ 
++        final String environment;
++        String envProperty = System.getProperty("environment");
++        if (envProperty != null && !envProperty.trim().isEmpty()) {
++            environment = envProperty.trim();
++        } else {
++            environment = DEFAULT_ENVIRONMENT;
++        }
++
+         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
+ 
+         // set custom Jira HTML output format
+@@ -38,8 +46,8 @@
+                 new StoryReporterBuilder() {
+                     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+                         if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
+-                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
+-//                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
++//                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
++                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
+                         } else {
+                             return super.reporterFor(storyPath, format);
+                         }
+@@ -59,8 +67,8 @@
+         configuration.useStoryLoader(jiraLoader);
+ 
+         // set Jira step doc reporter
+-        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
+-//        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
++//        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
++        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
+         configuration.useStepdocReporter(stepDocReporter);
+ 
+         useConfiguration(configuration);
+@@ -83,7 +91,7 @@
+ 
+     @Override
+     public InjectableStepsFactory stepsFactory() {
+-        return new InstanceStepsFactory(configuration(), new BookRelatedSteps());
++        return new InstanceStepsFactory(configuration(), new BookRelatedSteps(), new TransactionSteps());
+     }
+ 
+     @Override
