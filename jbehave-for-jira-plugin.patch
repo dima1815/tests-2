@@ -1,331 +1,1381 @@
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1411365815000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -251,6 +251,18 @@
-         }
-     }
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(revision )
+@@ -36,9 +36,11 @@
+         boolean showLineNumbers = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_SHOW_LINE_NUMBERS);
+         boolean autoAlignTables = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_ALIGN_TABLES);
+         boolean autoInsertTabularFields = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_INSERT_TABLES);
++        boolean highlightErrors = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_HIGHLIGHT_ERRORS);
  
-+    var createScenarioLozenge = function(text, type) {
-+        var lozengeContainer = document.createElement("SPAN");
-+        AJS.$(lozengeContainer).addClass("jb-story-report-lozenge-container");
-+        var lozengeElement = document.createElement("SPAN");
-+        AJS.$(lozengeElement).html(text);
-+        AJS.$(lozengeElement).addClass("aui-lozenge");
-+        AJS.$(lozengeElement).addClass("aui-lozenge-" + type);
-+        AJS.$(lozengeElement).addClass("jb-story-report-lozenge");
-+        AJS.$(lozengeContainer).append(lozengeElement);
-+        return lozengeContainer;
+         UserPreferencesDTO userPrefs = new UserPreferencesDTO();
+         userPrefs.setShowLineNumbers(showLineNumbers);
++        userPrefs.setHighlightErrors(highlightErrors);
+         userPrefs.setAutoAlignTables(autoAlignTables);
+         userPrefs.setAutoInsertTabularFields(autoInsertTabularFields);
+         return userPrefs;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/jbehave_preferences.vm	(revision )
+@@ -28,6 +28,17 @@
+         </fieldset>
+         <fieldset class="group">
+             <div class="checkbox">
++                <input class="checkbox"
++                       type="checkbox" name="highlightErrors" id="highlightErrors"
++                    #if(${action.highlightErrors})
++                       checked="checked"
++                    #end
++                        >
++                <label for="highlightErrors">${action.getText('userPreferences.highlightErrors.label')}</label>
++            </div>
++        </fieldset>
++        <fieldset class="group">
++            <div class="checkbox">
+                 <input class="checkbox" type="checkbox" name="autoAlignTables" id="autoAlignTables"
+                     #if(${action.autoAlignTables})
+                        checked="checked"
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/i18n/plugin.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/i18n/plugin.properties	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/i18n/plugin.properties	(revision )
+@@ -48,7 +48,8 @@
+ # User Preferences
+ ###################################################################################################
+ userPreferences.title=JBehave Options
+-userPreferences.showLineNumbers.label=Show line numbers in story editor
++userPreferences.showLineNumbers.label=Show line numbers
++userPreferences.highlightErrors.label=Highlight story syntax errors
+ userPreferences.autoAlignTables.label=Auto align tabular parameters
+ userPreferences.autoInsertTabularFields.label=Auto insert tabular parameter fields
+ userPreferences.updateSuccessful.message=JBehave options updated successfully
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
+@@ -14,13 +14,9 @@
+             lineComment: "!--",
+             tableLineComment: "|--",
+             blankLine: function (state) {
+-//                console.log("### on blankLine");
+                 state.lineNumber++;
+-                if (state.inStep) {
+-                    state.stepBody += "\n";
+-                }
++                storyController.clearModeGutterErrorForLine(state.lineNumber);
+             },
+-
+             startState: function () {
+                 return {
+ 
+@@ -95,10 +91,13 @@
+                 }
+ 
+                 if (stream.sol()) {
++
+                     state.lineNumber++;
+                     state.inScenarioTitleLine = false;
+                     state.inNarrativeField = false;
+                     state.inLifecycleOutcome = false;
++
++                    storyController.clearModeGutterErrorForLine(state.lineNumber);
+                 }
+ 
+                 state.lastTokenType = "";
+@@ -310,11 +309,11 @@
+                     state.inTable = false;
+                     state.inStep = true;
+                     state.stepNumber++;
+-                    state.stepBody = "";
++//                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
+ 
+                     state.inStepBody = false;
+-                    state.stepBodyStartedAtCh = null;
++//                    state.stepBodyStartedAtCh = null;
+ 
+                     state.currentStepNumber++;
+ 
+@@ -350,7 +349,7 @@
+                     state.lastStepStartedAt = state.lineNumber;
+ 
+                     state.inStepBody = false;
+-                    state.stepBodyStartedAtCh = null;
++//                    state.stepBodyStartedAtCh = null;
+ 
+                     state.currentStepNumber++;
+ 
+@@ -383,11 +382,11 @@
+                     state.inTable = false;
+                     state.inStep = true;
+                     state.stepNumber++;
+-                    state.stepBody = "";
++//                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
+ 
+                     state.inStepBody = false;
+-                    state.stepBodyStartedAtCh = null;
++//                    state.stepBodyStartedAtCh = null;
+ 
+                     state.currentStepNumber++;
+ 
+@@ -408,7 +407,7 @@
+                     state.inTable = false;
+ 
+                     state.stepNumber++;
+-                    state.stepBody = "";
++//                    state.stepBody = "";
+                     state.lastStepStartedAt = state.lineNumber;
+                     state.stepStartingKeyword = "And "; //TODO
+ 
+@@ -418,7 +417,7 @@
+                     state.currentStepKeyword = state.currentStepKeyword;
+ 
+                     state.inStepBody = false;
+-                    state.stepBodyStartedAtCh = null;
++//                    state.stepBodyStartedAtCh = null;
+ 
+                     state.currentStepNumber++;
+ 
+@@ -452,14 +451,13 @@
+                     if (state.inStepBody == false) {
+                         // this is the first line of the step
+                         state.inStepBody = true;
+-                        state.stepBodyStartedAtCh = stream.column() - stream.current().length;
++//                        state.stepBodyStartedAtCh = stream.column() - stream.current().length;
+                     }
+ 
+-                    state.stepBody += stream.current() + "\n";
++//                    state.stepBody += stream.current() + "\n";
++//                    var stepBody = state.stepBody;
++//                    console.log("stepBody - " + stepBody);
+ 
+-                    var stepBody = state.stepBody;
+-                    console.log("stepBody - " + stepBody);
+-
+                     state.lastTokenType += " jb-story-step-body";
+ 
+                     var current = stream.current();
+@@ -493,7 +491,21 @@
+                     // Fall through
+                 } else {
+                     stream.match(/(.*)/);
+-                    state.lastTokenType += " jb-story-invalid-token";
++                    if (storyController.prefs.highlightErrors == true) {
++                        var currentToken = stream.current();
++                        var trimmedToken = currentToken.trim();
++                        if (trimmedToken.length > 0) {
++                            var from = CodeMirror.Pos(state.lineNumber, stream.column());;
++                            var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentToken.length);;
++                            var msg = "Invalid text for given location";
++                            storyController.addModeGutterError(from, to, msg);
++                        } else {
++                            // we do not report any errors for white space
++                        }
++                    } else {
++                        // we do not provide any token in this case
++                    }
++
+                 }
+ 
+                 state.current = stream.current();
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.js	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.js	(revision )
+@@ -0,0 +1,209 @@
++// CodeMirror, copyright (c) by Marijn Haverbeke and others
++// Distributed under an MIT license: http://codemirror.net/LICENSE
++
++(function(mod) {
++  if (typeof exports == "object" && typeof module == "object") // CommonJS
++    mod(require("../../lib/codemirror"));
++  else if (typeof define == "function" && define.amd) // AMD
++    define(["../../lib/codemirror"], mod);
++  else // Plain browser env
++    mod(CodeMirror);
++})(function(CodeMirror) {
++  "use strict";
++  var GUTTER_ID = "CodeMirror-lint-markers";
++
++  function showTooltip(e, content) {
++    var tt = document.createElement("div");
++    tt.className = "CodeMirror-lint-tooltip";
++    tt.appendChild(content.cloneNode(true));
++    document.body.appendChild(tt);
++
++    function position(e) {
++      if (!tt.parentNode) return CodeMirror.off(document, "mousemove", position);
++      tt.style.top = Math.max(0, e.clientY - tt.offsetHeight - 5) + "px";
++      tt.style.left = (e.clientX + 5) + "px";
++    }
++    CodeMirror.on(document, "mousemove", position);
++    position(e);
++    if (tt.style.opacity != null) tt.style.opacity = 1;
++    return tt;
++  }
++  function rm(elt) {
++    if (elt.parentNode) elt.parentNode.removeChild(elt);
++  }
++  function hideTooltip(tt) {
++    if (!tt.parentNode) return;
++    if (tt.style.opacity == null) rm(tt);
++    tt.style.opacity = 0;
++    setTimeout(function() { rm(tt); }, 600);
++  }
++
++  function showTooltipFor(e, content, node) {
++    var tooltip = showTooltip(e, content);
++    function hide() {
++      CodeMirror.off(node, "mouseout", hide);
++      if (tooltip) { hideTooltip(tooltip); tooltip = null; }
++    }
++    var poll = setInterval(function() {
++      if (tooltip) for (var n = node;; n = n.parentNode) {
++        if (n == document.body) return;
++        if (!n) { hide(); break; }
++      }
++      if (!tooltip) return clearInterval(poll);
++    }, 400);
++    CodeMirror.on(node, "mouseout", hide);
++  }
++
++  function LintState(cm, options, hasGutter) {
++    this.marked = [];
++    this.options = options;
++    this.timeout = null;
++    this.hasGutter = hasGutter;
++    this.onMouseOver = function(e) { onMouseOver(cm, e); };
++  }
++
++  function parseOptions(cm, options) {
++    if (options instanceof Function) return {getAnnotations: options};
++    if (!options || options === true) options = {};
++    if (!options.getAnnotations) options.getAnnotations = cm.getHelper(CodeMirror.Pos(0, 0), "lint");
++    if (!options.getAnnotations) throw new Error("Required option 'getAnnotations' missing (lint addon)");
++    return options;
++  }
++
++  function clearMarks(cm) {
++    var state = cm.state.lint;
++    if (state.hasGutter) cm.clearGutter(GUTTER_ID);
++    for (var i = 0; i < state.marked.length; ++i)
++      state.marked[i].clear();
++    state.marked.length = 0;
++  }
++
++  function makeMarker(labels, severity, multiple, tooltips) {
++    var marker = document.createElement("div"), inner = marker;
++    marker.className = "CodeMirror-lint-marker-" + severity;
++    if (multiple) {
++      inner = marker.appendChild(document.createElement("div"));
++      inner.className = "CodeMirror-lint-marker-multiple";
 +    }
 +
-     this.showStoryReports = function (storyTestReports) {
- 
-         debug("> showStoryReports");
-@@ -325,6 +337,44 @@
-         AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
-             var target = AJS.$(event.target)[0];
-             AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
-+        });
++    if (tooltips != false) CodeMirror.on(inner, "mouseover", function(e) {
++      showTooltipFor(e, labels, inner);
++    });
 +
-+        // expand failed and pending scenarios
++    return marker;
++  }
 +
-+        // append scenario status lozenge, depending on the step
-+        AJS.$('.jb-story-report-scenario').each(function(index, element) {
++  function getMaxSeverity(a, b) {
++    if (a == "error") return a;
++    else return b;
++  }
 +
-+            var failedSteps = AJS.$(element).find(".jb-story-report-step-failed");
-+            if (failedSteps != null && failedSteps.length > 0) {
-+                // story has failed
-+                var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+                AJS.$(titleContainer).append(createScenarioLozenge("failed", "error"));
++  function groupByLine(annotations) {
++    var lines = [];
++    for (var i = 0; i < annotations.length; ++i) {
++      var ann = annotations[i], line = ann.from.line;
++      (lines[line] || (lines[line] = [])).push(ann);
++    }
++    return lines;
++  }
 +
-+                AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
-+                AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
-+                var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
-+                AJS.$(contentDiv).toggle();
++  function annotationTooltip(ann) {
++    var severity = ann.severity;
++    if (!severity) severity = "error";
++    var tip = document.createElement("div");
++    tip.className = "CodeMirror-lint-message-" + severity;
++    tip.appendChild(document.createTextNode(ann.message));
++    return tip;
++  }
 +
-+            } else {
-+                // check for pending steps
-+                var pendingSteps = AJS.$(element).find(".jb-story-report-step-pending");
-+                if (pendingSteps != null && pendingSteps.length > 0) {
-+                    // story has failed
-+                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+                    AJS.$(titleContainer).append(createScenarioLozenge("pending", "current"));
++  function startLinting(cm) {
++    var state = cm.state.lint, options = state.options;
++    if (options.async)
++      options.getAnnotations(cm.getValue(), updateLinting, options, cm);
++    else
++      updateLinting(cm, options.getAnnotations(cm.getValue(), options, cm));
++  }
 +
-+                    AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
-+                    AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
-+                    var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
-+                    AJS.$(contentDiv).toggle();
++  function updateLinting(cm, annotationsNotSorted) {
++    clearMarks(cm);
++    var state = cm.state.lint, options = state.options;
 +
-+                } else {
-+                    // check for successful steps
-+                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+                    AJS.$(titleContainer).append(createScenarioLozenge("success", "success"));
-+                }
-+            }
++    var annotations = groupByLine(annotationsNotSorted);
 +
-         });
- 
-         debug("# showStoryReports");
++    for (var line = 0; line < annotations.length; ++line) {
++      var anns = annotations[line];
++      if (!anns) continue;
++
++      var maxSeverity = null;
++      var tipLabel = state.hasGutter && document.createDocumentFragment();
++
++      for (var i = 0; i < anns.length; ++i) {
++        var ann = anns[i];
++        var severity = ann.severity;
++        if (!severity) severity = "error";
++        maxSeverity = getMaxSeverity(maxSeverity, severity);
++
++        if (options.formatAnnotation) ann = options.formatAnnotation(ann);
++        if (state.hasGutter) tipLabel.appendChild(annotationTooltip(ann));
++
++        if (ann.to) state.marked.push(cm.markText(ann.from, ann.to, {
++          className: "CodeMirror-lint-mark-" + severity,
++          __annotation: ann
++        }));
++      }
++
++      if (state.hasGutter)
++        cm.setGutterMarker(line, GUTTER_ID, makeMarker(tipLabel, maxSeverity, anns.length > 1,
++                                                       state.options.tooltips));
++    }
++    if (options.onUpdateLinting) options.onUpdateLinting(annotationsNotSorted, annotations, cm);
++  }
++
++  function onChange(cm) {
++    var state = cm.state.lint;
++    clearTimeout(state.timeout);
++    state.timeout = setTimeout(function(){startLinting(cm);}, state.options.delay || 500);
++  }
++
++  function popupSpanTooltip(ann, e) {
++    var target = e.target || e.srcElement;
++    showTooltipFor(e, annotationTooltip(ann), target);
++  }
++
++  // When the mouseover fires, the cursor might not actually be over
++  // the character itself yet. These pairs of x,y offsets are used to
++  // probe a few nearby points when no suitable marked range is found.
++  var nearby = [0, 0, 0, 5, 0, -5, 5, 0, -5, 0];
++
++  function onMouseOver(cm, e) {
++    if (!/\bCodeMirror-lint-mark-/.test((e.target || e.srcElement).className)) return;
++    for (var i = 0; i < nearby.length; i += 2) {
++      var spans = cm.findMarksAt(cm.coordsChar({left: e.clientX + nearby[i],
++                                                top: e.clientY + nearby[i + 1]}, "client"));
++      for (var j = 0; j < spans.length; ++j) {
++        var span = spans[j], ann = span.__annotation;
++        if (ann) return popupSpanTooltip(ann, e);
++      }
++    }
++  }
++
++  CodeMirror.defineOption("lint", false, function(cm, val, old) {
++    if (old && old != CodeMirror.Init) {
++      clearMarks(cm);
++      cm.off("change", onChange);
++      CodeMirror.off(cm.getWrapperElement(), "mouseover", cm.state.lint.onMouseOver);
++      delete cm.state.lint;
++    }
++
++    if (val) {
++      var gutters = cm.getOption("gutters"), hasLintGutter = false;
++      for (var i = 0; i < gutters.length; ++i) if (gutters[i] == GUTTER_ID) hasLintGutter = true;
++      var state = cm.state.lint = new LintState(cm, parseOptions(cm, val), hasLintGutter);
++      cm.on("change", onChange);
++      if (state.options.tooltips != false)
++        CodeMirror.on(cm.getWrapperElement(), "mouseover", state.onMouseOver);
++
++      startLinting(cm);
++    }
++  });
++});
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1411365815000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1411745268000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
-@@ -165,7 +165,7 @@
+@@ -1,5 +1,5 @@
+ /*.cm-jb-story-hint-keyword {*/
+-    /*font-weight: bold;*/
++/*font-weight: bold;*/
+ /*}*/
  
+ .cm-jb-story-comment, .cm-jb-story-table-comment {
+@@ -7,7 +7,6 @@
+     color: #808080;
+ }
  
+-
+ .cm-jb-story-invalid-token {
+     background: url(images/ui/underline.gif) bottom repeat-x;
+ }
+@@ -88,7 +87,7 @@
+ }
+ 
+ /*.matched-step.cm-jb-story-step-keyword.failed, .matched-step .cm-jb-story-step-keyword.failed {*/
+-    /*background-color: #ffb1b8;*/
++/*background-color: #ffb1b8;*/
+ /*}*/
+ 
+ /*.hint-step-keyword {*/
+@@ -163,36 +162,35 @@
+     margin-bottom: 10px;
+ }
+ 
+-
  #storyEditAreaContainer {
--    padding-top: 10px;
-+    padding-top: 5px;
- }
- 
- /*#storyMsgBar {*/
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1411365815000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -130,19 +130,23 @@
- }
- 
- .jb-story-report-step {
-+    /*padding-top: 5px;*/
-+}
-+
-+.jb-story-report-scenario {
      padding-top: 5px;
  }
  
- .jb-scenario-example {
-     color: firebrick;
-     font-weight: bold;
--    padding-top: 10px;
-+    padding-top: 5px;
+ /*#storyMsgBar {*/
+-    /*border: solid #ca7841 thin;*/
+-    /*width: 100%;*/
+-    /*height: 45px;*/
+-    /*max-height: 45px;*/
+-    /*display:inline-block;*/
++/*border: solid #ca7841 thin;*/
++/*width: 100%;*/
++/*height: 45px;*/
++/*max-height: 45px;*/
++/*display:inline-block;*/
+ /*}*/
+ 
+ /*.savingMsgDiv {*/
+-    /*display: inline;*/
+-    /*border-style: solid;*/
+-    /*border-width: 1px;*/
+-    /*border-color: green;*/
++/*display: inline;*/
++/*border-style: solid;*/
++/*border-width: 1px;*/
++/*border-color: green;*/
+ /*}*/
+ 
+ /*.save-story-button-spinner {*/
+-    /*border-style: solid;*/
+-    /*border-width: 1px;*/
+-    /*border-color: red;*/
+-    /*float: left;*/
+-    /*display: inline;*/
++/*border-style: solid;*/
++/*border-width: 1px;*/
++/*border-color: red;*/
++/*float: left;*/
++/*display: inline;*/
+ /*}*/
+ 
+ .errors-gutter {
+-    width: 14px;
++    width: 20px;
+     /*background-color: lightgoldenrodyellow;*/
+     background-color: #ffffff;
+     /*background-color: lightsteelblue;*/
+@@ -212,14 +210,13 @@
+ 
+ .gutter-error-icon {
+     background: url(images/ui/gutter_icon_error.png) right top;
+-    width:14px;
++    width: 14px;
+-    height:14px;
++    height: 14px;
+     display: block;
+     float: left;
  }
  
- /*.jb-story-report-scenario-title, */
- .jb-story-report-meta {
-     color: #770088;
--    /*padding-left: 14px;*/
-+    padding-top: 5px;
+-.tooltipsy
+-{
++.tooltipsy {
+     padding: 12px;
+     max-width: 200px;
+     color: #303030;
+@@ -227,3 +224,33 @@
+     border: 1px solid #deca7e;
  }
  
- .jb-story-report-meta-keyword {
-@@ -152,6 +156,10 @@
-     /*padding-left: 14px;*/
- }
- 
-+.jb-story-report-lifecycle {
-+    padding-top: 5px;
++/*lint errors styling*/
++.CodeMirror-lint-mark-error {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");*/
++    background-image: url(images/ui/lint_mark_error.png);
 +}
 +
- .jb-story-report-lifecycle-keyword {
-     color: #594300;
-     font-size: 16px;
-@@ -160,6 +168,7 @@
- 
- .jb-story-report-narrative {
-     color: #0000cc;
-+    padding-top: 5px;
- }
- 
- .jb-story-report-narrative-keyword {
-@@ -173,7 +182,7 @@
- }
- 
- .jb-story-report-description {
--    padding-top: 10px;
-+    padding-top: 5px;
- }
- 
- .jb-story-ele-exp-trigger {
-@@ -206,5 +215,14 @@
- .jb-story-report-description {
-     color: #d04437;
-     padding-left: 16px;
--    padding-bottom: 10px;
-+    /*padding-bottom: 10px;*/
++.CodeMirror-lint-mark-warning {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJFhQXEbhTg7YAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAMklEQVQI12NkgIIvJ3QXMjAwdDN+OaEbysDA4MPAwNDNwMCwiOHLCd1zX07o6kBVGQEAKBANtobskNMAAAAASUVORK5CYII=");*/
++    background-image: url(images/ui/lint_mark_warning.png);
 +}
 +
-+.jb-story-report-lozenge {
-+    vertical-align: text-top;
++.CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");*/
++    /*background-image: url(images/ui/lint_marker_error.png);*/
++    background-image: url(images/ui/lint_marker_error_aui.png);
 +}
 +
-+.jb-story-report-lozenge-container {
-+    margin-left: 4px;
-+    /*vertical-align: text-top;*/
--}
++.CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");*/
++    background-image: url(images/ui/lint_marker_warning.png);
++}
++
++.CodeMirror-lint-marker-multiple {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");*/
++    background-image: url(images/ui/lint_marker_multiple.png);
++    background-repeat: no-repeat;
++    background-position: right bottom;
++    width: 100%;
++    height: 100%;
 +}
 \ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(date 1411365815000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-@@ -11,8 +11,14 @@
- 
-     private String fieldName;
- 
-+    public boolean mandatory;
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js	(revision )
+@@ -0,0 +1,38 @@
++(function (mod) {
++    if (typeof exports == "object" && typeof module == "object") // CommonJS
++        mod(require("../../lib/codemirror"));
++    else if (typeof define == "function" && define.amd) // AMD
++        define(["../../lib/codemirror"], mod);
++    else // Plain browser env
++        mod(CodeMirror);
++})(function (CodeMirror) {
++    "use strict";
 +
-     private List<String> allowedValues;
- 
-+    public List<String> suggestedValues;
++    CodeMirror.registerHelper("lint", "jbehave", function (text) {
 +
-+    public String format;
++        var found = [];
 +
-     public String getFieldName() {
-         return fieldName;
-     }
-@@ -29,4 +35,27 @@
-         this.allowedValues = allowedValues;
-     }
- 
-+    public boolean isMandatory() {
-+        return mandatory;
-+    }
++        if(storyController != null && storyController.errorsGutter != null) {
++            return storyController.errorsGutter.getErrors();
++        } else {
++            return found;
++        }
 +
-+    public void setMandatory(boolean mandatory) {
-+        this.mandatory = mandatory;
-+    }
++//  jsonlint.parseError = function(str, hash) {
++//    var loc = hash.loc;
++//        found.push({from: CodeMirror.Pos(3, 3),
++//            to: CodeMirror.Pos(3, 8),
++////        severity: "warning",
++//            message: "test lint error"});
++//
++//        found.push({from: CodeMirror.Pos(3, 9),
++//            to: CodeMirror.Pos(3, 14),
++//            severity: "warning",
++//            message: "test another \nlint error"});
++//  };
++//  try { jsonlint.parse(text); }
++//  catch(e) {}
++//        return found;
++    });
 +
-+    public List<String> getSuggestedValues() {
-+        return suggestedValues;
-+    }
-+
-+    public void setSuggestedValues(List<String> suggestedValues) {
-+        this.suggestedValues = suggestedValues;
-+    }
-+
-+    public String getFormat() {
-+        return format;
-+    }
-+
-+    public void setFormat(String format) {
-+        this.format = format;
-+    }
- }
++});
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java	(revision )
+@@ -7,7 +7,7 @@
+ 
+ @XmlRootElement
+ @XmlAccessorType(XmlAccessType.FIELD)
+-public class ParameterInfo {
++public class ParameterMetaInfo {
+ 
+     private String parameterType;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(date 1411365815000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
-@@ -17,6 +17,10 @@
- 
-     private List<String> allowedValues;
- 
-+    public List<String> suggestedValues;
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.css	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.css	(revision )
+@@ -0,0 +1,79 @@
++/* The lint marker gutter */
++.CodeMirror-lint-markers {
++    width: 20px;
++    background-color: #ffffff;
++}
 +
-+    public String format;
++.CodeMirror-lint-tooltip {
++    background-color: infobackground;
++    border: 1px solid black;
++    border-radius: 4px 4px 4px 4px;
++    color: infotext;
++    font-family: monospace;
++    font-size: 10pt;
++    overflow: hidden;
++    padding: 2px 5px;
++    position: fixed;
++    white-space: pre;
++    white-space: pre-wrap;
++    z-index: 100;
++    max-width: 600px;
++    opacity: 0;
++    transition: opacity .4s;
++    -moz-transition: opacity .4s;
++    -webkit-transition: opacity .4s;
++    -o-transition: opacity .4s;
++    -ms-transition: opacity .4s;
++}
 +
-     private List<TabularFieldInfo> tabularFieldInfos;
++.CodeMirror-lint-mark-error, .CodeMirror-lint-mark-warning {
++    background-position: left bottom;
++    background-repeat: repeat-x;
++}
++
++.CodeMirror-lint-mark-error {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");*/
++    /*background: url(../images/ui/lint-mark-error.png);*/
++}
++
++.CodeMirror-lint-mark-warning {
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJFhQXEbhTg7YAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAMklEQVQI12NkgIIvJ3QXMjAwdDN+OaEbysDA4MPAwNDNwMCwiOHLCd1zX07o6kBVGQEAKBANtobskNMAAAAASUVORK5CYII=");*/
++    /*background: url(../images/ui/lint-mark-warning.png);*/
++}
++
++.CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
++    background-position: center center;
++    background-repeat: no-repeat;
++    cursor: pointer;
++    display: inline-block;
++    height: 16px;
++    width: 16px;
++    vertical-align: middle;
++    position: relative;
++}
++
++.CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
++    padding-left: 18px;
++    background-position: top left;
++    background-repeat: no-repeat;
++}
++
++/*.CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {*/
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");*/
++    /*background: url(../images/ui/lint_marker_error.png);*/
++
++/*}*/
++
++/*.CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {*/
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");*/
++    /*background: url(../images/ui/lint_marker_warning.png);*/
++/*}*/
++
++/*.CodeMirror-lint-marker-multiple {*/
++    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");*/
++    /*background: url(../images/ui/lint_marker_multiple.png);*/
++    /*background-repeat: no-repeat;*/
++    /*background-position: right bottom;*/
++    /*width: 100%;*/
++    /*height: 100%;*/
++/*}*/
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
+@@ -22,6 +22,9 @@
+     private final static String PARAM_NAME_SHOW_LINE_NUMBERS = "showLineNumbers";
+     public final static String PREFERENCE_KEY_SHOW_LINE_NUMBERS = "jbehave.prefs.showLineNumbers";
  
-     public List<TabularFieldInfo> getTabularFieldInfos() {
-@@ -59,4 +63,19 @@
-         this.allowedValues = allowedValues;
++    private final static String PARAM_NAME_HIGHLIGHT_ERRORS = "highlightErrors";
++    public final static String PREFERENCE_KEY_HIGHLIGHT_ERRORS = "jbehave.prefs.highlightErrors";
++
+     private final static String PARAM_NAME_AUTO_ALIGN_TABLES = "autoAlignTables";
+     public final static String PREFERENCE_KEY_AUTO_ALIGN_TABLES = "jbehave.prefs.autoAlignTables";
+ 
+@@ -32,6 +35,8 @@
+ 
+     private boolean showLineNumbers;
+ 
++    private boolean highlightErrors;
++
+     private boolean autoAlignTables;
+ 
+     private boolean autoInsertTabularFields;
+@@ -67,6 +72,14 @@
+         }
+         preferences.setBoolean(PREFERENCE_KEY_SHOW_LINE_NUMBERS, this.showLineNumbers);
+ 
++        String[] highlightErrorsParam = (String[]) parameters.get(PARAM_NAME_HIGHLIGHT_ERRORS);
++        if (highlightErrorsParam != null && highlightErrorsParam.length > 0 && highlightErrorsParam[0].equals("on")) {
++            this.highlightErrors = true;
++        } else{
++            this.highlightErrors = false;
++        }
++        preferences.setBoolean(PREFERENCE_KEY_HIGHLIGHT_ERRORS, this.highlightErrors);
++
+         String[] autoAlignTablesParam = (String[]) parameters.get(PARAM_NAME_AUTO_ALIGN_TABLES);
+         if (autoAlignTablesParam != null && autoAlignTablesParam.length > 0 && autoAlignTablesParam[0].equals("on")) {
+             this.autoAlignTables = true;
+@@ -95,6 +108,7 @@
+         this.showLineNumbers = preferences.getBoolean(PREFERENCE_KEY_SHOW_LINE_NUMBERS);
+         this.autoAlignTables = preferences.getBoolean(PREFERENCE_KEY_AUTO_ALIGN_TABLES);
+         this.autoInsertTabularFields = preferences.getBoolean(PREFERENCE_KEY_AUTO_INSERT_TABLES);
++        this.highlightErrors = preferences.getBoolean(PREFERENCE_KEY_HIGHLIGHT_ERRORS);
+ 
+         return INPUT;
+     }
+@@ -147,5 +161,13 @@
+ 
+     public void setAutoInsertTabularFields(boolean autoInsertTabularFields) {
+         this.autoInsertTabularFields = autoInsertTabularFields;
++    }
++
++    public boolean isHighlightErrors() {
++        return highlightErrors;
++    }
++
++    public void setHighlightErrors(boolean highlightErrors) {
++        this.highlightErrors = highlightErrors;
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -23,6 +23,8 @@
+     var tableAligner = new TableAligner();
+     var editorUtils = new EditorUtils();
+     var textUtils = new TextUtils();
++    var errorsGutter = new ErrorGutters();
++    storyController.errorsGutter = errorsGutter;
+     var stepDocUtils = new StepDocUtils();
+     var prefs = new PreferencesModel();
+     storyController.prefs = prefs;
+@@ -62,6 +64,14 @@
+         var storyPanelContent = execspec.viewissuepage.showstory.renderStoryPanel();
+         AJS.$("#story-panel").html(storyPanelContent);
+ 
++        var guttersToShow = [];
++        if (prefs.highlightErrors == true) {
++            guttersToShow.push("CodeMirror-lint-markers");
++            guttersToShow.push("CodeMirror-linenumbers");
++        } else {
++            guttersToShow.push("CodeMirror-linenumbers");
++        }
++
+         // initialize cm editor
+         CodeMirror.commands.autocomplete = function (cm) {
+             cm.showHint({hint: CodeMirror.hint.jbehave});
+@@ -70,7 +80,8 @@
+             mode: "jbehave",
+ //            lineComment: "!--",
+             lineNumbers: prefs.showLineNumbers,
+-//            gutters: ["errors-gutter", "CodeMirror-linenumbers"],
++            gutters: guttersToShow,
++            lint: true,
+             extraKeys: {
+                 "Ctrl-Space": "autocomplete",
+ 
+@@ -144,20 +155,6 @@
+ 
+         editorUtils.remarkStepsOnChange(changeObj);
+ 
+-//        var spanElement = document.createElement("SPAN");
+-//        AJS.$(spanElement).html("");
+-//        spanElement.setAttribute("title", "my tool tip");
+-//        AJS.$(spanElement).addClass("aui-icon");
+-//        AJS.$(spanElement).addClass("aui-icon-small");
+-//        AJS.$(spanElement).addClass("aui-iconfont-remove");
+-////        AJS.$(spanElement).addClass("gutter-error-icon");
+-//
+-////        <span class="aui-icon aui-icon-small aui-iconfont-remove"></span>
+-//
+-//        editor.setGutterMarker(0, "errors-gutter", spanElement);
+-//
+-//        $('.aui-iconfont-remove').tooltipsy({offset: [5, 0]});
+-
+         debug("# onEditorChangeHandler");
      }
  
-+    public List<String> getSuggestedValues() {
-+        return suggestedValues;
-+    }
+@@ -169,7 +166,16 @@
+                 editor.setOption("lineNumbers", true);
+             } else {
+                 editor.setOption("lineNumbers", false);
 +
-+    public void setSuggestedValues(List<String> suggestedValues) {
-+        this.suggestedValues = suggestedValues;
-+    }
-+
-+    public String getFormat() {
-+        return format;
-+    }
-+
-+    public void setFormat(String format) {
-+        this.format = format;
-+    }
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1411365815000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
-@@ -528,8 +528,30 @@
-                                                             globalToCh = stepHint.to.ch;
-                                                         }
-                                                     }
-+                                                }else {
-+                                                    var fieldSuggestedValues = tabularFieldInfo.suggestedValues;
-+                                                    if (fieldSuggestedValues != null && fieldSuggestedValues.length > 0) {
-+                                                        for (var d = 0; d < fieldSuggestedValues.length; d++) {
-+                                                            var fieldSuggestedValue = fieldSuggestedValues[d];
-+                                                            if (columnValue.length == 0 || fieldSuggestedValue.substring(0, columnValue.length) == columnValue) {
-+                                                                // do the hint on field suggested value
-+                                                                var stepHint = new Object();
-+                                                                stepHint.text = fieldSuggestedValue;
-+                                                                stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + fieldSuggestedValue + "</span>";
-+                                                                stepHint.render = function (element, data, self) {
-+                                                                    element.innerHTML = self.html;
-+                                                                };
-+                                                                stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
-+                                                                stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
-+                                                                list.push(stepHint);
-+                                                                hintedOnTabularParameter = true;
-+                                                                globalFromCh = stepHint.from.ch;
-+                                                                globalToCh = stepHint.to.ch;
--                                                }
--                                            }
-+                                                            }
-+                                                        }
-+                                                    }
-+                                                }
-+                                            }
+             }
++            if (prefs.highlightErrors) {
++                editor.setOption("gutters", ["CodeMirror-lint-markers", "CodeMirror-linenumbers"]);
++            } else {
++                errorsGutter.clearAll();
++//                editor.clearGutter("CodeMirror-lint-markers");
++                editor.setOption("gutters", ["CodeMirror-linenumbers"]);
++            }
++            storyController.reshowStory();
+         });
+     }
  
-                                         }
-                                     }
-@@ -604,6 +626,36 @@
-                                         hintedOnRegularParameter = true;
-                                         globalFromCh = stepHint.from.ch;
-                                         globalToCh = stepHint.to.ch;
+@@ -251,7 +257,7 @@
+         }
+     }
+ 
+-    var createScenarioLozenge = function(text, type) {
++    var createScenarioLozenge = function (text, type) {
+         var lozengeContainer = document.createElement("SPAN");
+         AJS.$(lozengeContainer).addClass("jb-story-report-lozenge-container");
+         var lozengeElement = document.createElement("SPAN");
+@@ -342,7 +348,7 @@
+         // expand failed and pending scenarios
+ 
+         // append scenario status lozenge, depending on the step
+-        AJS.$('.jb-story-report-scenario').each(function(index, element) {
++        AJS.$('.jb-story-report-scenario').each(function (index, element) {
+ 
+             var failedSteps = AJS.$(element).find(".jb-story-report-step-failed");
+             if (failedSteps != null && failedSteps.length > 0) {
+@@ -405,8 +411,9 @@
+ 
+     function PreferencesModel() {
+         this.showLineNumbers = false;
+-        this.autoAlignTables = true;
+-        this.autoInsertTabularFields = true;
++        this.highlightErrors = false;
++        this.autoAlignTables = false;
++        this.autoInsertTabularFields = false;
+     }
+ 
+     function StoryModel() {
+@@ -812,6 +819,259 @@
+         }
+     }
+ 
++    this.addModeGutterError = function(from, to, message) {
++        errorsGutter.addModeError(from, to, message);
++    }
++
++    this.addModeGutterWarning = function(from, to, message) {
++        errorsGutter.addModeWarning(from, to, message);
++    }
++
++    this.clearModeGutterErrorForLine = function(lineNumber) {
++        errorsGutter.clearModeErrorForLine(lineNumber);
++    }
++
++    function ErrorGutters() {
++
++        var currentErrors = [];
++
++        this.getErrors = function () {
++            return currentErrors;
++        }
++
++        this.clearModeErrorForLine = function (lineNumber) {
++            for (var i = currentErrors.length - 1; i >= 0; i--) {
++                var error = currentErrors[i];
++                if (error.isModeError && error.from.line == lineNumber) {
++                    currentErrors.splice(i, 1);
++                }
++            }
++        }
++
++        this.clearForLine = function (lineNumber) {
++            for (var i = currentErrors.length - 1; i >= 0; i--) {
++                var error = currentErrors[i];
++                if (error.from.line == lineNumber) {
++                    currentErrors.splice(i, 1);
++                }
++            }
++        }
++
++        this.clearBetweenLines = function (fromLineNumber, toLineNumber) {
++            for (var lineNumber = fromLineNumber; lineNumber <= toLineNumber; lineNumber++) {
++                this.clearForLine(lineNumber);
++            }
++        }
++
++        this.clearAll = function () {
++            currentErrors = [];
++        }
++
++        this.addWarning = function (from, to, message) {
++            this.addMarker(from, to, "warning", message);
++        }
++
++        this.addModeWarning = function (from, to, message) {
++            this.addModeMarker(from, to, "warning", message);
++        }
++
++        this.addError = function (from, to, message) {
++            this.addMarker(from, to, "error", message);
++        }
++
++        this.addModeError = function (from, to, message) {
++            this.addModeMarker(from, to, "error", message);
++        }
++
++        this.addMarker = function (from, to, severity, message) {
++            currentErrors.push({from: from, to: to,
++                severity: severity, message: message});
++        }
++
++        this.addModeMarker = function (from, to, severity, message) {
++            var markerObj = {
++                from: from, to: to,
++                isModeError: true,
++                severity: severity,
++                message: message};
++            currentErrors.push(markerObj);
++        }
++    }
++
++    function markInvalidParameters(parameterGroupsInfos, invalidTokenClassName) {
++
++        for (var k = 0; k < parameterGroupsInfos.length; k++) {
++            var pgi = parameterGroupsInfos[k];
++            var parameterInfo = pgi.parameterInfo;
++            var tabularFieldInfos = parameterInfo.tabularFieldInfos;
++            if (tabularFieldInfos != null && tabularFieldInfos.length > 0) {
++                // it is a tabular parameter
++                var firstTableLineFound = false;
++                // find the first table line, it is not always the first line as the could be a blank line(s) at the begining of the table
++                var seenHeaderTokens = [];
++                for (var lineNum = pgi.startLine; lineNum <= pgi.endLine; lineNum++) {
++                    var lineText = editor.getLineHandle(lineNum).text;
++                    if (lineText.substring(0, 1) == "|" && lineText.substring(0, 3) != "|--") {
++                        if (firstTableLineFound == false) {
++                            // this is table header line
++                            firstTableLineFound = true;
++                            // validate column names
++                            var seenFieldNames = [];
++                            var pos = 1; // we start from due to first pipe
++                            var tokens = lineText.split("|");
++                            for (var i = 1; i < tokens.length - 1; i++) {
++                                // we start from index 1 as the first token is the empty string before the first pipe
++                                // we do not validate last token which should be an empty string after the last pipe
++                                var token = tokens[i];
++                                var leadingSpacesMatch = token.match(/^\s+/g);
++                                var numOfLeadingSpaces;
++                                if (leadingSpacesMatch != null && leadingSpacesMatch.length > 0) {
++                                    numOfLeadingSpaces = leadingSpacesMatch[0].length;
++                                } else {
++                                    numOfLeadingSpaces = 0;
++                                }
++
++                                var trimmedToken = token.trim();
++                                var seenToken = new Object();
++                                seenToken.fieldName = trimmedToken;
++                                seenToken.start = numOfLeadingSpaces + pos;
++                                seenToken.end = numOfLeadingSpaces + pos + trimmedToken.length;
++                                seenToken.errorMsg = null;
++
++                                if (trimmedToken.length > 0) {
++                                    // non empty token we can process
++                                    // duplicate checking
++                                    var previousSeenIndex = indexOf(seenFieldNames, seenToken.fieldName);
++                                    if (previousSeenIndex > -1) {
++                                        seenToken.duplicate = true;
++                                        var duplicateErrorMsg = "More then one occurrence of tabular field '" + seenToken.fieldName + "'";
++                                        seenToken.errorMsg = duplicateErrorMsg;
++                                        seenHeaderTokens[previousSeenIndex].duplicate = true;
++                                        seenHeaderTokens[previousSeenIndex].errorMsg = duplicateErrorMsg;
++                                    } else {
++                                        seenToken.duplicate = false;
++                                    }
++                                    if (seenToken.duplicate == false) {
++                                        // valid column name checking
++                                        seenToken.fieldNameValid = false;
++                                        for (var t = 0; t < tabularFieldInfos.length; t++) {
++                                            var tabularFieldName = tabularFieldInfos[t].fieldName;
++                                            if (tabularFieldName == seenToken.fieldName) {
++                                                seenToken.fieldNameValid = true;
++                                                break;
++                                            }
++                                        }
++                                        if (seenToken.fieldNameValid == false) {
++                                            seenToken.errorMsg = "Invalid tabular field name '" + seenToken.fieldName + "'";
++                                        }
 +                                    }
 +                                } else {
-+                                    var suggestedValues = paramInfo.suggestedValues;
-+                                    if (suggestedValues != null && suggestedValues.length > 0) {
-+                                        for (var i = 0; i < suggestedValues.length; i++) {
-+                                            var suggestedValue = suggestedValues[i];
-+                                            var stepHint = new Object();
-+                                            stepHint.text = suggestedValue;
-+                                            stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + suggestedValue + "</span>";
-+                                            stepHint.render = function (element, data, self) {
-+                                                element.innerHTML = self.html;
-+                                            };
++                                    seenToken.start = pos;
++                                    seenToken.end = pos + token.length;
++                                    seenToken.duplicate = false;
++                                    seenToken.fieldNameValid = false;
++                                }
++                                seenHeaderTokens.push(seenToken);
++                                seenFieldNames.push(seenToken.fieldName);
 +
-+                                            if (parameterReplaceFrom != null && parameterReplaceTo != null) {
-+                                                var fromPosition = CodeMirror.Pos(cursor.line, parameterReplaceFrom);
-+                                                stepHint.from = fromPosition;
-+                                                var toPosition = CodeMirror.Pos(cursor.line, parameterReplaceTo);
-+                                                stepHint.to = toPosition;
-+                                                editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
-+                                                    {line: toPosition.line, ch: toPosition.ch});
++                                pos += token.length;
++                                pos += 1; // for the pipe character
++                            }
++                            // mark any seen tokens that are incorrect field names or are duplicates
++                            for (var p = 0; p < seenHeaderTokens.length; p++) {
++                                var seenToken = seenHeaderTokens[p];
++                                var startPos = CodeMirror.Pos(lineNum, seenToken.start);
++                                var endPos = CodeMirror.Pos(lineNum, seenToken.end);
++                                if (seenToken.errorMsg != null) {
++                                    errorsGutter.addError(startPos, endPos, seenToken.errorMsg);
++//                                    editor.getDoc().markText(startPos, endPos, options);
++                                }
++                            }
 +
-+                                            } else {
-+                                                stepHint.from = CodeMirror.Pos(cursor.line, cursor.ch);
-+                                                stepHint.to = CodeMirror.Pos(cursor.line, cursor.ch);
++                        } else {
++                            // this is table value line
++                            if (firstTableLineFound) {
++                                var seenValueTokens = [];
++                                var pos = 1; // we start from due to first pipe
++                                var tokens = lineText.split("|");
++                                for (var i = 1; i < tokens.length - 1; i++) {
++                                    var token = tokens[i];
++                                    var trimmedToken = token.trim();
++                                    var leadingSpacesMatch = token.match(/^\s+/g);
++                                    var numOfLeadingSpaces;
++                                    if (leadingSpacesMatch != null && leadingSpacesMatch.length > 0) {
++                                        numOfLeadingSpaces = leadingSpacesMatch[0].length;
++                                    } else {
++                                        numOfLeadingSpaces = 0;
++                                    }
++                                    var seenValueToken = new Object();
++                                    seenValueToken.fieldValue = trimmedToken;
++                                    if (trimmedToken.length > 0) {
++                                        seenValueToken.start = numOfLeadingSpaces + pos;
++                                        seenValueToken.end = numOfLeadingSpaces + pos + trimmedToken.length;
++                                    } else {
++                                        seenValueToken.start = pos;
++                                        seenValueToken.end = pos + token.length;
++                                    }
++                                    seenValueToken.fieldValueValid = true; // assume valid unless found otherwise below
++
++                                    var headerToken = seenHeaderTokens[seenValueTokens.length];
++                                    if (headerToken.fieldNameValid) {
++                                        var lookingAtFieldName = headerToken.fieldName;
++                                        // do the validation on value if allowedValues is present
++                                        var tabularFieldInfo = null;
++                                        for (var j = 0; j < tabularFieldInfos.length; j++) {
++                                            var tfi = tabularFieldInfos[j];
++                                            if (tfi.fieldName == lookingAtFieldName) {
++                                                tabularFieldInfo = tfi;
++                                                break;
 +                                            }
-+                                            list.push(stepHint);
-+                                            hintedOnRegularParameter = true;
-+                                            globalFromCh = stepHint.from.ch;
-+                                            globalToCh = stepHint.to.ch;
 +                                        }
-                                     }
-                                 }
-                             }
++                                        if (tabularFieldInfo != null) {
++                                            // do the checking
++                                            var allowedValues = tabularFieldInfo.allowedValues;
++                                            if (allowedValues != null && allowedValues.length > 0) {
++                                                if (indexOf(allowedValues, seenValueToken.fieldValue) == -1) {
++                                                    // value is illegal
++                                                    seenValueToken.fieldValueValid = false;
++                                                    seenValueToken.errorMsg = "Value for tabular field '" + lookingAtFieldName + "' is invalid";
++                                                }
++                                            }
++                                        } else {
++                                            // should not happen
++                                            console.error("Could not find tabular fiend info for field - " + lookingAtFieldName + " in line - " + lineText);
++                                        }
++                                    }
++
++                                    seenValueTokens.push(seenValueToken);
++                                    pos += token.length;
++                                    pos += 1; // for the pipe character
++                                }
++
++                                for (var r = 0; r < seenValueTokens.length; r++) {
++                                    var svt = seenValueTokens[r];
++                                    var startPos = {line: lineNum, ch: svt.start};
++                                    var endPos = {line: lineNum, ch: svt.end};
++                                    if (svt.fieldValueValid == false) {
++                                        // highlight the error
++                                        errorsGutter.addError(startPos, endPos, svt.errorMsg);
++                                    }
++                                }
++
++                            } else {
++                                // should not happen
++                                console.error("could not find table header line in table parameter in line - " + lineText);
++                            }
++
++                        }
++                    }
++                }
++            } else {
++                // it is not a tabular parameter
++            }
++        }
++    }
++
+     function EditorUtils() {
+ 
+         this.lineStartsWithStepKeyword = function (lineNumber) {
+@@ -1066,6 +1326,7 @@
+             var markerEnd = {line: stepEndLine, ch: lastStepLineHandle.text.length};
+             var matchedStepClassName = "matched-step";
+             var stepParameterClassName = "step-parameter";
++            var invalidTokenClassName = "cm-jb-story-invalid-token";
+ 
+             // remove any matched-step markers
+             var markersBefore = editor.getDoc().findMarks(markerStart, markerEnd);
+@@ -1075,12 +1336,16 @@
+                     var marker = markersBefore[m];
+                     var markerClassName = marker.className;
+                     if (markerClassName.substring(0, matchedStepClassName.length) == matchedStepClassName
+-                        || markerClassName.substring(0, stepParameterClassName.length) == stepParameterClassName) {
++                        || markerClassName.substring(0, stepParameterClassName.length) == stepParameterClassName
++                        || markerClassName == invalidTokenClassName) {
+                         marker.clear();
+                     }
+                 }
+             }
+ 
++            // clear any error gutter markers
++            errorsGutter.clearBetweenLines(stepStartLine, stepEndLine);
++
+             if (findResult != null) {
+ 
+                 var stepDocId = findResult.stepDoc.id;
+@@ -1094,13 +1359,16 @@
+                 // obtain boundaries of any parameters
+                 var parameterGroupsInfos = [];
+                 var parameterGroups = findResult.stepDoc.parameterGroups;
++                var parameterInfos = findResult.stepDoc.parameterInfos;
+                 if (parameterGroups.length > 0) {
+                     var pos = 0;
+                     var lineOffset = keywordPart.split("\n").length - 1;
+                     for (var j = 1; j < findResult.result.length; j++) {
+                         var matchedGroup = findResult.result[j];
+-                        if (indexOf(parameterGroups, j) > -1) {
++                        var indexOfParameterGroup = indexOf(parameterGroups, j);
++                        if (indexOfParameterGroup > -1) {
+                             var pgi = new Object();
++                            pgi.parameterInfo = parameterInfos[indexOfParameterGroup];
+                             pgi.number = j;
+                             pgi.text = matchedGroup;
+                             pgi.startIndex = pos;
+@@ -1159,10 +1427,16 @@
+                         parameterIndex++;
+                     }
+ 
++                    // do any parameter validations
++                    if (prefs.highlightErrors == true) {
++                        markInvalidParameters(parameterGroupsInfos, invalidTokenClassName);
+-                }
++                    }
+ 
++
+-            }
++                }
+ 
++            }
++
+             debug("# remarkStep");
+         }
+ 
+@@ -1206,26 +1480,6 @@
+                 scanStartLine = fromLine;
+             }
+ 
+-            // find scanEndLine
+-            var scanEndLine = this.findLastStepLineFrom(scanStartLine);
+-            this.remarkStepBetween(scanStartLine, scanEndLine);
+-//                tableAligner.realignStepTableParameters(scanStartLine, scanEndLine);
+-            var nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
+-            var startsWithAnd;
+-            if (nextStepStartLine != -1) {
+-                startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
+-            }
+-            while (nextStepStartLine != -1 && (nextStepStartLine <= toLine || startsWithAnd)) {
+-                scanStartLine = nextStepStartLine;
+-                scanEndLine = this.findLastStepLineFrom(scanStartLine);
+-                this.remarkStepBetween(scanStartLine, scanEndLine);
+-//                        tableAligner.realignStepTableParameters(scanStartLine, scanEndLine);
+-                nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
+-                if (nextStepStartLine != -1) {
+-                    startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
+-                }
+-            }
+-
+             if (prefs.autoAlignTables) {
+ 
+                 var fromLineHandler = editor.getLineHandle(fromLine);
+@@ -1262,6 +1516,27 @@
+                 // we are not inside a step, but we maybe modifying the examples table which may need realigning
+ //                this.remarkStepBetween(scanStartLine, scanEndLine);
+             }
++
++            // find scanEndLine
++            var scanEndLine = this.findLastStepLineFrom(scanStartLine);
++            this.remarkStepBetween(scanStartLine, scanEndLine);
++//                tableAligner.realignStepTableParameters(scanStartLine, scanEndLine);
++            var nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
++            var startsWithAnd;
++            if (nextStepStartLine != -1) {
++                startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
++            }
++            while (nextStepStartLine != -1 && (nextStepStartLine <= toLine || startsWithAnd)) {
++                scanStartLine = nextStepStartLine;
++                scanEndLine = this.findLastStepLineFrom(scanStartLine);
++                this.remarkStepBetween(scanStartLine, scanEndLine);
++//                        tableAligner.realignStepTableParameters(scanStartLine, scanEndLine);
++                nextStepStartLine = this.findStepStartingLineInSameScenarioAfter(scanEndLine);
++                if (nextStepStartLine != -1) {
++                    startsWithAnd = this.lineStartsWithAndKeyword(nextStepStartLine);
++                }
++            }
++
+             debug("# remarkStepsOnChange");
+         }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
+@@ -23,7 +23,7 @@
+ 
+     private List<Integer> parameterGroups = new ArrayList<Integer>();
+ 
+-    private List<ParameterInfo> parameterInfos = new ArrayList<ParameterInfo>();
++    private List<ParameterMetaInfo> parameterInfos = new ArrayList<ParameterMetaInfo>();
+ 
+     protected StepDocDTO() {
+     }
+@@ -76,11 +76,11 @@
+         this.stepMethodSignature = stepMethodSignature;
+     }
+ 
+-    public List<ParameterInfo> getParameterInfos() {
++    public List<ParameterMetaInfo> getParameterInfos() {
+         return parameterInfos;
+     }
+ 
+-    public void setParameterInfos(List<ParameterInfo> parameterInfos) {
++    public void setParameterInfos(List<ParameterMetaInfo> parameterInfos) {
+         this.parameterInfos = parameterInfos;
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
+@@ -24,7 +24,7 @@
+         stepDoc.setParameterGroups(parameterGroupsAsString);
+ 
+         // set parameter group infos
+-        List<ParameterInfo> parameterInfos = stepDocDTO.getParameterInfos();
++        List<ParameterMetaInfo> parameterInfos = stepDocDTO.getParameterInfos();
+         if (parameterInfos != null && !parameterInfos.isEmpty()) {
+             ObjectMapper mapper = new ObjectMapper();
+             String parameterInfosAsString;
+@@ -82,10 +82,10 @@
+         if (parameterInfosAsString != null) {
+             ObjectMapper mapper = new ObjectMapper();
+             mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+-            List<ParameterInfo> parameterInfos;
++            List<ParameterMetaInfo> parameterInfos;
+             try {
+                 parameterInfos = mapper.readValue(parameterInfosAsString,
+-                        mapper.getTypeFactory().constructCollectionType(List.class, ParameterInfo.class));
++                        mapper.getTypeFactory().constructCollectionType(List.class, ParameterMetaInfo.class));
+             } catch (IOException e) {
+                 throw new RuntimeException(e);
+             }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java	(revision )
+@@ -10,6 +10,8 @@
+ 
+     private boolean showLineNumbers;
+ 
++    private boolean highlightErrors;
++
+     private boolean autoAlignTables;
+ 
+     private boolean autoInsertTabularFields;
+@@ -36,5 +38,13 @@
+ 
+     public void setAutoInsertTabularFields(boolean autoInsertTabularFields) {
+         this.autoInsertTabularFields = autoInsertTabularFields;
++    }
++
++    public boolean isHighlightErrors() {
++        return highlightErrors;
++    }
++
++    public void setHighlightErrors(boolean highlightErrors) {
++        this.highlightErrors = highlightErrors;
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
+@@ -3,8 +3,8 @@
+ <atlassian-plugin key="com.jbehaveforjira.plugin" name="JBehave for Jira"
+                   plugins-version="2">
+     <plugin-info>
+-        <description>Provides integration with JBehave BDD framework</description>
+-        <version>1.0.2</version>
++        <description>${project.description}</description>
++        <version>${project.version}</version>
+         <vendor name="Maryna Pristrom" url="http://www.jbehaveforjira.com"/>
+         <param name="atlassian-licensing-enabled">true</param>
+         <!--<param name="plugin-icon">images/marketing/pluginIcon.jpg</param>-->
+@@ -35,6 +35,11 @@
+         <resource type="download" name="comment.js" location="/3rdparty/codemirror-4.3/addon/comment/comment.js"/>
+         <!--<resource type="download" name="continuecomment.js" location="/3rdparty/codemirror-4.3/addon/comment/continuecomment.js"/>-->
+         <resource type="download" name="tooltipsy.min.js" location="/3rdparty/tooltipsy/tooltipsy.min.js"/>
++
++        <resource type="download" name="lint.css" location="/3rdparty/codemirror-4.3/addon/lint/lint.css"/>
++        <resource type="download" name="lint.js" location="/3rdparty/codemirror-4.3/addon/lint/lint.js"/>
++        <resource type="download" name="json-lint.js" location="/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js"/>
++
+     </web-resource>
+     <!--Custom javascript and css-->
+     <web-resource name="View Issue Page Resources" key="jbehave-for-jira-view-issue-page-resources">
+Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1411745268000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -6,8 +6,8 @@
+     <artifactId>jira-plugin</artifactId>
+     <packaging>atlassian-plugin</packaging>
+     <name>JBehave For Jira - Jira Plugin</name>
+-    <version>1.0.2</version>
+-    <description>Jira plugin for JBehave</description>
++    <version>1.0.3</version>
++    <description>Provides integration with JBehave BDD framework</description>
+     <url>http://www.jbehaveforjira.com</url>
+     <properties>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
