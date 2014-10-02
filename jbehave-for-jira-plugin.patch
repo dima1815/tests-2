@@ -3,680 +3,1102 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1411760883000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1412147330000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -183,7 +183,7 @@
- 
-         debug("> reshowStory");
- 
--        if (initialized) {
-+        if (initialized && document.getElementById("jbStoryTextArea") != null) {
- 
-             editor = storyController.initEditor();
- 
-@@ -769,7 +769,7 @@
-     function TextUtils() {
- 
-         this.startsWithExamples = function (text) {
--            var regExpPattern = new RegExp("^(Examples:)");
-+            var regExpPattern = /^(Examples:)/;
-             var matchedResult = regExpPattern.exec(text);
-             if (matchedResult != null) {
-                 return true;
-@@ -779,31 +779,31 @@
-         }
- 
-         this.startsWithScenario = function (text) {
--            var regExpPattern = new RegExp("^(Scenario:)\\s");
-+            var regExpPattern = /^(Scenario:)\s/;
-             var matchedResult = regExpPattern.exec(text);
-             return matchedResult != null;
-         }
- 
-         this.startsWithAfter = function (text) {
--            var regExpPattern = new RegExp("^(After:)");
-+            var regExpPattern = /^(After:)/;
-             var matchedResult = regExpPattern.exec(text);
-             return matchedResult != null;
-         }
- 
-         this.startsWithOutcome = function (text) {
--            var regExpPattern = new RegExp("^(Outcome:)\\s");
-+            var regExpPattern = /^(Outcome:)\s/;
-             var matchedResult = regExpPattern.exec(text);
-             return matchedResult != null;
-         }
- 
-         this.startsWithGivenWhenThen = function (text) {
--            var regExpPattern = new RegExp("^(Given|When|Then)\\s");
-+            var regExpPattern = /^(Given|When|Then)\s/;
-             var matchedResult = regExpPattern.exec(text);
-             return matchedResult != null;
-         }
- 
-         this.startsWithAnd = function (text) {
--            var regExpPattern = new RegExp("^(And)\\s");
-+            var regExpPattern = /^(And)\s/;
-             var matchedResult = regExpPattern.exec(text);
-             return matchedResult != null;
-         }
-@@ -819,18 +819,18 @@
-         }
-     }
- 
--    this.addModeGutterError = function(from, to, message) {
--        errorsGutter.addModeError(from, to, message);
--    }
-+//    this.addModeGutterError = function (from, to, message) {
-+//        errorsGutter.addModeError(from, to, message);
-+//    }
-+//
-+//    this.addModeGutterWarning = function (from, to, message) {
-+//        errorsGutter.addModeWarning(from, to, message);
-+//    }
-+//
-+//    this.clearModeGutterErrorForLine = function (lineNumber) {
-+//        errorsGutter.clearModeErrorForLine(lineNumber);
-+//    }
- 
--    this.addModeGutterWarning = function(from, to, message) {
--        errorsGutter.addModeWarning(from, to, message);
--    }
--
--    this.clearModeGutterErrorForLine = function(lineNumber) {
--        errorsGutter.clearModeErrorForLine(lineNumber);
--    }
--
-     function ErrorGutters() {
- 
-         var currentErrors = [];
-@@ -839,14 +839,14 @@
+@@ -839,19 +839,19 @@
              return currentErrors;
          }
  
--        this.clearModeErrorForLine = function (lineNumber) {
--            for (var i = currentErrors.length - 1; i >= 0; i--) {
--                var error = currentErrors[i];
--                if (error.isModeError && error.from.line == lineNumber) {
--                    currentErrors.splice(i, 1);
--                }
--            }
--        }
-+//        this.clearModeErrorForLine = function (lineNumber) {
-+//            for (var i = currentErrors.length - 1; i >= 0; i--) {
-+//                var error = currentErrors[i];
-+//                if (error.isModeError && error.from.line == lineNumber) {
-+//                    currentErrors.splice(i, 1);
-+//                }
-+//            }
-+//        }
+-//        this.clearModeErrorForLine = function (lineNumber) {
+-//            for (var i = currentErrors.length - 1; i >= 0; i--) {
+-//                var error = currentErrors[i];
+-//                if (error.isModeError && error.from.line == lineNumber) {
+-//                    currentErrors.splice(i, 1);
+-//                }
+-//            }
+-//        }
++        this.clearModeErrorForLine = function (lineNumber) {
++            for (var i = currentErrors.length - 1; i >= 0; i--) {
++                var error = currentErrors[i];
++                if (error.isModeError && error.from.line == lineNumber) {
++                    currentErrors.splice(i, 1);
++                }
++            }
++        }
  
          this.clearForLine = function (lineNumber) {
              for (var i = currentErrors.length - 1; i >= 0; i--) {
-@@ -871,32 +871,32 @@
+                 var error = currentErrors[i];
+-                if (error.from.line == lineNumber) {
++                if (!error.isModeError && error.from.line == lineNumber) {
+                     currentErrors.splice(i, 1);
+                 }
+             }
+@@ -871,31 +871,35 @@
              this.addMarker(from, to, "warning", message);
          }
  
--        this.addModeWarning = function (from, to, message) {
--            this.addModeMarker(from, to, "warning", message);
--        }
-+//        this.addModeWarning = function (from, to, message) {
-+//            this.addModeMarker(from, to, "warning", message);
-+//        }
+-//        this.addModeWarning = function (from, to, message) {
+-//            this.addModeMarker(from, to, "warning", message);
+-//        }
++        this.addModeWarning = function (from, to, message) {
++            this.addModeMarker(from, to, "warning", message);
++        }
  
          this.addError = function (from, to, message) {
              this.addMarker(from, to, "error", message);
          }
  
--        this.addModeError = function (from, to, message) {
--            this.addModeMarker(from, to, "error", message);
--        }
-+//        this.addModeError = function (from, to, message) {
-+//            this.addModeMarker(from, to, "error", message);
-+//        }
+-//        this.addModeError = function (from, to, message) {
+-//            this.addModeMarker(from, to, "error", message);
+-//        }
++        this.addModeError = function (from, to, message) {
++            this.addModeMarker(from, to, "error", message);
++        }
  
          this.addMarker = function (from, to, severity, message) {
-             currentErrors.push({from: from, to: to,
-                 severity: severity, message: message});
+-            currentErrors.push({from: from, to: to,
+-                severity: severity, message: message});
++            var markerObj = {
++                from: from, to: to,
++                isModeError: false,
++                severity: severity,
++                message: message};
++            currentErrors.push(markerObj);
          }
  
--        this.addModeMarker = function (from, to, severity, message) {
--            var markerObj = {
--                from: from, to: to,
--                isModeError: true,
--                severity: severity,
--                message: message};
--            currentErrors.push(markerObj);
-+//        this.addModeMarker = function (from, to, severity, message) {
-+//            var markerObj = {
-+//                from: from, to: to,
-+//                isModeError: true,
-+//                severity: severity,
-+//                message: message};
-+//            currentErrors.push(markerObj);
-+//        }
--        }
-+    }
--    }
+-//        this.addModeMarker = function (from, to, severity, message) {
+-//            var markerObj = {
+-//                from: from, to: to,
+-//                isModeError: true,
+-//                severity: severity,
+-//                message: message};
+-//            currentErrors.push(markerObj);
+-//        }
++        this.addModeMarker = function (from, to, severity, message) {
++            var markerObj = {
++                from: from, to: to,
++                isModeError: true,
++                severity: severity,
++                message: message};
++            currentErrors.push(markerObj);
++        }
+     }
  
      function markInvalidParameters(parameterGroupsInfos, invalidTokenClassName) {
- 
-@@ -911,18 +911,34 @@
-                 var seenHeaderTokens = [];
-                 for (var lineNum = pgi.startLine; lineNum <= pgi.endLine; lineNum++) {
-                     var lineText = editor.getLineHandle(lineNum).text;
--                    if (lineText.substring(0, 1) == "|" && lineText.substring(0, 3) != "|--") {
-+                    var lineTextTrimmed = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
-+                    if (lineTextTrimmed.length == 0) {
-+                        // an empty line - do nothing
-+                    } else if (lineTextTrimmed.substring(0, 3) == "|--") {
-+                        // table comment line - do nothing
-+                    } else if (lineTextTrimmed.substring(0, 1) != "|") {
-+                        // illegal table line
-+                        var startPos = {line: lineNum, ch: 0};
-+                        var endPos = {line: lineNum, ch: 1};
-+                        errorsGutter.addError(startPos, endPos, "Tabular parameter line must start with a '|'");
-+                    } else if (lineTextTrimmed.substring(lineTextTrimmed.length - 1, lineTextTrimmed.length) != "|") {
-+                        // illegal table line
-+                        var startPos = {line: lineNum, ch: lineTextTrimmed.length - 1};
-+                        var endPos = {line: lineNum, ch: lineTextTrimmed.length};
-+                        errorsGutter.addError(startPos, endPos, "Tabular parameter line must end with a '|'");
-+                    } else {
-+                        // valid table line - process
-                         if (firstTableLineFound == false) {
-                             // this is table header line
-                             firstTableLineFound = true;
-                             // validate column names
-                             var seenFieldNames = [];
-                             var pos = 1; // we start from due to first pipe
--                            var tokens = lineText.split("|");
--                            for (var i = 1; i < tokens.length - 1; i++) {
-+                            var tbHeaderTokens = lineTextTrimmed.split("|");
-+                            for (var i = 1; i < tbHeaderTokens.length - 1; i++) {
-                                 // we start from index 1 as the first token is the empty string before the first pipe
-                                 // we do not validate last token which should be an empty string after the last pipe
--                                var token = tokens[i];
-+                                var token = tbHeaderTokens[i];
-                                 var leadingSpacesMatch = token.match(/^\s+/g);
-                                 var numOfLeadingSpaces;
-                                 if (leadingSpacesMatch != null && leadingSpacesMatch.length > 0) {
-@@ -966,10 +982,16 @@
-                                         }
-                                     }
-                                 } else {
-+                                    if (token.length > 0) {
--                                    seenToken.start = pos;
--                                    seenToken.end = pos + token.length;
-+                                        seenToken.start = pos;
-+                                        seenToken.end = pos + token.length;
-+                                    } else {
-+                                        seenToken.start = pos - 1;
-+                                        seenToken.end = pos + 1;
-+                                    }
-                                     seenToken.duplicate = false;
-                                     seenToken.fieldNameValid = false;
-+                                    seenToken.errorMsg = "Tabular field name cannot be empty";
-                                 }
-                                 seenHeaderTokens.push(seenToken);
-                                 seenFieldNames.push(seenToken.fieldName);
-@@ -987,13 +1009,31 @@
- //                                    editor.getDoc().markText(startPos, endPos, options);
-                                 }
-                             }
-+                            // mark any missing mandatory fields
-+                            for (var h = 0; h < tabularFieldInfos.length; h++) {
-+                                var tfi = tabularFieldInfos[h];
-+                                if (tfi.mandatory == true && indexOf(seenFieldNames, tfi.fieldName) == -1) {
-+                                    var startPos = CodeMirror.Pos(lineNum, 0);
-+                                    var endPos = CodeMirror.Pos(lineNum, 0);
-+                                    var errorMsg = "Tabular parameter is missing a mandatory field '" + tfi.fieldName + "'";
-+                                    errorsGutter.addError(startPos, endPos, errorMsg);
-+                                }
-+                            }
- 
-                         } else {
-+
-                             // this is table value line
--                            if (firstTableLineFound) {
--                                var seenValueTokens = [];
--                                var pos = 1; // we start from due to first pipe
-+                            var seenValueTokens = [];
-+                            var pos = 1; // we start from due to first pipe
--                                var tokens = lineText.split("|");
-+                            var tokens = lineTextTrimmed.split("|");
-+
-+                            // check if number of values is the same as number of field names
-+                            if (tokens.length - 2 != seenHeaderTokens.length) {
-+                                var startPos = {line: lineNum, ch: 0};
-+                                var endPos = {line: lineNum, ch: lineText.length};
-+                                var errorMsg = "Number of field values doesn't equal to the number of field names";
-+                                errorsGutter.addError(startPos, endPos, errorMsg);
-+                            } else {
-                                 for (var i = 1; i < tokens.length - 1; i++) {
-                                     var token = tokens[i];
-                                     var trimmedToken = token.trim();
-@@ -1019,25 +1059,58 @@
-                                     if (headerToken.fieldNameValid) {
-                                         var lookingAtFieldName = headerToken.fieldName;
-                                         // do the validation on value if allowedValues is present
--                                        var tabularFieldInfo = null;
-+                                        var tfi = null;
-                                         for (var j = 0; j < tabularFieldInfos.length; j++) {
-                                             var tfi = tabularFieldInfos[j];
-                                             if (tfi.fieldName == lookingAtFieldName) {
--                                                tabularFieldInfo = tfi;
-+                                                tfi = tfi;
-                                                 break;
-                                             }
-                                         }
--                                        if (tabularFieldInfo != null) {
--                                            // do the checking
--                                            var allowedValues = tabularFieldInfo.allowedValues;
-+                                        if (tfi != null) {
-+                                            if (seenValueToken.fieldValue.length == 0) {
-+                                                // emty value
-+                                                // check for mandatory value that is empty
-+                                                if (tfi.mandatory == true) {
-+                                                    seenValueToken.fieldValueValid = false;
-+                                                    seenValueToken.errorMsg = "Tabular field '" + lookingAtFieldName + "' cannot be empty";
-+                                                }
-+                                            } else {
-+                                                // non empty value
-+                                                // do check for allowed values
-+                                                var allowedValues = tfi.allowedValues;
--                                            if (allowedValues != null && allowedValues.length > 0) {
--                                                if (indexOf(allowedValues, seenValueToken.fieldValue) == -1) {
--                                                    // value is illegal
--                                                    seenValueToken.fieldValueValid = false;
--                                                    seenValueToken.errorMsg = "Value for tabular field '" + lookingAtFieldName + "' is invalid";
--                                                }
--                                            }
-+                                                if (allowedValues != null && allowedValues.length > 0) {
-+                                                    if (indexOf(allowedValues, seenValueToken.fieldValue) == -1) {
-+                                                        // value is illegal
-+                                                        seenValueToken.fieldValueValid = false;
-+                                                        seenValueToken.errorMsg = "Value for tabular field '" + lookingAtFieldName + "' is invalid";
-+                                                    }
-+                                                }
-+
-+                                                if (seenValueToken.fieldValueValid == true
-+                                                    && tfi.formatPattern != null
-+                                                    && tfi.formatPattern.length > 0) {
-+                                                    // check for format error
-+                                                    var regExpPattern = new RegExp("^(" + tfi.formatPattern + ")$");
-+                                                    var matchedResult = regExpPattern.exec(seenValueToken.fieldValue);
-+                                                    if (matchedResult != null) {
-+                                                        // value is valid
--                                        } else {
-+                                                    } else {
-+                                                        // value is invalid
-+                                                        seenValueToken.fieldValueValid = false;
-+                                                        var formatString;
-+                                                        if (tfi.formatDisplayText != null && tfi.formatDisplayText.length > 0) {
-+                                                            formatString = tfi.formatDisplayText;
-+                                                        } else {
-+                                                            formatString = tfi.formatPattern;
-+                                                        }
-+                                                        seenValueToken.errorMsg = "Value for tabular field '" + lookingAtFieldName
-+                                                            + "' doesn't match expected format '" + formatString + "'";
-+                                                    }
-+                                                }
-+
-+                                            }
-+                                        } else {
-                                             // should not happen
-                                             console.error("Could not find tabular fiend info for field - " + lookingAtFieldName + " in line - " + lineText);
-                                         }
-@@ -1047,7 +1120,6 @@
-                                     pos += token.length;
-                                     pos += 1; // for the pipe character
-                                 }
--
-                                 for (var r = 0; r < seenValueTokens.length; r++) {
-                                     var svt = seenValueTokens[r];
-                                     var startPos = {line: lineNum, ch: svt.start};
-@@ -1057,21 +1129,62 @@
-                                         errorsGutter.addError(startPos, endPos, svt.errorMsg);
-                                     }
-                                 }
--
--                            } else {
--                                // should not happen
--                                console.error("could not find table header line in table parameter in line - " + lineText);
-                             }
- 
-                         }
-                     }
-                 }
-             } else {
--                // it is not a tabular parameter
-+                // simple parameter type
-+                var listType = parameterInfo.listType;
-+                if (listType == true) {
-+                    // TODO - implement list type support
-+                } else {
-+                    var parameterValue = pgi.text.trim();
-+
-+                    if (parameterValue.length == 0) {
-+                        // empty parameter
-+                        var startPos = {line: pgi.startLine, ch: pgi.startLineCh - 1};
-+                        var endPos = {line: pgi.endLine, ch: pgi.endLineCh + 1};
-+                        errorsGutter.addError(startPos, endPos, "Missing parameter value");
-+                    } else if (parameterInfo.allowedValues != null && parameterInfo.allowedValues.length > 0) {
-+                        // check against allowed values
-+                        var allowedValues = parameterInfo.allowedValues;
-+                        if (indexOf(allowedValues, parameterValue) == -1) {
-+                            // value is illegal
-+                            var startPos = {line: pgi.startLine, ch: pgi.startLineCh};
-+                            var endPos = {line: pgi.endLine, ch: pgi.endLineCh};
-+                            errorsGutter.addError(startPos, endPos, "Parameter value is not valid");
--            }
-+                        }
-+                    } else {
-+                        // pattern validation
-+                        if (parameterInfo.formatPattern != null && parameterInfo.formatPattern.length > 0) {
-+                            var regExpPattern = new RegExp("^(" + parameterInfo.formatPattern + ")$");
-+                            var matchedResult = regExpPattern.exec(parameterValue);
-+                            if (matchedResult != null) {
-+                                // value is valid
-+                            } else {
-+                                // value is invalid
-+                                var startPos = {line: pgi.startLine, ch: pgi.startLineCh};
-+                                var endPos = {line: pgi.endLine, ch: pgi.endLineCh};
-+                                // highlight the error
-+                                var formatString;
-+                                if (parameterInfo.formatDisplayText != null && parameterInfo.formatDisplayText.length > 0) {
-+                                    formatString = parameterInfo.formatDisplayText;
-+                                } else {
-+                                    formatString = parameterInfo.formatPattern;
--        }
-+                                }
-+                                var errorMsg = "Parameter value doesn't match expected format '" + formatString + "'";
-+                                errorsGutter.addError(startPos, endPos, errorMsg);
--    }
-+                            }
-+                        }
-+                    }
-+                }
- 
-+            }
-+        }
-+    }
-+
-     function EditorUtils() {
- 
-         this.lineStartsWithStepKeyword = function (lineNumber) {
-@@ -1081,7 +1194,7 @@
-                 return false;
-             } else {
-                 var lineText = lineHandle.text;
--                var regExpPattern = new RegExp("^(Given|When|Then|And)\\s");
-+                var regExpPattern = /^(Given|When|Then|And)\s/;
-                 var matchedResult = regExpPattern.exec(lineText);
-                 if (matchedResult != null) {
-                     return true;
-@@ -1096,7 +1209,7 @@
-             var lineHandle = editor.getLineHandle(lineNumber);
-             var lineText = lineHandle.text;
- 
--            var regExpPattern = new RegExp("^(And)\\s+");
-+            var regExpPattern = /^(And)\s+/;
-             var matchedResult = regExpPattern.exec(lineText);
-             if (matchedResult != null) {
-                 return true;
-@@ -1289,7 +1402,7 @@
- 
- 
-             // extract step body i.e. without the starting keyword
--            var regExpPattern = new RegExp("(^(Given|When|Then|And)\\s+)([\\s\\S]*)");
-+            var regExpPattern = /(^(Given|When|Then|And)\s+)([\s\S]*)/;
-             var matchedResult = regExpPattern.exec(step);
-             var keyword;
-             var stepBody;
-@@ -1579,7 +1692,7 @@
-                         // try to see if the step docs pattern matches step body
-                         var regExpStr = stepDoc.groupedRegExpPattern;
-                         // replace the (.*) with ([\s\S]*) for javascript version of dotall option
--                        var replacePattern = new RegExp("\\(\\.\\*\\)", "g");
-+                        var replacePattern = /\(\.\*\)/g;
-                         regExpStr = regExpStr.replace(replacePattern, "([\\s\\S]*)");
-                         // add start and end chars to match the string exactly
-                         regExpStr = "^" + regExpStr + "$";
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1411760883000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1412147330000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
-@@ -15,13 +15,12 @@
+@@ -15,14 +15,37 @@
              tableLineComment: "|--",
              blankLine: function (state) {
                  state.lineNumber++;
--                storyController.clearModeGutterErrorForLine(state.lineNumber);
-+                storyController.errorsGutter.clearForLine(state.lineNumber);
+-                storyController.errorsGutter.clearForLine(state.lineNumber);
++                storyController.errorsGutter.clearModeErrorForLine(state.lineNumber);
              },
              startState: function () {
                  return {
  
                      lineNumber: -1,
--                    stepNumber: 0,
-                     currentStepNumber: 0,
+-                    currentStepNumber: 0,
  
-                     inDescription: false,
-@@ -90,6 +89,10 @@
-                     state.inExamplesBody = false;
-                 }
- 
-+                var isStepLine = false;
-+                var isCommentLine = false;
-+                var foundErrors = [];
++                    // new variables following refactoring
++                    descriptionDefined: false,
 +
-                 if (stream.sol()) {
++                    metaStoryDefined: false,
++                    metaScenarioDefined: false,
++
++                    narrativeDefined: false,
++                    narrativeInOrderToDefined: false,
++                    narrativeAsADefined: false,
++                    narrativeIWantToDefined: false,
++
++                    lifecycleDefined: false,
++                    lifecycleBeforeDefined: false,
++                    lifecycleAfterDefined: false,
++                    lifecycleAfterOutcomeDefined: false,
++
++                    givenForStoryDefined: false,
++                    givenForScenarioDefined: false,
++
++                    scenarioDefined: false,
++                    stepDefined: false,
++                    examplesDefined: false,
++                    //
++
+                     inDescription: false,
+                     inMeta: false,
+                     inNarrative: false,
+@@ -30,433 +53,633 @@
+                     inLifecycleBefore: false,
+                     inLifecycleAfter: false,
+                     inLifecycleOutcome: false,
++                    inGivenStories: false,
+                     inScenario: false,
+                     inStep: false,
+                     inTable: false,
+                     inExamples: false,
+                     inExamplesBody: false,
  
-                     state.lineNumber++;
-@@ -97,18 +100,20 @@
-                     state.inNarrativeField = false;
-                     state.inLifecycleOutcome = false;
+-                    allowDescription: true,
+-                    allowMeta: true,
+-                    allowMetaField: false,
+-
+-                    allowNarrative: true,
+-                    allowNarrativeInOrderTo: false,
+-                    allowNarrativeAsA: false,
+-                    allowNarrativeIWantTo: false,
+-
+-                    allowLifecycle: false,
+-
+-                    allowLifecycleBefore: false,
+-
+-                    allowLifecycleAfter: false,
+-
+-                    allowLifecycleOutcome: false,
+-
+-                    allowScenario: false,
+-
+-                    allowSteps: false,
+-                    allowAndStep: false,
+-
+-                    allowExamples: false,
+-
+                     lastStepKeyword: null,
+                     currentStepKeyword: null,
+-                    lastStepStartedAt: null,
++//                    lastStepStartedAt: null,
+                     stepStartingKeyword: null,
+                     stepBody: null,
+-
+                     lastTokenType: null,
  
--                    storyController.clearModeGutterErrorForLine(state.lineNumber);
-+//                    storyController.clearModeGutterErrorForLine(state.lineNumber);
+                     current: null
+-
+                 };
+             },
+             token: function (stream, state) {
+ 
+-                var resetInFields = function () {
+-                    state.inDescription = false;
+-                    state.inMeta = false;
+-                    state.inNarrative = false;
+-                    state.inLifecycle = false;
+-                    state.inLifecycleBefore = false;
+-                    state.inLifecycleAfter = false;
+-                    state.inLifecycleOutcome = false;
+-                    state.inScenario = false;
+-                    state.inStep = false;
+-                    state.inTable = false;
+-                    state.inExamples = false;
+-                    state.inExamplesBody = false;
++                var inFields = [
++                    "Description",
++                    "Meta",
++                    "Narrative",
++                    "Lifecycle",
++                    "Before",
++                    "After",
++//                    "LifecycleOutcome",
++                    "Given",
++                    "Scenario",
++                    "Step",
++                    "Table",
++                    "Examples",
++//                    "ExamplesBody"
++                ];
++
++                function indexOf(array, elt) {
++                    for (var i = 0; i < array.length; ++i)
++                        if (array[i] == elt) return i;
++                    return -1;
                  }
  
-                 state.lastTokenType = "";
+-                var isStepLine = false;
+-                var isCommentLine = false;
+-                var foundErrors = [];
++                function resetInFields() {
  
-                 // LINE COMMENT
--                if (stream.sol() && !state.inTable && (stream.match(/!--.*/) || stream.match(/\|--.*/))) {
+-                if (stream.sol()) {
++                    for (var i = 0; i < inFields.length; i++) {
++                        var inField = "in" + inFields[i];
++                        state[inField] = false;
++                    }
++//                    state.inDescription = false;
++//                    state.inMeta = false;
++//                    state.inNarrative = false;
++//                    state.inLifecycle = false;
++//                    state.inLifecycleBefore = false;
++//                    state.inLifecycleAfter = false;
++//                    state.inLifecycleOutcome = false;
++//                    state.inGiven = false;
++//                    state.inScenario = false;
++//                    state.inStep = false;
++//                    state.inTable = false;
++//                    state.inExamples = false;
++//                    state.inExamplesBody = false;
++                }
+ 
+-                    state.lineNumber++;
+-                    state.inScenarioTitleLine = false;
+-                    state.inNarrativeField = false;
+-                    state.inLifecycleOutcome = false;
++                function resetInFieldsExceptScenario() {
+ 
+-//                    storyController.clearModeGutterErrorForLine(state.lineNumber);
++//                    var inScenarioBefore = state.inScenario;
++//                    resetInFields();
++//                    state.inScenario = inScenarioBefore;
++                    resetInFieldsExcept(["Scenario"]);
+                 }
+ 
+-                state.lastTokenType = "";
++                function resetInFieldsExcept(exceptFields) {
+ 
+-                // LINE COMMENT
+-                if (stream.sol() && !state.inTable && stream.match(/!--.*/)) {
+-                    state.lastTokenType += " jb-story-comment";
+-                    isCommentLine = true;
++                    for (var i = 0; i < inFields.length; i++) {
++                        var inField = inFields[i];
++                        if (indexOf(exceptFields, inField) == -1) {
++                            var inFieldName = "in" + inField;
++                            state[inFieldName] = false;
++                        }
++                    }
++                }
+ 
+-//                    // TABLE COMMENT
+-                } else if (stream.sol() && state.inTable && stream.match(/\|--.*/)) {
+-                    state.lastTokenType += " jb-story-table-comment";
+-                    isCommentLine = true;
++                function tokenInfo() {
++                    var currentText = stream.current();
++                    var from = CodeMirror.Pos(state.lineNumber, stream.column());
++                    var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentText.length);
++                    var tokenInfo = new Object();
++                    tokenInfo.from = from;
++                    tokenInfo.to = to;
++                    tokenInfo.text = currentText;
++                    return tokenInfo;
++                }
+ 
+-                    // META title
+-                } else if (state.allowMeta && stream.sol() && stream.match(/(Meta):/)) {
++                function getTo() {
+ 
+-                    state.inMeta = true;
+-                    state.inDescription = false;
+-                    state.inTable = false;
++                    return to;
++                }
+ 
+-                    state.allowDescription = false;
+-                    state.allowMeta = false;
+-                    state.allowMetaField = true;
++                function clearErrorsGutter() {
++                    storyController.errorsGutter.clearModeErrorForLine(state.lineNumber);
++                }
+ 
++                function addGutterError(from, to, msg) {
++                    storyController.errorsGutter.addModeError(from, to, msg);
++                }
++
++                function parseMeta() {
++
+                     state.lastTokenType += " jb-story-meta-title";
+ 
+-                    // META field
+-                } else if (state.allowMetaField && stream.sol() && stream.match(/@.*/)) {
++//                    clearErrorsGutter();
++                    resetInFieldsExceptScenario();
++                    state.inMeta = true;
+ 
+-                    state.inTable = false;
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
++
++                    if (state.inScenario) {
++                        // meta for scenario
++                        if (state.metaScenarioDefined) {
++                            // duplicate
++                            var msg = "Duplicate '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        } else {
++                            state.metaScenarioDefined = true;
++                            if (state.stepDefined
++                                || state.givenForScenarioDefined) {
++                                var msg = "Out of order '" + sectionName + "' section";
++                                addGutterError(ti.from, ti.to, msg);
++                            }
++                        }
++                    } else {
++                        // meta for story
++                        if (state.metaStoryDefined) {
++                            // duplicate
++                            var msg = "Duplicate '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        } else {
++                            // check for correct location
++                            state.metaStoryDefined = true;
++                            if (state.narrativeDefined
++                                || state.givenForStoryDefined
++                                || state.lifecycleDefined
++                                || state.scenarioDefined
++                                ) {
++                                var msg = "Out of order '" + sectionName + "' section";
++                                addGutterError(ti.from, ti.to, msg);
++                            }
++                        }
++                    }
++                }
++
++                function parseMetaField() {
++
++//                    clearErrorsGutter();
+                     state.lastTokenType += " jb-story-meta-field";
++                }
+ 
+-                    // Narrative - title
+-                } else if (state.allowNarrative && stream.sol() && stream.match(/Narrative:/)) {
++                function parseNarrative() {
+ 
+-                    state.inTable = false;
+-                    state.inDescription = false;
++//                    clearErrorsGutter();
++                    resetInFieldsExceptScenario();
++
+                     state.inNarrative = true;
++                    state.lastTokenType += " jb-story-narrative-title";
+ 
+-                    state.allowDescription = false;
+-                    state.allowMeta = false;
+-                    state.allowMetaField = false;
+-                    state.allowNarrative = false;
+-                    state.allowNarrativeInOrderTo = true;
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.allowSteps = false;
++                    if (state.narrativeDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.narrativeDefined = true;
++                        // check for out of order
++                        if (state.givenForStoryDefined
++                            || state.lifecycleDefined
++                            || state.scenarioDefined) {
++                            var msg = "Out of order '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                    }
++                }
+ 
+-                    state.lastTokenType += " jb-story-narrative-title";
++                function parseNarrativeInOrderTo() {
+ 
+-                    // Narrative - In order to - keyword
+-                } else if (state.allowNarrativeInOrderTo && stream.sol() && stream.match(/(In order to )/)) {
++//                    clearErrorsGutter();
+ 
+-                    state.allowNarrativeInOrderTo = false;
+-                    state.allowNarrativeAsA = true;
+                     state.inNarrativeField = true;
+-                    state.inTable = false;
+-
+                     state.lastTokenType += " jb-story-narrative-field-keyword";
+ 
+-                    // Narrative - As a - keyword
+-                } else if (state.allowNarrativeAsA && stream.sol() && stream.match(/(As a )/)) {
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.allowNarrativeAsA = false;
+-                    state.allowNarrativeIWantTo = true;
+-                    state.inNarrativeField = true;
+-                    state.inTable = false;
++                    if (state.narrativeInOrderToDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.narrativeInOrderToDefined = true;
++                        // check for out of order
++                        if (state.narrativeAsADefined
++                            || state.narrativeIWantToDefined) {
++                            var msg = "Out of order '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                    }
++                }
+ 
+-                    state.lastTokenType += " jb-story-narrative-field-keyword";
++                function parseNarrativeAsA() {
+ 
+-                    // Narrative - I want to - keyword
+-                } else if (state.allowNarrativeIWantTo && stream.sol() && stream.match(/(I want to )/)) {
++//                    clearErrorsGutter();
+ 
+-                    state.allowNarrativeIWantTo = false;
+                     state.inNarrativeField = true;
+-                    state.inTable = false;
++                    state.lastTokenType += " jb-story-narrative-field-keyword";
+ 
+-                    state.allowScenario = true;
+-                    state.allowLifecycle = true;
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
++                    if (state.narrativeAsADefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.narrativeAsADefined = true;
++                        // check for out of order
++                        if (state.narrativeIWantToDefined) {
++                            var msg = "Out of order '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                        // check for missing In Order To
++                        if (!state.narrativeInOrderToDefined) {
++                            var msg = "Missing prior '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                    }
++                }
++
++                function parseNarrativeIWantTo() {
++
++//                    clearErrorsGutter();
++
++                    state.inNarrativeField = true;
+                     state.lastTokenType += " jb-story-narrative-field-keyword";
+ 
+-                    // Narrative - field value
+-                } else if (state.inNarrativeField && stream.match(/.*/)) {
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
++                    if (state.narrativeIWantToDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.narrativeIWantToDefined = true;
++                        // check for missing As a
++                        if (!state.narrativeAsADefined) {
++                            var msg = "Missing prior '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                    }
++                }
++
++                function parseNarrativeField() {
+                     state.lastTokenType += " jb-story-narrative-field-value";
+-                    state.inTable = false;
++                }
+ 
+-                    // Lifecycle
+-                } else if (state.allowLifecycle && stream.sol() && stream.match(/Lifecycle:/)) {
++                function parseGivenStories() {
+ 
+-                    state.inLifecycle = true;
++                    state.lastTokenType += " jb-story-givenstories-keyword";
+ 
+-                    state.allowLifecycle = false;
+-                    state.allowLifecycleBefore = true;
+-                    state.allowLifecycleAfter = true;
+-                    state.inTable = false;
++//                    clearErrorsGutter();
++                    resetInFieldsExceptScenario();
++                    state.inGivenStories = true;
+ 
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
++
++                    if (state.inScenario) {
++                        // GivenStories for scenario
++                        if (state.givenForScenarioDefined) {
++                            // duplicate
++                            var msg = "Duplicate '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        } else {
++                            state.givenForScenarioDefined = true;
++                            if (state.stepDefined) {
++                                var msg = "Out of order '" + sectionName + "' section";
++                                addGutterError(ti.from, ti.to, msg);
++                            }
++                        }
++                    } else {
++                        // GivenStories for story
++                        if (state.givenForStoryDefined) {
++                            // duplicate
++                            var msg = "Duplicate '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        } else {
++                            // check for correct location
++                            state.givenForStoryDefined = true;
++                            if (state.lifecycleDefined
++                                || state.scenarioDefined
++                                ) {
++                                var msg = "Out of order '" + sectionName + "' section";
++                                addGutterError(ti.from, ti.to, msg);
++                            }
++                        }
++                    }
++                }
++
++                function parseLifecycle() {
++
++//                    clearErrorsGutter();
++                    resetInFieldsExceptScenario();
++
++                    state.inLifecycle = true;
+                     state.lastTokenType += " jb-story-lifecycle";
+ 
+-                    // Lifecycle - Before
+-                } else if (state.allowLifecycleBefore && stream.sol() && stream.match(/Before:/)) {
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.inStep = false;
+-                    state.inLifecycleBefore = true;
+-                    state.inLifecycleAfter = false;
+-                    state.inTable = false;
++                    if (state.lifecycleDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.lifecycleDefined = true;
++                        // check for out of order
++                        if (state.scenarioDefined) {
++                            var msg = "Out of order '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                    }
++                }
+ 
+-                    state.allowLifecycleBefore = false;
+-                    state.allowSteps = true;
+-                    state.allowAndStep = false;
++                function parseLifecycleBefore() {
+ 
+-                    state.lastStepKeyword = null;
+-                    state.currentStepKeyword = null;
+-                    state.lastStepStartedAt = null;
++//                    clearErrorsGutter();
+ 
++                    resetInFieldsExcept(["Scenario", "Lifecycle"]);
++                    state.inLifecycleBefore = true;
++
+                     state.lastTokenType += " jb-story-lifecycle-before";
+ 
+-                    // Lifecycle - After
+-                } else if (state.allowLifecycleAfter && stream.sol() && stream.match(/After:/)) {
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.inStep = false;
+-                    state.inLifecycleBefore = false;
+-                    state.inLifecycleAfter = true;
+-                    state.inTable = false;
++                    if (state.lifecycleBeforeDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.lifecycleBeforeDefined = true;
++                        state.stepDefined = false;
++                        // check for out of order
++                        if (state.lifecycleAfterDefined) {
++                            var msg = "Out of order '" + sectionName + "' section";
++                            addGutterError(ti.from, ti.to, msg);
++                        }
++                    }
++                }
+ 
+-                    state.allowLifecycleBefore = false;
+-                    state.allowLifecycleAfter = false;
+-                    state.allowLifecycleOutcome = true;
++                function parseLifecycleAfter() {
+ 
+-                    state.allowSteps = false;
+-                    state.allowAndStep = false;
++//                    clearErrorsGutter();
+ 
++                    resetInFieldsExcept(["Scenario", "Lifecycle"]);
++                    state.inLifecycleBefore = true;
++
+                     state.lastTokenType += " jb-story-lifecycle-after";
+ 
+-                    // Lifecycle - Outcome keyword
+-                } else if (state.allowLifecycleOutcome && stream.sol() && stream.match(/Outcome: /)) {
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.inStep = false;
+-                    state.inTable = false;
+-                    state.inLifecycleOutcome = true;
++                    if (state.lifecycleAfterDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.lifecycleAfterDefined = true;
++                        state.lifecycleAfterOutcomeDefined = false;
++                        state.stepDefined = false;
++                    }
++                }
+ 
+-                    state.allowLifecycleOutcome = false;
+-                    state.allowScenario = false;
++                function parseLifecycleAfterOutcome() {
+ 
++//                    clearErrorsGutter();
++                    resetInFieldsExcept(["Scenario", "Lifecycle", "After"]);
+                     state.lastTokenType += " jb-story-lifecycle-outcome-keyword";
++                    state.inLifecycleOutcome = true;
+ 
+-                    // Lifecycle - Outcome value
+-                } else if (state.inLifecycleOutcome && !stream.sol()
+-                    && (stream.match(/ANY/) || stream.match(/SUCCESS/) || stream.match(/FAILURE/))) {
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.allowSteps = true;
++                    if (state.lifecycleAfterOutcomeDefined) {
++                        // duplicate
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    } else {
++                        state.lifecycleAfterOutcomeDefined = true;
++                        // check for out of order ???
++                    }
++                }
+ 
+-                    state.inTable = false;
+-                    state.lastStepKeyword = null;
+-                    state.currentStepKeyword = null;
+-                    state.lastStepStartedAt = null;
++                function parseLifecycleAfterOutcomeValue() {
+ 
+                     state.lastTokenType += " jb-story-lifecycle-outcome-value";
+ 
+-                    // SCENARIO keyword
+-                } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario): /)) {
++                    var ti = tokenInfo();
++                    var currentToken = ti.text.trim();
+ 
+-                    state.inStep = false;
+-                    state.inLifecycle = false;
+-                    state.inLifecycleAfter = false;
+-                    state.inScenario = true;
+-                    state.inScenarioTitleLine = true;
+-                    state.inTable = false;
++                    if (currentToken != "ANY" && currentToken != "SUCCESS" && currentToken != "FAILURE") {
++                        var msg = "Invalid value for 'Outcome' section";
++                        addGutterError(ti.from, ti.to, msg);
++                    }
++                }
+ 
+-                    state.allowLifecycle = false;
+-                    state.allowLifecycleBefore = false;
+-                    state.allowLifecycleAfter = false;
+-                    state.allowLifecycleOutcome = false;
+-                    state.allowSteps = true;
+-                    state.allowAndStep = false;
+-                    state.allowExamples = false;
++                function parseScenario() {
+ 
+-                    state.lastStepKeyword = null;
+-                    state.currentStepKeyword = null;
+-                    state.lastStepStartedAt = null;
++//                    clearErrorsGutter();
+ 
++                    resetInFields();
++                    state.inScenario = true;
++                    state.inScenarioTitleLine = true;
++
+                     state.lastTokenType += " jb-story-scenario-keyword";
+ 
+-                    // SCENARIO title
+-                } else if (state.inScenarioTitleLine && !stream.sol() && stream.match(/.*/)) {
++                    state.examplesDefined = false;
++                    state.stepDefined = false;
++                }
+ 
+-                    state.inTable = false;
+-                    state.lastTokenType += " jb-story-scenario-title";
++                function parseStep() {
+ 
+-                    // GIVEN
+-                } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
++                    var ti = tokenInfo();
++                    var keyword = ti.text.trim();
+ 
+-                    if (state.currentStepKeyword != null) {
+-                        state.lastStepKeyword = state.currentStepKeyword;
+-                    }
+-                    state.currentStepKeyword = "Given";
++                    state.currentStepKeyword = keyword;
++                    state.lastTokenType += " jb-story-step-keyword ";// + keyword + "-step";
+ 
+-                    state.stepStartingKeyword = "Given "; //TODO
++                    resetInFieldsExcept(["Scenario", "Lifecycle", "Before", "After"]);
++                    state.inStep = true;
+ 
+-                    if (state.inLifecycleAfter) {
+-                        state.allowSteps = false;
+-                        state.allowAndStep = false;
+-                        state.inLifecycleOutcome = false;
+-                        state.allowLifecycleOutcome = true;
+-                        state.allowScenario = true;
++                    // check for correct location
++                    if (state.inScenario) {
++                        // scenario step
++                        if (state.examplesDefined) {
++                            var msg = "Out of order '" + keyword + "' step";
++                            addGutterError(from, to, msg);
+-                    } else {
++                        } else {
+-                        state.allowAndStep = true;
++                            if (keyword == "And" && !state.stepDefined) {
++                                var msg = "Missing prior Given/When/Then step";
++                                addGutterError(from, to, msg);
++                            } else {
++                                state.stepDefined = true;
+-                    }
++                            }
++                        }
++                    } else if (state.inLifecycleBefore) {
++                        if (keyword == "And" && !state.stepDefined) {
++                            var msg = "Missing prior Given/When/Then step";
++                            addGutterError(from, to, msg);
++                        } else {
++                            state.stepDefined = true;
++                        }
++                    } else if (state.inLifecycleAfter) {
++                        // lifecycle step
++                        if (!state.lifecycleAfterOutcomeDefined) {
++                            var msg = "Missing prior 'Outcome' section";
++                            addGutterError(from, to, msg);
++                        } else {
++                            if (keyword == "And" && !state.stepDefined) {
++                                var msg = "Missing prior Given/When/Then step";
++                                addGutterError(from, to, msg);
++                            } else {
++                                state.stepDefined = true;
++                            }
++                        }
++                    } else {
++                        // out of order step
++                        var msg = "Out of order '" + keyword + "' step";
++                        addGutterError(from, to, msg);
++                    }
++                }
+ 
+-                    state.inTable = false;
+-                    state.inStep = true;
+-//                    state.stepBody = "";
+-                    state.lastStepStartedAt = state.lineNumber;
++                function parseExamples() {
+ 
+-                    state.inStepBody = false;
+-//                    state.stepBodyStartedAtCh = null;
++                    state.lastTokenType += " jb-story-examples";
+ 
+-                    state.currentStepNumber++;
++                    var ti = tokenInfo();
++                    var sectionName = ti.text.trim();
+ 
+-                    state.allowExamples = true;
++                    resetInFieldsExceptScenario();
++                    state.inExamples = true;
+ 
+-                    state.lastTokenType += " jb-story-step-keyword given-step";
+-
+-                    // WHEN
+-                } else if (state.allowSteps && stream.sol() && stream.match(/(When )/)) {
+-
+-                    state.inStep = true;
+-
+-                    if (state.inLifecycleAfter) {
+-                        state.allowSteps = false;
+-                        state.allowAndStep = false;
+-                        state.inLifecycleOutcome = false;
+-                        state.allowLifecycleOutcome = true;
+-                        state.allowScenario = true;
++                    // check for duplicate
++                    if (state.examplesDefined) {
++                        var msg = "Duplicate '" + sectionName + "' section";
++                        addGutterError(from, to, msg);
+                     } else {
+-                        state.allowAndStep = true;
++                        state.examplesDefined = true;
+                     }
+-
+-
+-                    if (state.currentStepKeyword != null) {
+-                        state.lastStepKeyword = state.currentStepKeyword;
+-                    }
++                }
+-                    state.currentStepKeyword = "When";
+ 
+-                    state.inTable = false;
+-                    state.stepStartingKeyword = "When "; //TODO
+-                    state.stepBody = "";
+-                    state.lastStepStartedAt = state.lineNumber;
++                if (stream.sol()) {
+ 
+-                    state.inStepBody = false;
+-//                    state.stepBodyStartedAtCh = null;
++                    state.lineNumber++;
+ 
+-                    state.currentStepNumber++;
++                    // reset in fields which span maximum of one line
++                    state.inNarrativeField = false;
++                    // TODO - restriction for now is that GivenStories value must be on the same line as the keyword
++                    state.inGivenStories = false;
++                    state.inLifecycleOutcome = false;
++                    state.inScenarioTitleLine = false;
+ 
+-                    state.allowExamples = true;
++                    clearErrorsGutter();
++                }
+ 
+-                    state.lastTokenType += " jb-story-step-keyword when-step";
++                state.lastTokenType = "";
+ 
+-                    // THEN
+-                } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
++                // LINE COMMENT
 +                if (stream.sol() && !state.inTable && stream.match(/!--.*/)) {
-                     state.lastTokenType += " jb-story-comment";
-+                    isCommentLine = true;
++//                    clearErrorsGutter();
++                    state.lastTokenType += " jb-story-comment";
  
- //                    // TABLE COMMENT
-                 } else if (stream.sol() && state.inTable && stream.match(/\|--.*/)) {
-                     state.lastTokenType += " jb-story-table-comment";
-+                    isCommentLine = true;
+-                    if (state.currentStepKeyword != null) {
+-                        state.lastStepKeyword = state.currentStepKeyword;
+-                    }
+-                    state.currentStepKeyword = "Then";
++//                    // TABLE COMMENT
++                } else if (stream.sol() && state.inTable && stream.match(/\|--.*/)) {
++//                    clearErrorsGutter();
++                    state.lastTokenType += " jb-story-table-comment";
++//                    isCommentLine = true;
  
-                     // META title
-                 } else if (state.allowMeta && stream.sol() && stream.match(/(Meta):/)) {
-@@ -308,7 +313,6 @@
+-                    state.stepStartingKeyword = "Then "; //TODO
++                    // META keyword
++                } else if (stream.sol() && stream.match(/(Meta):\s*/)) {
++                    parseMeta();
  
-                     state.inTable = false;
-                     state.inStep = true;
--                    state.stepNumber++;
- //                    state.stepBody = "";
-                     state.lastStepStartedAt = state.lineNumber;
+-                    if (state.inLifecycleAfter) {
+-                        state.allowSteps = false;
+-                        state.allowAndStep = false;
+-                        state.inLifecycleOutcome = false;
+-                        state.allowLifecycleOutcome = true;
+-                        state.allowScenario = true;
+-                    } else {
+-                        state.allowAndStep = true;
+-                    }
++                    // META field
++                } else if (state.inMeta && stream.sol() && stream.match(/@.*/)) {
++                    parseMetaField();
  
-@@ -344,7 +348,6 @@
+-                    state.allowExamples = true;
++                    // Narrative - title
++                } else if (stream.sol() && stream.match(/Narrative:\s*/)) {
++                    parseNarrative();
  
-                     state.inTable = false;
-                     state.stepStartingKeyword = "When "; //TODO
--                    state.stepNumber++;
-                     state.stepBody = "";
-                     state.lastStepStartedAt = state.lineNumber;
+-                    state.inTable = false;
+-                    state.inStep = true;
+-                    state.lastStepStartedAt = state.lineNumber;
++                    // Narrative - In order to - keyword
++                } else if (state.inNarrative && stream.sol() && stream.match(/(In order to\s+)/)) {
++                    parseNarrativeInOrderTo();
  
-@@ -381,8 +384,6 @@
+-                    state.inStepBody = false;
+-//                    state.stepBodyStartedAtCh = null;
++                    // Narrative - As a - keyword
++                } else if (state.inNarrative && stream.sol() && stream.match(/(As a\s+)/)) {
++                    parseNarrativeAsA();
  
-                     state.inTable = false;
-                     state.inStep = true;
--                    state.stepNumber++;
--//                    state.stepBody = "";
-                     state.lastStepStartedAt = state.lineNumber;
+-                    state.currentStepNumber++;
++                    // Narrative - I want to - keyword
++                } else if (state.inNarrative && stream.sol() && stream.match(/(I want to\s+)/)) {
++                    parseNarrativeIWantTo();
  
-                     state.inStepBody = false;
-@@ -406,8 +407,6 @@
-                     state.inStep = true;
-                     state.inTable = false;
+-                    state.lastTokenType += " jb-story-step-keyword then-step";
++                    // Narrative - field value
++                } else if (state.inNarrativeField && stream.match(/.*/)) {
++                    parseNarrativeField();
  
--                    state.stepNumber++;
--//                    state.stepBody = "";
-                     state.lastStepStartedAt = state.lineNumber;
-                     state.stepStartingKeyword = "And "; //TODO
+-                    // AND
+-                } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
++                    // GivenStories
++                } else if (stream.sol() && stream.match(/GivenStories:\s*/)) {
++                    parseGivenStories();
  
-@@ -495,8 +494,10 @@
-                         var currentToken = stream.current();
+-                    if (state.inLifecycleAfter) {
+-                        state.allowSteps = false;
+-                        state.allowAndStep = false;
+-                        state.inLifecycleOutcome = false;
+-                        state.allowLifecycleOutcome = true;
+-                        state.allowScenario = true;
+-                    }
++                } else if (state.inGivenStories && stream.match(/(.*)/)) {
++                    // TODO - restriction for now is that GivenStories value must be on the same line as the keyword
++                    state.lastTokenType += " jb-story-givenstories-value";
+ 
+-                    state.inStep = true;
+-                    state.inTable = false;
++                    // Lifecycle
++                } else if (stream.sol() && stream.match(/Lifecycle:\s*/)) {
++                    parseLifecycle();
+ 
+-                    state.lastStepStartedAt = state.lineNumber;
+-                    state.stepStartingKeyword = "And "; //TODO
++                    // Lifecycle - Before
++                } else if (state.inLifecycle && stream.sol() && stream.match(/Before:\s*/)) {
++                    parseLifecycleBefore();
+ 
+-                    if (state.currentStepKeyword != null) {
+-                        state.lastStepKeyword = state.currentStepKeyword;
+-                    }
+-                    state.currentStepKeyword = state.currentStepKeyword;
++                    // Lifecycle - After
++                } else if (state.inLifecycle && stream.sol() && stream.match(/After:\s*/)) {
++                    parseLifecycleAfter();
+ 
+-                    state.inStepBody = false;
+-//                    state.stepBodyStartedAtCh = null;
++                    // Lifecycle - Outcome keyword
++                } else if (state.inLifecycleAfter && stream.sol() && stream.match(/Outcome:\s+/)) {
++                    parseLifecycleAfterOutcome();
+ 
+-                    state.currentStepNumber++;
++                    // Lifecycle - Outcome value
++                } else if (state.inLifecycleOutcome && stream.match(/.*/)) {
++                    parseLifecycleAfterOutcomeValue();
+ 
+-                    state.lastTokenType += " jb-story-step-keyword " + state.lastStepKeyword + "-step";
++                    // SCENARIO keyword
++                } else if (stream.sol() && stream.match(/(Scenario):\s*/)) {
++                    parseScenario();
+ 
+-                    // Examples
+-                } else if (state.allowExamples && stream.sol() && stream.match(/(Examples):/)) {
++                    // SCENARIO title
++                } else if (state.inScenarioTitleLine && stream.match(/.*/)) {
++                    state.lastTokenType += " jb-story-scenario-title";
+ 
+-                    state.inExamples = true;
+-                    state.inExamplesBody = false;
++                    // GIVEN
++                } else if (stream.sol() && stream.match(/(Given\s+)/)) {
++                    parseStep();
+ 
+-                    state.inStep = false;
+-                    state.inTable = false;
++                    // WHEN
++                } else if (stream.sol() && stream.match(/(When\s+)/)) {
++                    parseStep();
+ 
+-                    state.allowSteps = false;
+-                    state.allowAndStep = false;
+-                    state.allowExamples = false;
++                    // THEN
++                } else if (stream.sol() && stream.match(/(Then\s+)/)) {
++                    parseStep();
+ 
+-                    state.lastTokenType += " jb-story-examples";
++                    // AND
++                } else if (stream.sol() && stream.match(/(And\s+)/)) {
++                    parseStep();
+ 
++                    // Examples
++                } else if (stream.sol() && stream.match(/(Examples):\s*/)) {
++                    parseExamples();
++
+                     // Description
+-                } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {
++                } else if (stream.sol()
++                    && !state.metaStoryDefined
++                    && !state.narrativeDefined && !state.givenForStoryDefined && !state.lifecycleDefined
++                    && !state.scenarioDefined && !state.stepDefined && !state.examplesDefined
++                    && stream.match(/(.*)/)) {
+ 
+-                    state.inTable = false;
++                    clearErrorsGutter();
+                     state.inDescription = true;
+                     state.lastTokenType += " jb-story-description-line";
+ 
+                     // Step body
+                 } else if (state.inStep && stream.match(/(.*)/)) {
+ 
+-                    if (state.inStepBody == false) {
+-                        // this is the first line of the step
+-                        state.inStepBody = true;
+-//                        state.stepBodyStartedAtCh = stream.column() - stream.current().length;
+-                    }
+-
+-//                    state.stepBody += stream.current() + "\n";
+-//                    var stepBody = state.stepBody;
+-//                    console.log("stepBody - " + stepBody);
+-
+                     state.lastTokenType += " jb-story-step-body";
+ 
+                     var current = stream.current();
+@@ -471,7 +694,7 @@
+                     }
+ 
+                     // Examples body
+-                } else if (state.inExamples && stream.match(/(.*)/)) {
++                } else if (stream.sol() && state.inExamples && stream.match(/(.*)/)) {
+ 
+                     state.lastTokenType += " jb-story-examples-body";
+                     state.inExamplesBody = true;
+@@ -495,11 +718,9 @@
                          var trimmedToken = currentToken.trim();
                          if (trimmedToken.length > 0) {
--                            var from = CodeMirror.Pos(state.lineNumber, stream.column());;
--                            var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentToken.length);;
-+                            var from = CodeMirror.Pos(state.lineNumber, stream.column());
-+                            ;
-+                            var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentToken.length);
-+                            ;
+                             var from = CodeMirror.Pos(state.lineNumber, stream.column());
+-                            ;
+                             var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentToken.length);
+-                            ;
                              var msg = "Invalid text for given location";
-                             storyController.addModeGutterError(from, to, msg);
+-                            storyController.addModeGutterError(from, to, msg);
++                            storyController.errorsGutter.addModeError(from, to, msg);
                          } else {
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
+                             // we do not report any errors for white space
+                         }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1411760883000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -3,8 +3,9 @@
- <atlassian-plugin key="com.jbehaveforjira.plugin" name="JBehave for Jira"
-                   plugins-version="2">
-     <plugin-info>
--        <description>${project.description}</description>
-         <version>${project.version}</version>
-+        <description>${project.description}</description>
-+        <application-version min="6.0"/>
-         <vendor name="Maryna Pristrom" url="http://www.jbehaveforjira.com"/>
-         <param name="atlassian-licensing-enabled">true</param>
-         <!--<param name="plugin-icon">images/marketing/pluginIcon.jpg</param>-->
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java	(date 1411760883000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java	(revision )
-@@ -19,8 +19,10 @@
- 
-     public List<String> suggestedValues;
- 
--    public String format;
-+    public String formatPattern;
- 
-+    public String formatDisplayText;
-+
-     private List<TabularFieldInfo> tabularFieldInfos;
- 
-     public List<TabularFieldInfo> getTabularFieldInfos() {
-@@ -71,11 +73,19 @@
-         this.suggestedValues = suggestedValues;
-     }
- 
--    public String getFormat() {
--        return format;
-+    public String getFormatPattern() {
-+        return formatPattern;
-     }
- 
--    public void setFormat(String format) {
--        this.format = format;
-+    public void setFormatPattern(String formatPattern) {
-+        this.formatPattern = formatPattern;
-+    }
-+
-+    public String getFormatDisplayText() {
-+        return formatDisplayText;
-+    }
-+
-+    public void setFormatDisplayText(String formatDisplayText) {
-+        this.formatDisplayText = formatDisplayText;
-     }
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1412147330000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
+@@ -66,6 +66,15 @@
+     color: #594300;
  }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(date 1411760883000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-@@ -17,8 +17,10 @@
  
-     public List<String> suggestedValues;
- 
--    public String format;
-+    public String formatPattern;
- 
-+    public String formatDisplayText;;
++.cm-jb-story-givenstories-keyword {
++    font-weight: bold;
++    color: #9FC71C;
++}
 +
-     public String getFieldName() {
-         return fieldName;
-     }
-@@ -51,11 +53,19 @@
-         this.suggestedValues = suggestedValues;
-     }
- 
--    public String getFormat() {
--        return format;
-+    public String getFormatPattern() {
-+        return formatPattern;
-     }
- 
--    public void setFormat(String format) {
--        this.format = format;
-+    public void setFormatPattern(String formatPattern) {
-+        this.formatPattern = formatPattern;
-+    }
++.cm-jb-story-givenstories-value {
++    color: #9FC71C;
++}
 +
-+    public String getFormatDisplayText() {
-+        return formatDisplayText;
-+    }
-+
-+    public void setFormatDisplayText(String formatDisplayText) {
-+        this.formatDisplayText = formatDisplayText;
-     }
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1411760883000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
-@@ -691,18 +691,18 @@
-                             var pattern = stepDoc.pattern;
- 
-                             // replace any html tags, used in parameterized scenarios
--                            var regExpPattern = new RegExp("&", "g");
-+                            var regExpPattern = /&/g;
-                             pattern = pattern.replace(regExpPattern, "&amp;");
--                            regExpPattern = new RegExp("<", "g");
-+                            regExpPattern = /</g;
-                             pattern = pattern.replace(regExpPattern, "&lt;");
--                            regExpPattern = new RegExp(">", "g");
-+                            regExpPattern = />/g;
-                             pattern = pattern.replace(regExpPattern, "&gt;");
- 
--                            regExpPattern = new RegExp("(\\$[^\\s]*)", "g");
-+                            regExpPattern = /(\$[^\s]*)/g;
-                             pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
- 
-                             // replace any parameterized scenario arguments
--                            regExpPattern = new RegExp("(&lt;[^\\s]*&gt;)", "g");
-+                            regExpPattern = /(&lt;[^\s]*&gt;)/g;
-                             pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
- 
-                             stepHint.markedPattern = pattern;
+ .cm-jb-story-scenario-keyword {
+     color: green;
+     font-weight: bold;
+\ No newline at end of file
