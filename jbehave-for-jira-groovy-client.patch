@@ -3,291 +3,66 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1411412402000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1412147329000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -25,6 +25,7 @@
- import java.lang.reflect.Type
- import java.util.regex.Matcher
- import java.util.regex.Pattern
+@@ -402,38 +402,37 @@
+ 
+         int pos = 0;
+         int groupCount = 0;
+-        int indexOfOpenBrace = resolvedPattern.indexOf("(");
+-        while (indexOfOpenBrace != -1) {
+ 
++        Pattern openBracePattern = Pattern.compile("(?<!\\\\)\\(");
++        Matcher openBraceMatcher = openBracePattern.matcher(resolvedPattern);
++        Pattern closeBracePattern = Pattern.compile("(?<!\\\\)\\)");
++        Matcher closeBraceMatcher = closeBracePattern.matcher(resolvedPattern);
 +
- /**
-  * @author Maryna Pristrom
-  */
-@@ -41,7 +42,7 @@
-     public GroovyStepDocReporter(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword, StepPatternParser stepPatternParser) {
-         this.reportStepDocUrl = (jiraBaseUrl + "/rest/jbehave-for-jira/1.0/step-doc/add/" + jiraProject
-                 + "?os_username=" + jiraUserName
--        + "&os_password=" + jiraPassword);
-+                + "&os_password=" + jiraPassword);
-         this.patternParser = stepPatternParser;
-     }
- 
-@@ -78,9 +79,24 @@
- 
-             Method method = stepdoc.getMethod();
-             Type[] genericParameterTypes = method.getGenericParameterTypes();
-+            Annotation[][] parametersAnnotations = method.getParameterAnnotations();
-             List<ParameterMetaInfo> parameterInfos = new ArrayList<ParameterMetaInfo>(genericParameterTypes.length);
- 
--            for (Type genericParameterType : genericParameterTypes) {
-+            for (int i = 0; i < genericParameterTypes.length; i++) {
++        boolean openBraceFound = openBraceMatcher.find(pos);
++        while (openBraceFound && pos < resolvedPattern.length()) {
 +
-+                Type genericParameterType = genericParameterTypes[i];
-+
-+                // find if annotated with ParameterInfo
-+                Annotation[] parameterAnnotations = parametersAnnotations[i];
-+                ParameterInfo paramInfoAnnotation = null;
-+                for (int j = 0; j < parameterAnnotations.length; j++) {
-+                    Annotation annotation = parameterAnnotations[j];
-+                    if (ParameterInfo.class.isAssignableFrom(annotation.class)) {
-+                        paramInfoAnnotation = (ParameterInfo) annotation;
-+                        break;
-+                    }
-+                }
-+
-                 ParameterMetaInfo parameterInfo = new ParameterMetaInfo();
-                 if (genericParameterType instanceof ParameterizedType) {
-                     ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
-@@ -91,7 +107,7 @@
-                             Type actualTypeArgument = actualTypeArguments[0];
-                             if (actualTypeArgument instanceof Class<?>) {
-                                 Class<?> classType = (Class<?>) actualTypeArgument;
--                                populateParameterInfo(parameterInfo, classType);
-+                                populateParameterInfo(parameterInfo, classType, paramInfoAnnotation);
-                                 parameterInfo.listType = true;
-                             }
-                         } else {
-@@ -102,7 +118,7 @@
-                     }
-                 } else if (genericParameterType instanceof Class) {
-                     Class classType = (Class) genericParameterType;
--                    populateParameterInfo(parameterInfo, classType);
-+                    populateParameterInfo(parameterInfo, classType, paramInfoAnnotation);
-                 } else {
-                     // we do not provide any meta information in this case
-                 }
-@@ -200,7 +216,7 @@
-         uploadToJira(stepDocsPayload);
-     }
+             // we want to group everything before that opening brace
+             groupedPatternBuilder.append("(");
+-            groupedPatternBuilder.append(resolvedPattern.substring(pos, indexOfOpenBrace));
++            groupedPatternBuilder.append(resolvedPattern.substring(pos, openBraceMatcher.start()));
+             groupedPatternBuilder.append(")");
+             groupCount++;
  
--    private void populateParameterInfo(ParameterMetaInfo parameterMetaInfo, Class classType) {
-+    private void populateParameterInfo(ParameterMetaInfo parameterMetaInfo, Class classType, ParameterInfo paramInfoAnnotation) {
+-            int indexOfCloseBrace = resolvedPattern.indexOf(")", indexOfOpenBrace);
+-            Validate.isTrue(indexOfCloseBrace != -1);
+-            pos = indexOfCloseBrace + 1;
+-            groupedPatternBuilder.append(resolvedPattern.substring(indexOfOpenBrace, pos));
++            boolean closeBraceFound = closeBraceMatcher.find(openBraceMatcher.start());
++            Validate.isTrue(closeBraceFound, "Couldn't find closing matching brace in pattern - " + resolvedPattern);
++            groupedPatternBuilder.append(resolvedPattern.substring(openBraceMatcher.start(), closeBraceMatcher.end()));
+             groupCount++;
+             parameterGroups.add(groupCount);
  
-         String parameterType = classType.getName();
-         parameterMetaInfo.parameterType = parameterType;
-@@ -209,72 +225,146 @@
-         Annotation asParamAnnotation = classType.getAnnotation(AsParameters.class);
- 
-         if (asParamAnnotation != null) {
-+            parameterMetaInfo.tabularFieldInfos = this.workoutTabularParameterInfos(classType);
-+        } else {
-+            this.populateSimpleParameterInfo(parameterMetaInfo, classType, paramInfoAnnotation);
-+        }
-+    }
- 
-+    private void populateSimpleParameterInfo(ParameterMetaInfo parameterMetaInfo, Class classType, ParameterInfo paramInfoAnnotation) {
-+
-+        // not a table type, but still may be a list type
-+        // check if enum
-+        if (classType.isEnum()) {
-+            Object[] enumConstants = classType.getEnumConstants();
-+            List<String> allowedvalues = new ArrayList<>(enumConstants.length);
-+            for (Object enumConstant : enumConstants) {
-+                Enum e = (Enum) enumConstant;
-+                allowedvalues.add(e.name());
-+            }
-+            parameterMetaInfo.allowedValues = allowedvalues;
-+        } else {
-+            // not an enum so check for allowed or suggested values
-+            if (paramInfoAnnotation != null) {
-+                if (paramInfoAnnotation.allowedValues().length > 0) {
-+                    List<String> allowedValues = Arrays.asList(paramInfoAnnotation.allowedValues());
-+                    parameterMetaInfo.allowedValues = allowedValues;
-+                } else if (paramInfoAnnotation.suggestedValuesEnum() != com.jbehaveforjira.javaclient.ParameterInfo.EmptyEnum.class) {
-+                    Class susggestedValuesEnum = paramInfoAnnotation.suggestedValuesEnum();
-+                    Object[] suggestedConstants = susggestedValuesEnum.getEnumConstants();
-+                    List<String> suggestedValues = new ArrayList<String>();
-+                    for (Object enumConstant : suggestedConstants) {
-+                        Enum enumField = (Enum) enumConstant;
-+                        String enumName = enumField.name();
-+                        suggestedValues.add(enumName);
-+                    }
-+                    parameterMetaInfo.suggestedValues = suggestedValues;
-+                } else if (paramInfoAnnotation.suggestedValues().length > 0) {
-+                    // suggested values are set
-+                    List<String> suggestedValues = Arrays.asList(paramInfoAnnotation.suggestedValues());
-+                    parameterMetaInfo.suggestedValues = suggestedValues;
-+                }
-+
-+                // format
-+                String pattern = paramInfoAnnotation.formatPattern();
-+                if (!pattern.trim().isEmpty()) {
-+                    parameterMetaInfo.formatPattern = pattern;
-+                    String formatDisplayText = paramInfoAnnotation.formatDisplayText();
-+                    if (!formatDisplayText.trim().isEmpty()) {
-+                        parameterMetaInfo.formatDisplayText = formatDisplayText;
-+                    }
-+                }
-+            }
-+
-+        }
-+    }
-+
-+    private List<TabularFieldMetaInfo> workoutTabularParameterInfos(Class classType) {
-+
--            List<TabularFieldMetaInfo> tabularFieldInfos = new ArrayList<TabularFieldMetaInfo>();
-+        List<TabularFieldMetaInfo> tabularFieldInfos = new ArrayList<TabularFieldMetaInfo>();
- 
--            // parameter can be represented as a table
-+        // parameter can be represented as a table
--            parameterMetaInfo.listType = true;
--            Field[] declaredFields = classType.getDeclaredFields();
-+        Field[] declaredFields = classType.getDeclaredFields();
- 
--            for (Field declaredField : declaredFields) {
-+        for (Field declaredField : declaredFields) {
- 
--                TabularFieldMetaInfo tabularFieldInfo = new TabularFieldMetaInfo();
-+            TabularFieldMetaInfo tabularFieldInfo = new TabularFieldMetaInfo();
- 
--                // field name
--                Parameter fieldAnnotation = declaredField.getAnnotation(Parameter.class);
--                String fieldName;
--                if (fieldAnnotation != null) {
--                    fieldName = fieldAnnotation.name();
+-            if (pos >= resolvedPattern.length()) {
+-                // we have reached the end of the pattern
+-                break;
+-            } else {
+-                indexOfOpenBrace = resolvedPattern.indexOf("(", pos);
+-                if (indexOfOpenBrace != -1) {
+-                    // we simply iterate again
+-                    continue;
 -                } else {
--                    fieldName = declaredField.getName();
--                }
--                tabularFieldInfo.fieldName = fieldName;
-+            // field name
-+            Parameter fieldAnnotation = declaredField.getAnnotation(Parameter.class);
-+            String fieldName;
-+            if (fieldAnnotation != null) {
-+                fieldName = fieldAnnotation.name();
-+            } else {
-+                fieldName = declaredField.getName();
-+            }
-+            tabularFieldInfo.fieldName = fieldName;
- 
--                ParameterInfo parameterInfo = declaredField.getAnnotation(ParameterInfo.class);
-+            ParameterInfo parameterInfo = declaredField.getAnnotation(ParameterInfo.class);
- 
--                // allowed field values, i.e. in case of enum
--                Class<?> fieldType = declaredField.getType();
--                Object[] enumConstants = fieldType.getEnumConstants();
-+            // allowed field values, i.e. in case of enum
-+            Class<?> fieldType = declaredField.getType();
-+            Object[] enumConstants = fieldType.getEnumConstants();
--                if (enumConstants != null && enumConstants.length > 0) {
++            pos = closeBraceMatcher.end();
 +
-+            if (fieldType == Boolean.class || fieldType == boolean.class) {
-+                // boolean use case
--                    List<String> allowedValues = new ArrayList<String>();
-+                List<String> allowedValues = new ArrayList<String>();
-+                allowedValues.add("true");
-+                allowedValues.add("false");
-+                tabularFieldInfo.allowedValues = allowedValues;
-+            } else if (enumConstants != null && enumConstants.length > 0) {
-+                List<String> allowedValues = new ArrayList<String>();
--                    Class<? extends Enum> enumFieldType = (Class<? extends Enum>) fieldType;
--                    for (Object enumConstant : enumConstants) {
--                        Enum enumField = (Enum) enumConstant;
--                        String enumName = enumField.name();
--                        allowedValues.add(enumName);
--                    }
-+                Class<? extends Enum> enumFieldType = (Class<? extends Enum>) fieldType;
-+                for (Object enumConstant : enumConstants) {
-+                    Enum enumField = (Enum) enumConstant;
-+                    String enumName = enumField.name();
-+                    allowedValues.add(enumName);
-+                }
- 
--                    tabularFieldInfo.allowedValues = allowedValues;
--                } else {
-+                tabularFieldInfo.allowedValues = allowedValues;
-+            } else {
--                    // not an enum type check for allowed values annotation
--                    if (parameterInfo != null && parameterInfo.allowedValues().length > 0) {
-+                // not an enum type or a boolean, so check for allowed values annotation
-+                if (parameterInfo != null) {
-+                    if (parameterInfo.allowedValues().length > 0) {
-                         List<String> allowedValues = Arrays.asList(parameterInfo.allowedValues());
-                         tabularFieldInfo.allowedValues = allowedValues;
--                    } else if (parameterInfo != null && parameterInfo.suggestedValues().length > 0) {
-+                    } else if (parameterInfo.suggestedValuesEnum() != com.jbehaveforjira.javaclient.ParameterInfo.EmptyEnum.class) {
-+                        Class susggestedValuesEnum = parameterInfo.suggestedValuesEnum();
-+                        Object[] suggestedConstants = susggestedValuesEnum.getEnumConstants();
-+                        List<String> suggestedValues = new ArrayList<String>();
-+                        for (Object enumConstant : suggestedConstants) {
-+                            Enum enumField = (Enum) enumConstant;
-+                            String enumName = enumField.name();
-+                            suggestedValues.add(enumName);
-+                        }
-+                        tabularFieldInfo.suggestedValues = suggestedValues;
-+                    } else if (parameterInfo.suggestedValues().length > 0) {
-+                        // suggested values are set
-                         List<String> suggestedValues = Arrays.asList(parameterInfo.suggestedValues());
-                         tabularFieldInfo.suggestedValues = suggestedValues;
-                     }
-                 }
- 
--                tabularFieldInfos.add(tabularFieldInfo);
-             }
- 
--            parameterMetaInfo.tabularFieldInfos = tabularFieldInfos;
--
--        } else {
--            // not a table type, but still may be a list type
--            // check if enum
--            if (classType.isEnum()) {
--                Object[] enumConstants = classType.getEnumConstants();
--                List<String> allowedvalues = new ArrayList<>(enumConstants.length);
--                for (Object enumConstant : enumConstants) {
--                    Enum e = (Enum)enumConstant;
--                    allowedvalues.add(e.name());
-+            if (parameterInfo != null) {
-+                // is mandatory
-+                tabularFieldInfo.mandatory = parameterInfo.mandatory;
-+                // format
-+                String pattern = parameterInfo.formatPattern();
-+                if (!pattern.trim().isEmpty()) {
-+                    tabularFieldInfo.formatPattern = pattern;
-+                    String formatDisplayText = parameterInfo.formatDisplayText();
-+                    if (!formatDisplayText.trim().isEmpty()) {
-+                        tabularFieldInfo.formatDisplayText = formatDisplayText;
++            openBraceFound = openBraceMatcher.find(pos);
++        }
++
+-                    // there are no more parameter groups so we simply append any string into last group
++        // there are no more parameter groups so we simply append any string into last group
++        if (pos < resolvedPattern.length()) {
+-                    groupedPatternBuilder.append("(");
+-                    groupedPatternBuilder.append(resolvedPattern.substring(pos));
+-                    groupedPatternBuilder.append(")");
++            groupedPatternBuilder.append("(");
++            groupedPatternBuilder.append(resolvedPattern.substring(pos));
++            groupedPatternBuilder.append(")");
+-                    groupCount++;
 -                }
-+                    }
--                parameterMetaInfo.allowedValues = allowedvalues;
 -            }
-+                }
-+            }
- 
-+            tabularFieldInfos.add(tabularFieldInfo);
          }
-+
-+        return tabularFieldInfos;
-     }
  
-     private void uploadToJira(StepDocsPayload stepDocsPayload) {
-@@ -367,7 +457,9 @@
- 
-         public List<String> suggestedValues;
- 
--        public String format;
-+        public String formatPattern;
-+
-+        public String formatDisplayText;
-     }
- 
-     @XmlRootElement
-@@ -384,7 +476,9 @@
- 
-         public List<String> suggestedValues;
- 
--        public String format;
-+        public String formatPattern;
-+
-+        public String formatDisplayText;
- 
-         public List<TabularFieldMetaInfo> tabularFieldInfos;
-     }
+         String groupedPattern = groupedPatternBuilder.toString();
