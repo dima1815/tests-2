@@ -1,68 +1,111 @@
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1412147329000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
-@@ -402,38 +402,37 @@
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1412280015000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
+@@ -17,6 +17,7 @@
+ import javax.xml.bind.annotation.XmlAccessType
+ import javax.xml.bind.annotation.XmlAccessorType
+ import javax.xml.bind.annotation.XmlRootElement
++import java.text.SimpleDateFormat
+ import java.util.regex.Matcher
+ import java.util.regex.Pattern
  
-         int pos = 0;
-         int groupCount = 0;
--        int indexOfOpenBrace = resolvedPattern.indexOf("(");
--        while (indexOfOpenBrace != -1) {
+@@ -275,7 +276,12 @@
+             while (underlyingCause.getCause() != null) {
+                 underlyingCause = underlyingCause.getCause();
+             }
+-            String underlyingErrorMsg = "Underlying error - " + underlyingCause.getMessage();
++            String underlyingErrorMsg;
++            if (underlyingCause.getMessage() != null && !underlyingCause.getMessage().trim().isEmpty()) {
++                underlyingErrorMsg = "Underlying error - " + underlyingCause.getMessage();
++            } else {
++                underlyingErrorMsg = "";
++            }
+             htmlOutput.print(htmlOutput.format("failedStep", "{0} {1} ({2})\n({3})\n",
+                     tokens[0], tokens[1],
+                     htmlOutput.keywords.failed(),
+@@ -289,7 +295,10 @@
  
-+        Pattern openBracePattern = Pattern.compile("(?<!\\\\)\\(");
-+        Matcher openBraceMatcher = openBracePattern.matcher(resolvedPattern);
-+        Pattern closeBracePattern = Pattern.compile("(?<!\\\\)\\)");
-+        Matcher closeBraceMatcher = closeBracePattern.matcher(resolvedPattern);
-+
-+        boolean openBraceFound = openBraceMatcher.find(pos);
-+        while (openBraceFound && pos < resolvedPattern.length()) {
-+
-             // we want to group everything before that opening brace
-             groupedPatternBuilder.append("(");
--            groupedPatternBuilder.append(resolvedPattern.substring(pos, indexOfOpenBrace));
-+            groupedPatternBuilder.append(resolvedPattern.substring(pos, openBraceMatcher.start()));
-             groupedPatternBuilder.append(")");
-             groupCount++;
+     @Override
+     public void failedOutcomes(String step, OutcomesTable table) {
+-        htmlOutput.failedOutcomes(step, table);
++//        this.currentScenarioStatus = TestStatus.FAILED;
++//        htmlOutput.failedOutcomes(step, table);
++        this.failed(step, table.failureCause());
++        this.printOutcomesTable(table);
+     }
  
--            int indexOfCloseBrace = resolvedPattern.indexOf(")", indexOfOpenBrace);
--            Validate.isTrue(indexOfCloseBrace != -1);
--            pos = indexOfCloseBrace + 1;
--            groupedPatternBuilder.append(resolvedPattern.substring(indexOfOpenBrace, pos));
-+            boolean closeBraceFound = closeBraceMatcher.find(openBraceMatcher.start());
-+            Validate.isTrue(closeBraceFound, "Couldn't find closing matching brace in pattern - " + resolvedPattern);
-+            groupedPatternBuilder.append(resolvedPattern.substring(openBraceMatcher.start(), closeBraceMatcher.end()));
-             groupCount++;
-             parameterGroups.add(groupCount);
+     @Override
+@@ -393,6 +402,35 @@
  
--            if (pos >= resolvedPattern.length()) {
--                // we have reached the end of the pattern
--                break;
--            } else {
--                indexOfOpenBrace = resolvedPattern.indexOf("(", pos);
--                if (indexOfOpenBrace != -1) {
--                    // we simply iterate again
--                    continue;
--                } else {
-+            pos = closeBraceMatcher.end();
-+
-+            openBraceFound = openBraceMatcher.find(pos);
+     }
+ 
++    private void printOutcomesTable(OutcomesTable table) {
++        htmlOutput.print(htmlOutput.format("outcomesTableStart", "\n"));
++        List<OutcomesTable.Outcome<?>> rows = table.getOutcomes();
++        htmlOutput.print(htmlOutput.format("outcomesTableHeadStart", "|"));
++        for (String field : table.getOutcomeFields()) {
++            htmlOutput.print(htmlOutput.format("outcomesTableHeadCell", "{0}|", field));
 +        }
++        htmlOutput.print(htmlOutput.format("outcomesTableHeadEnd", "\n"));
++        htmlOutput.print(htmlOutput.format("outcomesTableBodyStart", ""));
++        for (OutcomesTable.Outcome<?> outcome : rows) {
++            htmlOutput.print(htmlOutput.format("outcomesTableRowStart", "|", outcome.isVerified() ? "verified" : "notVerified"));
++            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", outcome.getDescription()));
++            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", this.renderOutcomeValue(outcome.getValue(), table.getDateFormat())));
++            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", outcome.getMatcher()));
++            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", (outcome.isVerified() ? keywords.yes() : keywords.no())));
++            htmlOutput.print(htmlOutput.format("outcomesTableRowEnd", "\n"));
++        }
++        htmlOutput.print(htmlOutput.format("outcomesTableBodyEnd", "\n"));
++        htmlOutput.print(htmlOutput.format("outcomesTableEnd", "\n"));
++    }
 +
--                    // there are no more parameter groups so we simply append any string into last group
-+        // there are no more parameter groups so we simply append any string into last group
-+        if (pos < resolvedPattern.length()) {
--                    groupedPatternBuilder.append("(");
--                    groupedPatternBuilder.append(resolvedPattern.substring(pos));
--                    groupedPatternBuilder.append(")");
-+            groupedPatternBuilder.append("(");
-+            groupedPatternBuilder.append(resolvedPattern.substring(pos));
-+            groupedPatternBuilder.append(")");
--                    groupCount++;
--                }
--            }
-         }
++    private Object renderOutcomeValue(Object value, String dateFormat) {
++        if (value instanceof Date) {
++            return new SimpleDateFormat(dateFormat).format(value);
++        } else {
++            return value;
++        }
++    }
++
+     private static List<Byte> stringToBytesList(String text) {
  
-         String groupedPattern = groupedPatternBuilder.toString();
+         byte[] bytesArray = text.getBytes();
+@@ -644,10 +682,14 @@
+             patterns.setProperty("beforeScenario",
+                     "<div class=\"jb-story-ele-exp-container jb-story-report-scenario\">\n" +
+                             "<div class=\"jb-story-report-scenario-title\">" +
+-                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++
++                            "<div class=\"jb-story-ele-exp-trigger collapsed\">" +
++                            "<a class=\"jb-story-ele-exp-trigger-link\" href=\"#\" style=\"text-decoration: none;\">" +
+                             "<span class=\"cm-jb-story-scenario-keyword\">{0} </span>" +
+                             "<span class=\"cm-jb-story-scenario-title\">{1}</span>" +
+                             "</a>" +
++                            "</div>" +
++
+ //                            " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
+                             //                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
+                             //                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
+@@ -679,7 +721,7 @@
+                     "<div class=\"jb-story-report-step jb-story-report-step-failed matched-step\">" +
+                             "<span class=\"cm-jb-story-step-keyword failed\">{0}</span><span class=\"cm-jb-story-step-body failed\">{1}</span>" +
+ 
+-                            "<div>"+
++                            "<div>" +
+                             "<span class=\"cm-jb-story-step-failed-keyword\">({2})</span> " +
+ //                            "<div class=\"cm-jb-story-step-failed-message\">{3}</div>" +
+                             // failure trace formatting
+@@ -717,7 +759,7 @@
+ 
+             patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
+ 
+-            patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
++            patterns.setProperty("outcomesTableStart", "<div class=\"jb-story-outcomes\"><table>\n");
+             patterns.setProperty("outcomesTableHeadStart", "<thead>\n<tr>\n");
+             patterns.setProperty("outcomesTableHeadCell", "<th>{0}</th>");
+             patterns.setProperty("outcomesTableHeadEnd", "</tr>\n</thead>\n");
