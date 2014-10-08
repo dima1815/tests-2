@@ -3,1102 +3,2077 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1412147330000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1412280016000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -839,19 +839,19 @@
-             return currentErrors;
-         }
+@@ -79,6 +79,9 @@
+         var editor = CodeMirror.fromTextArea(document.getElementById("jbStoryTextArea"), {
+             mode: "jbehave",
+ //            lineComment: "!--",
++
++//            fullScreen: true,
++
+             lineNumbers: prefs.showLineNumbers,
+             gutters: guttersToShow,
+             lint: true,
+@@ -105,7 +108,9 @@
+                     var to = {line: endOfSelection.line, ch: endOfSelection.ch};
+                     var options = new Object();
  
--//        this.clearModeErrorForLine = function (lineNumber) {
--//            for (var i = currentErrors.length - 1; i >= 0; i--) {
--//                var error = currentErrors[i];
--//                if (error.isModeError && error.from.line == lineNumber) {
--//                    currentErrors.splice(i, 1);
--//                }
--//            }
--//        }
-+        this.clearModeErrorForLine = function (lineNumber) {
-+            for (var i = currentErrors.length - 1; i >= 0; i--) {
-+                var error = currentErrors[i];
-+                if (error.isModeError && error.from.line == lineNumber) {
-+                    currentErrors.splice(i, 1);
-+                }
-+            }
-+        }
+-                    if (curLine.substring(0, 1) == "|") {
++                    var token = cm.getTokenAt({line: cm.getCursor().line, ch: 0});
++                    var state = token.state;
++                    if (state.inTable) {
+                         options.lineComment = "|--";
+                     } else {
+                         options.lineComment = "!--";
+@@ -118,10 +123,11 @@
+                     } else {
+                         cm.lineComment(from, to, options);
+                     }
++                },
++                "Ctrl-F11": function(cm) {
++                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                 }
+-//                "F11": function(cm) {
+-//                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+-//                },
++//                ,
+ //                "Esc": function(cm) {
+ //                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+ //                }
+@@ -354,7 +360,8 @@
+             if (failedSteps != null && failedSteps.length > 0) {
+                 // story has failed
+                 var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
+-                AJS.$(titleContainer).append(createScenarioLozenge("failed", "error"));
++                var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
++                AJS.$(titleTrigger).append(createScenarioLozenge("failed", "error"));
  
-         this.clearForLine = function (lineNumber) {
-             for (var i = currentErrors.length - 1; i >= 0; i--) {
-                 var error = currentErrors[i];
--                if (error.from.line == lineNumber) {
-+                if (!error.isModeError && error.from.line == lineNumber) {
-                     currentErrors.splice(i, 1);
+                 AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
+                 AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
+@@ -367,7 +374,8 @@
+                 if (pendingSteps != null && pendingSteps.length > 0) {
+                     // story has failed
+                     var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
+-                    AJS.$(titleContainer).append(createScenarioLozenge("pending", "current"));
++                    var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
++                    AJS.$(titleTrigger).append(createScenarioLozenge("pending", "current"));
+ 
+                     AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
+                     AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
+@@ -377,7 +385,8 @@
+                 } else {
+                     // check for successful steps
+                     var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
+-                    AJS.$(titleContainer).append(createScenarioLozenge("success", "success"));
++                    var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
++                    AJS.$(titleTrigger).append(createScenarioLozenge("success", "success"));
                  }
              }
-@@ -871,31 +871,35 @@
-             this.addMarker(from, to, "warning", message);
-         }
  
--//        this.addModeWarning = function (from, to, message) {
--//            this.addModeMarker(from, to, "warning", message);
--//        }
-+        this.addModeWarning = function (from, to, message) {
-+            this.addModeMarker(from, to, "warning", message);
-+        }
+@@ -918,6 +927,8 @@
+                     var lineTextTrimmed = lineText.replace(/\s+$/g, ''); // trim any trailing spaces
+                     if (lineTextTrimmed.length == 0) {
+                         // an empty line - do nothing
++                    } else if (lineTextTrimmed.substring(0, 3) == "!--" && firstTableLineFound == false) {
++                        // regular comment line which is at the beginning of the table
+                     } else if (lineTextTrimmed.substring(0, 3) == "|--") {
+                         // table comment line - do nothing
+                     } else if (lineTextTrimmed.substring(0, 1) != "|") {
+@@ -1140,16 +1151,72 @@
+                 }
+             } else {
+                 // simple parameter type
++
+                 var listType = parameterInfo.listType;
+                 if (listType == true) {
+-                    // TODO - implement list type support
++
++                    var parameterValue = pgi.text;
++                    var individualParameterValues = parameterValue.split(",");
++                    var pos = 0;
++                    for (var p = 0; p < individualParameterValues.length; p++) {
++                        if (p > 0) {
++                            pos += 1; // for the separating comma
++                        }
++                        var paramValue = individualParameterValues[p];
++
++                        var leadingSpacesMatch = paramValue.match(/^\s+/g);
++                        var numOfLeadingSpaces;
++                        if (leadingSpacesMatch != null && leadingSpacesMatch.length > 0) {
++                            numOfLeadingSpaces = leadingSpacesMatch[0].length;
+-                } else {
++                        } else {
+-                    var parameterValue = pgi.text.trim();
++                            numOfLeadingSpaces = 0;
++                        }
  
-         this.addError = function (from, to, message) {
-             this.addMarker(from, to, "error", message);
-         }
- 
--//        this.addModeError = function (from, to, message) {
--//            this.addModeMarker(from, to, "error", message);
--//        }
-+        this.addModeError = function (from, to, message) {
-+            this.addModeMarker(from, to, "error", message);
-+        }
- 
-         this.addMarker = function (from, to, severity, message) {
--            currentErrors.push({from: from, to: to,
--                severity: severity, message: message});
-+            var markerObj = {
-+                from: from, to: to,
-+                isModeError: false,
-+                severity: severity,
-+                message: message};
-+            currentErrors.push(markerObj);
-         }
- 
--//        this.addModeMarker = function (from, to, severity, message) {
--//            var markerObj = {
--//                from: from, to: to,
--//                isModeError: true,
--//                severity: severity,
--//                message: message};
--//            currentErrors.push(markerObj);
--//        }
-+        this.addModeMarker = function (from, to, severity, message) {
-+            var markerObj = {
-+                from: from, to: to,
-+                isModeError: true,
-+                severity: severity,
-+                message: message};
-+            currentErrors.push(markerObj);
-+        }
-     }
- 
-     function markInvalidParameters(parameterGroupsInfos, invalidTokenClassName) {
++                        var startPos = {line: pgi.startLine, ch: pgi.startLineCh + pos + numOfLeadingSpaces};
++                        pos += paramValue.length;
++                        var endPos = {line: pgi.endLine, ch: pgi.startLineCh + pos};
++
++                        var trimmedParamValue = paramValue.trim()
++                        if (trimmedParamValue.length == 0) {
++                            var startPos = {line: startPos.line, ch: startPos.ch - 1};
++                            errorsGutter.addError(startPos, endPos, "Missing parameter value");
++                        } else if (parameterInfo.allowedValues != null && parameterInfo.allowedValues.length > 0) {
++
++
++                            // check against allowed values
++                            var allowedValues = parameterInfo.allowedValues;
++                            if (indexOf(allowedValues, trimmedParamValue) == -1) {
++                                // value is illegal
++                                errorsGutter.addError(startPos, endPos, "Parameter value is not valid");
++                            }
++                        } else {
++                            // pattern validation
++                            if (parameterInfo.formatPattern != null && parameterInfo.formatPattern.length > 0) {
++                                var regExpPattern = new RegExp("^(" + parameterInfo.formatPattern + ")$");
++                                var matchedResult = regExpPattern.exec(parameterValue);
++                                if (matchedResult != null) {
++                                    // value is valid
++                                } else {
++                                    // value is invalid
++                                    var formatString;
++                                    if (parameterInfo.formatDisplayText != null && parameterInfo.formatDisplayText.length > 0) {
++                                        formatString = parameterInfo.formatDisplayText;
++                                    } else {
++                                        formatString = parameterInfo.formatPattern;
++                                    }
++                                    var errorMsg = "Parameter value doesn't match expected format '" + formatString + "'";
++                                    errorsGutter.addError(startPos, endPos, errorMsg);
++                                }
++                            }
++                        }
++
++                    }
++                } else {
++                    var parameterValue = pgi.text.trim();
+                     if (parameterValue.length == 0) {
+                         // empty parameter
+                         var startPos = {line: pgi.startLine, ch: pgi.startLineCh - 1};
+-                        var endPos = {line: pgi.endLine, ch: pgi.endLineCh + 1};
++                        var endPos = {line: pgi.endLine, ch: pgi.endLineCh};
+                         errorsGutter.addError(startPos, endPos, "Missing parameter value");
+                     } else if (parameterInfo.allowedValues != null && parameterInfo.allowedValues.length > 0) {
+                         // check against allowed values
+@@ -1669,7 +1736,7 @@
+                     if (text.length > 0) {
+                         return previousLine;
+                     } else {
+-                        previousLine++;
++                        previousLine--;
+                     }
+                 }
+             }
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1412147330000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1412280016000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
-@@ -15,14 +15,37 @@
-             tableLineComment: "|--",
-             blankLine: function (state) {
-                 state.lineNumber++;
--                storyController.errorsGutter.clearForLine(state.lineNumber);
-+                storyController.errorsGutter.clearModeErrorForLine(state.lineNumber);
+@@ -18,6 +18,8 @@
+                 storyController.errorsGutter.clearModeErrorForLine(state.lineNumber);
              },
              startState: function () {
++
++                var state = new Object();
                  return {
  
                      lineNumber: -1,
--                    currentStepNumber: 0,
- 
-+                    // new variables following refactoring
-+                    descriptionDefined: false,
-+
-+                    metaStoryDefined: false,
-+                    metaScenarioDefined: false,
-+
-+                    narrativeDefined: false,
-+                    narrativeInOrderToDefined: false,
-+                    narrativeAsADefined: false,
-+                    narrativeIWantToDefined: false,
-+
-+                    lifecycleDefined: false,
-+                    lifecycleBeforeDefined: false,
-+                    lifecycleAfterDefined: false,
-+                    lifecycleAfterOutcomeDefined: false,
-+
-+                    givenForStoryDefined: false,
-+                    givenForScenarioDefined: false,
-+
-+                    scenarioDefined: false,
-+                    stepDefined: false,
-+                    examplesDefined: false,
-+                    //
-+
-                     inDescription: false,
-                     inMeta: false,
-                     inNarrative: false,
-@@ -30,433 +53,633 @@
-                     inLifecycleBefore: false,
-                     inLifecycleAfter: false,
-                     inLifecycleOutcome: false,
-+                    inGivenStories: false,
+@@ -56,18 +58,223 @@
+                     inGivenStories: false,
                      inScenario: false,
                      inStep: false,
++                    inStepBody: false,
++                    inStepKeywordLine: false,
                      inTable: false,
                      inExamples: false,
                      inExamplesBody: false,
  
--                    allowDescription: true,
--                    allowMeta: true,
--                    allowMetaField: false,
--
--                    allowNarrative: true,
--                    allowNarrativeInOrderTo: false,
--                    allowNarrativeAsA: false,
--                    allowNarrativeIWantTo: false,
--
--                    allowLifecycle: false,
--
--                    allowLifecycleBefore: false,
--
--                    allowLifecycleAfter: false,
--
--                    allowLifecycleOutcome: false,
--
--                    allowScenario: false,
--
--                    allowSteps: false,
--                    allowAndStep: false,
--
--                    allowExamples: false,
--
                      lastStepKeyword: null,
-                     currentStepKeyword: null,
--                    lastStepStartedAt: null,
-+//                    lastStepStartedAt: null,
+-                    currentStepKeyword: null,
++//                    currentStepKeyword: null,
+ //                    lastStepStartedAt: null,
                      stepStartingKeyword: null,
                      stepBody: null,
--
                      lastTokenType: null,
  
-                     current: null
--
-                 };
-             },
-             token: function (stream, state) {
- 
--                var resetInFields = function () {
--                    state.inDescription = false;
--                    state.inMeta = false;
--                    state.inNarrative = false;
--                    state.inLifecycle = false;
--                    state.inLifecycleBefore = false;
--                    state.inLifecycleAfter = false;
--                    state.inLifecycleOutcome = false;
--                    state.inScenario = false;
--                    state.inStep = false;
--                    state.inTable = false;
--                    state.inExamples = false;
--                    state.inExamplesBody = false;
-+                var inFields = [
-+                    "Description",
-+                    "Meta",
-+                    "Narrative",
-+                    "Lifecycle",
-+                    "Before",
-+                    "After",
-+//                    "LifecycleOutcome",
-+                    "Given",
-+                    "Scenario",
-+                    "Step",
-+                    "Table",
-+                    "Examples",
-+//                    "ExamplesBody"
-+                ];
+-                    current: null
++                    current: null,
 +
-+                function indexOf(array, elt) {
-+                    for (var i = 0; i < array.length; ++i)
-+                        if (array[i] == elt) return i;
-+                    return -1;
-                 }
- 
--                var isStepLine = false;
--                var isCommentLine = false;
--                var foundErrors = [];
-+                function resetInFields() {
- 
--                if (stream.sol()) {
-+                    for (var i = 0; i < inFields.length; i++) {
-+                        var inField = "in" + inFields[i];
-+                        state[inField] = false;
-+                    }
-+//                    state.inDescription = false;
-+//                    state.inMeta = false;
-+//                    state.inNarrative = false;
-+//                    state.inLifecycle = false;
-+//                    state.inLifecycleBefore = false;
-+//                    state.inLifecycleAfter = false;
-+//                    state.inLifecycleOutcome = false;
-+//                    state.inGiven = false;
-+//                    state.inScenario = false;
-+//                    state.inStep = false;
-+//                    state.inTable = false;
-+//                    state.inExamples = false;
-+//                    state.inExamplesBody = false;
-+                }
- 
--                    state.lineNumber++;
--                    state.inScenarioTitleLine = false;
--                    state.inNarrativeField = false;
--                    state.inLifecycleOutcome = false;
-+                function resetInFieldsExceptScenario() {
- 
--//                    storyController.clearModeGutterErrorForLine(state.lineNumber);
-+//                    var inScenarioBefore = state.inScenario;
-+//                    resetInFields();
-+//                    state.inScenario = inScenarioBefore;
-+                    resetInFieldsExcept(["Scenario"]);
-                 }
- 
--                state.lastTokenType = "";
-+                function resetInFieldsExcept(exceptFields) {
- 
--                // LINE COMMENT
--                if (stream.sol() && !state.inTable && stream.match(/!--.*/)) {
--                    state.lastTokenType += " jb-story-comment";
--                    isCommentLine = true;
-+                    for (var i = 0; i < inFields.length; i++) {
-+                        var inField = inFields[i];
-+                        if (indexOf(exceptFields, inField) == -1) {
-+                            var inFieldName = "in" + inField;
-+                            state[inFieldName] = false;
-+                        }
-+                    }
-+                }
- 
--//                    // TABLE COMMENT
--                } else if (stream.sol() && state.inTable && stream.match(/\|--.*/)) {
--                    state.lastTokenType += " jb-story-table-comment";
--                    isCommentLine = true;
-+                function tokenInfo() {
-+                    var currentText = stream.current();
-+                    var from = CodeMirror.Pos(state.lineNumber, stream.column());
-+                    var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentText.length);
-+                    var tokenInfo = new Object();
-+                    tokenInfo.from = from;
-+                    tokenInfo.to = to;
-+                    tokenInfo.text = currentText;
-+                    return tokenInfo;
-+                }
- 
--                    // META title
--                } else if (state.allowMeta && stream.sol() && stream.match(/(Meta):/)) {
-+                function getTo() {
- 
--                    state.inMeta = true;
--                    state.inDescription = false;
--                    state.inTable = false;
-+                    return to;
-+                }
- 
--                    state.allowDescription = false;
--                    state.allowMeta = false;
--                    state.allowMetaField = true;
-+                function clearErrorsGutter() {
-+                    storyController.errorsGutter.clearModeErrorForLine(state.lineNumber);
-+                }
- 
-+                function addGutterError(from, to, msg) {
-+                    storyController.errorsGutter.addModeError(from, to, msg);
-+                }
-+
-+                function parseMeta() {
-+
-                     state.lastTokenType += " jb-story-meta-title";
- 
--                    // META field
--                } else if (state.allowMetaField && stream.sol() && stream.match(/@.*/)) {
-+//                    clearErrorsGutter();
-+                    resetInFieldsExceptScenario();
-+                    state.inMeta = true;
- 
--                    state.inTable = false;
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
-+
-+                    if (state.inScenario) {
-+                        // meta for scenario
-+                        if (state.metaScenarioDefined) {
-+                            // duplicate
-+                            var msg = "Duplicate '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        } else {
-+                            state.metaScenarioDefined = true;
-+                            if (state.stepDefined
-+                                || state.givenForScenarioDefined) {
-+                                var msg = "Out of order '" + sectionName + "' section";
-+                                addGutterError(ti.from, ti.to, msg);
++                    // allow functions are used by the hinting function
++                    allowMeta: function (state) {
++                        if (state.inScenario) {
++                            // scenario meta
++                            if (state.metaScenarioDefined
++                                || state.givenForScenarioDefined
++                                || state.stepDefined) {
++                                return false;
++                            } else {
++                                return true;
 +                            }
-+                        }
-+                    } else {
-+                        // meta for story
-+                        if (state.metaStoryDefined) {
-+                            // duplicate
-+                            var msg = "Duplicate '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
 +                        } else {
-+                            // check for correct location
-+                            state.metaStoryDefined = true;
-+                            if (state.narrativeDefined
++                            // story meta
++                            if (state.metaStoryDefined
++                                || state.narrativeDefined
 +                                || state.givenForStoryDefined
 +                                || state.lifecycleDefined
 +                                || state.scenarioDefined
 +                                ) {
-+                                var msg = "Out of order '" + sectionName + "' section";
-+                                addGutterError(ti.from, ti.to, msg);
++                                return false;
++                            } else {
++                                return true;
 +                            }
 +                        }
-+                    }
-+                }
++                    },
 +
-+                function parseMetaField() {
-+
-+//                    clearErrorsGutter();
-                     state.lastTokenType += " jb-story-meta-field";
-+                }
- 
--                    // Narrative - title
--                } else if (state.allowNarrative && stream.sol() && stream.match(/Narrative:/)) {
-+                function parseNarrative() {
- 
--                    state.inTable = false;
--                    state.inDescription = false;
-+//                    clearErrorsGutter();
-+                    resetInFieldsExceptScenario();
-+
-                     state.inNarrative = true;
-+                    state.lastTokenType += " jb-story-narrative-title";
- 
--                    state.allowDescription = false;
--                    state.allowMeta = false;
--                    state.allowMetaField = false;
--                    state.allowNarrative = false;
--                    state.allowNarrativeInOrderTo = true;
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
--                    state.allowSteps = false;
-+                    if (state.narrativeDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.narrativeDefined = true;
-+                        // check for out of order
-+                        if (state.givenForStoryDefined
++                    allowNarrative: function (state) {
++                        if (state.narrativeDefined
++                            || state.givenForStoryDefined
 +                            || state.lifecycleDefined
 +                            || state.scenarioDefined) {
-+                            var msg = "Out of order '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                    }
-+                }
- 
--                    state.lastTokenType += " jb-story-narrative-title";
-+                function parseNarrativeInOrderTo() {
- 
--                    // Narrative - In order to - keyword
--                } else if (state.allowNarrativeInOrderTo && stream.sol() && stream.match(/(In order to )/)) {
-+//                    clearErrorsGutter();
- 
--                    state.allowNarrativeInOrderTo = false;
--                    state.allowNarrativeAsA = true;
-                     state.inNarrativeField = true;
--                    state.inTable = false;
--
-                     state.lastTokenType += " jb-story-narrative-field-keyword";
- 
--                    // Narrative - As a - keyword
--                } else if (state.allowNarrativeAsA && stream.sol() && stream.match(/(As a )/)) {
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
--                    state.allowNarrativeAsA = false;
--                    state.allowNarrativeIWantTo = true;
--                    state.inNarrativeField = true;
--                    state.inTable = false;
-+                    if (state.narrativeInOrderToDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.narrativeInOrderToDefined = true;
-+                        // check for out of order
-+                        if (state.narrativeAsADefined
-+                            || state.narrativeIWantToDefined) {
-+                            var msg = "Out of order '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                    }
-+                }
- 
--                    state.lastTokenType += " jb-story-narrative-field-keyword";
-+                function parseNarrativeAsA() {
- 
--                    // Narrative - I want to - keyword
--                } else if (state.allowNarrativeIWantTo && stream.sol() && stream.match(/(I want to )/)) {
-+//                    clearErrorsGutter();
- 
--                    state.allowNarrativeIWantTo = false;
-                     state.inNarrativeField = true;
--                    state.inTable = false;
-+                    state.lastTokenType += " jb-story-narrative-field-keyword";
- 
--                    state.allowScenario = true;
--                    state.allowLifecycle = true;
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
-+                    if (state.narrativeAsADefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.narrativeAsADefined = true;
-+                        // check for out of order
-+                        if (state.narrativeIWantToDefined) {
-+                            var msg = "Out of order '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                        // check for missing In Order To
-+                        if (!state.narrativeInOrderToDefined) {
-+                            var msg = "Missing prior '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                    }
-+                }
-+
-+                function parseNarrativeIWantTo() {
-+
-+//                    clearErrorsGutter();
-+
-+                    state.inNarrativeField = true;
-                     state.lastTokenType += " jb-story-narrative-field-keyword";
- 
--                    // Narrative - field value
--                } else if (state.inNarrativeField && stream.match(/.*/)) {
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
-+                    if (state.narrativeIWantToDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.narrativeIWantToDefined = true;
-+                        // check for missing As a
-+                        if (!state.narrativeAsADefined) {
-+                            var msg = "Missing prior '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                    }
-+                }
-+
-+                function parseNarrativeField() {
-                     state.lastTokenType += " jb-story-narrative-field-value";
--                    state.inTable = false;
-+                }
- 
--                    // Lifecycle
--                } else if (state.allowLifecycle && stream.sol() && stream.match(/Lifecycle:/)) {
-+                function parseGivenStories() {
- 
--                    state.inLifecycle = true;
-+                    state.lastTokenType += " jb-story-givenstories-keyword";
- 
--                    state.allowLifecycle = false;
--                    state.allowLifecycleBefore = true;
--                    state.allowLifecycleAfter = true;
--                    state.inTable = false;
-+//                    clearErrorsGutter();
-+                    resetInFieldsExceptScenario();
-+                    state.inGivenStories = true;
- 
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
-+
-+                    if (state.inScenario) {
-+                        // GivenStories for scenario
-+                        if (state.givenForScenarioDefined) {
-+                            // duplicate
-+                            var msg = "Duplicate '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
++                            return false;
 +                        } else {
-+                            state.givenForScenarioDefined = true;
-+                            if (state.stepDefined) {
-+                                var msg = "Out of order '" + sectionName + "' section";
-+                                addGutterError(ti.from, ti.to, msg);
++                            return true;
++                        }
++                    },
++
++                    allowNarrativeInOrderTo: function (state) {
++                        if (state.inNarrative) {
++                            if (state.narrativeInOrderToDefined
++                                || state.narrativeAsADefined
++                                || state.narrativeIWantToDefined) {
++                                return false;
++                            } else {
++                                return true;
 +                            }
-+                        }
-+                    } else {
-+                        // GivenStories for story
-+                        if (state.givenForStoryDefined) {
-+                            // duplicate
-+                            var msg = "Duplicate '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
 +                        } else {
-+                            // check for correct location
-+                            state.givenForStoryDefined = true;
-+                            if (state.lifecycleDefined
++                            return false;
++                        }
++                    },
++
++                    allowNarrativeAsA: function (state) {
++                        if (state.inNarrative) {
++                            if (state.narrativeAsADefined
++                                || state.narrativeIWantToDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowNarrativeIWantTo: function (state) {
++                        if (state.inNarrative) {
++                            if (state.narrativeIWantToDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowGivenStories: function (state) {
++                        if (state.inScenario) {
++                            // scenario GivenStories
++                            if (state.givenForScenarioDefined
++                                || state.stepDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            // story GivenStories
++                            if (state.givenForStoryDefined
++                                || state.lifecycleDefined
 +                                || state.scenarioDefined
 +                                ) {
-+                                var msg = "Out of order '" + sectionName + "' section";
-+                                addGutterError(ti.from, ti.to, msg);
++                                return false;
++                            } else {
++                                return true;
 +                            }
 +                        }
++                    },
++
++                    allowLifecycle: function (state) {
++                        if (state.lifecycleDefined
++                            || state.scenarioDefined) {
++                            return false;
++                        } else {
++                            return true;
++                        }
++                    },
++
++                    allowLifecycleBefore: function (state) {
++                        if (state.inLifecycle) {
++                            if (state.lifecycleBeforeDefined
++                                || state.lifecycleAfterDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowLifecycleAfter: function (state) {
++                        if (state.inLifecycle) {
++                            if (state.lifecycleAfterDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowLifecycleAfterOutcome: function (state) {
++                        if (state.inLifecycleAfter) {
++                            if (state.lifecycleAfterOutcomeDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowLifecycleAfterOutcomeValue: function (state) {
++                        if (state.inLifecycleOutcome) {
++                            return true;
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowScenario: function (state) {
++                        // we always allow scenario
++                        return true;
++                    },
++
++                    allowExamples: function (state) {
++                        if (state.inScenario) {
++                            if (state.examplesDefined
++                                || !state.stepDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowStep: function (state) {
++                        if (state.inScenario) {
++                            if (state.examplesDefined) {
++                                return false;
++                            } else {
++                                return true;
++                            }
++                        } else if (state.inLifecycleBefore) {
++                            return true;
++                        } else if (state.inLifecycleAfter) {
++                            if (state.lifecycleAfterOutcomeDefined) {
++                                return true;
++                            } else {
++                                return false;
++                            }
++                        } else {
++                            return false;
++                        }
++                    },
++
++                    allowAndStep: function (state) {
++                        if (state.allowStep) {
++                            if (state.stepDefined) {
++                                return true;
++                            } else {
++                                return false;
++                            }
++                        } else {
++                            return false;
++                        }
 +                    }
-+                }
 +
-+                function parseLifecycle() {
-+
-+//                    clearErrorsGutter();
-+                    resetInFieldsExceptScenario();
-+
-+                    state.inLifecycle = true;
-                     state.lastTokenType += " jb-story-lifecycle";
+                 };
+             },
+             token: function (stream, state) {
+@@ -85,6 +292,7 @@
+                     "Step",
+                     "Table",
+                     "Examples",
++//                    "StepKeywordLine"
+ //                    "ExamplesBody"
+                 ];
  
--                    // Lifecycle - Before
--                } else if (state.allowLifecycleBefore && stream.sol() && stream.match(/Before:/)) {
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
+@@ -160,7 +368,7 @@
  
--                    state.inStep = false;
+                 function parseMeta() {
+ 
+-                    state.lastTokenType += " jb-story-meta-title";
++                    state.lastTokenType += " jb-story-meta-keyword";
+ 
+ //                    clearErrorsGutter();
+                     resetInFieldsExceptScenario();
+@@ -216,7 +424,7 @@
+                     resetInFieldsExceptScenario();
+ 
+                     state.inNarrative = true;
+-                    state.lastTokenType += " jb-story-narrative-title";
++                    state.lastTokenType += " jb-story-narrative-keyword";
+ 
+                     var ti = tokenInfo();
+                     var sectionName = ti.text.trim();
+@@ -368,7 +576,7 @@
+                     resetInFieldsExceptScenario();
+ 
+                     state.inLifecycle = true;
+-                    state.lastTokenType += " jb-story-lifecycle";
++                    state.lastTokenType += " jb-story-lifecycle-keyword";
+ 
+                     var ti = tokenInfo();
+                     var sectionName = ti.text.trim();
+@@ -394,7 +602,7 @@
+                     resetInFieldsExcept(["Scenario", "Lifecycle"]);
+                     state.inLifecycleBefore = true;
+ 
+-                    state.lastTokenType += " jb-story-lifecycle-before";
++                    state.lastTokenType += " jb-story-lifecycle-before-keyword";
+ 
+                     var ti = tokenInfo();
+                     var sectionName = ti.text.trim();
+@@ -419,9 +627,9 @@
+ //                    clearErrorsGutter();
+ 
+                     resetInFieldsExcept(["Scenario", "Lifecycle"]);
 -                    state.inLifecycleBefore = true;
--                    state.inLifecycleAfter = false;
--                    state.inTable = false;
-+                    if (state.lifecycleDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.lifecycleDefined = true;
-+                        // check for out of order
-+                        if (state.scenarioDefined) {
-+                            var msg = "Out of order '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                    }
-+                }
++                    state.inLifecycleAfter = true;
  
--                    state.allowLifecycleBefore = false;
--                    state.allowSteps = true;
--                    state.allowAndStep = false;
-+                function parseLifecycleBefore() {
+-                    state.lastTokenType += " jb-story-lifecycle-after";
++                    state.lastTokenType += " jb-story-lifecycle-after-keyword";
  
--                    state.lastStepKeyword = null;
--                    state.currentStepKeyword = null;
--                    state.lastStepStartedAt = null;
-+//                    clearErrorsGutter();
- 
-+                    resetInFieldsExcept(["Scenario", "Lifecycle"]);
-+                    state.inLifecycleBefore = true;
-+
-                     state.lastTokenType += " jb-story-lifecycle-before";
- 
--                    // Lifecycle - After
--                } else if (state.allowLifecycleAfter && stream.sol() && stream.match(/After:/)) {
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
--                    state.inStep = false;
--                    state.inLifecycleBefore = false;
--                    state.inLifecycleAfter = true;
--                    state.inTable = false;
-+                    if (state.lifecycleBeforeDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.lifecycleBeforeDefined = true;
-+                        state.stepDefined = false;
-+                        // check for out of order
-+                        if (state.lifecycleAfterDefined) {
-+                            var msg = "Out of order '" + sectionName + "' section";
-+                            addGutterError(ti.from, ti.to, msg);
-+                        }
-+                    }
-+                }
- 
--                    state.allowLifecycleBefore = false;
--                    state.allowLifecycleAfter = false;
--                    state.allowLifecycleOutcome = true;
-+                function parseLifecycleAfter() {
- 
--                    state.allowSteps = false;
--                    state.allowAndStep = false;
-+//                    clearErrorsGutter();
- 
-+                    resetInFieldsExcept(["Scenario", "Lifecycle"]);
-+                    state.inLifecycleBefore = true;
-+
-                     state.lastTokenType += " jb-story-lifecycle-after";
- 
--                    // Lifecycle - Outcome keyword
--                } else if (state.allowLifecycleOutcome && stream.sol() && stream.match(/Outcome: /)) {
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
--                    state.inStep = false;
--                    state.inTable = false;
--                    state.inLifecycleOutcome = true;
-+                    if (state.lifecycleAfterDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.lifecycleAfterDefined = true;
-+                        state.lifecycleAfterOutcomeDefined = false;
-+                        state.stepDefined = false;
-+                    }
-+                }
- 
--                    state.allowLifecycleOutcome = false;
--                    state.allowScenario = false;
-+                function parseLifecycleAfterOutcome() {
- 
-+//                    clearErrorsGutter();
-+                    resetInFieldsExcept(["Scenario", "Lifecycle", "After"]);
-                     state.lastTokenType += " jb-story-lifecycle-outcome-keyword";
-+                    state.inLifecycleOutcome = true;
- 
--                    // Lifecycle - Outcome value
--                } else if (state.inLifecycleOutcome && !stream.sol()
--                    && (stream.match(/ANY/) || stream.match(/SUCCESS/) || stream.match(/FAILURE/))) {
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
--                    state.allowSteps = true;
-+                    if (state.lifecycleAfterOutcomeDefined) {
-+                        // duplicate
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    } else {
-+                        state.lifecycleAfterOutcomeDefined = true;
-+                        // check for out of order ???
-+                    }
-+                }
- 
--                    state.inTable = false;
--                    state.lastStepKeyword = null;
--                    state.currentStepKeyword = null;
--                    state.lastStepStartedAt = null;
-+                function parseLifecycleAfterOutcomeValue() {
- 
-                     state.lastTokenType += " jb-story-lifecycle-outcome-value";
- 
--                    // SCENARIO keyword
--                } else if (state.allowScenario && stream.sol() && stream.match(/(Scenario): /)) {
-+                    var ti = tokenInfo();
-+                    var currentToken = ti.text.trim();
- 
--                    state.inStep = false;
--                    state.inLifecycle = false;
--                    state.inLifecycleAfter = false;
--                    state.inScenario = true;
--                    state.inScenarioTitleLine = true;
--                    state.inTable = false;
-+                    if (currentToken != "ANY" && currentToken != "SUCCESS" && currentToken != "FAILURE") {
-+                        var msg = "Invalid value for 'Outcome' section";
-+                        addGutterError(ti.from, ti.to, msg);
-+                    }
-+                }
- 
--                    state.allowLifecycle = false;
--                    state.allowLifecycleBefore = false;
--                    state.allowLifecycleAfter = false;
--                    state.allowLifecycleOutcome = false;
--                    state.allowSteps = true;
--                    state.allowAndStep = false;
--                    state.allowExamples = false;
-+                function parseScenario() {
- 
--                    state.lastStepKeyword = null;
--                    state.currentStepKeyword = null;
--                    state.lastStepStartedAt = null;
-+//                    clearErrorsGutter();
- 
-+                    resetInFields();
-+                    state.inScenario = true;
-+                    state.inScenarioTitleLine = true;
-+
-                     state.lastTokenType += " jb-story-scenario-keyword";
- 
--                    // SCENARIO title
--                } else if (state.inScenarioTitleLine && !stream.sol() && stream.match(/.*/)) {
-+                    state.examplesDefined = false;
-+                    state.stepDefined = false;
-+                }
- 
--                    state.inTable = false;
--                    state.lastTokenType += " jb-story-scenario-title";
-+                function parseStep() {
- 
--                    // GIVEN
--                } else if (state.allowSteps && stream.sol() && stream.match(/(Given )/)) {
-+                    var ti = tokenInfo();
-+                    var keyword = ti.text.trim();
- 
--                    if (state.currentStepKeyword != null) {
--                        state.lastStepKeyword = state.currentStepKeyword;
--                    }
--                    state.currentStepKeyword = "Given";
-+                    state.currentStepKeyword = keyword;
-+                    state.lastTokenType += " jb-story-step-keyword ";// + keyword + "-step";
- 
--                    state.stepStartingKeyword = "Given "; //TODO
-+                    resetInFieldsExcept(["Scenario", "Lifecycle", "Before", "After"]);
-+                    state.inStep = true;
- 
--                    if (state.inLifecycleAfter) {
--                        state.allowSteps = false;
--                        state.allowAndStep = false;
--                        state.inLifecycleOutcome = false;
--                        state.allowLifecycleOutcome = true;
--                        state.allowScenario = true;
-+                    // check for correct location
-+                    if (state.inScenario) {
-+                        // scenario step
-+                        if (state.examplesDefined) {
-+                            var msg = "Out of order '" + keyword + "' step";
-+                            addGutterError(from, to, msg);
--                    } else {
-+                        } else {
--                        state.allowAndStep = true;
-+                            if (keyword == "And" && !state.stepDefined) {
-+                                var msg = "Missing prior Given/When/Then step";
-+                                addGutterError(from, to, msg);
-+                            } else {
-+                                state.stepDefined = true;
--                    }
-+                            }
-+                        }
-+                    } else if (state.inLifecycleBefore) {
-+                        if (keyword == "And" && !state.stepDefined) {
-+                            var msg = "Missing prior Given/When/Then step";
-+                            addGutterError(from, to, msg);
-+                        } else {
-+                            state.stepDefined = true;
-+                        }
-+                    } else if (state.inLifecycleAfter) {
-+                        // lifecycle step
-+                        if (!state.lifecycleAfterOutcomeDefined) {
-+                            var msg = "Missing prior 'Outcome' section";
-+                            addGutterError(from, to, msg);
-+                        } else {
-+                            if (keyword == "And" && !state.stepDefined) {
-+                                var msg = "Missing prior Given/When/Then step";
-+                                addGutterError(from, to, msg);
-+                            } else {
-+                                state.stepDefined = true;
-+                            }
-+                        }
-+                    } else {
-+                        // out of order step
-+                        var msg = "Out of order '" + keyword + "' step";
-+                        addGutterError(from, to, msg);
-+                    }
-+                }
- 
--                    state.inTable = false;
--                    state.inStep = true;
--//                    state.stepBody = "";
--                    state.lastStepStartedAt = state.lineNumber;
-+                function parseExamples() {
- 
--                    state.inStepBody = false;
--//                    state.stepBodyStartedAtCh = null;
-+                    state.lastTokenType += " jb-story-examples";
- 
--                    state.currentStepNumber++;
-+                    var ti = tokenInfo();
-+                    var sectionName = ti.text.trim();
- 
--                    state.allowExamples = true;
-+                    resetInFieldsExceptScenario();
-+                    state.inExamples = true;
- 
--                    state.lastTokenType += " jb-story-step-keyword given-step";
--
--                    // WHEN
--                } else if (state.allowSteps && stream.sol() && stream.match(/(When )/)) {
--
--                    state.inStep = true;
--
--                    if (state.inLifecycleAfter) {
--                        state.allowSteps = false;
--                        state.allowAndStep = false;
--                        state.inLifecycleOutcome = false;
--                        state.allowLifecycleOutcome = true;
--                        state.allowScenario = true;
-+                    // check for duplicate
-+                    if (state.examplesDefined) {
-+                        var msg = "Duplicate '" + sectionName + "' section";
-+                        addGutterError(from, to, msg);
-                     } else {
--                        state.allowAndStep = true;
-+                        state.examplesDefined = true;
+                     var ti = tokenInfo();
+                     var sectionName = ti.text.trim();
+@@ -434,6 +642,7 @@
+                         state.lifecycleAfterDefined = true;
+                         state.lifecycleAfterOutcomeDefined = false;
+                         state.stepDefined = false;
++                        state.currentStepKeyword = null;
                      }
+                 }
+ 
+@@ -459,7 +668,7 @@
+ 
+                 function parseLifecycleAfterOutcomeValue() {
+ 
+-                    state.lastTokenType += " jb-story-lifecycle-outcome-value";
++                    state.lastTokenType += " jb-story-lifecycle-outcome-field";
+ 
+                     var ti = tokenInfo();
+                     var currentToken = ti.text.trim();
+@@ -472,39 +681,44 @@
+ 
+                 function parseScenario() {
+ 
+-//                    clearErrorsGutter();
++                    state.lastTokenType += " jb-story-scenario-keyword";
+ 
+                     resetInFields();
+                     state.inScenario = true;
+                     state.inScenarioTitleLine = true;
+ 
+-                    state.lastTokenType += " jb-story-scenario-keyword";
 -
--
--                    if (state.currentStepKeyword != null) {
--                        state.lastStepKeyword = state.currentStepKeyword;
--                    }
-+                }
--                    state.currentStepKeyword = "When";
++                    state.scenarioDefined = true;
+                     state.examplesDefined = false;
+                     state.stepDefined = false;
++
++                    state.currentStepKeyword = null;
+                 }
  
--                    state.inTable = false;
--                    state.stepStartingKeyword = "When "; //TODO
--                    state.stepBody = "";
--                    state.lastStepStartedAt = state.lineNumber;
-+                if (stream.sol()) {
+                 function parseStep() {
  
--                    state.inStepBody = false;
--//                    state.stepBodyStartedAtCh = null;
-+                    state.lineNumber++;
+                     var ti = tokenInfo();
++                    state.stepStartingKeywordText = ti.text;
+                     var keyword = ti.text.trim();
++                    if (keyword != "And") {
++                        state.stepStartingKeyword = keyword;
++                    }
  
--                    state.currentStepNumber++;
-+                    // reset in fields which span maximum of one line
-+                    state.inNarrativeField = false;
-+                    // TODO - restriction for now is that GivenStories value must be on the same line as the keyword
-+                    state.inGivenStories = false;
-+                    state.inLifecycleOutcome = false;
-+                    state.inScenarioTitleLine = false;
+-                    state.currentStepKeyword = keyword;
+-                    state.lastTokenType += " jb-story-step-keyword ";// + keyword + "-step";
++                    state.lastTokenType += " jb-story-step-keyword";// + keyword + "-step";
  
--                    state.allowExamples = true;
-+                    clearErrorsGutter();
-+                }
+                     resetInFieldsExcept(["Scenario", "Lifecycle", "Before", "After"]);
+                     state.inStep = true;
++                    state.inStepKeywordLine = true;
  
--                    state.lastTokenType += " jb-story-step-keyword when-step";
-+                state.lastTokenType = "";
+                     // check for correct location
+                     if (state.inScenario) {
+                         // scenario step
+                         if (state.examplesDefined) {
+                             var msg = "Out of order '" + keyword + "' step";
+-                            addGutterError(from, to, msg);
++                            addGutterError(ti.from, ti.to, msg);
+                         } else {
+                             if (keyword == "And" && !state.stepDefined) {
+                                 var msg = "Missing prior Given/When/Then step";
+-                                addGutterError(from, to, msg);
++                                addGutterError(ti.from, ti.to, msg);
+                             } else {
+                                 state.stepDefined = true;
+                             }
+@@ -512,7 +726,7 @@
+                     } else if (state.inLifecycleBefore) {
+                         if (keyword == "And" && !state.stepDefined) {
+                             var msg = "Missing prior Given/When/Then step";
+-                            addGutterError(from, to, msg);
++                            addGutterError(ti.from, ti.to, msg);
+                         } else {
+                             state.stepDefined = true;
+                         }
+@@ -520,11 +734,11 @@
+                         // lifecycle step
+                         if (!state.lifecycleAfterOutcomeDefined) {
+                             var msg = "Missing prior 'Outcome' section";
+-                            addGutterError(from, to, msg);
++                            addGutterError(ti.from, ti.to, msg);
+                         } else {
+                             if (keyword == "And" && !state.stepDefined) {
+                                 var msg = "Missing prior Given/When/Then step";
+-                                addGutterError(from, to, msg);
++                                addGutterError(ti.from, ti.to, msg);
+                             } else {
+                                 state.stepDefined = true;
+                             }
+@@ -532,13 +746,13 @@
+                     } else {
+                         // out of order step
+                         var msg = "Out of order '" + keyword + "' step";
+-                        addGutterError(from, to, msg);
++                        addGutterError(ti.from, ti.to, msg);
+                     }
+                 }
  
--                    // THEN
--                } else if (state.allowSteps && stream.sol() && stream.match(/(Then )/)) {
-+                // LINE COMMENT
-+                if (stream.sol() && !state.inTable && stream.match(/!--.*/)) {
-+//                    clearErrorsGutter();
-+                    state.lastTokenType += " jb-story-comment";
- 
--                    if (state.currentStepKeyword != null) {
--                        state.lastStepKeyword = state.currentStepKeyword;
--                    }
--                    state.currentStepKeyword = "Then";
-+//                    // TABLE COMMENT
-+                } else if (stream.sol() && state.inTable && stream.match(/\|--.*/)) {
-+//                    clearErrorsGutter();
-+                    state.lastTokenType += " jb-story-table-comment";
-+//                    isCommentLine = true;
- 
--                    state.stepStartingKeyword = "Then "; //TODO
-+                    // META keyword
-+                } else if (stream.sol() && stream.match(/(Meta):\s*/)) {
-+                    parseMeta();
- 
--                    if (state.inLifecycleAfter) {
--                        state.allowSteps = false;
--                        state.allowAndStep = false;
--                        state.inLifecycleOutcome = false;
--                        state.allowLifecycleOutcome = true;
--                        state.allowScenario = true;
--                    } else {
--                        state.allowAndStep = true;
--                    }
-+                    // META field
-+                } else if (state.inMeta && stream.sol() && stream.match(/@.*/)) {
-+                    parseMetaField();
- 
--                    state.allowExamples = true;
-+                    // Narrative - title
-+                } else if (stream.sol() && stream.match(/Narrative:\s*/)) {
-+                    parseNarrative();
- 
--                    state.inTable = false;
--                    state.inStep = true;
--                    state.lastStepStartedAt = state.lineNumber;
-+                    // Narrative - In order to - keyword
-+                } else if (state.inNarrative && stream.sol() && stream.match(/(In order to\s+)/)) {
-+                    parseNarrativeInOrderTo();
- 
--                    state.inStepBody = false;
--//                    state.stepBodyStartedAtCh = null;
-+                    // Narrative - As a - keyword
-+                } else if (state.inNarrative && stream.sol() && stream.match(/(As a\s+)/)) {
-+                    parseNarrativeAsA();
- 
--                    state.currentStepNumber++;
-+                    // Narrative - I want to - keyword
-+                } else if (state.inNarrative && stream.sol() && stream.match(/(I want to\s+)/)) {
-+                    parseNarrativeIWantTo();
- 
--                    state.lastTokenType += " jb-story-step-keyword then-step";
-+                    // Narrative - field value
-+                } else if (state.inNarrativeField && stream.match(/.*/)) {
-+                    parseNarrativeField();
- 
--                    // AND
--                } else if (state.allowAndStep && stream.sol() && stream.match(/(And )/)) {
-+                    // GivenStories
-+                } else if (stream.sol() && stream.match(/GivenStories:\s*/)) {
-+                    parseGivenStories();
- 
--                    if (state.inLifecycleAfter) {
--                        state.allowSteps = false;
--                        state.allowAndStep = false;
--                        state.inLifecycleOutcome = false;
--                        state.allowLifecycleOutcome = true;
--                        state.allowScenario = true;
--                    }
-+                } else if (state.inGivenStories && stream.match(/(.*)/)) {
-+                    // TODO - restriction for now is that GivenStories value must be on the same line as the keyword
-+                    state.lastTokenType += " jb-story-givenstories-value";
- 
--                    state.inStep = true;
--                    state.inTable = false;
-+                    // Lifecycle
-+                } else if (stream.sol() && stream.match(/Lifecycle:\s*/)) {
-+                    parseLifecycle();
- 
--                    state.lastStepStartedAt = state.lineNumber;
--                    state.stepStartingKeyword = "And "; //TODO
-+                    // Lifecycle - Before
-+                } else if (state.inLifecycle && stream.sol() && stream.match(/Before:\s*/)) {
-+                    parseLifecycleBefore();
- 
--                    if (state.currentStepKeyword != null) {
--                        state.lastStepKeyword = state.currentStepKeyword;
--                    }
--                    state.currentStepKeyword = state.currentStepKeyword;
-+                    // Lifecycle - After
-+                } else if (state.inLifecycle && stream.sol() && stream.match(/After:\s*/)) {
-+                    parseLifecycleAfter();
- 
--                    state.inStepBody = false;
--//                    state.stepBodyStartedAtCh = null;
-+                    // Lifecycle - Outcome keyword
-+                } else if (state.inLifecycleAfter && stream.sol() && stream.match(/Outcome:\s+/)) {
-+                    parseLifecycleAfterOutcome();
- 
--                    state.currentStepNumber++;
-+                    // Lifecycle - Outcome value
-+                } else if (state.inLifecycleOutcome && stream.match(/.*/)) {
-+                    parseLifecycleAfterOutcomeValue();
- 
--                    state.lastTokenType += " jb-story-step-keyword " + state.lastStepKeyword + "-step";
-+                    // SCENARIO keyword
-+                } else if (stream.sol() && stream.match(/(Scenario):\s*/)) {
-+                    parseScenario();
- 
--                    // Examples
--                } else if (state.allowExamples && stream.sol() && stream.match(/(Examples):/)) {
-+                    // SCENARIO title
-+                } else if (state.inScenarioTitleLine && stream.match(/.*/)) {
-+                    state.lastTokenType += " jb-story-scenario-title";
- 
--                    state.inExamples = true;
--                    state.inExamplesBody = false;
-+                    // GIVEN
-+                } else if (stream.sol() && stream.match(/(Given\s+)/)) {
-+                    parseStep();
- 
--                    state.inStep = false;
--                    state.inTable = false;
-+                    // WHEN
-+                } else if (stream.sol() && stream.match(/(When\s+)/)) {
-+                    parseStep();
- 
--                    state.allowSteps = false;
--                    state.allowAndStep = false;
--                    state.allowExamples = false;
-+                    // THEN
-+                } else if (stream.sol() && stream.match(/(Then\s+)/)) {
-+                    parseStep();
+                 function parseExamples() {
  
 -                    state.lastTokenType += " jb-story-examples";
-+                    // AND
-+                } else if (stream.sol() && stream.match(/(And\s+)/)) {
-+                    parseStep();
++                    state.lastTokenType += " jb-story-examples-keyword";
  
-+                    // Examples
-+                } else if (stream.sol() && stream.match(/(Examples):\s*/)) {
-+                    parseExamples();
+                     var ti = tokenInfo();
+                     var sectionName = ti.text.trim();
+@@ -565,6 +779,8 @@
+                     state.inGivenStories = false;
+                     state.inLifecycleOutcome = false;
+                     state.inScenarioTitleLine = false;
++                    state.inStepKeywordLine = false;
++                    state.inStepBody = false;
+ 
+                     clearErrorsGutter();
+                 }
+@@ -642,30 +858,38 @@
+                 } else if (stream.sol() && stream.match(/(Scenario):\s*/)) {
+                     parseScenario();
+ 
+-                    // SCENARIO title
+-                } else if (state.inScenarioTitleLine && stream.match(/.*/)) {
+-                    state.lastTokenType += " jb-story-scenario-title";
+-
+                     // GIVEN
+-                } else if (stream.sol() && stream.match(/(Given\s+)/)) {
++                } else if (stream.sol() && stream.match(/(Given)\s+/, false)) {
++                    stream.match(/(Given)/);
+                     parseStep();
+ 
+                     // WHEN
+-                } else if (stream.sol() && stream.match(/(When\s+)/)) {
++                } else if (stream.sol() && stream.match(/(When)\s+/, false)) {
++                    stream.match(/(When)/);
+                     parseStep();
+ 
+                     // THEN
+-                } else if (stream.sol() && stream.match(/(Then\s+)/)) {
++                } else if (stream.sol() && stream.match(/(Then)\s+/, false)) {
++                    stream.match(/(Then)/)
+                     parseStep();
+ 
+                     // AND
+-                } else if (stream.sol() && stream.match(/(And\s+)/)) {
++                } else if (stream.sol() && stream.match(/(And)\s+/, false)) {
++                    stream.match(/(And)/);
+                     parseStep();
+ 
+                     // Examples
+                 } else if (stream.sol() && stream.match(/(Examples):\s*/)) {
+                     parseExamples();
+ 
++                    // SCENARIO title - can be on several lines
++                } else if (state.inScenario && !state.stepDefined
++                    && !state.examplesDefined && !state.metaScenarioDefined
++                    && !state.givenForScenarioDefined
++//                    && state.inScenarioTitleLine
++                    && stream.match(/.*/)) {
++                    state.lastTokenType += " jb-story-scenario-title";
 +
                      // Description
--                } else if (stream.sol() && state.allowDescription && stream.match(/(.*)/)) {
-+                } else if (stream.sol()
-+                    && !state.metaStoryDefined
-+                    && !state.narrativeDefined && !state.givenForStoryDefined && !state.lifecycleDefined
-+                    && !state.scenarioDefined && !state.stepDefined && !state.examplesDefined
-+                    && stream.match(/(.*)/)) {
- 
--                    state.inTable = false;
-+                    clearErrorsGutter();
-                     state.inDescription = true;
+                 } else if (stream.sol()
+                     && !state.metaStoryDefined
+@@ -678,18 +902,23 @@
                      state.lastTokenType += " jb-story-description-line";
  
                      // Step body
-                 } else if (state.inStep && stream.match(/(.*)/)) {
+-                } else if (state.inStep && stream.match(/(.*)/)) {
++                } else if (state.inStep && stream.match(/(.*)/, false)) {
  
--                    if (state.inStepBody == false) {
--                        // this is the first line of the step
--                        state.inStepBody = true;
--//                        state.stepBodyStartedAtCh = stream.column() - stream.current().length;
--                    }
--
--//                    state.stepBody += stream.current() + "\n";
--//                    var stepBody = state.stepBody;
--//                    console.log("stepBody - " + stepBody);
--
                      state.lastTokenType += " jb-story-step-body";
++                    state.inStepBody = true;
  
-                     var current = stream.current();
-@@ -471,7 +694,7 @@
++                    if (stream.sol()) {
++                        stream.match(/(.*)/);
+-                    var current = stream.current();
++                        var current = stream.current();
+-                    if (current.substring(0, 1) == "|") {
++                        if (current.substring(0, 1) == "|" && current.substring(0, 3) != "|--") {
+-                        state.lastTokenType += " jb-story-table-line";
++                            state.lastTokenType += " jb-story-table-line";
+-                        if (current.substring(0, 3) != "|--" && !state.inTable) {
++                            if (state.inTable == false) {
+-                            state.lastTokenType += " jb-story-first-table-line";
+-                            state.inTable = true;
+-                        }
++                                state.lastTokenType += " jb-story-first-table-line";
++                                state.inTable = true;
++                            }
++                        }
+                     } else {
++                        stream.match(/(.*)/);
+                         state.inTable = false;
                      }
  
-                     // Examples body
--                } else if (state.inExamples && stream.match(/(.*)/)) {
-+                } else if (stream.sol() && state.inExamples && stream.match(/(.*)/)) {
+@@ -731,6 +960,7 @@
+                 }
  
-                     state.lastTokenType += " jb-story-examples-body";
-                     state.inExamplesBody = true;
-@@ -495,11 +718,9 @@
-                         var trimmedToken = currentToken.trim();
-                         if (trimmedToken.length > 0) {
-                             var from = CodeMirror.Pos(state.lineNumber, stream.column());
--                            ;
-                             var to = CodeMirror.Pos(state.lineNumber, stream.column() + currentToken.length);
--                            ;
-                             var msg = "Invalid text for given location";
--                            storyController.addModeGutterError(from, to, msg);
-+                            storyController.errorsGutter.addModeError(from, to, msg);
-                         } else {
-                             // we do not report any errors for white space
-                         }
+                 state.current = stream.current();
++                state.tokenColumn = stream.column();
+                 return state.lastTokenType;
+             }
+         };
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.js	(date 1412280016000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.js	(revision )
+@@ -1,41 +1,73 @@
+ // CodeMirror, copyright (c) by Marijn Haverbeke and others
+ // Distributed under an MIT license: http://codemirror.net/LICENSE
+ 
+-(function(mod) {
++(function (mod) {
+-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+-    mod(require("../../lib/codemirror"));
+-  else if (typeof define == "function" && define.amd) // AMD
+-    define(["../../lib/codemirror"], mod);
+-  else // Plain browser env
+-    mod(CodeMirror);
++    if (typeof exports == "object" && typeof module == "object") // CommonJS
++        mod(require("../../lib/codemirror"));
++    else if (typeof define == "function" && define.amd) // AMD
++        define(["../../lib/codemirror"], mod);
++    else // Plain browser env
++        mod(CodeMirror);
+-})(function(CodeMirror) {
++})(function (CodeMirror) {
+-  "use strict";
++    "use strict";
+ 
+-  CodeMirror.defineOption("fullScreen", false, function(cm, val, old) {
++    CodeMirror.defineOption("fullScreen", false, function (cm, val, old) {
+-    if (old == CodeMirror.Init) old = false;
+-    if (!old == !val) return;
+-    if (val) setFullscreen(cm);
+-    else setNormal(cm);
+-  });
++        if (old == CodeMirror.Init) old = false;
++        if (!old == !val) return;
++        if (val) setFullscreen(cm);
++        else setNormal(cm);
++    });
+ 
+-  function setFullscreen(cm) {
+-    var wrap = cm.getWrapperElement();
++    function setFullscreen(cm) {
++        var wrap = cm.getWrapperElement();
+-    cm.state.fullScreenRestore = {scrollTop: window.pageYOffset, scrollLeft: window.pageXOffset,
+-                                  width: wrap.style.width, height: wrap.style.height};
++        var issueHeaderMatch = AJS.$("#stalker");
++        var originalStyleAtt = null;
++        if (issueHeaderMatch != null) {
++            var issueHeader = issueHeaderMatch[0];
++            var styleAttribute = issueHeader.getAttribute("style");
++            originalStyleAtt = styleAttribute;
++            var positionValue = "position: inherit;";
++            if (styleAttribute == null) {
++                styleAttribute = positionValue ;
++            } else {
++                styleAttribute += " " + positionValue;
++            }
++            issueHeader.setAttribute("style", styleAttribute);
++        }
++        cm.state.fullScreenRestore = {
++            scrollTop: window.pageYOffset,
++            scrollLeft: window.pageXOffset,
++            width: wrap.style.width,
++            height: wrap.style.height,
++            issueHeaderStyle: originalStyleAtt
++        };
+-    wrap.style.width = "";
+-    wrap.style.height = "auto";
+-    wrap.className += " CodeMirror-fullscreen";
+-    document.documentElement.style.overflow = "hidden";
+-    cm.refresh();
+-  }
++        wrap.style.width = "";
++        wrap.style.height = "auto";
++        wrap.className += " CodeMirror-fullscreen";
++        document.documentElement.style.overflow = "hidden";
++        cm.refresh();
++    }
+ 
+-  function setNormal(cm) {
+-    var wrap = cm.getWrapperElement();
+-    wrap.className = wrap.className.replace(/\s*CodeMirror-fullscreen\b/, "");
+-    document.documentElement.style.overflow = "";
+-    var info = cm.state.fullScreenRestore;
++    function setNormal(cm) {
++        var wrap = cm.getWrapperElement();
++        wrap.className = wrap.className.replace(/\s*CodeMirror-fullscreen\b/, "");
++        document.documentElement.style.overflow = "";
++        var info = cm.state.fullScreenRestore;
+-    wrap.style.width = info.width; wrap.style.height = info.height;
++        wrap.style.width = info.width;
++        wrap.style.height = info.height;
+-    window.scrollTo(info.scrollLeft, info.scrollTop);
++        window.scrollTo(info.scrollLeft, info.scrollTop);
++
++        var issueHeaderMatch = AJS.$("#stalker");
++        var originalStyleAtt = info.issueHeaderStyle;
++        if (issueHeaderMatch != null) {
++            var issueHeader = issueHeaderMatch[0];
++            if (originalStyleAtt == null) {
++                issueHeader.removeAttribute("style");
++            } else {
++                issueHeader.setAttribute("style", originalStyleAtt);
++            }
++        }
++
+-    cm.refresh();
+-  }
++        cm.refresh();
++    }
+ });
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1412280016000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
+@@ -30,8 +30,8 @@
+         <resource type="download" name="jbehave-hint.js" location="/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js"/>
+         <resource type="download" name="show-hint.css" location="/3rdparty/codemirror-4.3/addon/hint/show-hint.css"/>
+         <!--other codemirror plugins-->
+-        <!--<resource type="download" name="fullscreen.css" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.css"/>-->
+-        <!--<resource type="download" name="fullscreen.js" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.js"/>-->
++        <resource type="download" name="fullscreen.css" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.css"/>
++        <resource type="download" name="fullscreen.js" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.js"/>
+         <!--<resource type="download" name="placeholder.js" location="/3rdparty/codemirror-4.3/addon/display/placeholder.js"/>-->
+         <resource type="download" name="comment.js" location="/3rdparty/codemirror-4.3/addon/comment/comment.js"/>
+         <!--<resource type="download" name="continuecomment.js" location="/3rdparty/codemirror-4.3/addon/comment/continuecomment.js"/>-->
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1412147330000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1412280016000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
-@@ -66,6 +66,15 @@
+@@ -19,7 +19,7 @@
+     /*font-weight: bold;*/
+ }
+ 
+-.cm-jb-story-meta-title {
++.cm-jb-story-meta-keyword {
+     color: #770088;
+     font-weight: bold;
+ }
+@@ -28,7 +28,7 @@
+     color: #770088;
+ }
+ 
+-.cm-jb-story-narrative-title {
++.cm-jb-story-narrative-keyword {
+     color: #0000cc;
+     font-weight: bold;
+ }
+@@ -42,17 +42,17 @@
+     color: #0000cc;
+ }
+ 
+-.cm-jb-story-lifecycle {
++.cm-jb-story-lifecycle-keyword {
+     color: #594300;
+     font-weight: bold;
+ }
+ 
+-.cm-jb-story-lifecycle-before {
++.cm-jb-story-lifecycle-before-keyword {
+     color: #594300;
+     font-weight: bold;
+ }
+ 
+-.cm-jb-story-lifecycle-after {
++.cm-jb-story-lifecycle-after-keyword {
+     color: #594300;
+     font-weight: bold;
+ }
+@@ -62,7 +62,7 @@
+     font-weight: bold;
+ }
+ 
+-.cm-jb-story-lifecycle-outcome-value {
++.cm-jb-story-lifecycle-outcome-field {
      color: #594300;
  }
  
-+.cm-jb-story-givenstories-keyword {
-+    font-weight: bold;
-+    color: #9FC71C;
-+}
-+
-+.cm-jb-story-givenstories-value {
-+    color: #9FC71C;
-+}
-+
- .cm-jb-story-scenario-keyword {
-     color: green;
+@@ -141,7 +141,7 @@
+     /*background-color: lightgoldenrodyellow;*/
+ }
+ 
+-.cm-jb-story-examples {
++.cm-jb-story-examples-keyword {
+     color: firebrick;
      font-weight: bold;
+ }
 \ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1412280016000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
+@@ -106,6 +106,34 @@
+     padding: 4px;
+ }
+ 
++table.tabular-parameter thead th {
++    font-weight: bold;
++    font-style: italic;
++}
++
++.jb-story-outcomes {
++    /*color: #6600ff;*/
++    color: #b43d3d;
++}
++
++.jb-story-outcomes table {
++    border: solid 1px #b43d3d;
++    border-collapse: collapse;
++}
++
++.jb-story-outcomes thead th {
++    font-weight: bold;
++    font-style: italic;
++}
++
++.jb-story-outcomes td {
++    border-left: solid 1px #b43d3d;
++    /*border: solid 1px black;*/
++    font-weight: normal;
++    margin: 0px;
++    padding: 4px;
++}
++
+ .cm-jb-story-step-failed-keyword {
+     /*font-weight: bold;*/
+     color: #ff0000;
+@@ -130,7 +158,7 @@
+ }
+ 
+ .jb-story-report-step {
+-    /*padding-top: 5px;*/
++    padding-top: 3px;
+ }
+ 
+ .jb-story-report-scenario {
+@@ -225,4 +253,12 @@
+ .jb-story-report-lozenge-container {
+     margin-left: 4px;
+     /*vertical-align: text-top;*/
++}
++
++.jb-story-ele-exp-container {
++    /*padding-left: 16px;*/
++}
++
++.jb-story-ele-exp-trigger-container {
++    /*padding-left: 16px;*/
+ }
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1412280016000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
+@@ -38,693 +38,588 @@
+         options.completeSingle = false;
+         options.closeOnUnfocus = false;
+ 
+-        var wordPattern = /[\w$]+/;
++        var globalFromCh = 0;
++        var globalToCh = editor.getCursor().ch;
+ 
+-        var cursor = editor.getCursor();
+-        var doc = editor.getDoc();
++        var cursorPos = editor.getCursor().ch;
++        var currentText = editor.getLine(editor.getCursor().line).slice(0, cursorPos);
+ 
+-        var globalFromCh = 0;
+-        var globalToCh = cursor.ch;
+-        var curLine = editor.getLine(cursor.line);
+-        var cursorPos = cursor.ch;
+-        var currentText = curLine.slice(0, cursorPos);
+         var list = [];
+-        var currentToken = editor.getTokenAt(cursor);
+-        var currentState = currentToken.state;
++        var token = editor.getTokenAt(editor.getCursor());
++        var state = token.state;
+ 
+-        var hint;
+-
+-        /**
+-         * Meta
+-         */
+-        hint = "Meta:";
+-        if (currentState.allowMeta && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-meta-title'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        function textStartsWith(hint) {
++            if (hint == currentText) {
++                return false;
++            } else {
++                return hint.indexOf(currentText) == 0;
+-        }
++            }
+-
+-        /**
+-         * Meta field - @
+-         */
+-        hint = "@";
+-        if (currentState.allowMetaField && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-meta-field'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
+         }
+ 
+-        /**
+-         * Meta field - skip
+-         */
+-        hint = "@skip";
+-        if (currentState.allowMetaField && cursorPos == 1 && hint.indexOf(currentText) == 0) {
++        function addKeywordHint(keywordType, keywordText) {
+             var stepHint = new Object();
+-            stepHint.text = hint;
++            stepHint.text = keywordText;
+             stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-meta-field'>" + self.text + "</span>";
++                element.innerHTML = "<span class='cm-jb-story-" + keywordType + "-keyword'>" + self.text + "</span>";
+             };
+             list.push(stepHint);
+         }
+ 
+-        /**
+-         * Meta field - ignored
+-         */
+-        hint = "@ignored true";
+-        if (currentState.allowMetaField && cursorPos == 1 && hint.indexOf(currentText) == 0) {
++        function addFieldValueHint(fieldType, fieldText) {
+             var stepHint = new Object();
+-            stepHint.text = hint;
++            stepHint.text = fieldText;
+             stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-meta-field'>" + self.text + "</span>";
++                element.innerHTML = "<span class='cm-jb-story-" + fieldType + "-field'>" + self.text + "</span>";
+             };
+             list.push(stepHint);
+         }
+ 
++        var hint;
++
+         /**
+-         * Meta field - author
++         * Meta
+          */
+-        hint = "@author ";
+-        if (currentState.allowMetaField && cursorPos == 1 && hint.indexOf(currentText) == 0) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-meta-field'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        hint = "Meta:";
++        if (state.allowMeta(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("meta", hint);
+         }
+ 
+         /**
+-         * Meta field - themes
++         * Meta fields
+          */
+-        hint = "@themes ";
+-        if (currentState.allowMetaField && cursorPos == 1 && hint.indexOf(currentText) == 0) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-meta-field'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        var metaFields = ["@", "@skip", "@ignored true", "@author", "@themes"];
++        hint = "@";
++        if (state.inMeta) {
++            for (var i = 0; i < metaFields.length; i++) {
++                hint = metaFields[i];
++                if (cursorPos == 0 || textStartsWith(hint)) {
++                    addFieldValueHint("meta", hint);
+-        }
++                }
++            }
++        }
+ 
+         /**
+-         * Narrative title
++         * Narrative keyword
+          */
+         hint = "Narrative:";
+-        if (currentState.allowNarrative && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-narrative-title'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowNarrative(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("narrative", hint);
+         }
+ 
+         /**
+          * Narrative - In order to
+          */
+         hint = "In order to ";
+-        if (currentState.allowNarrativeInOrderTo && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-narrative-field-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowNarrativeInOrderTo(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("narrative-field", hint);
+         }
+ 
+         /**
+          * Narrative - As a
+          */
+         hint = "As a ";
+-        if (currentState.allowNarrativeAsA && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-narrative-field-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowNarrativeAsA(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("narrative-field", hint);
+         }
+ 
+         /**
+          * Narrative - I want to
+          */
+         hint = "I want to ";
+-        if (currentState.allowNarrativeIWantTo && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-narrative-field-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowNarrativeIWantTo(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("narrative-field", hint);
+         }
+ 
+         /**
++         * GivenStories
++         */
++        hint = "GivenStories: ";
++        if (state.allowGivenStories(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("givenstories", hint);
++        }
++
++        /**
+          * Lifecycle
+          */
+         hint = "Lifecycle:";
+-        if (currentState.allowLifecycle && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-lifecycle'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowLifecycle(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("lifecycle", hint);
+         }
+ 
+         /**
+          * Lifecycle - Before
+          */
+         hint = "Before:";
+-        if (currentState.allowLifecycleBefore && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-lifecycle-before'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowLifecycleBefore(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("lifecycle-before", hint);
+         }
+ 
+         /**
+          * Lifecycle - After
+          */
+         hint = "After:";
+-        if (currentState.allowLifecycleAfter && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-lifecycle-after'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowLifecycleAfter(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("lifecycle-after", hint);
+         }
+ 
+         /**
+          * Lifecycle - Outcome
+          */
+         hint = "Outcome: ";
+-        if (currentState.allowLifecycleOutcome && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowLifecycleAfterOutcome(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addFieldValueHint("lifecycle-outcome", hint);
+         }
+ 
+         /**
+          * Lifecycle - Outcome value
+          */
+-        if (currentState.inLifecycleOutcome && currentToken.type != null) {
++        if (state.allowLifecycleAfterOutcomeValue(state) && (currentText.length == 0 || textStartsWith(hint))) {
+ 
+-            var currentToken = currentState.current;
++            // TODO - implement support for lifecycle
++//            var currentToken = state.current;
++//
++//            hint = "ANY";
++//            if (currentToken == "Outcome: " || hint.indexOf(currentToken) == 0) {
++//                var stepHint = new Object();
++//                stepHint.text = hint;
++//                stepHint.render = function (element, data, self) {
++//                    element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-field'>" + self.text + "</span>";
++//                };
++//                var stepHintFrom;
++//                if (currentToken == "Outcome: ") {
++//                    stepHintFrom = cursor.ch;
++//                } else {
++//                    stepHintFrom = cursor.ch - currentToken.length;
++//                }
++//                stepHint.from = CodeMirror.Pos(cursor.line, stepHintFrom);
++//                var stepHintTo = cursor.ch;
++//                stepHint.to = CodeMirror.Pos(cursor.line, stepHintTo);
++//                globalFromCh = stepHint.from.ch;
++//                globalToCh = stepHint.to.ch;
++//                list.push(stepHint);
++//            }
++//            hint = "SUCCESS";
++//            if (currentToken == "Outcome: " || hint.indexOf(currentToken) == 0) {
++//                var stepHint = new Object();
++//                stepHint.text = hint;
++//                stepHint.render = function (element, data, self) {
++//                    element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-field'>" + self.text + "</span>";
++//                };
++//                var stepHintFrom;
++//                if (currentToken == "Outcome: ") {
++//                    stepHintFrom = cursor.ch;
++//                } else {
++//                    stepHintFrom = cursor.ch - currentToken.length;
++//                }
++//                stepHint.from = CodeMirror.Pos(cursor.line, stepHintFrom);
++//                var stepHintTo = cursor.ch;
++//                stepHint.to = CodeMirror.Pos(cursor.line, stepHintTo);
++//                globalFromCh = stepHint.from.ch;
++//                globalToCh = stepHint.to.ch;
++//                list.push(stepHint);
++//            }
++//            hint = "FAILURE";
++//            if (currentToken == "Outcome: " || hint.indexOf(currentToken) == 0) {
++//                var stepHint = new Object();
++//                stepHint.text = hint;
++//                stepHint.render = function (element, data, self) {
++//                    element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-field'>" + self.text + "</span>";
++//                };
++//                var stepHintFrom;
++//                if (currentToken == "Outcome: ") {
++//                    stepHintFrom = cursor.ch;
++//                } else {
++//                    stepHintFrom = cursor.ch - currentToken.length;
++//                }
++//                stepHint.from = CodeMirror.Pos(cursor.line, stepHintFrom);
++//                var stepHintTo = cursor.ch;
++//                stepHint.to = CodeMirror.Pos(cursor.line, stepHintTo);
++//                globalFromCh = stepHint.from.ch;
++//                globalToCh = stepHint.to.ch;
++//                list.push(stepHint);
++//            }
+ 
+-            hint = "ANY";
+-            if (currentToken == "Outcome: " || hint.indexOf(currentToken) == 0) {
+-                var stepHint = new Object();
+-                stepHint.text = hint;
+-                stepHint.render = function (element, data, self) {
+-                    element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-value'>" + self.text + "</span>";
+-                };
+-                var stepHintFrom;
+-                if (currentToken == "Outcome: ") {
+-                    stepHintFrom = cursor.ch;
+-                } else {
+-                    stepHintFrom = cursor.ch - currentToken.length;
+-                }
++        }
+-                stepHint.from = CodeMirror.Pos(cursor.line, stepHintFrom);
+-                var stepHintTo = cursor.ch;
+-                stepHint.to = CodeMirror.Pos(cursor.line, stepHintTo);
+-                globalFromCh = stepHint.from.ch;
+-                globalToCh = stepHint.to.ch;
+-                list.push(stepHint);
+-            }
+-            hint = "SUCCESS";
+-            if (currentToken == "Outcome: " || hint.indexOf(currentToken) == 0) {
+-                var stepHint = new Object();
+-                stepHint.text = hint;
+-                stepHint.render = function (element, data, self) {
+-                    element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-value'>" + self.text + "</span>";
+-                };
+-                var stepHintFrom;
+-                if (currentToken == "Outcome: ") {
+-                    stepHintFrom = cursor.ch;
+-                } else {
+-                    stepHintFrom = cursor.ch - currentToken.length;
+-                }
+-                stepHint.from = CodeMirror.Pos(cursor.line, stepHintFrom);
+-                var stepHintTo = cursor.ch;
+-                stepHint.to = CodeMirror.Pos(cursor.line, stepHintTo);
+-                globalFromCh = stepHint.from.ch;
+-                globalToCh = stepHint.to.ch;
+-                list.push(stepHint);
+-            }
+-            hint = "FAILURE";
+-            if (currentToken == "Outcome: " || hint.indexOf(currentToken) == 0) {
+-                var stepHint = new Object();
+-                stepHint.text = hint;
+-                stepHint.render = function (element, data, self) {
+-                    element.innerHTML = "<span class='cm-jb-story-lifecycle-outcome-value'>" + self.text + "</span>";
+-                };
+-                var stepHintFrom;
+-                if (currentToken == "Outcome: ") {
+-                    stepHintFrom = cursor.ch;
+-                } else {
+-                    stepHintFrom = cursor.ch - currentToken.length;
+-                }
+-                stepHint.from = CodeMirror.Pos(cursor.line, stepHintFrom);
+-                var stepHintTo = cursor.ch;
+-                stepHint.to = CodeMirror.Pos(cursor.line, stepHintTo);
+-                globalFromCh = stepHint.from.ch;
+-                globalToCh = stepHint.to.ch;
+-                list.push(stepHint);
+-            }
+ 
+-        }
+-
+         /**
+          * Scenario:
+          */
+-        hint = "Scenario:";
++        hint = "Scenario: ";
+-        if (currentState.allowScenario && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-scenario-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowScenario(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("scenario", hint);
+         }
+ 
+         /**
+          * Examples:
+          */
+         hint = "Examples:";
+-        if (currentState.allowExamples && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-examples'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowExamples(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("examples", hint);
+         }
+ 
+         /**
+-         * Given
++         * Steps
+          */
+-        hint = "Given ";
+-        if (currentState.allowSteps && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-step-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        var stepKeywords = ["Given ", "When ", "Then "];
++        if (state.allowStep(state)) {
++            for (var i = 0; i < stepKeywords.length; i++) {
++                hint = stepKeywords[i];
++                if (cursorPos == 0 || textStartsWith(hint)) {
++                    addKeywordHint("step", hint);
+-        }
++                }
+-
+-        /**
+-         * When
+-         */
+-        hint = "When ";
+-        if (currentState.allowSteps && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-step-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
+-        }
++            }
+-
+-        /**
+-         * Then
+-         */
+-        hint = "Then ";
+-        if (currentState.allowSteps && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-step-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
+         }
+ 
+         /**
+-         * And
++         * And step
+          */
+         hint = "And ";
+-        if (currentState.allowAndStep && (cursorPos == 0 || hint.indexOf(currentText) == 0)) {
+-            var stepHint = new Object();
+-            stepHint.text = hint;
+-            stepHint.render = function (element, data, self) {
+-                element.innerHTML = "<span class='cm-jb-story-step-keyword'>" + self.text + "</span>";
+-            };
+-            list.push(stepHint);
++        if (state.allowAndStep(state) && (cursorPos == 0 || textStartsWith(hint))) {
++            addKeywordHint("step", hint);
+         }
+ 
++        function hintOnParameters() {
+ 
+-        var lineHandle = doc.getLineHandle(cursor.line);
+-        var lineTextSoFar = lineHandle.text.substring(0, cursor.ch);
+-        var lineTextTrimmed = lineTextSoFar.replace(/\s+$/g, '');
+-        var stepKeyword = currentState.currentStepKeyword;
+-        if (lineTextTrimmed.length > 0 && stepKeyword != null) {
+-
+-
+-
+-            // hint on examples table values
+-
+-            var hintedOnTabularParameter = false;
+-            var hintedOnRegularParameter = false;
+-            var hintedOnStep = false;
+-
+-
+-            // hint on tabular parameters
+             var matchedStepClassName = "matched-step";
+             var stepParameterClassName = "step-parameter";
+-//            var startOfCursorLine = {line: cursor.line, ch: 0};
+-            var cursorLineHandle = editor.getLineHandle(cursor.line);
+-//            var endOfCursorLine = {line: cursor.line, ch: cursorLineHandle.text.length};
+-//            var markers = editor.getDoc().findMarks(startOfCursorLine, endOfCursorLine);
+-            var markers = editor.getDoc().findMarksAt(cursor);
+-            if (markers.length > 0) {
+-                var foundStepId = null;
+-                var foundParameterIndex = null;
+-                for (var m = 0; m < markers.length; m++) {
+-                    var marker = markers[m];
+-                    var markerClassName = marker.className;
+-//                    console.log("marker - " + marker);
+-                    if (markerClassName.substring(0, matchedStepClassName.length) == matchedStepClassName) {
+-                        var lastDashPos = markerClassName.lastIndexOf("-");
+-                        foundStepId = markerClassName.substring(lastDashPos + 1);
+-                    }
+-                    if (markerClassName.substring(0, stepParameterClassName.length) == stepParameterClassName) {
+-                        var lastDashPos = markerClassName.lastIndexOf("-");
+-                        foundParameterIndex = markerClassName.substring(lastDashPos + 1);
+-                    }
+-                }
+-                if (foundStepId != null && foundParameterIndex != null) {
+-                    // we can try to hint on parameter value
+-                    var stepDocWithId = null;
+-                    for (var k = 0; k < stepDocs.length; k++) {
+-                        var sd = stepDocs[k];
+-                        if (sd.id == foundStepId) {
+-                            stepDocWithId = sd;
+-                            break;
+-                        }
+-                    }
+-                    if (stepDocWithId != null && stepDocWithId.parameterInfos != null) {
++            var markers = editor.getDoc().findMarksAt(editor.getCursor());
+ 
+-                        var paramInfo = stepDocWithId.parameterInfos[foundParameterIndex];
+-                        var tabularFieldInfos = paramInfo.tabularFieldInfos;
+-
+-                        var currentLineHandle = editor.getLineHandle(cursor.line);
+-                        var currentLineText = currentLineHandle.text;
+-                        var currentLineTextUpToCursor = currentLineText.substring(0, cursor.ch);
+-
+-                        if (tabularFieldInfos != null && tabularFieldInfos.length > 0) {
++            function hintOnTabularParameter() {
+-                            // can try to hint on tabular field names and values
+-                            // get current tabular column index and value
+-                            if (currentLineTextUpToCursor.substring(0, 1) == "|" && currentLineTextUpToCursor.substring(0, 3) != "|--") {
+-                                // we subtract 2 here since we always end up with empty token before the first pipe
+-                                var columnIndex = currentLineTextUpToCursor.split("|").length - 2;
+-                                var lastPipeIndex = currentLineTextUpToCursor.lastIndexOf("|");
+-                                var columnStartPos = lastPipeIndex + 1;
+-                                var columnValue = currentLineTextUpToCursor.substring(columnStartPos);
+-                                console.log("current column index - " + columnIndex);
+-                                console.log("current column value - " + columnValue);
++                // can try to hint on tabular field names and values
++                // get current tabular column index and value
++                if (currentLineTextUpToCursor.substring(0, 1) == "|" && currentLineTextUpToCursor.substring(0, 3) != "|--") {
++                    // we subtract 2 here since we always end up with empty token before the first pipe
++                    var columnIndex = currentLineTextUpToCursor.split("|").length - 2;
++                    var lastPipeIndex = currentLineTextUpToCursor.lastIndexOf("|");
++                    var columnStartPos = lastPipeIndex + 1;
++                    var columnValue = currentLineTextUpToCursor.substring(columnStartPos);
++                    console.log("current column index - " + columnIndex);
++                    console.log("current column value - " + columnValue);
+ 
+-                                var isFirstTableLine = true;
+-                                var actualFirstTableLine = null;
++                    var isFirstTableLine = true;
++                    var actualFirstTableLine = null;
+-                                var previousLineNum = cursor.line - 1;
++                    var previousLineNum = editor.getCursor().line - 1;
+-                                while (previousLineNum >= 0) {
+-                                    var previousLine = editor.getLineHandle(previousLineNum);
+-                                    var previousLineText = previousLine.text;
+-                                    if (previousLineText.length == 0 || previousLineText.trim().length == 0) {
+-                                        // empty line, do nothing
+-                                    } else if (previousLineText.substr(0, 1) == "|" && previousLineText.substr(0, 3) != "|--") {
+-                                        // current line is not the first line in the table
+-                                        isFirstTableLine = false;
+-                                        actualFirstTableLine = previousLineText;
+-                                    } else {
+-                                        // non empty and non table line
+-                                        break;
+-                                    }
+-                                    previousLineNum--;
+-                                }
++                    while (previousLineNum >= 0) {
++                        var previousLine = editor.getLineHandle(previousLineNum);
++                        var previousLineText = previousLine.text;
++                        if (previousLineText.length == 0 || previousLineText.trim().length == 0) {
++                            // empty line, do nothing
++                        } else if (previousLineText.substr(0, 1) == "|" && previousLineText.substr(0, 3) != "|--") {
++                            // current line is not the first line in the table
++                            isFirstTableLine = false;
++                            actualFirstTableLine = previousLineText;
++                        } else {
++                            // non empty and non table line
++                            break;
++                        }
++                        previousLineNum--;
++                    }
+ 
+-                                if (isFirstTableLine) {
+-                                    // hint on field names
+-                                    for (var t = 0; t < tabularFieldInfos.length; t++) {
+-                                        var tabularFieldInfo = tabularFieldInfos[t];
+-                                        var tabularFieldName = tabularFieldInfo.fieldName;
+-                                        if (columnValue.length == 0 || tabularFieldName.substring(0, columnValue.length) == columnValue) {
+-                                            // do the hint on field name
+-                                            var stepHint = new Object();
+-                                            stepHint.text = tabularFieldName;
+-                                            stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + tabularFieldName + "</span>";
+-                                            stepHint.render = function (element, data, self) {
+-                                                element.innerHTML = self.html;
+-                                            };
++                    if (isFirstTableLine) {
++                        // hint on field names
++                        for (var t = 0; t < tabularFieldInfos.length; t++) {
++                            var tabularFieldInfo = tabularFieldInfos[t];
++                            var tabularFieldName = tabularFieldInfo.fieldName;
++                            if (columnValue.length == 0 || tabularFieldName.substring(0, columnValue.length) == columnValue) {
++                                // do the hint on field name
++                                var stepHint = new Object();
++                                stepHint.text = tabularFieldName;
++                                stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + tabularFieldName + "</span>";
++                                stepHint.render = function (element, data, self) {
++                                    element.innerHTML = self.html;
++                                };
+-                                            stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
+-                                            stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
++                                stepHint.from = CodeMirror.Pos(editor.getCursor().line, columnStartPos);
++                                stepHint.to = CodeMirror.Pos(editor.getCursor().line, columnStartPos + columnValue.length);
+-                                            list.push(stepHint);
++                                list.push(stepHint);
+-                                            hintedOnTabularParameter = true;
++//                                            hintedOnTabularParameter = true;
+-                                            globalFromCh = stepHint.from.ch;
+-                                            globalToCh = stepHint.to.ch;
+-                                        }
+-                                    }
+-                                } else {
+-                                    // try to hint on any field allowed values
+-                                    // get column name for our current column value
+-                                    var fieldNames = actualFirstTableLine.split("|").slice(1);
+-                                    var fieldName = fieldNames[columnIndex];
+-                                    if (fieldName != null && fieldName.trim().length > 0) { // we could be hinting on column index which "exceeds" number of column headers
+-                                        fieldName = fieldName.trim();
+-                                        for (var t = 0; t < tabularFieldInfos.length; t++) {
+-                                            var tabularFieldInfo = tabularFieldInfos[t];
+-                                            var tabularFieldName = tabularFieldInfo.fieldName;
++                                globalFromCh = stepHint.from.ch;
++                                globalToCh = stepHint.to.ch;
++                            }
++                        }
++                    } else {
++                        // try to hint on any field allowed values
++                        // get column name for our current column value
++                        var fieldNames = actualFirstTableLine.split("|").slice(1);
++                        var fieldName = fieldNames[columnIndex];
++                        if (fieldName != null && fieldName.trim().length > 0) { // we could be hinting on column index which "exceeds" number of column headers
++                            fieldName = fieldName.trim();
++                            for (var t = 0; t < tabularFieldInfos.length; t++) {
++                                var tabularFieldInfo = tabularFieldInfos[t];
++                                var tabularFieldName = tabularFieldInfo.fieldName;
+ 
+-                                            if (tabularFieldName == fieldName) {
+-                                                // we have found matching parameter info, hint on allowed values if present
+-                                                var fieldAllowedValues = tabularFieldInfo.allowedValues;
+-                                                if (fieldAllowedValues != null && fieldAllowedValues.length > 0) {
+-                                                    for (var d = 0; d < fieldAllowedValues.length; d++) {
+-                                                        var fieldAllowedValue = fieldAllowedValues[d];
+-                                                        if (columnValue.length == 0 || fieldAllowedValue.substring(0, columnValue.length) == columnValue) {
+-                                                            // do the hint on field allowed value
+-                                                            var stepHint = new Object();
+-                                                            stepHint.text = fieldAllowedValue;
+-                                                            stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + fieldAllowedValue + "</span>";
+-                                                            stepHint.render = function (element, data, self) {
+-                                                                element.innerHTML = self.html;
+-                                                            };
++                                if (tabularFieldName == fieldName) {
++                                    // we have found matching parameter info, hint on allowed values if present
++                                    var fieldAllowedValues = tabularFieldInfo.allowedValues;
++                                    if (fieldAllowedValues != null && fieldAllowedValues.length > 0) {
++                                        for (var d = 0; d < fieldAllowedValues.length; d++) {
++                                            var fieldAllowedValue = fieldAllowedValues[d];
++                                            if (columnValue.length == 0 || fieldAllowedValue.substring(0, columnValue.length) == columnValue) {
++                                                // do the hint on field allowed value
++                                                var stepHint = new Object();
++                                                stepHint.text = fieldAllowedValue;
++                                                stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + fieldAllowedValue + "</span>";
++                                                stepHint.render = function (element, data, self) {
++                                                    element.innerHTML = self.html;
++                                                };
+-                                                            stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
+-                                                            stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
++                                                stepHint.from = CodeMirror.Pos(editor.getCursor().line, columnStartPos);
++                                                stepHint.to = CodeMirror.Pos(editor.getCursor().line, columnStartPos + columnValue.length);
+-                                                            list.push(stepHint);
++                                                list.push(stepHint);
+-                                                            hintedOnTabularParameter = true;
++//                                                            hintedOnTabularParameter = true;
+-                                                            globalFromCh = stepHint.from.ch;
+-                                                            globalToCh = stepHint.to.ch;
+-                                                        }
+-                                                    }
++                                                globalFromCh = stepHint.from.ch;
++                                                globalToCh = stepHint.to.ch;
++                                            }
++                                        }
+-                                                }else {
++                                    } else {
+-                                                    var fieldSuggestedValues = tabularFieldInfo.suggestedValues;
+-                                                    if (fieldSuggestedValues != null && fieldSuggestedValues.length > 0) {
+-                                                        for (var d = 0; d < fieldSuggestedValues.length; d++) {
+-                                                            var fieldSuggestedValue = fieldSuggestedValues[d];
+-                                                            if (columnValue.length == 0 || fieldSuggestedValue.substring(0, columnValue.length) == columnValue) {
+-                                                                // do the hint on field suggested value
+-                                                                var stepHint = new Object();
+-                                                                stepHint.text = fieldSuggestedValue;
+-                                                                stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + fieldSuggestedValue + "</span>";
+-                                                                stepHint.render = function (element, data, self) {
+-                                                                    element.innerHTML = self.html;
+-                                                                };
++                                        var fieldSuggestedValues = tabularFieldInfo.suggestedValues;
++                                        if (fieldSuggestedValues != null && fieldSuggestedValues.length > 0) {
++                                            for (var d = 0; d < fieldSuggestedValues.length; d++) {
++                                                var fieldSuggestedValue = fieldSuggestedValues[d];
++                                                if (columnValue.length == 0 || fieldSuggestedValue.substring(0, columnValue.length) == columnValue) {
++                                                    // do the hint on field suggested value
++                                                    var stepHint = new Object();
++                                                    stepHint.text = fieldSuggestedValue;
++                                                    stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + fieldSuggestedValue + "</span>";
++                                                    stepHint.render = function (element, data, self) {
++                                                        element.innerHTML = self.html;
++                                                    };
+-                                                                stepHint.from = CodeMirror.Pos(cursor.line, columnStartPos);
+-                                                                stepHint.to = CodeMirror.Pos(cursor.line, columnStartPos + columnValue.length);
++                                                    stepHint.from = CodeMirror.Pos(editor.getCursor().line, columnStartPos);
++                                                    stepHint.to = CodeMirror.Pos(editor.getCursor().line, columnStartPos + columnValue.length);
+-                                                                list.push(stepHint);
++                                                    list.push(stepHint);
+-                                                                hintedOnTabularParameter = true;
++//                                                                hintedOnTabularParameter = true;
+-                                                                globalFromCh = stepHint.from.ch;
+-                                                                globalToCh = stepHint.to.ch;
+-                                                            }
+-                                                        }
+-                                                    }
+-                                                }
+-                                            }
++                                                    globalFromCh = stepHint.from.ch;
++                                                    globalToCh = stepHint.to.ch;
++                                                }
++                                            }
++                                        }
++                                    }
++                                }
+ 
+-                                        }
+-                                    }
++                            }
++                        }
+ 
+-                                }
+-                            } else {
+-                                // we are in table comment line, do not hint anything
+-                            }
++                    }
++                } else {
++                    // we are in table comment line, do not hint anything
++                }
+-                        } else {
++            }
+ 
++            function hintOnSimpleParameter() {
+-                            // this is not a tabular parameter, try to hint on allowed values if present
++                // this is not a tabular parameter, try to hint on allowed values if present
+ 
+-                            // get the boundaries of the parameter marker
+-                            var isMultiLineParameter = false;
+-                            var parameterReplaceFrom = null;
+-                            var parameterReplaceTo = null;
+-                            for (var m = 0; m < markers.length; m++) {
+-                                var marker = markers[m];
+-                                var markerClassName = marker.className;
+-                                var parameterMarkerClassName = stepParameterClassName + "-" + foundParameterIndex;
+-                                if (markerClassName.indexOf(parameterMarkerClassName) > -1) {
+-                                    var lines = marker.lines;
+-                                    if (lines.length == 1) {
+-                                        var line = lines[0];
+-                                        var markedSpans = line.markedSpans;
+-                                        for (var p = 0; p < markedSpans.length; p++) {
+-                                            var markedSpan = markedSpans[p];
+-                                            if (markedSpan.marker.className.indexOf(parameterMarkerClassName) > -1) {
+-                                                parameterReplaceFrom = markedSpan.from;
+-                                                parameterReplaceTo = markedSpan.to;
+-                                                break;
+-                                            }
+-                                        }
+-                                    } else {
+-                                        // we cannot hint on multi line parameters
+-                                        isMultiLineParameter = true;
+-                                    }
++                // get the boundaries of the parameter marker
++                var isMultiLineParameter = false;
++                var parameterReplaceFrom = null;
++                var parameterReplaceTo = null;
++                for (var m = 0; m < markers.length; m++) {
++                    var marker = markers[m];
++                    var markerClassName = marker.className;
++                    var parameterMarkerClassName = stepParameterClassName + "-" + foundParameterIndex;
++                    if (markerClassName.indexOf(parameterMarkerClassName) > -1) {
++                        var lines = marker.lines;
++                        if (lines.length == 1) {
++                            var line = lines[0];
++                            var markedSpans = line.markedSpans;
++                            for (var p = 0; p < markedSpans.length; p++) {
++                                var markedSpan = markedSpans[p];
++                                if (markedSpan.marker.className.indexOf(parameterMarkerClassName) > -1) {
++                                    parameterReplaceFrom = markedSpan.from;
++                                    parameterReplaceTo = markedSpan.to;
++                                    break;
++                                }
++                            }
++                        } else {
++                            // we cannot hint on multi line parameters
++                            isMultiLineParameter = true;
++                        }
+ 
+-                                }
+-                            }
++                    }
++                }
+ 
+-                            if (!isMultiLineParameter) {
++                if (!isMultiLineParameter) {
+ 
+-                                // hint on allowed values
++                    // hint on allowed values
+ 
+-                                var allowedValues = paramInfo.allowedValues;
+-                                if (allowedValues != null && allowedValues.length > 0) {
+-                                    for (var i = 0; i < allowedValues.length; i++) {
+-                                        var allowedValue = allowedValues[i];
+-                                        var stepHint = new Object();
+-                                        stepHint.text = allowedValue;
+-                                        stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + allowedValue + "</span>";
+-                                        stepHint.render = function (element, data, self) {
+-                                            element.innerHTML = self.html;
+-                                        };
++                    var allowedValues = paramInfo.allowedValues;
++                    if (allowedValues != null && allowedValues.length > 0) {
++                        for (var i = 0; i < allowedValues.length; i++) {
++                            var allowedValue = allowedValues[i];
++                            var stepHint = new Object();
++                            stepHint.text = allowedValue;
++                            stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + allowedValue + "</span>";
++                            stepHint.render = function (element, data, self) {
++                                element.innerHTML = self.html;
++                            };
+ 
+-                                        if (parameterReplaceFrom != null && parameterReplaceTo != null) {
++                            if (parameterReplaceFrom != null && parameterReplaceTo != null) {
+ 
+-                                            var fromPosition = CodeMirror.Pos(cursor.line, parameterReplaceFrom);
++                                var fromPosition = CodeMirror.Pos(editor.getCursor().line, parameterReplaceFrom);
+-                                            stepHint.from = fromPosition;
++                                stepHint.from = fromPosition;
+-                                            var toPosition = CodeMirror.Pos(cursor.line, parameterReplaceTo);
++                                var toPosition = CodeMirror.Pos(editor.getCursor().line, parameterReplaceTo);
+-                                            stepHint.to = toPosition;
+-                                            editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
+-                                                {line: toPosition.line, ch: toPosition.ch});
++                                stepHint.to = toPosition;
++                                editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
++                                    {line: toPosition.line, ch: toPosition.ch});
+ 
+-                                        } else {
++                            } else {
+-                                            stepHint.from = CodeMirror.Pos(cursor.line, cursor.ch);
+-                                            stepHint.to = CodeMirror.Pos(cursor.line, cursor.ch);
++                                stepHint.from = CodeMirror.Pos(editor.getCursor().line, editor.getCursor().ch);
++                                stepHint.to = CodeMirror.Pos(editor.getCursor().line, editor.getCursor().ch);
+-                                        }
++                            }
+ 
+-                                        list.push(stepHint);
++                            list.push(stepHint);
+-                                        hintedOnRegularParameter = true;
++//                                        hintedOnRegularParameter = true;
+-                                        globalFromCh = stepHint.from.ch;
+-                                        globalToCh = stepHint.to.ch;
+-                                    }
+-                                } else {
+-                                    var suggestedValues = paramInfo.suggestedValues;
+-                                    if (suggestedValues != null && suggestedValues.length > 0) {
+-                                        for (var i = 0; i < suggestedValues.length; i++) {
+-                                            var suggestedValue = suggestedValues[i];
+-                                            var stepHint = new Object();
+-                                            stepHint.text = suggestedValue;
+-                                            stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + suggestedValue + "</span>";
+-                                            stepHint.render = function (element, data, self) {
+-                                                element.innerHTML = self.html;
+-                                            };
++                            globalFromCh = stepHint.from.ch;
++                            globalToCh = stepHint.to.ch;
++                        }
++                    } else {
++                        var suggestedValues = paramInfo.suggestedValues;
++                        if (suggestedValues != null && suggestedValues.length > 0) {
++                            for (var i = 0; i < suggestedValues.length; i++) {
++                                var suggestedValue = suggestedValues[i];
++                                var stepHint = new Object();
++                                stepHint.text = suggestedValue;
++                                stepHint.html = "<span class='cm-jb-story-step-body matched-step step-parameter'>" + suggestedValue + "</span>";
++                                stepHint.render = function (element, data, self) {
++                                    element.innerHTML = self.html;
++                                };
+ 
+-                                            if (parameterReplaceFrom != null && parameterReplaceTo != null) {
++                                if (parameterReplaceFrom != null && parameterReplaceTo != null) {
+-                                                var fromPosition = CodeMirror.Pos(cursor.line, parameterReplaceFrom);
++                                    var fromPosition = CodeMirror.Pos(editor.getCursor().line, parameterReplaceFrom);
+-                                                stepHint.from = fromPosition;
++                                    stepHint.from = fromPosition;
+-                                                var toPosition = CodeMirror.Pos(cursor.line, parameterReplaceTo);
++                                    var toPosition = CodeMirror.Pos(editor.getCursor().line, parameterReplaceTo);
+-                                                stepHint.to = toPosition;
+-                                                editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
+-                                                    {line: toPosition.line, ch: toPosition.ch});
++                                    stepHint.to = toPosition;
++                                    editor.getDoc().setSelection({line: fromPosition.line, ch: fromPosition.ch},
++                                        {line: toPosition.line, ch: toPosition.ch});
+ 
+-                                            } else {
++                                } else {
+-                                                stepHint.from = CodeMirror.Pos(cursor.line, cursor.ch);
+-                                                stepHint.to = CodeMirror.Pos(cursor.line, cursor.ch);
++                                    stepHint.from = CodeMirror.Pos(editor.getCursor().line, editor.getCursor().ch);
++                                    stepHint.to = CodeMirror.Pos(editor.getCursor().line, editor.getCursor().ch);
+-                                            }
+-                                            list.push(stepHint);
++                                }
++                                list.push(stepHint);
+-                                            hintedOnRegularParameter = true;
++//                                            hintedOnRegularParameter = true;
+-                                            globalFromCh = stepHint.from.ch;
+-                                            globalToCh = stepHint.to.ch;
+-                                        }
+-                                    }
+-                                }
+-                            }
++                                globalFromCh = stepHint.from.ch;
++                                globalToCh = stepHint.to.ch;
++                            }
++                        }
++                    }
++                }
++            }
+ 
++            if (markers.length > 0) {
++
++                var foundStepId = null;
++                var foundParameterIndex = null;
++                for (var m = 0; m < markers.length; m++) {
++                    var marker = markers[m];
++                    var markerClassName = marker.className;
++//                    console.log("marker - " + marker);
++                    if (markerClassName.substring(0, matchedStepClassName.length) == matchedStepClassName) {
++                        var lastDashPos = markerClassName.lastIndexOf("-");
++                        foundStepId = markerClassName.substring(lastDashPos + 1);
+-                        }
++                    }
++                    if (markerClassName.substring(0, stepParameterClassName.length) == stepParameterClassName) {
++                        var lastDashPos = markerClassName.lastIndexOf("-");
++                        foundParameterIndex = markerClassName.substring(lastDashPos + 1);
++                    }
++                }
++                if (foundStepId != null && foundParameterIndex != null) {
++                    // we can try to hint on parameter value
++                    var stepDocWithId = null;
++                    for (var k = 0; k < stepDocs.length; k++) {
++                        var sd = stepDocs[k];
++                        if (sd.id == foundStepId) {
++                            stepDocWithId = sd;
++                            break;
++                        }
++                    }
++                    if (stepDocWithId != null && stepDocWithId.parameterInfos != null) {
+ 
++                        var paramInfo = stepDocWithId.parameterInfos[foundParameterIndex];
++                        var tabularFieldInfos = paramInfo.tabularFieldInfos;
++
++                        var currentLineHandle = editor.getLineHandle(editor.getCursor().line);
++                        var currentLineText = currentLineHandle.text;
++                        var currentLineTextUpToCursor = currentLineText.substring(0, editor.getCursor().ch);
++
++                        if (tabularFieldInfos != null && tabularFieldInfos.length > 0) {
++                            hintOnTabularParameter();
+-                    } else {
++                        } else {
++                            hintOnSimpleParameter();
++                        }
++
++                    } else {
+                         console.error("Failed to find step doc with id - " + foundStepId);
+                     }
+                 }
+             }
++        }
+ 
+-            if (hintedOnRegularParameter == false && hintedOnTabularParameter == false) {
+-                /**
+-                 * hint on steps
+-                 */
++        function hintOnStepPatterns() {
++
++            var lineTextSoFar = editor.getDoc().getLineHandle(editor.getCursor().line).text.substring(0, editor.getCursor().ch);
++
+-                for (var k = 0; k < stepDocs.length; k++) {
+-                    var stepDoc = stepDocs[k];
++            for (var k = 0; k < stepDocs.length; k++) {
++                var stepDoc = stepDocs[k];
+ 
+-                    if (stepDoc.startingWord == stepKeyword) {
++                if (stepDoc.startingWord == state.stepStartingKeyword) {
+ 
+-                        var stepStartingKeyword = currentState.stepStartingKeyword;
++                    var currentText = state.current.replace(/^\s+/, ''); // trim leading space
++//                    var currentText = state.current.trim();
+ 
+-                        var stepPatternWithKeyword = stepStartingKeyword + stepDoc.pattern;
+-                        if (stepPatternWithKeyword.substr(0, lineTextSoFar.length) == lineTextSoFar) {
++                    if (stepDoc.pattern.substr(0, currentText.length) == currentText) {
++
+-                            var stepHint = new Object();
++                        var stepHint = new Object();
+-                            stepHint.text = stepStartingKeyword;
++                        stepHint.text = state.stepStartingKeywordText + " ";
+-                            if (storyController.prefs != null && storyController.prefs.autoInsertTabularFields && stepDoc.extendedPattern != null) {
+-                                stepHint.text += stepDoc.extendedPattern;
+-                            } else {
+-                                stepHint.text += stepDoc.pattern;
+-                            }
+-                            var pattern = stepDoc.pattern;
++                        if (storyController.prefs != null && storyController.prefs.autoInsertTabularFields && stepDoc.extendedPattern != null) {
++                            stepHint.text += stepDoc.extendedPattern;
++                        } else {
++                            stepHint.text += stepDoc.pattern;
++                        }
++                        var pattern = stepDoc.pattern;
+ 
+-                            // replace any html tags, used in parameterized scenarios
+-                            var regExpPattern = /&/g;
+-                            pattern = pattern.replace(regExpPattern, "&amp;");
+-                            regExpPattern = /</g;
+-                            pattern = pattern.replace(regExpPattern, "&lt;");
+-                            regExpPattern = />/g;
+-                            pattern = pattern.replace(regExpPattern, "&gt;");
++                        // replace any html tags, used in parameterized scenarios
++                        var regExpPattern = /&/g;
++                        pattern = pattern.replace(regExpPattern, "&amp;");
++                        regExpPattern = /</g;
++                        pattern = pattern.replace(regExpPattern, "&lt;");
++                        regExpPattern = />/g;
++                        pattern = pattern.replace(regExpPattern, "&gt;");
+ 
+-                            regExpPattern = /(\$[^\s]*)/g;
+-                            pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
++                        regExpPattern = /(\$[^\s]*)/g;
++                        pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
+ 
+-                            // replace any parameterized scenario arguments
+-                            regExpPattern = /(&lt;[^\s]*&gt;)/g;
+-                            pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
++                        // replace any parameterized scenario arguments
++                        regExpPattern = /(&lt;[^\s]*&gt;)/g;
++                        pattern = pattern.replace(regExpPattern, "<span class='cm-jb-story-step-body matched-step step-parameter'>$1</span>");
+ 
+-                            stepHint.markedPattern = pattern;
+-                            stepHint.stepStartingKeyword = stepStartingKeyword;
++                        stepHint.markedPattern = " " + pattern;
++                        stepHint.startingWord = stepDoc.startingWord;
+-                            stepHint.stepDoc = stepDoc;
+-                            stepHint.render = function (element, data, self) {
+-                                element.innerHTML =
++                        stepHint.stepDoc = stepDoc;
++                        stepHint.render = function (element, data, self) {
++                            element.innerHTML =
+-                                    "<span class='cm-jb-story-step-keyword matched-step'>" + self.stepStartingKeyword + "</span>"
++                                "<span class='cm-jb-story-step-keyword matched-step'>" + self.startingWord + "</span>"
+-                                        + self.markedPattern;
+-                            };
+-                            list.push(stepHint);
++                                    + self.markedPattern;
++                        };
++                        list.push(stepHint);
+-                            hintedOnStep = true;
+-                        }
+-                    }
+-                }
+-            }
++                    }
++                }
++            }
++        }
++
++
++        // hint on examples table values
++        // TODO
++
++        if (state.inStep && list.length == 0) {
++            hintOnParameters();
+         }
+ 
++        if (state.inStepKeywordLine && state.inStepBody && list.length == 0) {
++            hintOnStepPatterns();
++        }
++
+         return {
+             list: list,
+-            from: CodeMirror.Pos(cursor.line, globalFromCh),
+-            to: CodeMirror.Pos(cursor.line, globalToCh)
++            from: CodeMirror.Pos(editor.getCursor().line, globalFromCh),
++            to: CodeMirror.Pos(editor.getCursor().line, globalToCh)
+         };
+     });
+ });
