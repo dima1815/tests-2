@@ -1,16 +1,33 @@
-Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/ParameterInfo.java
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/ParameterInfo.java	(date 1410985046000)
-+++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/ParameterInfo.java	(revision )
-@@ -25,6 +25,8 @@
-     Class<? extends Enum> suggestedValuesEnum() default EmptyEnum.class;
- 
-     String formatPattern() default "";
-+
-+    String formatDisplayText() default "";
- }
- 
- 
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java	(date 1411760882000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision )
+@@ -51,7 +51,7 @@
+             fullPath += storyPath;
+             fullPath += "?os_username=" + this.username
+                     + "&os_password=" + this.password
+-                    + "&versionInPath=true" + "&asString=true";
++                    + "&asString=true";
+             log.debug("full story path is - " + fullPath);
+             jiraSearchUrl = new URI(fullPath);
+         } catch (URISyntaxException e) {
+Index: jbehave-for-jira/jbehave-for-jira-java-client/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/pom.xml	(date 1411760882000)
++++ jbehave-for-jira/jbehave-for-jira-java-client/pom.xml	(revision )
+@@ -101,7 +101,7 @@
+         <dependency>
+             <groupId>org.jbehave</groupId>
+             <artifactId>jbehave-core</artifactId>
+-            <version>3.9.2</version>
++            <version>3.9.5</version>
+         </dependency>
+         <dependency>
+             <groupId>com.sun.jersey</groupId>
+\ No newline at end of file
