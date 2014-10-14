@@ -1,111 +1,1143 @@
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(date 1412752015000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
+@@ -40,7 +40,7 @@
+ 
+         URI jiraSearchUrl = null;
+         try {
+-            String fullPath = basePostUrl + storyPath + loginParams + "&versionInPath=true&asString=true";
++            String fullPath = basePostUrl + storyPath + loginParams + "&asString=true";
+             jiraSearchUrl = new URI(fullPath);
+         } catch (URISyntaxException e) {
+             throw new RuntimeException(e);
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1412752015000)
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
+@@ -240,7 +240,7 @@
+             List<String> allowedvalues = new ArrayList<>(enumConstants.length);
+             for (Object enumConstant : enumConstants) {
+                 Enum e = (Enum) enumConstant;
+-                allowedvalues.add(e.name());
++                allowedvalues.add(e.toString());
+             }
+             parameterMetaInfo.allowedValues = allowedvalues;
+         } else {
+@@ -255,7 +255,7 @@
+                     List<String> suggestedValues = new ArrayList<String>();
+                     for (Object enumConstant : suggestedConstants) {
+                         Enum enumField = (Enum) enumConstant;
+-                        String enumName = enumField.name();
++                        String enumName = enumField.toString();
+                         suggestedValues.add(enumName);
+                     }
+                     parameterMetaInfo.suggestedValues = suggestedValues;
+@@ -317,7 +317,7 @@
+                 Class<? extends Enum> enumFieldType = (Class<? extends Enum>) fieldType;
+                 for (Object enumConstant : enumConstants) {
+                     Enum enumField = (Enum) enumConstant;
+-                    String enumName = enumField.name();
++                    String enumName = enumField.toString();
+                     allowedValues.add(enumName);
+                 }
+ 
+@@ -334,7 +334,7 @@
+                         List<String> suggestedValues = new ArrayList<String>();
+                         for (Object enumConstant : suggestedConstants) {
+                             Enum enumField = (Enum) enumConstant;
+-                            String enumName = enumField.name();
++                            String enumName = enumField.toString();
+                             suggestedValues.add(enumName);
+                         }
+                         tabularFieldInfo.suggestedValues = suggestedValues;
 Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1412280015000)
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1412752015000)
 +++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
-@@ -17,6 +17,7 @@
- import javax.xml.bind.annotation.XmlAccessType
- import javax.xml.bind.annotation.XmlAccessorType
- import javax.xml.bind.annotation.XmlRootElement
-+import java.text.SimpleDateFormat
- import java.util.regex.Matcher
- import java.util.regex.Pattern
+@@ -147,7 +147,7 @@
+     public void beforeScenario(String title) {
  
-@@ -275,7 +276,12 @@
-             while (underlyingCause.getCause() != null) {
-                 underlyingCause = underlyingCause.getCause();
-             }
--            String underlyingErrorMsg = "Underlying error - " + underlyingCause.getMessage();
-+            String underlyingErrorMsg;
-+            if (underlyingCause.getMessage() != null && !underlyingCause.getMessage().trim().isEmpty()) {
-+                underlyingErrorMsg = "Underlying error - " + underlyingCause.getMessage();
+         this.totalScenarios++;
+-        this.currentScenarioStatus = TestStatus.PASSED; // assume pass initially
++        this.currentScenarioStatus = null; // assume pass initially
+ 
+         htmlOutput.beforeScenario(title);
+     }
+@@ -250,6 +250,10 @@
+ 
+     @Override
+     public void successful(String step) {
++
++        if (currentScenarioStatus == null) {
++            currentScenarioStatus = TestStatus.PASSED;
++        }
+ 
+         String[] tokens = this.splitIntoKeywordAndBody(step);
+         if (tokens != null) {
+Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy	(revision )
++++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/groovy/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy	(revision )
+@@ -0,0 +1,1049 @@
++package com.jbehaveforjira.groovyclient
++
++import com.sun.jersey.api.client.Client
++import com.sun.jersey.api.client.WebResource
++import freemarker.ext.beans.BeansWrapper
++import freemarker.template.TemplateHashModel
++import freemarker.template.TemplateModelException
++import groovy.json.StringEscapeUtils
++import org.apache.commons.lang.StringEscapeUtils
++import org.apache.commons.lang.StringUtils
++import org.apache.commons.lang.Validate
++import org.jbehave.core.configuration.Keywords
++import org.jbehave.core.model.*
++import org.jbehave.core.reporters.*
++import org.jbehave.core.steps.StepCreator
++
++import javax.ws.rs.core.MediaType
++import javax.xml.bind.annotation.XmlAccessType
++import javax.xml.bind.annotation.XmlAccessorType
++import javax.xml.bind.annotation.XmlRootElement
++import java.util.regex.Matcher
++import java.util.regex.Pattern
++
++/**
++ * @author Maryna Pristrom
++ */
++public class GroovyTemplateStoryReporter implements StoryReporter {
++
++    public static enum TestStatus {
++
++        passed,
++
++        failed,
++
++        pending,
++
++        not_performed,
++
++        ignored
++
++    }
++
++    private String basePostPath;
++    private String loginParams;
++
++    private final File file;
++    private final Keywords keywords;
++    private final TemplateProcessor processor;
++    private final String templatePath;
++    private OutputStory outputStory = new OutputStory();
++    private OutputScenario outputScenario = new OutputScenario();
++    private OutputStep failedStep;
++    private String environment;
++
++    public GroovyTemplateStoryReporter(File file, Keywords keywords,
++                                       String jiraBaseUrl, String jiraProject, String username, String password, String environment) {
++        this(file, keywords, new FreemarkerProcessor(), "ftl/jbehave-html-output.ftl", jiraBaseUrl, jiraProject, username, password, environment);
++    }
++
++    public GroovyTemplateStoryReporter(File file, Keywords keywords, TemplateProcessor processor, String templatePath,
++                                       String jiraBaseUrl, String jiraProject, String username, String password, String environment) {
++        this.file = file;
++        this.keywords = keywords;
++        this.processor = processor;
++        this.templatePath = templatePath;
++        this.loginParams = "?os_username=" + username + "&os_password=" + password;
++        this.basePostPath = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/story-test/add-for-path/";
++        this.environment = environment;
++    }
++
++    public void storyNotAllowed(Story story, String filter) {
++        this.outputStory.notAllowedBy = filter;
++    }
++
++    public void beforeStory(Story story, boolean givenStory) {
++        if (!givenStory) {
++            this.outputStory = new OutputStory();
++            this.outputStory.description = story.getDescription().asString();
++            this.outputStory.path = story.getPath();
++        }
++        if (!story.getMeta().isEmpty()) {
++            this.outputStory.meta = new OutputMeta(story.getMeta());
++        }
++    }
++
++    public void narrative(Narrative narrative) {
++        if (!narrative.isEmpty()) {
++            this.outputStory.narrative = new OutputNarrative(narrative);
++        }
++    }
++
++    public void lifecyle(Lifecycle lifecycle) {
++        if (!lifecycle.isEmpty()) {
++            this.outputStory.lifecycle = new OutputLifecycle(lifecycle);
++        }
++    }
++
++
++    public void scenarioNotAllowed(Scenario scenario, String filter) {
++        this.outputScenario.notAllowedBy = filter;
++    }
++
++    public void beforeScenario(String title) {
++        if (this.outputScenario.currentExample == null) {
++            this.outputScenario = new OutputScenario();
++            this.failedStep = null;
++        }
++        this.outputScenario.title = title;
++    }
++
++    public void beforeStep(String step) {
++    }
++
++    public void successful(String step) {
++        this.outputScenario.addStep(new OutputStep(step, "successful"));
++    }
++
++    public void ignorable(String step) {
++        this.outputScenario.addStep(new OutputStep(step, "ignorable"));
++    }
++
++    public void pending(String step) {
++        this.outputScenario.addStep(new OutputStep(step, "pending"));
++    }
++
++    public void notPerformed(String step) {
++        this.outputScenario.addStep(new OutputStep(step, "notPerformed"));
++    }
++
++    public void failed(String step, Throwable storyFailure) {
++        this.failedStep = new OutputStep(step, "failed");
++        failedStep.failure = storyFailure;
++        this.outputScenario.addStep(failedStep);
++    }
++
++    public void failedOutcomes(String step, OutcomesTable table) {
++        failed(step, table.failureCause());
++        this.failedStep.outcomes = table;
++    }
++
++    public void givenStories(GivenStories givenStories) {
++        if (!givenStories.getStories().isEmpty()) {
++            this.outputScenario.givenStories = givenStories;
++        }
++    }
++
++    public void givenStories(List<String> storyPaths) {
++        givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
++    }
++
++    public void scenarioMeta(Meta meta) {
++        if (!meta.isEmpty()) {
++            this.outputScenario.meta = new OutputMeta(meta);
++        }
++    }
++
++    public void beforeExamples(List<String> steps, ExamplesTable table) {
++        this.outputScenario.examplesSteps = steps;
++        this.outputScenario.examplesTable = table;
++    }
++
++    public void example(Map<String, String> parameters) {
++        this.outputScenario.examples.add(parameters);
++        this.outputScenario.currentExample = parameters;
++    }
++
++    public void afterExamples() {
++        this.outputScenario.currentExample = null;
++    }
++
++    public void dryRun() {
++    }
++
++    public void afterScenario() {
++        if (this.outputScenario.currentExample == null) {
++
++            // set scenario status
++            if (failedStep != null) {
++                this.outputScenario.outcome = TestStatus.failed;
++            } else if (this.outputScenario.pendingMethods != null) {
++                this.outputScenario.outcome = TestStatus.pending;
 +            } else {
-+                underlyingErrorMsg = "";
++                // check if all steps were skipped
++                List<OutputStep> scenarioSteps = outputScenario.steps;
++                boolean allSkipped = true;
++                for (OutputStep scenarioStep : scenarioSteps) {
++                    String stepOutcome = scenarioStep.outcome;
++                    if (!stepOutcome.equals("notPerformed")) {
++                        allSkipped = false;
++                        break;
++                    }
++                }
++                if (allSkipped) {
++                    this.outputScenario.outcome = TestStatus.not_performed;
++                } else {
++                    // check if all ignored
++                    boolean allIgnored = true;
++                    for (OutputStep scenarioStep : scenarioSteps) {
++                        String stepOutcome = scenarioStep.outcome;
++                        if (!stepOutcome.equals("ignorable")) {
++                            allIgnored = false;
++                            break;
++                        }
++                    }
++                    if (allIgnored) {
++                        this.outputScenario.outcome = TestStatus.ignored;
++                    } else {
++                        this.outputScenario.outcome = TestStatus.passed;
++                    }
++                }
 +            }
-             htmlOutput.print(htmlOutput.format("failedStep", "{0} {1} ({2})\n({3})\n",
-                     tokens[0], tokens[1],
-                     htmlOutput.keywords.failed(),
-@@ -289,7 +295,10 @@
- 
-     @Override
-     public void failedOutcomes(String step, OutcomesTable table) {
--        htmlOutput.failedOutcomes(step, table);
-+//        this.currentScenarioStatus = TestStatus.FAILED;
-+//        htmlOutput.failedOutcomes(step, table);
-+        this.failed(step, table.failureCause());
-+        this.printOutcomesTable(table);
-     }
- 
-     @Override
-@@ -393,6 +402,35 @@
- 
-     }
- 
-+    private void printOutcomesTable(OutcomesTable table) {
-+        htmlOutput.print(htmlOutput.format("outcomesTableStart", "\n"));
-+        List<OutcomesTable.Outcome<?>> rows = table.getOutcomes();
-+        htmlOutput.print(htmlOutput.format("outcomesTableHeadStart", "|"));
-+        for (String field : table.getOutcomeFields()) {
-+            htmlOutput.print(htmlOutput.format("outcomesTableHeadCell", "{0}|", field));
++
++            this.outputStory.scenarios.add(outputScenario);
 +        }
-+        htmlOutput.print(htmlOutput.format("outcomesTableHeadEnd", "\n"));
-+        htmlOutput.print(htmlOutput.format("outcomesTableBodyStart", ""));
-+        for (OutcomesTable.Outcome<?> outcome : rows) {
-+            htmlOutput.print(htmlOutput.format("outcomesTableRowStart", "|", outcome.isVerified() ? "verified" : "notVerified"));
-+            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", outcome.getDescription()));
-+            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", this.renderOutcomeValue(outcome.getValue(), table.getDateFormat())));
-+            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", outcome.getMatcher()));
-+            htmlOutput.print(htmlOutput.format("outcomesTableCell", "{0}|", (outcome.isVerified() ? keywords.yes() : keywords.no())));
-+            htmlOutput.print(htmlOutput.format("outcomesTableRowEnd", "\n"));
-+        }
-+        htmlOutput.print(htmlOutput.format("outcomesTableBodyEnd", "\n"));
-+        htmlOutput.print(htmlOutput.format("outcomesTableEnd", "\n"));
 +    }
 +
-+    private Object renderOutcomeValue(Object value, String dateFormat) {
-+        if (value instanceof Date) {
-+            return new SimpleDateFormat(dateFormat).format(value);
++    public void pendingMethods(List<String> methods) {
++        this.outputScenario.pendingMethods = methods;
++    }
++
++    public void restarted(String step, Throwable cause) {
++        this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
++    }
++
++    public void storyCancelled(Story story, StoryDuration storyDuration) {
++        this.outputStory.cancelled = true;
++        this.outputStory.storyDuration = storyDuration;
++    }
++
++    public void afterStory(boolean givenStory) {
++        if (!givenStory && !outputStory.getPath().equals("AfterStories") && !outputStory.getPath().equals("BeforeStories")) {
++
++            Map<String, Object> model = newDataModel();
++            model.put("story", outputStory);
++            model.put("keywords", new OutputKeywords(keywords));
++
++            BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
++            TemplateHashModel enumModels = wrapper.getEnumModels();
++            TemplateHashModel escapeEnums;
++            try {
++
++                String escapeModeEnum = EscapeMode.class.getCanonicalName();
++                escapeEnums = (TemplateHashModel) enumModels.get(escapeModeEnum);
++                model.put("EscapeMode", escapeEnums);
++
++            } catch (TemplateModelException e) {
++                throw new IllegalArgumentException(e);
++            }
++
++            write(file, templatePath, model);
++
++            // write to string stream
++            ByteArrayOutputStream out = new ByteArrayOutputStream();
++            OutputStreamWriter outStreamWriter = new OutputStreamWriter(out);
++            processor.process(templatePath, model, outStreamWriter);
++            String report = out.toString();
++            sendStoryReport(report, outputStory);
++
++        }
++    }
++
++    private File write(File file, String resource, Map<String, Object> dataModel) {
++        try {
++
++            // write to file
++            File parentFile = file.getParentFile();
++            if (parentFile != null) {
++                parentFile.mkdirs();
++            }
++            Writer writer = new FileWriter(file);
++            processor.process(resource, dataModel, writer);
++            writer.close();
++
++            return file;
++        } catch (Exception e) {
++            e.printStackTrace();
++            throw new RuntimeException(resource, e);
++        }
++    }
++
++    protected void sendStoryReport(String testReport, OutputStory outputStory) {
++
++        Validate.notEmpty(testReport);
++
++        // extract version
++        long jiraVersion;
++        String actualStoryPath;
++        String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
++        Pattern p = Pattern.compile(regexPattern);
++        Matcher matcher = p.matcher(outputStory.getPath());
++        if (matcher.matches()) {
++            actualStoryPath = matcher.group(1) + matcher.group(3);
++            String versionStr = matcher.group(2);
++            jiraVersion = Long.parseLong(versionStr);
 +        } else {
-+            return value;
++            throw new IllegalArgumentException("JiraStory path must match pattern - " + regexPattern);
++        }
++
++        List<OutputScenario> scenarios = outputStory.getScenarios();
++        int totalScenarios = 0;
++        int totalPassed = 0;
++        int totalFailed = 0;
++        int totalPending = 0;
++        int totalNotPerformed = 0;
++        int totalIgnored = 0;
++        for (OutputScenario scenario : scenarios) {
++            totalScenarios++;
++            String outcome = scenario.getOutcome();
++            if (TestStatus.passed.name().equals(outcome)) {
++                totalPassed++;
++            } else if (TestStatus.failed.name().equals(outcome)) {
++                totalFailed++;
++            } else if (TestStatus.pending.name().equals(outcome)) {
++                totalPending++;
++            } else if (TestStatus.not_performed.name().equals(outcome)) {
++                totalNotPerformed++;
++            } else if (TestStatus.ignored.name().equals(outcome)) {
++                totalIgnored++;
++            }
++        }
++
++        TestStatus storyStatus;
++        if (totalFailed > 0) {
++            storyStatus = TestStatus.failed;
++        } else if (totalPending > 0) {
++            storyStatus = TestStatus.pending;
++        } else if (totalNotPerformed > 0 && totalNotPerformed == totalScenarios) {
++            storyStatus = TestStatus.not_performed;
++        } else if (totalIgnored > 0 && totalIgnored == totalScenarios) {
++            storyStatus = TestStatus.ignored;
++        } else {
++            storyStatus = TestStatus.passed;
++        }
++
++        StoryReport storyHtmlReportDTO = new StoryReport(environment,
++                outputStory.getPath(), jiraVersion, storyStatus, testReport);
++
++        storyHtmlReportDTO.setTotalScenarios(totalScenarios);
++        storyHtmlReportDTO.setTotalScenariosPassed(totalPassed);
++        storyHtmlReportDTO.setTotalScenariosFailed(totalFailed);
++        storyHtmlReportDTO.setTotalScenariosPending(totalPending);
++        storyHtmlReportDTO.setTotalScenariosIgnored(totalIgnored);
++        storyHtmlReportDTO.setTotalScenariosNotPerformed(totalNotPerformed);
++
++        // extract version
++
++        String postUrl = this.basePostPath + actualStoryPath + loginParams;
++
++        Client client = Client.create();
++        WebResource res = client.resource(postUrl);
++
++        String response = res.accept(MediaType.APPLICATION_JSON)
++                .type(MediaType.APPLICATION_JSON)
++                .post(String.class, storyHtmlReportDTO);
++
++        System.out.println("response - " + response);
++    }
++
++    private Map<String, Object> newDataModel() {
++        return new HashMap<String, Object>();
++    }
++
++    public static class OutputKeywords {
++
++        private final Keywords keywords;
++
++        public OutputKeywords(Keywords keywords) {
++            this.keywords = keywords;
++        }
++
++        public String getLifecycle() {
++            return keywords.lifecycle();
++        }
++
++        public String getBefore() {
++            return keywords.before();
++        }
++
++        public String getAfter() {
++            return keywords.after();
++        }
++
++        public String getMeta() {
++            return keywords.meta();
++        }
++
++        public String getMetaProperty() {
++            return keywords.metaProperty();
++        }
++
++        public String getNarrative() {
++            return keywords.narrative();
++        }
++
++        public String getInOrderTo() {
++            return keywords.inOrderTo();
++        }
++
++        public String getAsA() {
++            return keywords.asA();
++        }
++
++        public String getiWantTo() {
++            return keywords.iWantTo();
++        }
++
++        public String getSoThat() {
++            return keywords.soThat();
++        }
++
++        public String getScenario() {
++            return keywords.scenario();
++        }
++
++        public String getGivenStories() {
++            return keywords.givenStories();
++        }
++
++        public String getExamplesTable() {
++            return keywords.examplesTable();
++        }
++
++        public String getExamplesTableRow() {
++            return keywords.examplesTableRow();
++        }
++
++        public String getExamplesTableHeaderSeparator() {
++            return keywords.examplesTableHeaderSeparator();
++        }
++
++        public String getExamplesTableValueSeparator() {
++            return keywords.examplesTableValueSeparator();
++        }
++
++        public String getExamplesTableIgnorableSeparator() {
++            return keywords.examplesTableIgnorableSeparator();
++        }
++
++        public String getGiven() {
++            return keywords.given();
++        }
++
++        public String getWhen() {
++            return keywords.when();
++        }
++
++        public String getThen() {
++            return keywords.then();
++        }
++
++        public String getAnd() {
++            return keywords.and();
++        }
++
++        public String getIgnorable() {
++            return keywords.ignorable();
++        }
++
++        public String getPending() {
++            return keywords.pending();
++        }
++
++        public String getNotPerformed() {
++            return keywords.notPerformed();
++        }
++
++        public String getFailed() {
++            return keywords.failed();
++        }
++
++        public String getDryRun() {
++            return keywords.dryRun();
++        }
++
++        public String getStoryCancelled() {
++            return keywords.storyCancelled();
++        }
++
++        public String getDuration() {
++            return keywords.duration();
++        }
++
++        public String getYes() {
++            return keywords.yes();
++        }
++
++        public String getNo() {
++            return keywords.no();
 +        }
 +    }
 +
-     private static List<Byte> stringToBytesList(String text) {
- 
-         byte[] bytesArray = text.getBytes();
-@@ -644,10 +682,14 @@
-             patterns.setProperty("beforeScenario",
-                     "<div class=\"jb-story-ele-exp-container jb-story-report-scenario\">\n" +
-                             "<div class=\"jb-story-report-scenario-title\">" +
--                            "<a href=\"#\" class=\"jb-story-ele-exp-trigger collapsed\" style=\"text-decoration: none;\">" +
++    public static class OutputStory {
++        private String description;
++        private String path;
++        private OutputMeta meta;
++        private OutputNarrative narrative;
++        private OutputLifecycle lifecycle;
++        private String notAllowedBy;
++        private List<OutputScenario> scenarios = new ArrayList<OutputScenario>();
++        private boolean cancelled;
++        private StoryDuration storyDuration;
 +
-+                            "<div class=\"jb-story-ele-exp-trigger collapsed\">" +
-+                            "<a class=\"jb-story-ele-exp-trigger-link\" href=\"#\" style=\"text-decoration: none;\">" +
-                             "<span class=\"cm-jb-story-scenario-keyword\">{0} </span>" +
-                             "<span class=\"cm-jb-story-scenario-title\">{1}</span>" +
-                             "</a>" +
-+                            "</div>" +
++        public String getDescription() {
++            return description;
++        }
 +
- //                            " <span class=\"[scenario_status_lozenge_class]\">[scenario_status_lozenge_text]</span>" +
-                             //                            "<span class=\"aui-lozenge aui-lozenge-success\">Success</span>" +
-                             //                            " <span class=\"aui-lozenge aui-lozenge-error\">failed</span>" +
-@@ -679,7 +721,7 @@
-                     "<div class=\"jb-story-report-step jb-story-report-step-failed matched-step\">" +
-                             "<span class=\"cm-jb-story-step-keyword failed\">{0}</span><span class=\"cm-jb-story-step-body failed\">{1}</span>" +
- 
--                            "<div>"+
-+                            "<div>" +
-                             "<span class=\"cm-jb-story-step-failed-keyword\">({2})</span> " +
- //                            "<div class=\"cm-jb-story-step-failed-message\">{3}</div>" +
-                             // failure trace formatting
-@@ -717,7 +759,7 @@
- 
-             patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
- 
--            patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
-+            patterns.setProperty("outcomesTableStart", "<div class=\"jb-story-outcomes\"><table>\n");
-             patterns.setProperty("outcomesTableHeadStart", "<thead>\n<tr>\n");
-             patterns.setProperty("outcomesTableHeadCell", "<th>{0}</th>");
-             patterns.setProperty("outcomesTableHeadEnd", "</tr>\n</thead>\n");
++        public String getPath() {
++            return path;
++        }
++
++        public OutputMeta getMeta() {
++            return meta;
++        }
++
++        public OutputNarrative getNarrative() {
++            return narrative;
++        }
++
++        public OutputLifecycle getLifecycle() {
++            return lifecycle;
++        }
++
++        public String getNotAllowedBy() {
++            return notAllowedBy;
++        }
++
++        public List<OutputScenario> getScenarios() {
++            return scenarios;
++        }
++
++        public boolean isCancelled() {
++            return cancelled;
++        }
++
++        public StoryDuration getStoryDuration() {
++            return storyDuration;
++        }
++    }
++
++    public static class OutputMeta {
++
++        private final Meta meta;
++
++        public OutputMeta(Meta meta) {
++            this.meta = meta;
++        }
++
++        public Map<String, String> getProperties() {
++            Map<String, String> properties = new HashMap<String, String>();
++            for (String name : meta.getPropertyNames()) {
++                properties.put(name, meta.getProperty(name));
++            }
++            return properties;
++        }
++
++    }
++
++    public static class OutputNarrative {
++        private final Narrative narrative;
++
++        public OutputNarrative(Narrative narrative) {
++            this.narrative = narrative;
++        }
++
++        public String getInOrderTo() {
++            return narrative.inOrderTo();
++        }
++
++        public String getAsA() {
++            return narrative.asA();
++        }
++
++        public String getiWantTo() {
++            return narrative.iWantTo();
++        }
++
++        public String getSoThat() {
++            return narrative.soThat();
++        }
++
++        public boolean isAlternative() {
++            return narrative.isAlternative();
++        }
++
++    }
++
++    public static class OutputLifecycle {
++        private final Lifecycle lifecycle;
++
++        public OutputLifecycle(Lifecycle lifecycle) {
++            this.lifecycle = lifecycle;
++        }
++
++        public List<String> getBeforeSteps() {
++            return lifecycle.getBeforeSteps();
++        }
++
++        public List<String> getAfterSteps() {
++            return lifecycle.getAfterSteps();
++        }
++
++        public List<String> getAfterSteps(String outcome) {
++            // TODO there is no support yet for outcomes in After Lifecycle steps in JBehave 3.9
++            // we hack it here to always return for outcome - ANY
++            if ("ANY".equals(outcome)) {
++                return lifecycle.getAfterSteps();
++            } else {
++                return Collections.emptyList();
++            }
++        }
++
++        public List<String> getOutcomes() {
++            // TODO there is no support yet for outcomes in After Lifecycle steps in JBehave 3.9
++            // we hack it here to always return outcome - ANY
++            return Collections.singletonList("ANY");
++        }
++    }
++
++    public static class OutputScenario {
++        private String title;
++        private String outcome;
++        private List<OutputStep> steps = new ArrayList<OutputStep>();
++        private OutputMeta meta;
++        private List<String> pendingMethods;
++        private GivenStories givenStories;
++        private String notAllowedBy;
++        private List<String> examplesSteps;
++        private ExamplesTable examplesTable;
++        private Map<String, String> currentExample;
++        private List<Map<String, String>> examples = new ArrayList<Map<String, String>>();
++        private Map<Map<String, String>, List<OutputStep>> stepsByExample = new HashMap<Map<String, String>, List<OutputStep>>();
++
++        public String getTitle() {
++            return title;
++        }
++
++        public void addStep(OutputStep outputStep) {
++            if (examplesTable == null) {
++                steps.add(outputStep);
++            } else {
++                List<OutputStep> currentExampleSteps = stepsByExample.get(currentExample);
++                if (currentExampleSteps == null) {
++                    currentExampleSteps = new ArrayList<OutputStep>();
++                    stepsByExample.put(currentExample, currentExampleSteps);
++                }
++                currentExampleSteps.add(outputStep);
++            }
++        }
++
++        public List<String> getPendingMethods() {
++            return pendingMethods;
++        }
++
++        public String getOutcome() {
++            return outcome
++        }
++
++        public List<OutputStep> getSteps() {
++            return steps;
++        }
++
++        public List<OutputStep> getStepsByExample(Map<String, String> example) {
++            List<OutputStep> steps = stepsByExample.get(example);
++            if (steps == null) {
++                return new ArrayList<OutputStep>();
++            }
++            return steps;
++        }
++
++        public OutputMeta getMeta() {
++            return meta;
++        }
++
++        public GivenStories getGivenStories() {
++            return givenStories;
++        }
++
++        public String getNotAllowedBy() {
++            return notAllowedBy;
++        }
++
++        public List<String> getExamplesSteps() {
++            return examplesSteps;
++        }
++
++        public ExamplesTable getExamplesTable() {
++            return examplesTable;
++        }
++
++        public List<Map<String, String>> getExamples() {
++            return examples;
++        }
++    }
++
++    public static class OutputRestart extends OutputStep {
++
++        public OutputRestart(String step, String outcome) {
++            super(step, outcome);
++        }
++
++    }
++
++    public static class OutputStep {
++
++        private final String step;
++
++        private List<OutputStepToken> stepTokens;
++
++        private final String outcome;
++
++        private Throwable failure;
++
++        private OutcomesTable outcomes;
++
++        public OutputStep(String step, String outcome) {
++
++            this.step = step;
++            this.outcome = outcome;
++            parse();
++        }
++
++        private void parse() {
++
++            stepTokens = new ArrayList<>();
++
++            int indexOfFirstSpace = step.indexOf(" ")
++            Validate.isTrue(indexOfFirstSpace > -1);
++
++            String keyword = step.substring(0, indexOfFirstSpace);
++            stepTokens.add(new OutputStepToken(OutputStepToken.StepTokenType.KEYWORD, keyword));
++
++            String stepBody = step.substring(indexOfFirstSpace);
++            stepBody = remark(stepBody);
++
++            // find any parameter markers
++            Pattern paramPattern = Pattern.compile(
++                    "(.*)"
++                            + "(\\" + StepCreator.PARAMETER_VALUE_START + ")"
++                            + "(.*)"
++                            + "(\\" + StepCreator.PARAMETER_VALUE_END + ")"
++                            + "(.*)"
++                    , Pattern.DOTALL
++            );
++            Pattern tableParamPattern = Pattern.compile(
++                    "(.*)"
++                            + "(\\" + StepCreator.PARAMETER_TABLE_START + ")"
++                            + "(.*)"
++                            + "(\\" + StepCreator.PARAMETER_TABLE_END + ")"
++                            + "(.*)"
++                    , Pattern.DOTALL
++            );
++            int pos = 0;
++            Matcher simpleParamMatcher = paramPattern.matcher(stepBody);
++            Matcher tableParamMatcher = tableParamPattern.matcher(stepBody);
++            while (pos < stepBody.length()) {
++
++                if (simpleParamMatcher.find(pos)) {
++                    // simple parameter
++                    String beforeParam = simpleParamMatcher.group(1);
++                    if (beforeParam != null) {
++                        stepTokens.add(new OutputStepToken(OutputStepToken.StepTokenType.TEXT, beforeParam));
++                    }
++                    String paramValue = simpleParamMatcher.group(3);
++                    stepTokens.add(new OutputStepToken(OutputStepToken.StepTokenType.PARAMETER, paramValue));
++                    pos = simpleParamMatcher.end(4);
++                } else if (tableParamMatcher.find(pos)) {
++                    // tabular parameter
++                    String beforeParam = tableParamMatcher.group(1);
++                    if (beforeParam != null) {
++                        stepTokens.add(new OutputStepToken(OutputStepToken.StepTokenType.TEXT, beforeParam));
++                    }
++                    String paramValue = tableParamMatcher.group(3);
++                    stepTokens.add(new TabularParameterStepToken(paramValue));
++                    pos = tableParamMatcher.end(4);
++                } else {
++                    // no marked parameters left
++                    String remainingText = stepBody.substring(pos);
++                    stepTokens.add(new OutputStepToken(OutputStepToken.StepTokenType.TEXT, remainingText));
++                    pos = stepBody.length();
++                }
++
++            }
++
++
++        }
++
++        public String getStep() {
++            return step;
++        }
++
++        public List<OutputStepToken> getStepTokens() {
++            return stepTokens
++        }
++
++        public String getOutcome() {
++            return outcome;
++        }
++
++        public Throwable getFailure() {
++            return failure;
++        }
++
++        public String getFailureCause() {
++            if (failure != null) {
++                return new StackTraceFormatter(true).stackTrace(failure);
++            }
++            return "";
++        }
++
++        public OutcomesTable getOutcomes() {
++            return outcomes;
++        }
++
++        public String getOutcomesFailureCause() {
++            if (outcomes.failureCause() != null) {
++                return new StackTraceFormatter(true).stackTrace(outcomes.failureCause());
++            }
++            return "";
++        }
++
++        private static String escapeString(String string) {
++            return StringEscapeUtils.escapeHtml(string);
++        }
++
++        private boolean containsTable(String text) {
++            return text.contains(StepCreator.PARAMETER_TABLE_START) && text.contains(StepCreator.PARAMETER_TABLE_END);
++        }
++
++        public static String remark(String text) {
++
++            // custom work around for the fact that JBehave's step creator doesn't recognize custom types annotated
++            // with AsParameters as tabular parameters
++
++            String[] lines = text.split(StepCreator.PARAMETER_VALUE_NEWLINE);
++
++            if (lines.length == 1) {
++                return text;
++            }
++
++            StringBuilder sb = new StringBuilder();
++            boolean inTable = false;
++            for (int i = 0; i < lines.length; i++) {
++                String line = lines[i];
++                if (!inTable && line.startsWith("|")) {
++                    inTable = true;
++                    sb.append(StepCreator.PARAMETER_TABLE_START);
++                }
++                if (inTable && (i == (lines.length - 1) || !lines[i + 1].startsWith("|"))) {
++                    // this is last table line
++                    int lastPipe = line.lastIndexOf("|");
++                    sb.append(line.substring(0, lastPipe + 1));
++                    sb.append(StepCreator.PARAMETER_TABLE_END);
++                    sb.append(line.substring(lastPipe + 1));
++                    inTable = false;
++                } else {
++                    sb.append(line);
++                }
++                if (i != (lines.length - 1)) {
++                    sb.append("\n");
++                }
++            }
++
++            String result = sb.toString();
++            return result;
++        }
++
++//        @SuppressWarnings("serial")
++//        public static class StepFormattingFailed extends RuntimeException {
++//
++//            public StepFormattingFailed(String stepPattern, String parameterPattern, List<OutputParameter> parameters,
++//                                        RuntimeException cause) {
++//                super("Failed to format step '" + stepPattern + "' with parameter pattern '" + parameterPattern
++//                        + "' and parameters: " + parameters, cause);
++//            }
++//
++//        }
++
++    }
++
++    public static class OutputStepToken {
++
++        public static enum StepTokenType {
++            KEYWORD,
++            TEXT,
++            PARAMETER,
++            TABULAR_PARAMETER
++        }
++
++        private StepTokenType type;
++        private String asString;
++
++        protected OutputStepToken(StepTokenType type, String asString) {
++            this.asString = asString
++            this.type = type
++        }
++
++        public StepTokenType getType() {
++            return type;
++        }
++
++        public String asString() {
++            return asString
++        }
++    }
++
++    public static class TabularParameterStepToken extends OutputStepToken {
++
++        private ExamplesTable table;
++
++        protected TabularParameterStepToken(String asString) {
++            super(StepTokenType.TABULAR_PARAMETER, asString);
++            table = new ExamplesTable(asString);
++        }
++
++        public ExamplesTable getTable() {
++            return table
++        }
++    }
++
++    @XmlRootElement
++    @XmlAccessorType(XmlAccessType.FIELD)
++    public static class StoryReport {
++
++        private String environment;
++
++        private String storyPath;
++
++        private Long storyVersion;
++
++        public TestStatus status;
++
++        private Integer totalScenarios;
++
++        private Integer totalScenariosPassed;
++
++        private Integer totalScenariosFailed;
++
++        private Integer totalScenariosPending;
++
++        private Integer totalScenariosIgnored;
++
++        private Integer totalScenariosNotPerformed;
++
++        private String htmlReport;
++
++        protected StoryReport() {
++        }
++
++        public StoryReport(String environment, String storyPath,
++                           Long storyVersion, TestStatus status, String htmlReport) {
++            this.environment = environment;
++            this.storyPath = storyPath;
++            this.storyVersion = storyVersion;
++            this.status = status;
++            this.htmlReport = htmlReport;
++        }
++
++        public String getEnvironment() {
++            return environment;
++        }
++
++        public void setEnvironment(String environment) {
++            this.environment = environment;
++        }
++
++        public String getStoryPath() {
++            return storyPath;
++        }
++
++        public void setStoryPath(String storyPath) {
++            this.storyPath = storyPath;
++        }
++
++        public Long getStoryVersion() {
++            return storyVersion;
++        }
++
++        public void setStoryVersion(Long storyVersion) {
++            this.storyVersion = storyVersion;
++        }
++
++        public TestStatus getStatus() {
++            return status;
++        }
++
++        public void setStatus(TestStatus status) {
++            this.status = status;
++        }
++
++        public String getHtmlReport() {
++            return htmlReport;
++        }
++
++        public void setHtmlReport(String htmlReport) {
++            this.htmlReport = htmlReport;
++        }
++
++        public Integer getTotalScenarios() {
++            return totalScenarios;
++        }
++
++        public void setTotalScenarios(Integer totalScenarios) {
++            this.totalScenarios = totalScenarios;
++        }
++
++        public Integer getTotalScenariosPassed() {
++            return totalScenariosPassed;
++        }
++
++        public void setTotalScenariosPassed(Integer totalScenariosPassed) {
++            this.totalScenariosPassed = totalScenariosPassed;
++        }
++
++        public Integer getTotalScenariosFailed() {
++            return totalScenariosFailed;
++        }
++
++        public void setTotalScenariosFailed(Integer totalScenariosFailed) {
++            this.totalScenariosFailed = totalScenariosFailed;
++        }
++
++        public Integer getTotalScenariosPending() {
++            return totalScenariosPending;
++        }
++
++        public void setTotalScenariosPending(Integer totalScenariosPending) {
++            this.totalScenariosPending = totalScenariosPending;
++        }
++
++        public Integer getTotalScenariosIgnored() {
++            return totalScenariosIgnored;
++        }
++
++        public void setTotalScenariosIgnored(Integer totalScenariosIgnored) {
++            this.totalScenariosIgnored = totalScenariosIgnored;
++        }
++
++        public Integer getTotalScenariosNotPerformed() {
++            return totalScenariosNotPerformed;
++        }
++
++        public void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed) {
++            this.totalScenariosNotPerformed = totalScenariosNotPerformed;
++        }
++
++    }
++
++}
++
