@@ -1,446 +1,1044 @@
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookRelatedSteps.java
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/BuySellIndicator.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookRelatedSteps.java	(date 1412147330000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookRelatedSteps.java	(revision )
-@@ -6,6 +6,7 @@
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/BuySellIndicator.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/BuySellIndicator.java	(revision )
+@@ -0,0 +1,6 @@
++package com.jbehaveforjira.exampleproject.tradingapp;
++
++public enum BuySellIndicator {
++    Buy,
++    Sell
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TransactionSteps.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/steps/TradingAppSteps.java	(revision )
+@@ -1,34 +1,73 @@
+-package com.jbehaveforjira.exampleproject;
++package com.jbehaveforjira.exampleproject.steps;
+ 
+ import com.jbehaveforjira.exampleproject.bookstore.Currency;
+-import com.jbehaveforjira.exampleproject.transaction.FxTransaction;
++import com.jbehaveforjira.exampleproject.tradingapp.Cashflow;
++import com.jbehaveforjira.exampleproject.tradingapp.FxTransaction;
++import com.jbehaveforjira.exampleproject.tradingapp.MTMessageField;
++import com.jbehaveforjira.exampleproject.tradingapp.SwiftMessageType;
+ import com.jbehaveforjira.javaclient.ParameterInfo;
  import org.jbehave.core.annotations.Given;
- import org.jbehave.core.annotations.Named;
++import org.jbehave.core.annotations.Then;
  import org.jbehave.core.annotations.When;
-+import org.jbehave.core.model.ExamplesTable;
++import org.junit.Assert;
  
- import java.util.List;
+-public class TransactionSteps {
++import java.math.BigDecimal;
++import java.util.List;
  
-@@ -15,6 +16,13 @@
- public class BookRelatedSteps {
- 
-     private BookStore bookStore = new BookStore();
+-    @Given("an FX transaction to buy $amount of $currency")
+-    public void givenFxTransaction(@ParameterInfo(suggestedValues = {"100", "200", "300", "1000", "10000"},
+-        formatPattern = "[0-9]{1,10}\\.[0-9]{2}", formatDisplayText = "###.##") Double amount,
+-                                   Currency currency) {
+-        //
++public class TradingAppSteps {
 +
++    private BigDecimal fxRate;
 +
-+    @Given("transaction events: $events")
-+    public void givenSomeEvents(ExamplesTable events) {
++    private Currency buyCurrency;
++
++    private BigDecimal amountToBuy;
++
++    private Currency homeCurrency = Currency.EUR;
++
++    private BigDecimal resultingAmount = new BigDecimal("0.00");
++
++    @Given("FX rate of $rate for $buyCurrency")
++    public void setFXRate(BigDecimal rate, Currency buyCurrency) {
++        this.fxRate = rate;
++        this.buyCurrency = buyCurrency;
+     }
+ 
+-    @Given("an FX transaction to sell $sellCurrency and buy $buyCurrency")
+-    public void givenBuySellTransaction(Currency sellCurrency, Currency buyCurrency) {
++    @When("I execute an FX transaction to sell $amount of $currency")
++    public void givenFxTransaction(
++            @ParameterInfo(suggestedValues = {"100", "200", "300", "1000", "10000"},
++                    formatPattern = "[0-9]{1,10}\\.[0-9]{2}",
++                    formatDisplayText = "###.##") BigDecimal amount,
++            Currency buyCurrency) {
+         //
++        this.resultingAmount = fxRate.multiply(amount);
+     }
+ 
+-    @Given("an FX transaction with the following fields: $transactionFields")
+-    public void givenFxTransaction(FxTransaction fxTransaction) {
+ 
++    @Then("I should have a total of $expectedTotal in my local currency")
++    public void checkResultingAmount(BigDecimal expectedTotal) {
++
++        Assert.assertTrue("Expected resulted amount of - " + expectedTotal + " but was - " + this.resultingAmount,
++                this.resultingAmount.compareTo(expectedTotal) == 0);
+     }
+ 
+-    @When("I query for transactions with value date $valueDate")
+-    public void fetchTransactionsForValueDate(@ParameterInfo(
+-            formatPattern = "[1-3]?[0-9]/((0[1-9])|(1[0-2]))/[1,2][0-9]{3}",
+-            formatDisplayText = "dd/MM/yyyy") String valueDate) {
++    @Given("the following FX transactions: $transactionFields")
++    public void givenFxTransaction(List<FxTransaction> fxTransaction) {
 +
 +    }
 +
++    @Then("those transactions should generate cashflows with the following fields: $expectedCashflows")
++    public void checkCashflows(List<Cashflow> expectedCashflows) {
++
++    }
++
++    @Then("a new swift message of type $messageType should be generated with the following fields: $msgFields")
++    public void checkSwiftMessage(SwiftMessageType messageType, List<MTMessageField> msgFields) {
++
++    }
++
++    @Then("the generated cashflow should be for value date $valueDate")
++    public void checkValueDate(
++            @ParameterInfo(formatPattern = "[1-3]?[0-9]/((0[1-9])|(1[0-2]))/[1,2][0-9]{3}", formatDisplayText = "dd/MM/yyyy")String valueDate) {
  
-     @When("something happens")
-     public void whenSomething() {
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/resources/ftl/jbehave-html-output.ftl
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/FxTransaction.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/FxTransaction.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/FxTransaction.java	(revision )
+@@ -1,4 +1,4 @@
+-package com.jbehaveforjira.exampleproject.transaction;
++package com.jbehaveforjira.exampleproject.tradingapp;
+ 
+ import com.jbehaveforjira.exampleproject.bookstore.Currency;
+ import com.jbehaveforjira.javaclient.ParameterInfo;
+@@ -27,15 +27,19 @@
+     BuySellIndicator buyOrSellIndicator;
+ 
+     @Parameter(name = "Buy Currency")
++    @ParameterInfo(isMandatory = true)
+     Currency buyCurrency;
+ 
+     @Parameter(name = "Sell Currency")
++    @ParameterInfo(isMandatory = true)
+     Currency sellCurrency;
+ 
+     @Parameter(name = "rate")
++    @ParameterInfo(isMandatory = true)
+     Double rate;
+ 
+     @Parameter(name = "Amount")
++    @ParameterInfo(isMandatory = true)
+     Double amount;
+ 
+     @Parameter(name = "Tx. Date")
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/MTMessageField.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/resources/ftl/jbehave-html-output.ftl	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/resources/ftl/jbehave-html-output.ftl	(revision )
-@@ -0,0 +1,284 @@
-+<#ftl strip_whitespace=true>
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/MTMessageField.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/MTMessageField.java	(revision )
+@@ -0,0 +1,31 @@
++package com.jbehaveforjira.exampleproject.tradingapp;
 +
-+<#--<#macro renderEmptyElement text><!-- story element - ${text?html} was empty &ndash;&gt;</#macro>-->
-+<#macro renderMultiline text>${text?html?replace("\n", "<br/>")}</#macro>
++import org.jbehave.core.annotations.AsParameters;
 +
-+<#macro renderMeta meta>
-+<div class="meta">
-+	<div class="keyword">${keywords.meta}</div>
-+    <#assign metaProperties=meta.getProperties()>
-+    <#list metaProperties.keySet() as name>
-+        <#assign property = metaProperties.get(name)>
-+		<div class="property">${keywords.metaProperty}${name?html} ${property?html}</div>
-+    </#list>
-+</div>
-+</#macro>
++@AsParameters
++public class MTMessageField {
 +
-+<#macro renderNarrative narrative>
-+<div class="narrative">
-+	<div class="keyword">${keywords.narrative}</div>
-+    <#assign isAlternative=narrative.isAlternative()?string>
-+    <#if isAlternative == "true">
-+		<div class="element asA"><span class="keyword asA">${keywords.asA}</span><span class="text"> ${narrative.asA}</span></div>
-+		<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span><span class="text"> ${narrative.iWantTo}</span>
-+		</div>
-+		<div class="element soThat"><span class="keyword soThat">${keywords.soThat}</span><span class="text"> ${narrative.soThat}</span>
-+		</div>
-+    <#else>
-+		<div class="element inOrderTo"><span class="keyword inOrderTo">${keywords.inOrderTo}</span><span
-+				class="text"> ${narrative.inOrderTo}</span></div>
-+		<div class="element asA"><span class="keyword asA">${keywords.asA}</span><span class="text"> ${narrative.asA}</span></div>
-+		<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span><span class="text"> ${narrative.iWantTo}</span>
-+		</div>
-+    </#if>
-+</div>
-+</#macro>
++    public static enum MessageTag {
 +
-+<#macro renderGivenStories givenStories>
-+<div class="givenStories">
-+	<div class="keyword">${keywords.givenStories}</div>
-+    <#list givenStories.getStories() as givenStory>
-+		<div class="givenStory">${givenStory.path}</div>
-+    </#list>
-+</div>
-+</#macro>
++        _15A, _20, _22A, _22C, _82A, _87A,
++        _15B, _30T, _30V, _36, _32B, _33B, _57A,
++        _15C, _24D;
 +
-+<#macro renderLifecycle lifecycle>
-+<div class="lifecycle">
-+	<div class="keyword">${keywords.lifecycle}</div>
-+    <#if !lifecycle.getBeforeSteps().isEmpty()>
-+		<div class="before">
-+			<div class="keyword">${keywords.before}</div>
-+            <#list lifecycle.getBeforeSteps() as step>
-+				<div class="step">${step?html}</div>
-+            </#list>
-+		</div>
-+    </#if>
-+    <#if !lifecycle.getAfterSteps().isEmpty()>
-+		<div class="after">
-+			<div class="keyword">${keywords.after}</div>
-+            <#list lifecycle.getOutcomes() as outcome>
-+				<div class="outcome">
-+                <#--TODO - there is no keyword currently for 'Outcome', will need to be localized below-->
-+					<div><span class="keyword">Outcome:</span><span class="text"> ${outcome}</span></div>
-+                    <#list lifecycle.getAfterSteps(outcome) as step>
-+						<div class="step">${step?html}</div>
-+                    </#list>
-+				</div>
-+            </#list>
-+		</div>
-+    </#if>
-+</div>
-+</#macro>
++        public String toString() {
 +
-+<#macro renderTable table>
-+    <#assign rows=table.getRows()>
-+    <#assign headers=table.getHeaders()>
-+    <#assign oddEven="odd">
-+<table>
-+	<thead>
-+	<tr>
-+        <#list headers as header>
-+			<th>${header?html}</th>
-+        </#list>
-+	</tr>
-+	</thead>
-+	<tbody>
-+        <#list rows as row>
-+		<tr class="${oddEven}">
-+            <#list headers as header>
-+                <#assign cell=row.get(header)>
-+				<td>${cell?html}</td>
-+            </#list>
-+		</tr>
-+            <#if oddEven == "odd">
-+                <#assign oddEven="even">
-+            <#else>
-+                <#assign oddEven="odd">
-+            </#if>
-+        </#list>
-+	</tbody>
-+</table>
-+</#macro>
++            return this.name().substring(1);
++        }
++    }
 +
-+<#macro renderOutcomes table>
-+    <#assign outcomes=table.getOutcomes()>
-+    <#assign fields=table.getOutcomeFields()>
-+<table>
-+	<thead>
-+	<tr>
-+        <#list fields as field>
-+			<th>${field?html}</th>
-+        </#list>
-+	</tr>
-+	</thead>
-+	<tbody>
-+        <#list outcomes as outcome>
-+            <#assign isVerified=outcome.isVerified()?string>
-+            <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
-+		<tr class="${verified}">
-+			<td>${outcome.description?html}</td>
-+			<td><@renderOutcomeValue outcome.getValue() table.getDateFormat()/></td>
-+			<td>${outcome.matcher?html}</td>
-+			<td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
-+		</tr>
-+        </#list>
-+	</tbody>
-+</table>
-+</#macro>
++    private MessageTag messageTag;
 +
-+<#macro renderOutcomeValue value dateFormat>
-+    <#if value?is_date>${value?string(dateFormat)}<#else>${value?html}</#if>
-+</#macro>
++    private String tagValue;
 +
-+<#macro renderStep step>
-+<#--<#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>-->
-+<div class="step ${step.outcome}">
-+<#--${formattedStep}-->
++    public MessageTag getMessageTag() {
++        return messageTag;
++    }
 +
-+    <#list step.getStepTokens() as token>
-+        <#if token.getType() == "KEYWORD">
-+			<span class="keyword">${token.asString()}</span>
-+        <#elseif token.getType() == "TEXT">
-+			<span class="text">${token.asString()?html}</span>
-+        <#elseif token.getType() == "PARAMETER">
-+			<span class="parameter">${token.asString()?html}</span>
-+        <#elseif token.getType() == "TABULAR_PARAMETER">
-+			<div class="tabular-parameter">
-+                <@renderTable token.getTable()/>
-+			</div>
-+        </#if>
-+    </#list>
-+
-+<#--<div class="step">${step?html}</div>-->
-+
-+<#--<#if step.getTable()??>-->
-+<#--<span class="step parameter"><@renderTable step.getTable()/></span>-->
-+<#--</#if>-->
-+<#--<@renderStepOutcome step.getOutcome()/>-->
-+</div>
-+<#--<#if step.getFailure()??>-->
-+<#--<pre class="failure">${step.failureCause?html}</pre></#if>-->
-+<#--<#if step.getOutcomes()??>-->
-+<#--<div class="outcomes">-->
-+<#--<@renderOutcomes step.getOutcomes()/>-->
-+<#--<#if step.getOutcomesFailureCause()??>-->
-+<#--<pre class="failure">${step.outcomesFailureCause?html}</pre>-->
-+<#--</#if>-->
-+<#--</div>-->
-+<#--</#if>-->
-+</#macro>
-+
-+<#macro renderStepOutcome outcome><#if outcome=="pending"><span class="keyword ${outcome}">(${keywords.pending}
-+	)</span></#if><#if outcome=="failed"><span class="keyword ${outcome}">(${keywords.failed})</span></#if><#if outcome=="notPerformed">
-+<span class="keyword ${outcome}">(${keywords.notPerformed})</span></#if>
-+</#macro>
-+
-+<#-- report start ======================================================================================================================-->
-+
-+<div class="jb-story-report">
-+
-+	<script type="text/javascript">
-+		function storyReportToggleElement(event, idOfElementToToggle) {
-+			AJS.$("#" + idOfElementToToggle).toggle();
-+			if (event.preventDefault) {
-+				event.preventDefault();
-+			} else {
-+				event.returnValue = false;
-+			}
-+		}
-+	</script>
-+
-+<#if story.getDescription()??>
-+	<div class="description">
-+        <@renderMultiline story.getDescription()/>
-+	</div>
-+</#if>
-+
-+<#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
-+
-+<#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
-+
-+<#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
-+
-+<#assign scenarios = story.getScenarios()>
-+<#assign scenarioIndex = 0>
-+<#list scenarios as scenario>
-+    <#assign scenarioContentId = "scenario_" + scenarioIndex + "_content">
-+	<div class="scenario ${scenario.getOutcome()}">
-+		<div class="title">
-+			<a href="#" onclick="storyReportToggleElement(event, '${scenarioContentId}');">
-+				<span class="keyword">${keywords.scenario}</span>
-+				<span class="text"> <@renderMultiline scenario.getTitle()/></span>
-+                <#if scenario.getOutcome() == "passed">
-+					<span class="aui-lozenge aui-lozenge-success">passed</span>
-+                <#elseif scenario.getOutcome() == "failed">
-+					<span class="aui-lozenge aui-lozenge-error">failed</span>
-+                <#elseif scenario.getOutcome() == "pending">
-+					<span class="aui-lozenge aui-lozenge-current">pending</span>
-+                <#elseif scenario.getOutcome() == "not_performed">
-+					<span class="aui-lozenge">not performed</span>
-+                <#elseif scenario.getOutcome() == "ignored">
-+					<span class="aui-lozenge aui-lozenge-moved">ignored</span>
-+                </#if>
-+			</a>
-+		</div>
-+
-+        <#if scenario.getOutcome() == "passed" || scenario.getOutcome() == "ignored" || scenario.getOutcome() == "not_performed">
-+            <#assign scenarioStyle = "display: none;">
-+        <#else>
-+            <#assign scenarioStyle = "">
-+        </#if>
-+		<div id="${scenarioContentId}" class="content" style="${scenarioStyle}">
-+            <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
-+            <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
-+            <#if scenario.getExamplesTable()??>
-+				<div class="examples">
-+					<div class="keyword">${keywords.examplesTable}</div>
-+                    <#list scenario.getExamplesSteps() as step>
-+						<div class="step">${step?html}</div>
-+                    </#list>
-+                    <@renderTable scenario.getExamplesTable()/>
-+                <#--examples themselves-->
-+                    <#if scenario.getExamples()??>
-+                        <#list scenario.getExamples() as example>
-+							<div class="example">
-+								<div class="title">
-+									<span class="keyword">${keywords.examplesTableRow}</span><span class="text"> ${example?html}</span>
-+								</div>
-+                                <#assign steps = scenario.getStepsByExample(example)>
-+                                <#list steps as step>
-+                                    <@renderStep step/>
-+                                </#list>
-+							</div>
-+                        </#list>
-+                    </#if>
-+				</div>
-+				<!-- end examples -->
-+            <#else> <!-- normal scenario steps -->
-+				<div class="steps">
-+                    <#assign steps = scenario.getSteps()>
-+            <#list steps as step>
-+                    <@renderStep step/>
-+                </#list>
-+				</div>
-+            </#if>
-+            <#if scenario.getPendingMethods()??>
-+                <#list scenario.getPendingMethods() as method>
-+					<div>
-+						<pre class="pending">${method?html}</pre>
-+					</div>
-+                </#list>
-+            </#if>
-+		</div>
-+	</div>
-+	<!-- end scenario -->
-+    <#assign scenarioIndex = scenarioIndex + 1>
-+</#list>
-+<#if story.isCancelled()?string == 'true'>
-+	<div class="cancelled">${keywords.storyCancelled} (${keywords.duration} ${story.storyDuration.durationInSecs} s)</div>
-+</#if>
-+</div>
-+<!-- end story -->
-+
-+<#-- report end ========================================================================================================================-->
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-example-project/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(date 1412147330000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(revision )
-@@ -29,7 +29,7 @@
-                                 <artifactItem>
-                                     <groupId>org.jbehave.site</groupId>
-                                     <artifactId>jbehave-site-resources</artifactId>
--                                    <version>3.1.1</version>
-+                                    <version>3.9.5</version>
-                                     <type>zip</type>
-                                     <outputDirectory>${project.build.directory}/jbehave/view</outputDirectory>
-                                 </artifactItem>
-@@ -47,7 +47,7 @@
-                                 <artifactItem>
-                                     <groupId>org.jbehave</groupId>
-                                     <artifactId>jbehave-core</artifactId>
--                                    <version>3.1.2</version>
-+                                    <version>3.9.5</version>
-                                     <outputDirectory>${project.build.directory}/jbehave/view</outputDirectory>
-                                     <includes>**\/*.css,**\/*.ftl,**\/*.js</includes>
-                                 </artifactItem>
-@@ -89,7 +89,7 @@
-         <dependency>
-             <groupId>org.jbehave</groupId>
-             <artifactId>jbehave-core</artifactId>
--            <version>3.9.2</version>
-+            <version>3.9.5</version>
-         </dependency>
-         <dependency>
-             <groupId>junit</groupId>
-@@ -108,6 +108,11 @@
-             <artifactId>jersey-json</artifactId>
-             <version>1.18</version>
-             <scope>test</scope>
-+        </dependency>
-+        <dependency>
-+            <groupId>com.thoughtworks.paranamer</groupId>
-+            <artifactId>paranamer</artifactId>
-+            <version>2.7</version>
-         </dependency>
-     </dependencies>
- </project>
++    public String getTagValue() {
++        return tagValue;
++    }
++}
 Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Book.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Book.java	(date 1412147330000)
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Book.java	(date 1413359548000)
 +++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Book.java	(revision )
-@@ -41,7 +41,6 @@
-     @ParameterInfo(suggestedValuesEnum = Format.class)
-     private String format;
+@@ -4,6 +4,8 @@
+ import org.jbehave.core.annotations.AsParameters;
+ import org.jbehave.core.annotations.Parameter;
  
--
-     public Double getDiscount() {
-         return discount;
++import java.math.BigDecimal;
++
+ /**
+  * @author Maryna Pristrom
+  */
+@@ -22,7 +24,7 @@
+     private String author;
+ 
+     @ParameterInfo(suggestedValues = {"1.99", "9.93", "12.50"})
+-    private Double price;
++    private BigDecimal price;
+ 
+     @Parameter(name = "discount")
+     @ParameterInfo(allowedValues = {"10", "15", "30"})
+@@ -61,7 +63,7 @@
+         return author;
      }
-Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java
+ 
+-    public Double getPrice() {
++    public BigDecimal getPrice() {
+         return price;
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/resources/ftl/jbehave-html-output.ftl
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/resources/ftl/jbehave-html-output.ftl	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/resources/ftl/jbehave-html-output.ftl	(date 1413359548000)
+@@ -1,285 +0,0 @@
+-<#ftl strip_whitespace=true>
+-
+-<#--<#macro renderEmptyElement text><!-- story element - ${text?html} was empty &ndash;&gt;</#macro>-->
+-<#macro renderMultiline text>${text?html?replace("\n", "<br/>")}</#macro>
+-
+-<#macro renderMeta meta>
+-<div class="meta">
+-	<div class="keyword">${keywords.meta}</div>
+-    <#assign metaProperties=meta.getProperties()>
+-    <#list metaProperties.keySet() as name>
+-        <#assign property = metaProperties.get(name)>
+-		<div class="property">${keywords.metaProperty}${name?html} ${property?html}</div>
+-    </#list>
+-</div>
+-</#macro>
+-
+-<#macro renderNarrative narrative>
+-<div class="narrative">
+-	<div class="keyword">${keywords.narrative}</div>
+-    <#assign isAlternative=narrative.isAlternative()?string>
+-    <#if isAlternative == "true">
+-		<div class="element asA"><span class="keyword asA">${keywords.asA}</span><span class="text"> ${narrative.asA}</span></div>
+-		<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span><span class="text"> ${narrative.iWantTo}</span>
+-		</div>
+-		<div class="element soThat"><span class="keyword soThat">${keywords.soThat}</span><span class="text"> ${narrative.soThat}</span>
+-		</div>
+-    <#else>
+-		<div class="element inOrderTo"><span class="keyword inOrderTo">${keywords.inOrderTo}</span><span
+-				class="text"> ${narrative.inOrderTo}</span></div>
+-		<div class="element asA"><span class="keyword asA">${keywords.asA}</span><span class="text"> ${narrative.asA}</span></div>
+-		<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span><span class="text"> ${narrative.iWantTo}</span>
+-		</div>
+-    </#if>
+-</div>
+-</#macro>
+-
+-<#macro renderGivenStories givenStories>
+-<div class="givenStories">
+-	<div class="keyword">${keywords.givenStories}</div>
+-    <#list givenStories.getStories() as givenStory>
+-		<div class="givenStory">${givenStory.path}</div>
+-    </#list>
+-</div>
+-</#macro>
+-
+-<#macro renderLifecycle lifecycle>
+-<div class="lifecycle">
+-	<div class="keyword">${keywords.lifecycle}</div>
+-    <#if !lifecycle.getBeforeSteps().isEmpty()>
+-		<div class="before">
+-			<div class="keyword">${keywords.before}</div>
+-            <#list lifecycle.getBeforeSteps() as step>
+-				<div class="step">${step?html}</div>
+-            </#list>
+-		</div>
+-    </#if>
+-    <#if !lifecycle.getAfterSteps().isEmpty()>
+-		<div class="after">
+-			<div class="keyword">${keywords.after}</div>
+-            <#list lifecycle.getOutcomes() as outcome>
+-				<div class="outcome">
+-                <#--TODO - there is no keyword currently for 'Outcome', will need to be localized below-->
+-					<div><span class="keyword">Outcome:</span><span class="text"> ${outcome}</span></div>
+-                    <#list lifecycle.getAfterSteps(outcome) as step>
+-						<div class="step">${step?html}</div>
+-                    </#list>
+-				</div>
+-            </#list>
+-		</div>
+-    </#if>
+-</div>
+-</#macro>
+-
+-<#macro renderTable table>
+-    <#assign rows=table.getRows()>
+-    <#assign headers=table.getHeaders()>
+-    <#assign oddEven="odd">
+-<table>
+-	<thead>
+-	<tr>
+-        <#list headers as header>
+-			<th>${header?html}</th>
+-        </#list>
+-	</tr>
+-	</thead>
+-	<tbody>
+-        <#list rows as row>
+-		<tr class="${oddEven}">
+-            <#list headers as header>
+-                <#assign cell=row.get(header)>
+-				<td>${cell?html}</td>
+-            </#list>
+-		</tr>
+-            <#if oddEven == "odd">
+-                <#assign oddEven="even">
+-            <#else>
+-                <#assign oddEven="odd">
+-            </#if>
+-        </#list>
+-	</tbody>
+-</table>
+-</#macro>
+-
+-<#macro renderOutcomes table>
+-    <#assign outcomes=table.getOutcomes()>
+-    <#assign fields=table.getOutcomeFields()>
+-<table>
+-	<thead>
+-	<tr>
+-        <#list fields as field>
+-			<th>${field?html}</th>
+-        </#list>
+-	</tr>
+-	</thead>
+-	<tbody>
+-        <#list outcomes as outcome>
+-            <#assign isVerified=outcome.isVerified()?string>
+-            <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
+-		<tr class="${verified}">
+-			<td>${outcome.description?html}</td>
+-			<td><@renderOutcomeValue outcome.getValue() table.getDateFormat()/></td>
+-			<td>${outcome.matcher?html}</td>
+-			<td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
+-		</tr>
+-        </#list>
+-	</tbody>
+-</table>
+-</#macro>
+-
+-<#macro renderOutcomeValue value dateFormat>
+-    <#if value?is_date>${value?string(dateFormat)}<#else>${value?html}</#if>
+-</#macro>
+-
+-<#macro renderStep step>
+-<#--<#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>-->
+-<div class="step ${step.outcome}">
+-<#--${formattedStep}-->
+-
+-    <#list step.getStepTokens() as token>
+-        <#if token.getType() == "KEYWORD">
+-			<span class="keyword">${token.asString()}</span>
+-        <#elseif token.getType() == "TEXT">
+-			<span class="text">${token.asString()?html}</span>
+-        <#elseif token.getType() == "PARAMETER">
+-			<span class="parameter">${token.asString()?html}</span>
+-        <#elseif token.getType() == "TABULAR_PARAMETER">
+-			<div class="tabular-parameter">
+-                <@renderTable token.getTable()/>
+-			</div>
+-        </#if>
+-    </#list>
+-
+-<#--<div class="step">${step?html}</div>-->
+-
+-<#--<#if step.getTable()??>-->
+-<#--<span class="step parameter"><@renderTable step.getTable()/></span>-->
+-<#--</#if>-->
+-<#--<@renderStepOutcome step.getOutcome()/>-->
+-</div>
+-<#--<#if step.getFailure()??>-->
+-<#--<pre class="failure">${step.failureCause?html}</pre></#if>-->
+-<#--<#if step.getOutcomes()??>-->
+-<#--<div class="outcomes">-->
+-<#--<@renderOutcomes step.getOutcomes()/>-->
+-<#--<#if step.getOutcomesFailureCause()??>-->
+-<#--<pre class="failure">${step.outcomesFailureCause?html}</pre>-->
+-<#--</#if>-->
+-<#--</div>-->
+-<#--</#if>-->
+-</#macro>
+-
+-<#macro renderStepOutcome outcome><#if outcome=="pending"><span class="keyword ${outcome}">(${keywords.pending}
+-	)</span></#if><#if outcome=="failed"><span class="keyword ${outcome}">(${keywords.failed})</span></#if><#if outcome=="notPerformed">
+-<span class="keyword ${outcome}">(${keywords.notPerformed})</span></#if>
+-</#macro>
+-
+-<#-- report start ======================================================================================================================-->
+-
+-<div class="jb-story-report">
+-
+-	<script type="text/javascript">
+-		function storyReportToggleElement(event, idOfElementToToggle) {
+-			AJS.$("#" + idOfElementToToggle).toggle();
+-			if (event.preventDefault) {
+-				event.preventDefault();
+-			} else {
+-				event.returnValue = false;
+-			}
+-		}
+-	</script>
+-
+-<#if story.getDescription()??>
+-	<div class="description">
+-        <@renderMultiline story.getDescription()/>
+-	</div>
+-</#if>
+-
+-<#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
+-
+-<#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
+-
+-<#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
+-
+-<#assign scenarios = story.getScenarios()>
+-<#assign scenarioIndex = 0>
+-<#list scenarios as scenario>
+-    <#assign scenarioContentId = "scenario_" + scenarioIndex + "_content">
+-	<div class="scenario ${scenario.getOutcome()}">
+-		<div class="title">
+-			<a href="#" onclick="storyReportToggleElement(event, '${scenarioContentId}');"
+-                    class="jb-story-ele-exp-trigger collapsed">
+-				<span class="keyword">${keywords.scenario}</span>
+-				<span class="text"> <@renderMultiline scenario.getTitle()/></span>
+-                <#if scenario.getOutcome() == "passed">
+-					<span class="aui-lozenge aui-lozenge-success">passed</span>
+-                <#elseif scenario.getOutcome() == "failed">
+-					<span class="aui-lozenge aui-lozenge-error">failed</span>
+-                <#elseif scenario.getOutcome() == "pending">
+-					<span class="aui-lozenge aui-lozenge-current">pending</span>
+-                <#elseif scenario.getOutcome() == "not_performed">
+-					<span class="aui-lozenge">not performed</span>
+-                <#elseif scenario.getOutcome() == "ignored">
+-					<span class="aui-lozenge aui-lozenge-moved">ignored</span>
+-                </#if>
+-			</a>
+-		</div>
+-
+-        <#if scenario.getOutcome() == "passed" || scenario.getOutcome() == "ignored" || scenario.getOutcome() == "not_performed">
+-            <#assign scenarioStyle = "display: none;">
+-        <#else>
+-            <#assign scenarioStyle = "">
+-        </#if>
+-		<div id="${scenarioContentId}" class="content" style="${scenarioStyle}">
+-            <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
+-            <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
+-            <#if scenario.getExamplesTable()??>
+-				<div class="examples">
+-					<div class="keyword">${keywords.examplesTable}</div>
+-                    <#list scenario.getExamplesSteps() as step>
+-						<div class="step">${step?html}</div>
+-                    </#list>
+-                    <@renderTable scenario.getExamplesTable()/>
+-                <#--examples themselves-->
+-                    <#if scenario.getExamples()??>
+-                        <#list scenario.getExamples() as example>
+-							<div class="example">
+-								<div class="title">
+-									<span class="keyword">${keywords.examplesTableRow}</span><span class="text"> ${example?html}</span>
+-								</div>
+-                                <#assign steps = scenario.getStepsByExample(example)>
+-                                <#list steps as step>
+-                                    <@renderStep step/>
+-                                </#list>
+-							</div>
+-                        </#list>
+-                    </#if>
+-				</div>
+-				<!-- end examples -->
+-            <#else> <!-- normal scenario steps -->
+-				<div class="steps">
+-                    <#assign steps = scenario.getSteps()>
+-            <#list steps as step>
+-                    <@renderStep step/>
+-                </#list>
+-				</div>
+-            </#if>
+-            <#if scenario.getPendingMethods()??>
+-                <#list scenario.getPendingMethods() as method>
+-					<div>
+-						<pre class="pending">${method?html}</pre>
+-					</div>
+-                </#list>
+-            </#if>
+-		</div>
+-	</div>
+-	<!-- end scenario -->
+-    <#assign scenarioIndex = scenarioIndex + 1>
+-</#list>
+-<#if story.isCancelled()?string == 'true'>
+-	<div class="cancelled">${keywords.storyCancelled} (${keywords.duration} ${story.storyDuration.durationInSecs} s)</div>
+-</#if>
+-</div>
+-<!-- end story -->
+-
+-<#-- report end ========================================================================================================================-->
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/SwiftMessageType.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1412147330000)
-+++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(revision )
-@@ -1,9 +1,10 @@
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/SwiftMessageType.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/SwiftMessageType.java	(revision )
+@@ -0,0 +1,5 @@
++package com.jbehaveforjira.exampleproject.tradingapp;
++
++public enum SwiftMessageType {
++    MT300, MT305, MT310, MT101, MT102, MT900, MT910, MT950
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/steps/SimpleExampleSteps.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/steps/SimpleExampleSteps.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/steps/SimpleExampleSteps.java	(revision )
+@@ -0,0 +1,61 @@
++package com.jbehaveforjira.exampleproject.steps;
++
++import org.jbehave.core.annotations.*;
++
++/**
++ * @author Maryna Pristrom
++ */
++public class SimpleExampleSteps {
++
++    public static enum Eventtype {
++        positive, negative
++    }
++
++    public static enum OutcomeKind {
++        SUCCESS, FAILURE
++    }
++
++    private OutcomeKind outcome;
++
++    @Given("some precondition")
++    public void precondition() {
++        // implementation here
++    }
++
++    @When("some $eventType event occurs")
++    @Alias("some <eventType> event occurs")
++    public void eventOccurs(Eventtype eventtype) {
++        // implementation here
++        if (eventtype == Eventtype.positive) {
++            outcome = OutcomeKind.SUCCESS;
++        } else {
++            outcome = OutcomeKind.FAILURE;
++        }
++    }
++
++    @Then("the outcome should be - $expectedOutcome")
++    public void checkOutcome(OutcomeKind expectedOutcome) {
++        // implementation here
++        if (this.outcome != expectedOutcome) {
++            throw new RuntimeException("Expected outcome was not as expected!");
++        }
++
++    }
++
++    @When("I execute a step that always fails")
++    public void stepThatAlwaysFails() {
++        throw new RuntimeException("This step is hardcoded to always fail");
++    }
++
++    @Given("some particular $precondition")
++    @Alias("some particular <precondition>")
++    public void stepWithPrecondition(@Named("precondition") String precondition) {
++
++    }
++
++    @Then("the outcome in this case should be $be_captured")
++    @Alias("the outcome in this case should be <be-captured> ")
++    public void thenOutcomeShouldBeCaptureD(String beCaptured) {
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/BuySellIndicator.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/BuySellIndicator.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/BuySellIndicator.java	(date 1413359548000)
+@@ -1,6 +0,0 @@
+-package com.jbehaveforjira.exampleproject.transaction;
+-
+-public enum BuySellIndicator {
+-    Buy,
+-    Sell
+-}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookStoreTest.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/TestRunner.java	(revision )
+@@ -1,9 +1,13 @@
  package com.jbehaveforjira.exampleproject;
  
- import com.jbehaveforjira.groovyclient.GroovyStepDocReporter;
--import com.jbehaveforjira.groovyclient.GroovyStoryReporter;
-+import com.jbehaveforjira.groovyclient.GroovyTemplateStoryReporter;
+-import com.jbehaveforjira.groovyclient.GroovyStepDocReporter;
+-import com.jbehaveforjira.groovyclient.GroovyTemplateStoryReporter;
++
++import com.jbehaveforjira.exampleproject.steps.BookStoreSteps;
++import com.jbehaveforjira.exampleproject.steps.SimpleExampleSteps;
++import com.jbehaveforjira.exampleproject.steps.TradingAppSteps;
++import com.jbehaveforjira.javaclient.JiraStepDocReporter;
  import com.jbehaveforjira.javaclient.JiraStoryLoader;
  import com.jbehaveforjira.javaclient.JiraStoryPathsFinder;
-+import org.jbehave.core.configuration.Keywords;
++import com.jbehaveforjira.javaclient.JiraStoryReporter;
+ import org.jbehave.core.configuration.Keywords;
  import org.jbehave.core.configuration.MostUsefulConfiguration;
  import org.jbehave.core.embedder.Embedder;
- import org.jbehave.core.junit.JUnitStories;
-@@ -14,8 +15,10 @@
- import org.jbehave.core.steps.CandidateSteps;
- import org.jbehave.core.steps.InjectableStepsFactory;
- import org.jbehave.core.steps.InstanceStepsFactory;
-+import org.jbehave.core.steps.ParameterConverters;
- import org.junit.Test;
+@@ -24,15 +28,15 @@
+ /**
+  * @author Maryna Pristrom
+  */
+-public class BookStoreTest extends JUnitStories {
++public class TestRunner extends JUnitStories {
  
-+import java.io.File;
+     private final String jiraUrl = "http://localhost:2990/jira";
+ 
+-    private final String jiraProject = "TESTING";
++    private final String jiraProject = "DEMO";
+ 
+-    private final String DEFAULT_ENVIRONMENT = "TEST";
++    private final String DEFAULT_ENVIRONMENT = "UAT";
+ 
+-    public BookStoreTest() {
++    public TestRunner() {
+ 
+         final String environment;
+         String envProperty = System.getProperty("environment");
+@@ -52,7 +56,7 @@
+ //                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
+ //                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
+                             Keywords keywords = keywords();
+-                            return new GroovyTemplateStoryReporter(new File("target", "story_report.xml"), keywords,
++                            return new JiraStoryReporter(new File("target", "story_report.xml"), keywords,
+                                     jiraUrl, jiraProject, "admin", "admin", environment);
+                         } else {
+                             return super.reporterFor(storyPath, format);
+@@ -73,8 +77,8 @@
+         configuration.useStoryLoader(jiraLoader);
+ 
+         // set Jira step doc reporter
+-//        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
+-        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
++        StepdocReporter stepDocReporter = new JiraStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
++//        StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
+         configuration.useStepdocReporter(stepDocReporter);
+ 
+         ParameterConverters parameterConverters = configuration.parameterConverters();
+@@ -109,7 +113,10 @@
+ 
+     @Override
+     public InjectableStepsFactory stepsFactory() {
+-        return new InstanceStepsFactory(configuration(), new BookRelatedSteps(), new TransactionSteps(), new ExampleSteps());
++        return new InstanceStepsFactory(configuration(),
++                new SimpleExampleSteps(),
++                new BookStoreSteps(),
++                new TradingAppSteps());
+     }
+ 
+     @Override
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/resources/sample_1.story
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/resources/sample_1.story	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/resources/sample_1.story	(revision )
+@@ -0,0 +1,31 @@
++example story specifying a simple FX deal
++
++Narrative:
++In order to make sure that I don't loose any money
++As a FX trader
++I want to verify that the FX rates are applied correctly
++
++Scenario: simple FX deal
++Given FX rate of 0.79 for GBP
++When I execute an FX transaction to sell 100.00 of GBP
++Then I should have a total of 126.58 in my local currency
++
++Scenario: check correct cashflows are generated from fx deals
++Given the following FX transactions:
++|Trader name|Counterparty  |FX Type|Buy/Sell|Buy Currency|Sell Currency|rate   |Amount|Tx. Date|Sett. Date|
++|Alison     |counterparty A|SPOT   |Buy     |USD         |EUR          |1.4    |1000  |today   |today+2   |
++|Bob        |counterparty B|FORWARD|Sell    |TZS         |GBP          |2733.40|10    |today   |today+5   |
++Then those transactions should generate cashflows with the following fields:
++|Sett. system|Currency|Payment date|Pay/Receive|Amount  |Int. account|Counterparty|Ext. account|
++|SWIFT       |USD     |today+2     |RECEIVE    |1400    |123456      |Big Bank A  |987654      |
++|SWIFT       |EUR     |today+2     |PAY        |1000    |222333      |Big Bank A  |999888      |
++|SWIFT       |TZS     |today+5     |RECEIVE    |27334.00|735628      |Big Bank B  |456362      |
++|SWIFT       |GBP     |today+5     |PAY        |10      |289111      |Big Bank B  |292901      |
++And a new swift message of type MT300 should be generated with the following fields:
++|messageTag|tagValue        |
++|22A       |NEW             |
++|22C       |EDAS330218IBBA33|
++|36        |1.40            |
++|82A       |me              |
++|87A       |counterparty A  |
++|32B       |EUR             |
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Genre.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Genre.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/bookstore/Genre.java	(revision )
+@@ -6,8 +6,10 @@
+ public enum Genre {
+     Fiction,
+     Drama,
++    Detective,
+     Romance,
+     Mystery,
+     Fantasy,
+     MyGenre,
++    Classics
+ }
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/ExampleSteps.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/ExampleSteps.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/ExampleSteps.java	(date 1413359548000)
+@@ -1,66 +0,0 @@
+-package com.jbehaveforjira.exampleproject;
+-
+-import org.jbehave.core.annotations.*;
+-
+-public class ExampleSteps {
+-
+-    @Given("a step that is executed before each scenario")
+-    public void givenBeforeStep() {
+-
+-    }
+-
+-    @Given("a step that is executed after each scenario regardless of outcome")
+-    public void givenAfterStep() {
+-
+-    }
+-
+-    @Given("a step that is executed after each successful scenario")
+-    public void givenAfterSuccessfulStep() {
+-
+-    }
+-
+-    @Given("a step that is executed after each failed scenario")
+-    public void givenAfterFailedStep() {
+-
+-    }
+-
+-    @Given("step represents a precondition to an event")
+-    public void givenPreconditionStep() {
+-
+-    }
+-
+-    @When("step represents the occurrence of the event")
+-    public void whenEventOccurs() {
+-
+-    }
+-
+-    @Then("step represents the outcome of the event")
+-    public void thenOutcomeShouldBe() {
+-
+-    }
+-
+-    @Given("some $precondition")
+-    @Alias("some <precondition>")
+-    public void stepWithPrecondition(@Named("precondition") String precondition) {
+-
+-    }
+-
+-    @When("a negative event occurs")
+-    public void whenNegativeEvent() {
+-
+-    }
+-
+-    @Then("the outcome should $be_captured")
+-    @Alias("the outcome should <be-captured> ")
+-    public void thenOutcomeShouldBeCaptureD(String be_captured) {
+-       throw new RuntimeException("This step is hardcoded to always fail!");
+-    }
+-
+-    @When("I execute a step that always fails")
+-    public void stepThatAlwaysFails() {
+-        throw new RuntimeException("This step is hardcoded to always fail");
+-    }
+-
+-
+-
+-}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/pom.xml	(revision )
+@@ -80,12 +80,12 @@
+             <version>1.0.0-SNAPSHOT</version>
+             <!--<scope>test</scope>-->
+         </dependency>
+-        <dependency>
+-            <groupId>com.jbehaveforjira</groupId>
+-            <artifactId>groovy-client</artifactId>
+-            <version>1.0.1-SNAPSHOT</version>
++        <!--<dependency>-->
++            <!--<groupId>com.jbehaveforjira</groupId>-->
++            <!--<artifactId>groovy-client</artifactId>-->
++            <!--<version>1.0.0-SNAPSHOT</version>-->
+             <!--<scope>test</scope>-->
+-        </dependency>
++        <!--</dependency>-->
+         <dependency>
+             <groupId>org.jbehave</groupId>
+             <artifactId>jbehave-core</artifactId>
+@@ -93,9 +93,9 @@
+         </dependency>
+         <dependency>
+             <groupId>junit</groupId>
+-            <artifactId>junit</artifactId>
++            <artifactId>junit-dep</artifactId>
+             <version>4.10</version>
+-            <scope>test</scope>
++            <!--<scope>test</scope>-->
+         </dependency>
+         <dependency>
+             <groupId>com.sun.jersey</groupId>
+@@ -113,6 +113,11 @@
+             <groupId>com.thoughtworks.paranamer</groupId>
+             <artifactId>paranamer</artifactId>
+             <version>2.7</version>
++        </dependency>
++        <dependency>
++            <groupId>org.hamcrest</groupId>
++            <artifactId>hamcrest-core</artifactId>
++            <version>1.1</version>
+         </dependency>
+     </dependencies>
+ </project>
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/Cashflow.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/Cashflow.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/Cashflow.java	(revision )
+@@ -0,0 +1,94 @@
++package com.jbehaveforjira.exampleproject.tradingapp;
++
++import com.jbehaveforjira.exampleproject.bookstore.Currency;
++import org.jbehave.core.annotations.AsParameters;
++import org.jbehave.core.annotations.Parameter;
++
++import java.math.BigDecimal;
++import java.util.Date;
++
++/**
++ * @author Maryna Pristrom
++ */
++@AsParameters
++public class Cashflow {
++
++    public static enum PaymentType {
++        principal, coupon, brokerage, clearing
++    }
++
++    public static enum SettlementSystem {
++        SWIFT, CHAPS, FEDWIRE, TARGET2
++    }
++
++    public static enum TradeType {
++        NEW, REPLACE, CANCEL
++    }
++
++    public static enum Direction {
++        PAY, RECEIVE
++    }
++
++    @Parameter(name = "Payment type")
++    private PaymentType paymentType;
++
++    @Parameter(name = "Sett. system")
++    private SettlementSystem settlementSystem;
++
++    @Parameter(name = "Currency")
++    private Currency currency;
++
++    @Parameter(name = "Payment date")
++    private Date paymentDate;
++
++    @Parameter(name = "Pay/Receive")
++    private Direction direction;
++
++    @Parameter(name = "Amount")
++    private BigDecimal amount;
++
++    @Parameter(name = "Int. account")
++    private String ownAccount;
++
++    @Parameter(name = "Counterparty")
++    private String counterparty;
++
++    @Parameter(name = "Ext. account")
++    private String counterpartyAccount;
++
++    public PaymentType getPaymentType() {
++        return paymentType;
++    }
++
++    public SettlementSystem getSettlementSystem() {
++        return settlementSystem;
++    }
++
++    public Currency getCurrency() {
++        return currency;
++    }
++
++    public Date getPaymentDate() {
++        return paymentDate;
++    }
++
++    public Direction getDirection() {
++        return direction;
++    }
++
++    public BigDecimal getAmount() {
++        return amount;
++    }
++
++    public String getOwnAccount() {
++        return ownAccount;
++    }
++
++    public String getCounterparty() {
++        return counterparty;
++    }
++
++    public String getCounterpartyAccount() {
++        return counterpartyAccount;
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/FXType.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/transaction/FXType.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/main/java/com/jbehaveforjira/exampleproject/tradingapp/FXType.java	(revision )
+@@ -1,4 +1,4 @@
+-package com.jbehaveforjira.exampleproject.transaction;
++package com.jbehaveforjira.exampleproject.tradingapp;
+ 
+ public enum FXType {
+     SPOT,
+Index: jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookRelatedSteps.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/BookRelatedSteps.java	(date 1413359548000)
++++ jbehave-for-jira/jbehave-for-jira-example-project/src/test/java/com/jbehaveforjira/exampleproject/steps/BookStoreSteps.java	(revision )
+@@ -1,50 +1,60 @@
+-package com.jbehaveforjira.exampleproject;
++package com.jbehaveforjira.exampleproject.steps;
+ 
+ import com.jbehaveforjira.exampleproject.bookstore.Book;
+ import com.jbehaveforjira.exampleproject.bookstore.BookStore;
+-import org.jbehave.core.annotations.Alias;
++import org.jbehave.core.annotations.BeforeScenario;
+ import org.jbehave.core.annotations.Given;
+-import org.jbehave.core.annotations.Named;
++import org.jbehave.core.annotations.Then;
+ import org.jbehave.core.annotations.When;
+-import org.jbehave.core.model.ExamplesTable;
++import org.junit.Assert;
+ 
++import java.math.BigDecimal;
++import java.util.ArrayList;
  import java.util.List;
  
  /**
-@@ -47,7 +50,10 @@
-                     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
-                         if (format.equals(org.jbehave.core.reporters.Format.HTML)) {
- //                            return new JiraStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
--                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-+//                            return new GroovyStoryReporter(jiraUrl, jiraProject, "admin", "admin", environment);
-+                            Keywords keywords = keywords();
-+                            return new GroovyTemplateStoryReporter(new File("target", "story_report.xml"), keywords,
-+                                    jiraUrl, jiraProject, "admin", "admin", environment);
-                         } else {
-                             return super.reporterFor(storyPath, format);
-                         }
-@@ -71,7 +77,12 @@
-         StepdocReporter stepDocReporter = new GroovyStepDocReporter(jiraUrl, jiraProject, "admin", "admin");
-         configuration.useStepdocReporter(stepDocReporter);
+  * @author Maryna Pristrom
+  */
+-public class BookRelatedSteps {
++public class BookStoreSteps {
  
-+        ParameterConverters parameterConverters = configuration.parameterConverters();
-+        parameterConverters.addConverters(new ParameterConverters.ExamplesTableParametersConverter());
-+        configuration.useParameterConverters(parameterConverters);
+     private BookStore bookStore = new BookStore();
+ 
++    private List<Book> shopingBasket; // simulates shopping basket
+ 
+-    @Given("transaction events: $events")
+-    public void givenSomeEvents(ExamplesTable events) {
+ 
++//    @Given("the following book: $book")
++//    public void givenBook(Book book) {
++//
++//        bookStore.add(book);
++//    }
 +
-         useConfiguration(configuration);
-+
++    @BeforeScenario
++    public void resetShoppingBasket() {
++        shopingBasket = new ArrayList<Book>();
      }
  
-     @Test
-@@ -88,6 +99,7 @@
-             embedder.runStoriesAsPaths(storyPaths());
-         } catch (Exception e) {
-             e.printStackTrace();
-+            throw e;
-         } finally {
-             // report step docs
-             List<CandidateSteps> candidateSteps = embedder.stepsFactory().createCandidateSteps();
++    @Given("the following books: $books")
++    public void givenBooks(List<Book> books) {
+ 
+-    @When("something happens")
+-    public void whenSomething() {
+-
++        bookStore.add(books);
+     }
+ 
+-    @Given("the following book: $book")
+-    public void givenBook(Book book) {
+-
+-        bookStore.add(book);
++    @When("I add the following books to my shopping basket: $books")
++    public void addBooksToShoppingBasket(List<Book> books) {
++        shopingBasket.addAll(books);
+     }
+ 
+-    @Given("the following books: $books")
+-    public void givenBooks(List<Book> books) {
++    @Then("sum total of my basket should be $sumTotal")
++    public void checkBasketTotal(BigDecimal expectedTotal) {
+ 
+-        bookStore.add(books);
++        BigDecimal total = new BigDecimal("0.00");
++
++        for (Book book : shopingBasket) {
++            BigDecimal price = book.getPrice();
++            total.add(price);
+-    }
++        }
+ 
+-    @Given("a stock of symbol $symbol and a threshold of $threshold")
+-    @Alias("a stock of symbol <symbol> and a threshold of <threshold>")
+-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+-        // ...
++        Assert.assertTrue("Sum total was - " + total + " but expected - " + expectedTotal, total.compareTo(expectedTotal) == 0);
+     }
+ 
+ }
