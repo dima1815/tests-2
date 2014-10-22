@@ -3,682 +3,445 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1412752015000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1413990179000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -354,43 +354,51 @@
-         // expand failed and pending scenarios
+@@ -310,47 +310,47 @@
+         });
  
-         // append scenario status lozenge, depending on the step
--        AJS.$('.jb-story-report-scenario').each(function (index, element) {
--
--            var failedSteps = AJS.$(element).find(".jb-story-report-step-failed");
--            if (failedSteps != null && failedSteps.length > 0) {
--                // story has failed
--                var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
--                var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
--                AJS.$(titleTrigger).append(createScenarioLozenge("failed", "error"));
--
--                AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
--                AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
--                var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
--                AJS.$(contentDiv).toggle();
--
--            } else {
--                // check for pending steps
--                var pendingSteps = AJS.$(element).find(".jb-story-report-step-pending");
--                if (pendingSteps != null && pendingSteps.length > 0) {
--                    // story has failed
--                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
--                    var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
--                    AJS.$(titleTrigger).append(createScenarioLozenge("pending", "current"));
--
--                    AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
--                    AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
--                    var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
--                    AJS.$(contentDiv).toggle();
--
--                } else {
--                    // check for successful steps
--                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
--                    var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
--                    AJS.$(titleTrigger).append(createScenarioLozenge("success", "success"));
--                }
--            }
--
--        });
-+//        AJS.$('.jb-story-report-scenario').each(function (index, element) {
+         // assign expand collapse triggers
+-        AJS.$('.jb-story-ele-exp-trigger').each(function (index, element) {
++//        AJS.$('.jb-story-ele-exp-trigger').each(function (index, element) {
 +//
-+//            var failedSteps = AJS.$(element).find(".jb-story-report-step-failed");
-+//            if (failedSteps != null && failedSteps.length > 0) {
-+//                // story has failed
-+//                var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+//                var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
-+//                AJS.$(titleTrigger).append(createScenarioLozenge("failed", "error"));
-+//
-+//                AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
-+//                AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
-+//                var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
-+//                AJS.$(contentDiv).toggle();
-+//
-+//            } else {
-+//                // check for pending steps
-+//                var pendingSteps = AJS.$(element).find(".jb-story-report-step-pending");
-+//                if (pendingSteps != null && pendingSteps.length > 0) {
-+//                    // story has failed
-+//                    var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+//                    var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
-+//                    AJS.$(titleTrigger).append(createScenarioLozenge("pending", "current"));
-+//
-+//                    AJS.$(element).find(".jb-story-ele-exp-trigger").removeClass("collapsed");
-+//                    AJS.$(element).find(".jb-story-ele-exp-trigger").addClass("expanded");
-+//                    var contentDiv = AJS.$(element).find(".jb-story-ele-exp-content")[0];
-+//                    AJS.$(contentDiv).toggle();
-+//
++//            AJS.$(element).click(function (eventObject) {
++//                if (eventObject.preventDefault) {
++//                    eventObject.preventDefault();
 +//                } else {
-+//                    // check for successful steps
-+//                    var successfulSteps = AJS.$(element).find(".jb-story-report-step-successful");
-+//                    if (successfulSteps != null && successfulSteps.length > 0) {
-+//                        var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+//                        var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
-+//                        AJS.$(titleTrigger).append(createScenarioLozenge("success", "success"));
-+//                    } else {
-+//                        // assume skipped
-+//                        var titleContainer = AJS.$(element).find(".jb-story-report-scenario-title")[0];
-+//                        var titleTrigger = AJS.$(titleContainer).find(".jb-story-ele-exp-trigger-link")[0];
-+//                        AJS.$(titleTrigger).append(createScenarioLozenge("skipped", "moved"));
-+//                    }
++//                    eventObject.returnValue = false;
 +//                }
-+//            }
++//                var target = eventObject.target;
++//                var targetNode = AJS.$(target)[0];
++//
++//                var isCollapsed = AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").hasClass("collapsed");
++//                if (isCollapsed) {
++//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("collapsed");
++//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("expanded");
++//                } else {
++//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("expanded");
++//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("collapsed");
++//                }
++//
++//                var contentDiv = AJS.$(targetNode).closest(".jb-story-ele-exp-container").children(".jb-story-ele-exp-content")[0];
++////                var contentDiv = AJS.$(targetNode).(".jb-story-ele-exp-content")[0];
++//                AJS.$(contentDiv).toggle();
++////                var replaceText = targetNode.getAttribute("replace-text");
++////                var currentHtml = AJS.$(targetNode).html();
++////                AJS.$(targetNode).html(replaceText);
++////                targetNode.setAttribute("replace-text", currentHtml);
++//            });
 +//
 +//        });
  
-         debug("# showStoryReports");
-     }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java
+-            AJS.$(element).click(function (eventObject) {
+-                if (eventObject.preventDefault) {
+-                    eventObject.preventDefault();
+-                } else {
+-                    eventObject.returnValue = false;
+-                }
+-                var target = eventObject.target;
+-                var targetNode = AJS.$(target)[0];
++//        AJS.$('.jb-story-ele-exp-trigger').mouseover(function (event) {
++//            var target = AJS.$(event.target)[0];
++//            AJS.$(target).closest(".jb-story-ele-exp-trigger").addClass("mouse-over");
++//        });
++//
++//        AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
++//            var target = AJS.$(event.target)[0];
++//            AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
++//        });
+ 
+-                var isCollapsed = AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").hasClass("collapsed");
+-                if (isCollapsed) {
+-                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("collapsed");
+-                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("expanded");
+-                } else {
+-                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("expanded");
+-                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("collapsed");
+-                }
+-
+-                var contentDiv = AJS.$(targetNode).closest(".jb-story-ele-exp-container").children(".jb-story-ele-exp-content")[0];
+-//                var contentDiv = AJS.$(targetNode).(".jb-story-ele-exp-content")[0];
+-                AJS.$(contentDiv).toggle();
+-//                var replaceText = targetNode.getAttribute("replace-text");
+-//                var currentHtml = AJS.$(targetNode).html();
+-//                AJS.$(targetNode).html(replaceText);
+-//                targetNode.setAttribute("replace-text", currentHtml);
+-            });
+-
+-        });
+-
+-        AJS.$('.jb-story-ele-exp-trigger').mouseover(function (event) {
+-            var target = AJS.$(event.target)[0];
+-            AJS.$(target).closest(".jb-story-ele-exp-trigger").addClass("mouse-over");
+-        });
+-
+-        AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
+-            var target = AJS.$(event.target)[0];
+-            AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
+-        });
+-
+         // expand failed and pending scenarios
+ 
+         // append scenario status lozenge, depending on the step
+@@ -1054,7 +1054,7 @@
+                             if (tokens.length - 2 != seenHeaderTokens.length) {
+                                 var startPos = {line: lineNum, ch: 0};
+                                 var endPos = {line: lineNum, ch: lineText.length};
+-                                var errorMsg = "Number of field values doesn't equal to the number of field names";
++                                var errorMsg = "Number of field values doesn't equal the number of field names";
+                                 errorsGutter.addError(startPos, endPos, errorMsg);
+                             } else {
+                                 for (var i = 1; i < tokens.length - 1; i++) {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1412752015000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
-@@ -127,8 +127,6 @@
-     public Response findForPath(
-             @PathParam("projectKey") String projectKey,
-             @PathParam("storyPath") String storyPath,
--            @QueryParam("versionInPath")
--            @DefaultValue("false") boolean versionInPath,
-             @QueryParam("asString")
-             @DefaultValue("false") boolean asString) {
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1413990179000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
+@@ -284,8 +284,8 @@
+                     "Meta",
+                     "Narrative",
+                     "Lifecycle",
+-                    "Before",
+-                    "After",
++                    "LifecycleBefore",
++                    "LifecycleAfter",
+ //                    "LifecycleOutcome",
+                     "Given",
+                     "Scenario",
+@@ -649,7 +649,7 @@
+                 function parseLifecycleAfterOutcome() {
  
-@@ -138,17 +136,15 @@
- //        }
+ //                    clearErrorsGutter();
+-                    resetInFieldsExcept(["Scenario", "Lifecycle", "After"]);
++                    resetInFieldsExcept(["Scenario", "Lifecycle", "LifecycleAfter"]);
+                     state.lastTokenType += " jb-story-lifecycle-outcome-keyword";
+                     state.inLifecycleOutcome = true;
  
-         String issueKey;
--        if (versionInPath) {
-+
-+        // extract version if present
--            String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
--            Pattern p = Pattern.compile(regexPattern);
--            Matcher matcher = p.matcher(storyPath);
--            if (matcher.matches()) {
--                String version = matcher.group(2);
--                log.debug("version in issue key is - " + version);
--                issueKey = matcher.group(1);
-+        String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
-+        Pattern p = Pattern.compile(regexPattern);
-+        Matcher matcher = p.matcher(storyPath);
-+        if (matcher.matches()) {
-+            String version = matcher.group(2);
-+            log.debug("version in issue key is - " + version);
-+            issueKey = matcher.group(1);
--            } else {
--                throw new IllegalArgumentException("If story version is part of story path then the path must match pattern - " + regexPattern);
--            }
-         } else {
-             issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
-         }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java
+@@ -674,7 +674,7 @@
+                     var currentToken = ti.text.trim();
+ 
+                     if (currentToken != "ANY" && currentToken != "SUCCESS" && currentToken != "FAILURE") {
+-                        var msg = "Invalid value for 'Outcome' section";
++                        var msg = "Invalid value for 'Outcome' section. Allowed values are: 'ANY', 'SUCCESS' and 'FAILURE'";
+                         addGutterError(ti.from, ti.to, msg);
+                     }
+                 }
+@@ -705,7 +705,7 @@
+ 
+                     state.lastTokenType += " jb-story-step-keyword";// + keyword + "-step";
+ 
+-                    resetInFieldsExcept(["Scenario", "Lifecycle", "Before", "After"]);
++                    resetInFieldsExcept(["Scenario", "Lifecycle", "LifecycleBefore", "LifecycleAfter"]);
+                     state.inStep = true;
+                     state.inStepKeywordLine = true;
+ 
+@@ -741,6 +741,7 @@
+                                 addGutterError(ti.from, ti.to, msg);
+                             } else {
+                                 state.stepDefined = true;
++                                state.lifecycleAfterOutcomeDefined = false;
+                             }
+                         }
+                     } else {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(date 1412752015000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
-@@ -24,7 +24,7 @@
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1413990179000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
+@@ -142,12 +142,15 @@
+ }
  
-     private Integer totalScenariosPending;
+ .cm-jb-story-examples-keyword {
+-    color: firebrick;
++    color: rgb(222, 117, 1);
++    /*color: firebrick;*/
+     font-weight: bold;
+ }
  
--    private Integer totalScenariosSkipped;
-+    private Integer totalScenariosIgnored;
+ .cm-jb-story-examples-body {
+-    color: purple;
++    /*color: purple;*/
++    /*color: firebrick;*/
++    color: rgb(222, 117, 1);
+     font-weight: bold;
+ }
  
-     private Integer totalScenariosNotPerformed;
- 
-@@ -114,12 +114,12 @@
-         this.totalScenariosPending = totalScenariosPending;
-     }
- 
--    public Integer getTotalScenariosSkipped() {
--        return totalScenariosSkipped;
-+    public Integer getTotalScenariosIgnored() {
-+        return totalScenariosIgnored;
-     }
- 
--    public void setTotalScenariosSkipped(Integer totalScenariosSkipped) {
--        this.totalScenariosSkipped = totalScenariosSkipped;
-+    public void setTotalScenariosIgnored(Integer totalScenariosIgnored) {
-+        this.totalScenariosIgnored = totalScenariosIgnored;
-     }
- 
-     public Integer getTotalScenariosNotPerformed() {
-@@ -141,7 +141,7 @@
-                 ", totalScenariosPassed=" + totalScenariosPassed +
-                 ", totalScenariosFailed=" + totalScenariosFailed +
-                 ", totalScenariosPending=" + totalScenariosPending +
--                ", totalScenariosSkipped=" + totalScenariosSkipped +
-+                ", totalScenariosIgnored=" + totalScenariosIgnored +
-                 ", totalScenariosNotPerformed=" + totalScenariosNotPerformed +
-                 ", htmlReport='" + htmlReport + '\'' +
-                 '}';
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy	(date 1412752015000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy	(revision )
-@@ -11,13 +11,31 @@
-     <ul class="tabs-menu">
-         {foreach $storyReport in $storyTestReports}
-             <li class="menu-item {if isFirst($storyReport)}active-tab{/if}">
--                <a href="#storyReportTab{index($storyReport)}"><strong>{$storyReport.environment}</strong>
--                    {if $storyReport.totalScenariosPassed > 0}<span
--                    class="aui-badge passed">{$storyReport.totalScenariosPassed}</span>{/if}{if $storyReport.totalScenariosFailed > 0}<span
--                    class="aui-badge failed">{$storyReport.totalScenariosFailed}</span>{/if}{if $storyReport.totalScenariosPending > 0}<span
--                    class="aui-badge pending">{$storyReport.totalScenariosPending}{/if}{if $storyReport.totalScenariosSkipped > 0}<span
--                    class="aui-badge skipped">{$storyReport.totalScenariosSkipped }{/if}{if $storyReport.totalScenariosNotPerformed > 0}<span
--                    class="aui-badge not-performed">{$storyReport.totalScenariosNotPerformed}{/if}
-+                <a href="#storyReportTab{index($storyReport)}">
-+                    <strong>{$storyReport.environment}</strong>
-+                    {if $storyReport.totalScenariosPassed > 0}
-+                        <span class="aui-badge passed"
-+                        title="{$storyReport.totalScenariosPassed} of {$storyReport.totalScenarios} scenarios passed"
-+                        >{$storyReport.totalScenariosPassed}</span>
-+                    {/if}
-+                    {if $storyReport.totalScenariosFailed > 0}
-+                        <span class="aui-badge failed"
-+                        title="{$storyReport.totalScenariosFailed} of {$storyReport.totalScenarios} scenarios failed"
-+                        >{$storyReport.totalScenariosFailed}</span>
-+                    {/if}
-+                    {if $storyReport.totalScenariosPending > 0}
-+                        <span class="aui-badge pending"
-+                        title="{$storyReport.totalScenariosPending} of {$storyReport.totalScenarios} scenarios pending"
-+                        >{$storyReport.totalScenariosPending}{/if}</span>
-+                    {if $storyReport.totalScenariosIgnored > 0}
-+                        <span class="aui-badge skipped"
-+                        title="{$storyReport.totalScenariosIgnored} of {$storyReport.totalScenarios} scenarios ignored"
-+                        >{$storyReport.totalScenariosIgnored }{/if}</span>
-+                    {if $storyReport.totalScenariosNotPerformed > 0}
-+                        <span class="aui-badge not-performed"
-+                        title="{$storyReport.totalScenariosNotPerformed} of {$storyReport.totalScenarios} scenarios not performed"
-+                        >{$storyReport.totalScenariosNotPerformed}</span>
-+                    {/if}
-                 </a>
-             </li>
-         {/foreach}
+\ No newline at end of file
 Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1412752015000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1413990179000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -129,7 +129,7 @@
-         <dependency>
-             <groupId>org.jbehave</groupId>
-             <artifactId>jbehave-core</artifactId>
--            <version>3.9.2</version>
-+            <version>3.9.5</version>
-         </dependency>
-         <dependency>
-             <groupId>org.slf4j</groupId>
+@@ -15,6 +15,7 @@
+         <ao.version>0.19.7</ao.version>
+         <!--<jira.version>6.1</jira.version>-->
+         <jira.version>6.0.8</jira.version>
++        <!--<jira.version>6.0</jira.version>-->
+         <java.version>1.6</java.version>
+     </properties>
+     <build>
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1412752015000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1413990179000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -1,3 +1,4 @@
-+/* environment tab badges =====================================================================================*/
- .aui-badge {
-     margin-left: 5px;
-     color: #FFF;
-@@ -18,7 +19,7 @@
- }
- 
- .aui-badge.skipped {
--    background-color: #fffe54;
-+    background-color: saddlebrown;
- }
- 
- /* Story report */
-@@ -27,238 +28,214 @@
-     /*apply default jira color scheme*/
- }
- 
--/*pre.pending {*/
--/*padding-left: 16px;*/
--/*}*/
-+/* scenario lozenge ==================================================================================================== */
-+.jb-story-report .aui-lozenge {
-+    vertical-align: text-top;
-+    vertical-align: middle;
-+}
- 
--/*.story-report-tab {*/
--/*color: #555;*/
-+.jb-story-report-lozenge-container {
-+    margin-left: 4px;
-+    /*vertical-align: text-top;*/
-+}
-+
-+/*.jb-story-outcomes {*/
-+/*color: #6600ff;*/
-+/*color: #b43d3d;*/
- /*}*/
- 
--/*.story-report-tab .story {*/
--/*text-align: left;*/
--/*margin-left: 10px;*/
-+/*.jb-story-outcomes table {*/
-+/*border: solid 1px #b43d3d;*/
-+/*border-collapse: collapse;*/
- /*}*/
- 
--/*.story-report-tab .path {*/
--/*color: #555;*/
--/*font-weight: bolder;*/
--/*font-size: 16px;*/
--/*opacity: 0.85;*/
--/*margin-bottom: 10px;*/
--/*padding: 5px 10px 5px 10px;*/
-+/*.jb-story-outcomes thead th {*/
-+/*font-weight: bold;*/
-+/*font-style: italic;*/
- /*}*/
- 
--/*.story-report-tab .narrative {*/
--/*color: #00F;*/
--/*color: blue;*/
--/*text-align: left;*/
-+/*.jb-story-outcomes td {*/
-+/*border-left: solid 1px #b43d3d;*/
-+/*border: solid 1px black;*/
-+/*font-weight: normal;*/
-+/*margin: 0px;*/
-+/*padding: 4px;*/
- /*}*/
- 
--/*.story-report-tab .narrative .label {*/
--/*font-size: 16px;*/
-+/*.cm-jb-story-step-failed-keyword {*/
- /*font-weight: bold;*/
--/*padding-bottom: 5px;*/
-+/*color: #ff0000;*/
- /*}*/
- 
--/*.story-report .cm-jb-story-description-line {*/
--/*padding-bottom: 10px;*/
-+/*.cm-jb-story-keyword-notPerformed {*/
-+/*color: #808080;*/
- /*}*/
- 
--/*table.tabular-parameter {*/
--/*border: 1px solid black;*/
--/*padding: 0px;*/
--/*margin: 0px;*/
-+/*.cm-jb-story-step-failed-message {*/
-+/*color: #ff0000;*/
- /*}*/
- 
--/*table.tabular-parameter th {*/
--/*border: 1px solid black;*/
--/*margin: 0px;*/
--/*padding: 0px;*/
-+/*.cm-jb-story-step-successful-message {*/
-+
-+/*color: green;*/
- /*}*/
- 
--/*table.tabular-parameter td {*/
--/*border: 1px solid black;*/
--/*margin: 0px;*/
--/*padding: 0px;*/
-+/*.cm-jb-story-keyword-pending {*/
-+/*color: orange;*/
-+/*color: #ffd351;*/
- /*}*/
--/*table.tabular-parameter   {*/
--/*display: table; border-collapse: collapse;*/
--/*}*/
--/*tr {*/
--/*display: table-row; border: 1px solid #000;*/
--/*}*/
--/*td {*/
--/*display: table-cell;*/
--/*}*/
--table.tabular-parameter {
--    border: solid 1px purple;
--    /*margin: 0px;*/
--    /*padding: 0px;*/
--    border-collapse: collapse;
--}
- 
--table.tabular-parameter td, th {
--    border-left: solid 1px purple;
--    /*border: solid 1px black;*/
--    font-weight: normal;
--    margin: 0px;
--    padding: 4px;
--}
-+/* collapsible elements ==============================================================================================*/
- 
--table.tabular-parameter thead th {
--    font-weight: bold;
--    font-style: italic;
-+.jb-story-ele-exp-trigger {
-+    font-size: 16px;
-+    /*padding-left: 14px;*/
- }
- 
--.jb-story-outcomes {
--    /*color: #6600ff;*/
--    color: #b43d3d;
-+.jb-story-ele-exp-trigger {
-+    text-decoration: none;
-+    padding-left: 16px;
- }
- 
--.jb-story-outcomes table {
--    border: solid 1px #b43d3d;
--    border-collapse: collapse;
-+.jb-story-ele-exp-trigger.collapsed {
-+    /*background: url(your_image_url) no-repeat;*/
-+    background: url(images/ui/collapsed_icon.png) no-repeat left center;
- }
- 
--.jb-story-outcomes thead th {
--    font-weight: bold;
--    font-style: italic;
-+.jb-story-ele-exp-trigger.expanded.mouse-over {
-+    background: url(images/ui/expanded_icon.png) no-repeat left center;
- }
- 
--.jb-story-outcomes td {
--    border-left: solid 1px #b43d3d;
--    /*border: solid 1px black;*/
--    font-weight: normal;
--    margin: 0px;
--    padding: 4px;
-+.jb-story-ele-exp-content {
-+    padding-left: 16px;
- }
- 
--.cm-jb-story-step-failed-keyword {
--    /*font-weight: bold;*/
--    color: #ff0000;
--}
-+/* latest changes *************************************************************************************************/
- 
--.cm-jb-story-keyword-notPerformed {
--    color: #808080;
-+.jb-story-report .description {
-+    color: #d04437;
-+    padding-left: 16px;
-+    padding-top: 5px;
- }
- 
--.cm-jb-story-step-failed-message {
--    color: #ff0000;
--}
-+/* Meta ----------------------------------------- */
- 
--.cm-jb-story-step-successful-message {
--
--    color: green;
-+.jb-story-report .meta {
-+    color: #770088;
-+    padding-top: 5px;
- }
- 
--.cm-jb-story-keyword-pending {
--    /*color: orange;*/
--    color: #ffd351;
-+.jb-story-report .meta .keyword {
-+    font-size: larger;
-+    font-weight: bold;
- }
- 
--.jb-story-report-step {
--    padding-top: 3px;
-+.jb-story-report .meta .property {
- }
- 
--.jb-story-report-scenario {
-+/* Narrative ------------------------------------ */
-+
-+.jb-story-report .narrative {
-+    color: #0000cc;
-     padding-top: 5px;
- }
- 
--.jb-scenario-example {
--    color: firebrick;
-+.jb-story-report .narrative .keyword {
-+    font-size: larger;
-     font-weight: bold;
--    padding-top: 5px;
- }
- 
--/*.jb-story-report-scenario-title, */
--.jb-story-report-meta {
--    color: #770088;
--    padding-top: 5px;
-+.jb-story-report .narrative .keyword.inOrderTo, .jb-story-report .narrative .keyword.asA, .jb-story-report .narrative .keyword.iWantTo, .jb-story-report .narrative .keyword.soThat {
-+    /*font-size: 16px;*/
-+    font-size: inherit;
-+    font-weight: bold;
- }
- 
--.jb-story-report-meta-keyword {
--    font-size: 16px;
--    color: #770088;
--    font-weight: bold;
--    /*padding-left: 14px;*/
-+.jb-story-report .narrative .text {
- }
- 
--.jb-story-report-lifecycle {
-+/* Lifecycle ------------------------------------- */
-+
-+.jb-story-report .lifecycle {
-+    color: #594300;
-     padding-top: 5px;
- }
- 
--.jb-story-report-lifecycle-keyword {
--    color: #594300;
--    font-size: 16px;
-+.jb-story-report .lifecycle .keyword {
-+    font-size: larger;
-     font-weight: bold;
- }
- 
--.jb-story-report-narrative {
--    color: #0000cc;
--    padding-top: 5px;
-+.jb-story-report .lifecycle .before .keyword, .jb-story-report .lifecycle .after .keyword, .jb-story-report .lifecycle .outcome .keyword {
-+    font-size: inherit;
-+    font-weight: bold;
- }
- 
--.jb-story-report-narrative-keyword {
--    font-size: 16px;
--    font-weight: bold;
--    color: #0000cc;
-+.jb-story-report .lifecycle .outcome .text {
-+    font-size: inherit;
-+    font-weight: normal;
- }
- 
--.aui-lozenge {
+@@ -31,7 +31,7 @@
+ /* scenario lozenge ==================================================================================================== */
+ .jb-story-report .aui-lozenge {
+     vertical-align: text-top;
 -    vertical-align: middle;
-+/* Scenario --------------------------------------- */
-+
++    /*vertical-align: middle;*/
+ }
+ 
+ .jb-story-report-lozenge-container {
+@@ -88,12 +88,6 @@
+ /* collapsible elements ==============================================================================================*/
+ 
+ .jb-story-ele-exp-trigger {
+-    /*font-size: 16px;*/
+-    /*padding-left: 14px;*/
+-}
+-
+-.jb-story-ele-exp-trigger {
+-    text-decoration: none;
+     padding-left: 16px;
+ }
+ 
+@@ -106,16 +100,12 @@
+     background: url(images/ui/expanded_icon.png) no-repeat left center;
+ }
+ 
+-.jb-story-ele-exp-content {
+-    padding-left: 16px;
+-}
+-
+ /* latest changes *************************************************************************************************/
+ 
+ .jb-story-report .description {
+     color: #d04437;
+-    padding-left: 16px;
+     padding-top: 5px;
++    padding-left: 16px;
+ }
+ 
+ /* Meta ----------------------------------------- */
+@@ -123,6 +113,7 @@
+ .jb-story-report .meta {
+     color: #770088;
+     padding-top: 5px;
++    padding-left: 16px;
+ }
+ 
+ .jb-story-report .meta .keyword {
+@@ -138,6 +129,7 @@
+ .jb-story-report .narrative {
+     color: #0000cc;
+     padding-top: 5px;
++    padding-left: 16px;
+ }
+ 
+ .jb-story-report .narrative .keyword {
+@@ -159,6 +151,7 @@
+ .jb-story-report .lifecycle {
+     color: #594300;
+     padding-top: 5px;
++    padding-left: 16px;
+ }
+ 
+ .jb-story-report .lifecycle .keyword {
+@@ -178,64 +171,160 @@
+ 
+ /* Scenario --------------------------------------- */
+ 
+-.jb-story-report .scenario .title a {
+-    color: green;
+-    text-decoration: none;
++.jb-story-report .scenario {
++    padding-top: 10px;
+ }
+ 
+ .jb-story-report .scenario .title {
+-    padding-top: 5px;
+     color: green;
+ }
+ 
 +.jb-story-report .scenario .title a {
 +    color: green;
 +    text-decoration: none;
- }
- 
--.jb-story-report-description {
-+.jb-story-report .scenario .title {
-     padding-top: 5px;
-+    color: green;
- }
- 
--.jb-story-ele-exp-trigger {
--    font-size: 16px;
--    /*padding-left: 14px;*/
-+.jb-story-report .scenario .title .keyword {
-+    font-weight: bold;
- }
- 
--.jb-story-ele-exp-trigger {
--    text-decoration: none;
--    padding-left: 16px;
-+.jb-story-report .scenario .example {
-+    padding-top: 5px;
-+    color: firebrick;
-+    font-weight: bold;
- }
- 
--.jb-story-ele-exp-trigger.collapsed {
--    /*background: url(your_image_url) no-repeat;*/
--    background: url(images/ui/collapsed_icon.png) no-repeat left center;
-+/* Step -------------------------------------------- */
-+.jb-story-report .step {
-+    padding-top: 3px;
- }
- 
--.jb-story-ele-exp-trigger.expanded.mouse-over {
--    background: url(images/ui/expanded_icon.png) no-repeat left center;
-+.jb-story-report .step .keyword {
-+    font-weight: bold;
-+    color: #aa5500;
- }
- 
--/*.jb-story-report-scenario-content.collapsed {*/
--    /*display: none;*/
--/*}*/
--
--.jb-story-ele-exp-content {
--    padding-left: 16px;
-+.jb-story-report .step .parameter, .jb-story-report .step .tabular-parameter {
-+    color: purple;
- }
- 
--.jb-story-report-description {
--    color: #d04437;
--    padding-left: 16px;
--    /*padding-bottom: 10px;*/
-+.jb-story-report .step .tabular-parameter table {
-+    border: solid 1px;
-+    /*margin: 0px;*/
-+    /*padding: 0px;*/
-+    border-collapse: collapse;
-+    /*width: auto;*/
- }
- 
--.jb-story-report-lozenge {
--    vertical-align: text-top;
-+.jb-story-report .step .tabular-parameter td, th {
-+    border-left: solid 1px;
-+    /*border: solid 1px black;*/
-+    font-weight: normal;
-+    margin: 0px;
-+    padding: 4px;
- }
- 
--.jb-story-report-lozenge-container {
--    margin-left: 4px;
--    /*vertical-align: text-top;*/
-+.jb-story-report .step .tabular-parameter thead th {
-+    font-weight: bold;
-+    /*font-style: italic;*/
- }
- 
--.jb-story-ele-exp-container {
--    /*padding-left: 16px;*/
--}
- 
--.jb-story-ele-exp-trigger-container {
--    /*padding-left: 16px;*/
-+.jb-story-report .step .tabular-parameter tbody tr.odd {
-+    background-color: #f5efff;
-+    /*font-style: italic;*/
--}
-\ No newline at end of file
 +}
 +
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(date 1412752015000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(revision )
-@@ -15,7 +15,7 @@
-         storyHtmlReport.setTotalScenariosPassed(storyHtmlReportDTO.getTotalScenariosPassed());
-         storyHtmlReport.setTotalScenariosFailed(storyHtmlReportDTO.getTotalScenariosFailed());
-         storyHtmlReport.setTotalScenariosPending(storyHtmlReportDTO.getTotalScenariosPending());
--        storyHtmlReport.setTotalScenariosSkipped(storyHtmlReportDTO.getTotalScenariosSkipped());
-+        storyHtmlReport.setTotalScenariosSkipped(storyHtmlReportDTO.getTotalScenariosIgnored());
-         storyHtmlReport.setTotalScenariosNotPerformed(storyHtmlReportDTO.getTotalScenariosNotPerformed());
- 
-     }
-@@ -33,7 +33,7 @@
-         storyReportDTO.setTotalScenariosPassed(storyHtmlReport.getTotalScenariosPassed());
-         storyReportDTO.setTotalScenariosFailed(storyHtmlReport.getTotalScenariosFailed());
-         storyReportDTO.setTotalScenariosPending(storyHtmlReport.getTotalScenariosPending());
--        storyReportDTO.setTotalScenariosSkipped(storyHtmlReport.getTotalScenariosSkipped());
-+        storyReportDTO.setTotalScenariosIgnored(storyHtmlReport.getTotalScenariosSkipped());
-         storyReportDTO.setTotalScenariosNotPerformed(storyHtmlReport.getTotalScenariosNotPerformed());
- 
-         return storyReportDTO;
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java	(date 1412752015000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java	(revision )
-@@ -2,14 +2,14 @@
- 
- public enum TestStatus {
- 
--    PASSED,
-+    passed,
- 
--    FAILED,
-+    failed,
- 
--    PENDING,
-+    pending,
- 
--    NOT_PERFORMED,
-+    not_performed,
- 
--    IGNORED
-+    ignored
- 
+ .jb-story-report .scenario .title .keyword {
+     font-weight: bold;
  }
+ 
+-.jb-story-report .scenario .example {
+-    padding-top: 5px;
+-    color: firebrick;
+-    font-weight: bold;
++.jb-story-report .scenario .content {
++    padding-left: 16px;
+ }
+ 
++.jb-story-report .scenario .content.collapsed {
++    display: none;
++}
++
++.jb-story-report .scenario .content.expanded {
++    display: inherit;
++}
++
+ /* Step -------------------------------------------- */
+ .jb-story-report .step {
+     padding-top: 3px;
+ }
+ 
+-.jb-story-report .step .keyword {
++.jb-story-report .step .keyword,
++.jb-story-report .example .step .keyword {
+     font-weight: bold;
+     color: #aa5500;
+ }
+ 
++.jb-story-report .step .outcome-keyword {
++    /*display: block;*/
++    font-weight: bold;
++}
++
++.jb-story-report .step .outcome-keyword.pending {
++    color: #ffd351;
++}
++
++.jb-story-report .step .step-outcome .outcome-keyword.passed {
++    display: none;
++}
++
++.jb-story-report .step .step-outcome .outcome-keyword.failed {
++    color: #D04437;
++    /*color: #ff0000;*/
++}
++
++.jb-story-report .step .step-outcome .failure-msg {
++    color: #D04437;
++}
++
++.jb-story-report .step .step-outcome .failure-trace {
++    color: #D04437;
++}
++
++.jb-story-report .step .outcome-keyword.not_performed {
++    color: dimgray;
++}
++
++.jb-story-report .step .outcome-keyword.ignored {
++    color: saddlebrown;
++}
++
++/* Step parameters ----------------------------------*/
++
+ .jb-story-report .step .parameter, .jb-story-report .step .tabular-parameter {
+     color: purple;
+ }
+ 
+-.jb-story-report .step .tabular-parameter table {
++.jb-story-report .step .tabular-parameter table,
++.jb-story-report .scenario .examples-table table,
++.jb-story-report .step .step-outcome .outcomes table {
+     border: solid 1px;
+-    /*margin: 0px;*/
+-    /*padding: 0px;*/
+     border-collapse: collapse;
+-    /*width: auto;*/
+ }
+ 
+-.jb-story-report .step .tabular-parameter td, th {
++.jb-story-report .step .tabular-parameter td, .jb-story-report .step .tabular-parameter th,
++.jb-story-report .scenario .examples-table td, .jb-story-report .scenario .examples-table th,
++.jb-story-report .step .step-outcome .outcomes td, .jb-story-report .step .step-outcome .outcomes th {
+     border-left: solid 1px;
+-    /*border: solid 1px black;*/
+     font-weight: normal;
+     margin: 0px;
+     padding: 4px;
+ }
+ 
+-.jb-story-report .step .tabular-parameter thead th {
++.jb-story-report .step .tabular-parameter thead th,
++.jb-story-report .scenario .examples-table thead th,
++.jb-story-report .step .step-outcome .outcomes thead th {
+     font-weight: bold;
+     /*font-style: italic;*/
+ }
+ 
+-
+ .jb-story-report .step .tabular-parameter tbody tr.odd {
+     background-color: #f5efff;
+     /*font-style: italic;*/
+ }
+ 
++/* Step examples --------------------------------------------------*/
++.jb-story-report .examples .examples-keyword {
++    /*color: rgb(255, 170, 0);*/
++    /*color: rgb(231, 121, 1);*/
++    color: rgb(222, 117, 1);
++    /*color: #005580;*/
++    font-weight: bold;
++}
++
++.jb-story-report .scenario .example {
++    padding-top: 5px;
++    /*color: firebrick;*/
++    /*font-weight: bold;*/
++}
++
++.jb-story-report .examples .example .title {
++    color: rgb(222, 117, 1);
++}
++
++.jb-story-report .examples .example .title .keyword {
++    font-weight: bold;
++}
++
++.jb-story-report .examples .example .title .text {
++    font-weight: normal;
++}
++
++.jb-story-report .scenario .examples-table {
++    color: rgb(222, 117, 1);
++}
++
++.jb-story-report .scenario .examples-table tbody tr.odd {
++    /*background-color: rgb(245, 240, 227);*/
++    background-color: rgb(252, 240, 227);
++}
++
++/* Step outcomes table ----------------------------------------------*/
++.jb-story-report .step .step-outcome .outcomes {
++    /*color: green;*/
++    color: #aa5500;
++}
++
++.jb-story-report .step .step-outcome .outcomes tr.verified {
++    color: green;
++}
++
++.jb-story-report .step .step-outcome .outcomes tr.notVerified {
++    color: #D04437;
++}
+\ No newline at end of file
