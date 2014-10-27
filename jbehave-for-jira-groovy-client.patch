@@ -1,16 +1,47 @@
-Index: jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy
+Index: jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy	(date 1414057528000)
-+++ jbehave-for-jira/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy	(revision )
-@@ -54,7 +54,7 @@
- 
-     public GroovyTemplateStoryReporter(File file, Keywords keywords,
-                                        String jiraBaseUrl, String jiraProject, String username, String password, String environment) {
--        this(file, keywords, new FreemarkerProcessor(), "ftl/jbehave-html-output.ftl", jiraBaseUrl, jiraProject, username, password, environment);
-+        this(file, keywords, new FreemarkerProcessor(), "ftl/jira-jbehave-html-output.ftl", jiraBaseUrl, jiraProject, username, password, environment);
-     }
- 
-     public GroovyTemplateStoryReporter(File file, Keywords keywords, TemplateProcessor processor, String templatePath,
+--- jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy	(date 1414444952000)
++++ jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyTemplateStoryReporter.groovy	(revision )
+@@ -5,7 +5,6 @@
+ import freemarker.ext.beans.BeansWrapper
+ import freemarker.template.TemplateHashModel
+ import freemarker.template.TemplateModelException
+-import groovy.json.StringEscapeUtils
+ import org.apache.commons.lang.StringEscapeUtils
+ import org.apache.commons.lang.StringUtils
+ import org.apache.commons.lang.Validate
+Index: jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(date 1414444952000)
++++ jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStepDocReporter.groovy	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(date 1414444952000)
++++ jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryReporter.groovy	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(date 1414444952000)
++++ jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryLoader.groovy	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(date 1414444952000)
++++ jbehave-for-jira/sync_copy/jbehave-for-jira-groovy-client/src/main/java/com/jbehaveforjira/groovyclient/GroovyStoryPathsFinder.groovy	(revision )
+@@ -1,0 +1,0 @@
