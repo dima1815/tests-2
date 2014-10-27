@@ -3,445 +3,91 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1413990179000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1414057529000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -310,47 +310,47 @@
-         });
+@@ -831,10 +831,15 @@
+         }
  
-         // assign expand collapse triggers
--        AJS.$('.jb-story-ele-exp-trigger').each(function (index, element) {
-+//        AJS.$('.jb-story-ele-exp-trigger').each(function (index, element) {
-+//
-+//            AJS.$(element).click(function (eventObject) {
-+//                if (eventObject.preventDefault) {
-+//                    eventObject.preventDefault();
-+//                } else {
-+//                    eventObject.returnValue = false;
-+//                }
-+//                var target = eventObject.target;
-+//                var targetNode = AJS.$(target)[0];
-+//
-+//                var isCollapsed = AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").hasClass("collapsed");
-+//                if (isCollapsed) {
-+//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("collapsed");
-+//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("expanded");
-+//                } else {
-+//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("expanded");
-+//                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("collapsed");
-+//                }
-+//
-+//                var contentDiv = AJS.$(targetNode).closest(".jb-story-ele-exp-container").children(".jb-story-ele-exp-content")[0];
-+////                var contentDiv = AJS.$(targetNode).(".jb-story-ele-exp-content")[0];
-+//                AJS.$(contentDiv).toggle();
-+////                var replaceText = targetNode.getAttribute("replace-text");
-+////                var currentHtml = AJS.$(targetNode).html();
-+////                AJS.$(targetNode).html(replaceText);
-+////                targetNode.setAttribute("replace-text", currentHtml);
-+//            });
-+//
-+//        });
+         this.startsWithTableComment = function (text) {
+-            var firstChar = text.substring(0, 3);
+-            return firstChar == "|--";
++            var firstChars = text.substring(0, 3);
++            return firstChars == "|--";
+         }
++
++        this.startsWithLineComment = function (text) {
++            var firstChars = text.substring(0, 3);
++            return firstChars == "!--";
+-    }
++        }
++    }
  
--            AJS.$(element).click(function (eventObject) {
--                if (eventObject.preventDefault) {
--                    eventObject.preventDefault();
--                } else {
--                    eventObject.returnValue = false;
--                }
--                var target = eventObject.target;
--                var targetNode = AJS.$(target)[0];
-+//        AJS.$('.jb-story-ele-exp-trigger').mouseover(function (event) {
-+//            var target = AJS.$(event.target)[0];
-+//            AJS.$(target).closest(".jb-story-ele-exp-trigger").addClass("mouse-over");
-+//        });
-+//
-+//        AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
-+//            var target = AJS.$(event.target)[0];
-+//            AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
-+//        });
+ //    this.addModeGutterError = function (from, to, message) {
+ //        errorsGutter.addModeError(from, to, message);
+@@ -1405,6 +1410,17 @@
+             }
+         }
  
--                var isCollapsed = AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").hasClass("collapsed");
--                if (isCollapsed) {
--                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("collapsed");
--                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("expanded");
--                } else {
--                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").removeClass("expanded");
--                    AJS.$(targetNode).closest(".jb-story-ele-exp-trigger").addClass("collapsed");
--                }
--
--                var contentDiv = AJS.$(targetNode).closest(".jb-story-ele-exp-container").children(".jb-story-ele-exp-content")[0];
--//                var contentDiv = AJS.$(targetNode).(".jb-story-ele-exp-content")[0];
--                AJS.$(contentDiv).toggle();
--//                var replaceText = targetNode.getAttribute("replace-text");
--//                var currentHtml = AJS.$(targetNode).html();
--//                AJS.$(targetNode).html(replaceText);
--//                targetNode.setAttribute("replace-text", currentHtml);
--            });
--
--        });
--
--        AJS.$('.jb-story-ele-exp-trigger').mouseover(function (event) {
--            var target = AJS.$(event.target)[0];
--            AJS.$(target).closest(".jb-story-ele-exp-trigger").addClass("mouse-over");
--        });
--
--        AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
--            var target = AJS.$(event.target)[0];
--            AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
--        });
--
-         // expand failed and pending scenarios
++        this.lineStartsWithLineComment = function (lineNumber) {
++
++            var lineHandle = editor.getLineHandle(lineNumber);
++            var lineText = lineHandle.text;
++            if (textUtils.startsWithLineComment(lineText)) {
++                return true;
++            } else {
++                return false;
++            }
++        }
++
+         this.lineStartsWithAfterOrOutcome = function (lineNumber) {
  
-         // append scenario status lozenge, depending on the step
-@@ -1054,7 +1054,7 @@
-                             if (tokens.length - 2 != seenHeaderTokens.length) {
-                                 var startPos = {line: lineNum, ch: 0};
-                                 var endPos = {line: lineNum, ch: lineText.length};
--                                var errorMsg = "Number of field values doesn't equal to the number of field names";
-+                                var errorMsg = "Number of field values doesn't equal the number of field names";
-                                 errorsGutter.addError(startPos, endPos, errorMsg);
-                             } else {
-                                 for (var i = 1; i < tokens.length - 1; i++) {
+             var lineHandle = editor.getLineHandle(lineNumber);
+@@ -1443,7 +1459,8 @@
+             while (nextLineNumber < lineCount) {
+                 if (this.lineStartsWithStepKeyword(nextLineNumber)
+                     || this.lineStartsWithScenarioOrExamples(nextLineNumber)
+-                    || this.lineStartsWithAfterOrOutcome(nextLineNumber)) {
++                    || this.lineStartsWithAfterOrOutcome(nextLineNumber)
++                    || this.lineStartsWithLineComment(nextLineNumber)) {
+                     break;
+                 } else {
+                     lastStepLine = nextLineNumber;
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1413990179000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1414057529000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
-@@ -284,8 +284,8 @@
-                     "Meta",
-                     "Narrative",
-                     "Lifecycle",
--                    "Before",
--                    "After",
-+                    "LifecycleBefore",
-+                    "LifecycleAfter",
- //                    "LifecycleOutcome",
-                     "Given",
-                     "Scenario",
-@@ -649,7 +649,7 @@
-                 function parseLifecycleAfterOutcome() {
+@@ -789,7 +789,9 @@
+                 state.lastTokenType = "";
  
+                 // LINE COMMENT
+-                if (stream.sol() && !state.inTable && stream.match(/!--.*/)) {
++                if (stream.sol() &&
++//                    !state.inTable &&
++                    stream.match(/!--.*/)) {
  //                    clearErrorsGutter();
--                    resetInFieldsExcept(["Scenario", "Lifecycle", "After"]);
-+                    resetInFieldsExcept(["Scenario", "Lifecycle", "LifecycleAfter"]);
-                     state.lastTokenType += " jb-story-lifecycle-outcome-keyword";
-                     state.inLifecycleOutcome = true;
+                     state.lastTokenType += " jb-story-comment";
  
-@@ -674,7 +674,7 @@
-                     var currentToken = ti.text.trim();
- 
-                     if (currentToken != "ANY" && currentToken != "SUCCESS" && currentToken != "FAILURE") {
--                        var msg = "Invalid value for 'Outcome' section";
-+                        var msg = "Invalid value for 'Outcome' section. Allowed values are: 'ANY', 'SUCCESS' and 'FAILURE'";
-                         addGutterError(ti.from, ti.to, msg);
-                     }
-                 }
-@@ -705,7 +705,7 @@
- 
-                     state.lastTokenType += " jb-story-step-keyword";// + keyword + "-step";
- 
--                    resetInFieldsExcept(["Scenario", "Lifecycle", "Before", "After"]);
-+                    resetInFieldsExcept(["Scenario", "Lifecycle", "LifecycleBefore", "LifecycleAfter"]);
-                     state.inStep = true;
-                     state.inStepKeywordLine = true;
- 
-@@ -741,6 +741,7 @@
-                                 addGutterError(ti.from, ti.to, msg);
-                             } else {
-                                 state.stepDefined = true;
-+                                state.lifecycleAfterOutcomeDefined = false;
-                             }
-                         }
-                     } else {
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1413990179000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
-@@ -142,12 +142,15 @@
- }
- 
- .cm-jb-story-examples-keyword {
--    color: firebrick;
-+    color: rgb(222, 117, 1);
-+    /*color: firebrick;*/
-     font-weight: bold;
- }
- 
- .cm-jb-story-examples-body {
--    color: purple;
-+    /*color: purple;*/
-+    /*color: firebrick;*/
-+    color: rgb(222, 117, 1);
-     font-weight: bold;
- }
- 
-\ No newline at end of file
-Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1413990179000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -15,6 +15,7 @@
-         <ao.version>0.19.7</ao.version>
-         <!--<jira.version>6.1</jira.version>-->
-         <jira.version>6.0.8</jira.version>
-+        <!--<jira.version>6.0</jira.version>-->
-         <java.version>1.6</java.version>
-     </properties>
-     <build>
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1413990179000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1414057529000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -31,7 +31,7 @@
- /* scenario lozenge ==================================================================================================== */
- .jb-story-report .aui-lozenge {
-     vertical-align: text-top;
--    vertical-align: middle;
-+    /*vertical-align: middle;*/
- }
- 
- .jb-story-report-lozenge-container {
-@@ -88,12 +88,6 @@
- /* collapsible elements ==============================================================================================*/
- 
- .jb-story-ele-exp-trigger {
--    /*font-size: 16px;*/
--    /*padding-left: 14px;*/
--}
--
--.jb-story-ele-exp-trigger {
--    text-decoration: none;
-     padding-left: 16px;
- }
- 
-@@ -106,16 +100,12 @@
-     background: url(images/ui/expanded_icon.png) no-repeat left center;
- }
- 
--.jb-story-ele-exp-content {
--    padding-left: 16px;
--}
--
- /* latest changes *************************************************************************************************/
- 
- .jb-story-report .description {
-     color: #d04437;
--    padding-left: 16px;
-     padding-top: 5px;
-+    padding-left: 16px;
- }
- 
- /* Meta ----------------------------------------- */
-@@ -123,6 +113,7 @@
- .jb-story-report .meta {
-     color: #770088;
-     padding-top: 5px;
-+    padding-left: 16px;
- }
- 
- .jb-story-report .meta .keyword {
-@@ -138,6 +129,7 @@
- .jb-story-report .narrative {
-     color: #0000cc;
-     padding-top: 5px;
-+    padding-left: 16px;
- }
- 
- .jb-story-report .narrative .keyword {
-@@ -159,6 +151,7 @@
- .jb-story-report .lifecycle {
-     color: #594300;
-     padding-top: 5px;
-+    padding-left: 16px;
- }
- 
- .jb-story-report .lifecycle .keyword {
-@@ -178,64 +171,160 @@
- 
- /* Scenario --------------------------------------- */
- 
--.jb-story-report .scenario .title a {
--    color: green;
--    text-decoration: none;
-+.jb-story-report .scenario {
-+    padding-top: 10px;
- }
- 
- .jb-story-report .scenario .title {
--    padding-top: 5px;
-     color: green;
- }
- 
-+.jb-story-report .scenario .title a {
-+    color: green;
-+    text-decoration: none;
-+}
-+
- .jb-story-report .scenario .title .keyword {
+@@ -216,6 +216,12 @@
      font-weight: bold;
  }
  
--.jb-story-report .scenario .example {
--    padding-top: 5px;
--    color: firebrick;
--    font-weight: bold;
-+.jb-story-report .scenario .content {
-+    padding-left: 16px;
- }
- 
-+.jb-story-report .scenario .content.collapsed {
-+    display: none;
-+}
-+
-+.jb-story-report .scenario .content.expanded {
-+    display: inherit;
-+}
-+
- /* Step -------------------------------------------- */
- .jb-story-report .step {
-     padding-top: 3px;
- }
- 
--.jb-story-report .step .keyword {
-+.jb-story-report .step .keyword,
-+.jb-story-report .example .step .keyword {
-     font-weight: bold;
-     color: #aa5500;
- }
- 
-+.jb-story-report .step .outcome-keyword {
++.jb-story-report .step .comment {
 +    /*display: block;*/
-+    font-weight: bold;
++    font-style: italic;
++    color: #808080;
 +}
 +
-+.jb-story-report .step .outcome-keyword.pending {
-+    color: #ffd351;
-+}
-+
-+.jb-story-report .step .step-outcome .outcome-keyword.passed {
-+    display: none;
-+}
-+
-+.jb-story-report .step .step-outcome .outcome-keyword.failed {
-+    color: #D04437;
-+    /*color: #ff0000;*/
-+}
-+
-+.jb-story-report .step .step-outcome .failure-msg {
-+    color: #D04437;
-+}
-+
-+.jb-story-report .step .step-outcome .failure-trace {
-+    color: #D04437;
-+}
-+
-+.jb-story-report .step .outcome-keyword.not_performed {
-+    color: dimgray;
-+}
-+
-+.jb-story-report .step .outcome-keyword.ignored {
-+    color: saddlebrown;
-+}
-+
-+/* Step parameters ----------------------------------*/
-+
- .jb-story-report .step .parameter, .jb-story-report .step .tabular-parameter {
-     color: purple;
+ .jb-story-report .step .outcome-keyword.pending {
+     color: #ffd351;
  }
- 
--.jb-story-report .step .tabular-parameter table {
-+.jb-story-report .step .tabular-parameter table,
-+.jb-story-report .scenario .examples-table table,
-+.jb-story-report .step .step-outcome .outcomes table {
-     border: solid 1px;
--    /*margin: 0px;*/
--    /*padding: 0px;*/
-     border-collapse: collapse;
--    /*width: auto;*/
- }
- 
--.jb-story-report .step .tabular-parameter td, th {
-+.jb-story-report .step .tabular-parameter td, .jb-story-report .step .tabular-parameter th,
-+.jb-story-report .scenario .examples-table td, .jb-story-report .scenario .examples-table th,
-+.jb-story-report .step .step-outcome .outcomes td, .jb-story-report .step .step-outcome .outcomes th {
-     border-left: solid 1px;
--    /*border: solid 1px black;*/
-     font-weight: normal;
-     margin: 0px;
-     padding: 4px;
- }
- 
--.jb-story-report .step .tabular-parameter thead th {
-+.jb-story-report .step .tabular-parameter thead th,
-+.jb-story-report .scenario .examples-table thead th,
-+.jb-story-report .step .step-outcome .outcomes thead th {
-     font-weight: bold;
-     /*font-style: italic;*/
- }
- 
--
- .jb-story-report .step .tabular-parameter tbody tr.odd {
-     background-color: #f5efff;
-     /*font-style: italic;*/
- }
- 
-+/* Step examples --------------------------------------------------*/
-+.jb-story-report .examples .examples-keyword {
-+    /*color: rgb(255, 170, 0);*/
-+    /*color: rgb(231, 121, 1);*/
-+    color: rgb(222, 117, 1);
-+    /*color: #005580;*/
-+    font-weight: bold;
-+}
-+
-+.jb-story-report .scenario .example {
-+    padding-top: 5px;
-+    /*color: firebrick;*/
-+    /*font-weight: bold;*/
-+}
-+
-+.jb-story-report .examples .example .title {
-+    color: rgb(222, 117, 1);
-+}
-+
-+.jb-story-report .examples .example .title .keyword {
-+    font-weight: bold;
-+}
-+
-+.jb-story-report .examples .example .title .text {
-+    font-weight: normal;
-+}
-+
-+.jb-story-report .scenario .examples-table {
-+    color: rgb(222, 117, 1);
-+}
-+
-+.jb-story-report .scenario .examples-table tbody tr.odd {
-+    /*background-color: rgb(245, 240, 227);*/
-+    background-color: rgb(252, 240, 227);
-+}
-+
-+/* Step outcomes table ----------------------------------------------*/
-+.jb-story-report .step .step-outcome .outcomes {
-+    /*color: green;*/
-+    color: #aa5500;
-+}
-+
-+.jb-story-report .step .step-outcome .outcomes tr.verified {
-+    color: green;
-+}
-+
-+.jb-story-report .step .step-outcome .outcomes tr.notVerified {
-+    color: #D04437;
-+}
 \ No newline at end of file
