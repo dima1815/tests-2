@@ -1,0 +1,4229 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/pom.xml	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/pom.xml	(revision )
+@@ -3,7 +3,7 @@
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+     <groupId>com.jbehaveforjira</groupId>
+-    <artifactId>jbehaveforjira-jira-plugin</artifactId>
++    <artifactId>jira-plugin</artifactId>
+     <packaging>atlassian-plugin</packaging>
+     <name>JBehave For Jira - Jira Plugin</name>
+     <version>1.0.4</version>
+@@ -85,6 +85,11 @@
+         </plugins>
+     </build>
+     <dependencies>
++        <dependency>
++            <groupId>com.perforce</groupId>
++            <artifactId>p4java</artifactId>
++            <version>2013.2.788582</version>
++        </dependency>
+         <!-- ================================================================================= -->
+         <!--Jira provided dependencies-->
+         <!-- ================================================================================= -->
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
+@@ -3,8 +3,6 @@
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import com.atlassian.upm.api.license.PluginLicenseManager;
+-import com.atlassian.upm.api.license.entity.PluginLicense;
+-import com.atlassian.upm.api.util.Option;
+ import com.jbehaveforjira.plugin.dto.story.JiraStory;
+ import com.jbehaveforjira.plugin.dto.story.StoriesPayload;
+ import com.jbehaveforjira.plugin.dto.story.StoryPaths;
+@@ -59,10 +57,10 @@
+                                      @QueryParam("appendVersionToPath")
+                                      @DefaultValue("true") boolean includeVersionInPath) {
+ 
+-        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+-        if (!(license.isDefined() && license.get().isValid())) {
+-             throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
+-        }
++//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
++//        if (!(license.isDefined() && license.get().isValid())) {
++//             throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
++//        }
+ 
+         Validate.notEmpty(projectKey);
+ 
+@@ -90,10 +88,10 @@
+     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+     public StoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
+ 
+-        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+-        if (!(license.isDefined() && license.get().isValid())) {
+-            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
+-        }
++//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
++//        if (!(license.isDefined() && license.get().isValid())) {
++//            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
++//        }
+ 
+         List<JiraStory> stories = storyService.findByProjectKey(projectKey);
+         StoriesPayload payload = new StoriesPayload(stories);
+@@ -105,15 +103,20 @@
+     @Produces(MediaType.APPLICATION_JSON)
+     public Response findForIssue(
+             @PathParam("projectKey") String projectKey,
+-            @PathParam("issueKey") String issueKey) {
++            @PathParam("issueKey") String issueKey, @QueryParam("updateFromVCS") @DefaultValue("false") boolean updateFromVCS) {
+ 
+-        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+-        if (!(license.isDefined() && license.get().isValid())) {
+-            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
++//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
++//        if (!(license.isDefined() && license.get().isValid())) {
++//            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
++//        }
++
++        JiraStory storyDTO;
++        if (updateFromVCS) {
++            storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey, updateFromVCS);
++        } else {
++            storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+         }
+ 
+-        JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+-
+         Response response;
+         if (storyDTO != null) {
+             response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+@@ -132,10 +135,10 @@
+             @QueryParam("asString")
+             @DefaultValue("false") boolean asString) {
+ 
+-        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+-        if (!(license.isDefined() && license.get().isValid())) {
+-            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
+-        }
++//        Option<PluginLicense> license = pluginLicenseManager.getLicense();
++//        if (!(license.isDefined() && license.get().isValid())) {
++//            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
++//        }
+ 
+         String issueKey;
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java	(revision )
+@@ -0,0 +1,20 @@
++package com.jbehaveforjira.plugin.integration;
++
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++public interface VcsService {
++
++    Long commit(JiraStory story);
++
++    JiraStory findByProjectAndIssueKey(String projectKey, String issueKey);
++
++    RevisionInfo getLatestRevisionInfo(String projectKey, String issueKey);
++
++    boolean delete(JiraStory story);
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(revision )
+@@ -4,19 +4,17 @@
+ import com.atlassian.jira.project.Project;
+ import com.atlassian.plugin.PluginParseException;
+ import com.atlassian.plugin.web.Condition;
+-import com.jbehaveforjira.plugin.ao.JBehaveStory;
+-import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.service.StoryService;
+ 
+-import java.util.List;
+ import java.util.Map;
+ 
+ public class JiraIssueHasStoryCondition implements Condition {
+ 
+-    private JBehaveStoryDao storyDao;
++    private StoryService storyService;
+ 
+-    public JiraIssueHasStoryCondition(JBehaveStoryDao storyDao) {
++    public JiraIssueHasStoryCondition(StoryService storyService) {
+ 
+-        this.storyDao = storyDao;
++        this.storyService = storyService;
+     }
+ 
+     @Override
+@@ -29,9 +27,12 @@
+         Project project = (Project) context.get("project");
+         String projectKey = project.getKey();
+         Issue issue = (Issue) context.get("issue");
+-        String isssueKey = issue.getKey();
+-        List<JBehaveStory> byProjectAndIssueKey = storyDao.findByProjectAndIssueKey(projectKey, isssueKey);
++        String issueKey = issue.getKey();
++        return  storyService.issueHasStory(projectKey, issueKey);
++    }
+ 
+-        return byProjectAndIssueKey.isEmpty() ? false : true;
++    public boolean hasStory(String projectKey, String issueKey) {
++
++        return storyService.issueHasStory(projectKey, issueKey);
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/story_reports_panel.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/story_reports_panel.vm	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/story_reports_panel.vm	(revision )
+@@ -1,4 +1,4 @@
+-$webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-experimental-iconfont")
+-$webResourceManager.requireResourcesForContext("execspec-view-issue-page-resources")
++##$webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-experimental-iconfont")
++##$webResourceManager.requireResourcesForContext("execspec-view-issue-page-resources")
+ <div id="storyReportsPanel"><!--DEFAULT content--></div>
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/logback.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/logback.xml	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/logback.xml	(revision )
+@@ -18,4 +18,4 @@
+     <root level="debug">
+         <appender-ref ref="STDOUT"/>
+     </root>
+-</configuration>
++</configuration>
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/UpdateJBehavePreferences.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/UpdateJBehavePreferences.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/UpdateJBehavePreferences.js	(revision )
+@@ -56,4 +56,4 @@
+         autoClose: true // This tells the dialog to automatically close after a successful form submit.
+ 
+     });
+-});
++});
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(revision )
+@@ -0,0 +1,547 @@
++package com.jbehaveforjira.plugin.integration.perforce;
++
++import com.jbehaveforjira.plugin.config.Setting;
++import com.jbehaveforjira.plugin.config.SettingsManager;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.integration.RevisionInfo;
++import com.jbehaveforjira.plugin.integration.VCSOperationException;
++import com.jbehaveforjira.plugin.integration.VcsService;
++import com.perforce.p4java.client.IClient;
++import com.perforce.p4java.client.IClientViewMapping;
++import com.perforce.p4java.core.ChangelistStatus;
++import com.perforce.p4java.core.IChangelist;
++import com.perforce.p4java.core.file.*;
++import com.perforce.p4java.exception.P4JavaException;
++import com.perforce.p4java.impl.generic.client.ClientView;
++import com.perforce.p4java.impl.generic.core.Changelist;
++import com.perforce.p4java.impl.mapbased.client.Client;
++import com.perforce.p4java.impl.mapbased.server.Server;
++import com.perforce.p4java.option.client.DeleteFilesOptions;
++import com.perforce.p4java.option.client.SyncOptions;
++import com.perforce.p4java.option.server.GetRevisionHistoryOptions;
++import com.perforce.p4java.server.IServer;
++import com.perforce.p4java.server.ServerFactory;
++import org.apache.commons.io.FileUtils;
++import org.apache.commons.io.IOUtils;
++import org.apache.commons.lang.Validate;
++
++import java.io.File;
++import java.io.IOException;
++import java.io.InputStream;
++import java.net.URISyntaxException;
++import java.util.*;
++
++/**
++ *
++ */
++public class PerforceService implements VcsService {
++
++    public static final Setting<PerforceConfig> INTEGRATION_PERFORCE = new Setting<PerforceConfig>("INTEGRATION_PERFORCE", new PerforceConfig());
++
++    private final SettingsManager settingsManager;
++
++    public PerforceService(SettingsManager settingsManager) {
++
++        this.settingsManager = settingsManager;
++        this.settingsManager.loadSetting(INTEGRATION_PERFORCE);
++    }
++
++    private JiraStory findByProjectAndIssueKey(PerforceMapping perforceMapping, String projectKey, String issueKey)
++            throws VCSOperationException {
++
++        IServer server = null;
++        IClient client = null;
++        try {
++            server = Helper.connectToServer(perforceMapping);
++            client = Helper.setupClient(server, perforceMapping);
++//            Helper.setupClientView(client, perforceMapping);
++
++            JiraStory story = Helper.fetchLatest(server, client, projectKey, issueKey);
++            return story;
++
++        } finally {
++            Helper.releaseResources(server, client, null);
++        }
++    }
++
++    public List<JiraStory> findByProjectKey(String projectKey) {
++        throw new UnsupportedOperationException("Not yet implemented");
++    }
++
++    private void delete(PerforceMapping perforceMapping, JiraStory storyDTO) {
++//        throw new UnsupportedOperationException("Not yet implemented");
++
++        IServer server = null;
++        IClient client = null;
++        IChangelist changeList = null;
++        try {
++            server = Helper.connectToServer(perforceMapping);
++            client = Helper.setupClient(server, perforceMapping);
++
++            String issueKey = storyDTO.getIssueKey();
++            List<IFileSpec> fileSpecs = Helper.makeFileSpecForIssue(client.getClientView(), issueKey);
++//            fileSpecs.iterator().next().setAction(FileAction.DELETE);
++
++            SyncOptions syncOpts = new SyncOptions();
++            syncOpts.setForceUpdate(true);
++            syncOpts.setNoUpdate(false);
++            syncOpts.setClientBypass(false);
++            syncOpts.setServerBypass(false);
++            client.sync(fileSpecs, syncOpts);
++
++            changeList = Helper.createChangeList(server, client, perforceMapping);
++
++            DeleteFilesOptions opts = new DeleteFilesOptions();
++            opts.setChangelistId(changeList.getId());
++            List<IFileSpec> deletedList = client.deleteFiles(fileSpecs, opts);
++
++            Validate.notEmpty(deletedList);
++            IFileSpec deletedFile = deletedList.iterator().next();
++            if (deletedFile.getOpStatus() == FileSpecOpStatus.ERROR) {
++                throw new VCSOperationException("Failed to delete story file from the VCS repository. See application logs for more details.",
++                        new VCSOperationException(deletedFile.getStatusMessage()));
++            }
++
++            Helper.commitChangeList(changeList);
++
++        } catch (P4JavaException e) {
++            throw new VCSOperationException(e);
++        } finally {
++            Helper.releaseResources(server, client, changeList);
++        }
++
++
++        System.out.println();
++    }
++
++    private RevisionInfo getLatestRevisionInfo(PerforceMapping perforceMapping, String projectKey, String issueKey) {
++
++        IServer server = null;
++        IClient client = null;
++        try {
++            server = Helper.connectToServer(perforceMapping);
++            client = Helper.setupClient(server, perforceMapping);
++
++            List<IFileSpec> fileSpecs = Helper.makeFileSpecForIssue(client.getClientView(), issueKey);
++            List<IFileSpec> depotFiles = server.getDepotFiles(fileSpecs, false);
++
++            return Helper.fetchRevisionInfo(depotFiles);
++
++        } catch (P4JavaException e) {
++            throw new VCSOperationException(e);
++        } finally {
++            Helper.releaseResources(server, client, null);
++        }
++    }
++
++
++    private Long commit(PerforceMapping perforceMapping, JiraStory storyDTO) {
++
++        IServer server = null;
++        IClient client = null;
++        IChangelist changeList = null;
++        try {
++            server = Helper.connectToServer(perforceMapping);
++            client = Helper.setupClient(server, perforceMapping);
++
++            String issueKey = storyDTO.getIssueKey();
++            List<IFileSpec> fileSpecs = Helper.makeFileSpecForIssue(client.getClientView(), issueKey);
++
++            SyncOptions syncOpts = new SyncOptions();
++            syncOpts.setForceUpdate(true);
++            syncOpts.setNoUpdate(false);
++            syncOpts.setClientBypass(false);
++            syncOpts.setServerBypass(false);
++            List<IFileSpec> syncedList = client.sync(fileSpecs, syncOpts);
++
++            changeList = Helper.createChangeList(server, client, perforceMapping);
++            Helper.addFilesToChangeList(server, client, changeList, fileSpecs);
++
++            // write story contents into checked out file
++            String asString = storyDTO.getAsString();
++            File filePath = new File(client.getRoot() + File.separator + issueKey + ".story");
++            FileUtils.writeStringToFile(filePath, asString);
++
++            Long endRevision = Helper.commitChangeList(changeList);
++            return endRevision;
++
++        } catch (P4JavaException e) {
++            throw new VCSOperationException(e);
++        } catch (IOException e) {
++            throw new VCSOperationException(e);
++        } finally {
++            Helper.releaseResources(server, client, changeList);
++        }
++    }
++
++    @Override
++    public Long commit(JiraStory story) {
++
++        if (INTEGRATION_PERFORCE.value().isEnabled()) {
++            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++            PerforceMapping perforceMapping = mappings.forProjectKey(story.getProjectKey());
++            if (perforceMapping != null) {
++                Long revisionNumber = this.commit(perforceMapping, story);
++                return revisionNumber;
++            }
++        }
++        return null;
++    }
++
++    @Override
++    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
++
++        if (INTEGRATION_PERFORCE.value().isEnabled()) {
++            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++            PerforceMapping perforceMapping = mappings.forProjectKey(projectKey);
++            if (perforceMapping != null) {
++                JiraStory jiraStory = findByProjectAndIssueKey(perforceMapping, projectKey, issueKey);
++                return jiraStory;
++            }
++        }
++        return null;
++    }
++
++    @Override
++    public RevisionInfo getLatestRevisionInfo(String projectKey, String issueKey) {
++
++        if (INTEGRATION_PERFORCE.value().isEnabled()) {
++            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++            PerforceMapping perforceMapping = mappings.forProjectKey(projectKey);
++            if (perforceMapping != null) {
++                return getLatestRevisionInfo(perforceMapping, projectKey, issueKey);
++            }
++        }
++
++        return null;
++    }
++
++    @Override
++    public boolean delete(JiraStory story) {
++
++        if (INTEGRATION_PERFORCE.value().isEnabled()) {
++            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++            PerforceMapping perforceMapping = mappings.forProjectKey(story.getProjectKey());
++            if (perforceMapping != null) {
++                delete(perforceMapping, story);
++                return true;
++            }
++        }
++        return false;
++    }
++
++    private static class Helper {
++
++        static IServer connectToServer(PerforceMapping perforceMapping) {
++            IServer server = null;
++            try {
++                server = ServerFactory.getServer(perforceMapping.getServerUri(), null);
++                server.connect();
++                server.setUserName(perforceMapping.getUsername());
++                server.login(perforceMapping.getPassword());
++                return server;
++            } catch (URISyntaxException e) {
++                throw new VCSOperationException("An error occurred while attempting to contact Perforce repository. See application logs for more details.", e);
++            } catch (P4JavaException e) {
++                throw new VCSOperationException("An error occurred while attempting to fetch latest version of story from Perforce repository", e);
++
++            }
++        }
++
++        static RevisionInfo fetchRevisionInfo(List<IFileSpec> depotFiles) throws P4JavaException {
++            if (depotFiles.isEmpty()) {
++                return null;
++            } else {
++                IFileSpec fileSpec = depotFiles.iterator().next();
++                int endRevision = fileSpec.getEndRevision();
++                if (endRevision != -1 && fileSpec.getAction() != FileAction.DELETE) {
++
++                    GetRevisionHistoryOptions opts = new GetRevisionHistoryOptions();
++                    opts.setContentHistory(false);
++                    opts.setLongOutput(false);
++                    opts.setMaxRevs(1);
++
++                    Map<IFileSpec, List<IFileRevisionData>> revisionHistory = fileSpec.getRevisionHistory(opts);
++                    Collection<List<IFileRevisionData>> values = revisionHistory.values();
++                    Validate.notEmpty(values);
++                    List<IFileRevisionData> latestRevision = values.iterator().next();
++                    IFileRevisionData revisionData = latestRevision.iterator().next();
++                    String lastEditedUser = revisionData.getUserName();
++
++                    RevisionInfo revisionInfo = new RevisionInfo(Long.valueOf(endRevision), lastEditedUser, revisionData.getDate(), revisionData.getDescription());
++                    return revisionInfo;
++
++                } else {
++                    return null;
++                }
++            }
++        }
++
++        static void releaseResources(IServer server, IClient client, IChangelist changelist) {
++
++            // delete temporary checkout directory
++            IOException failedToDeleteTempDir = null;
++            if (client != null && client.getRoot() != null) {
++                String rootPath = client.getRoot();
++                File rootDir = new File(rootPath);
++                if (rootDir.exists()) {
++                    try {
++                        FileUtils.deleteDirectory(rootDir);
++                    } catch (IOException e) {
++                        failedToDeleteTempDir = e;
++                    }
++                }
++            }
++
++            // cleanup perforce resources
++            try {
++                if (client != null) {
++                    client.refresh();
++
++                    if (changelist != null && changelist.getStatus() != ChangelistStatus.SUBMITTED) {
++                        List<IFileSpec> files = changelist.getFiles(true);
++                        if (!files.isEmpty()) {
++                            client.revertFiles(files, false, changelist.getId(), false, false);
++                        }
++                        server.deletePendingChangelist(changelist.getId());
++                    }
++                    server.deleteClient(client.getName(), false);
++                }
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(VCSOperationException.DEFAULT_ERROR_MSG, e);
++            } finally {
++                if (server != null) {
++                    try {
++                        server.disconnect();
++                    } catch (P4JavaException e) {
++                        throw new VCSOperationException(VCSOperationException.DEFAULT_ERROR_MSG, e);
++                    }
++                }
++            }
++
++            if (failedToDeleteTempDir != null) {
++                throw new VCSOperationException("Failed to delete temporary directory used for VCS checkout. " +
++                        "See application logs for more details.", failedToDeleteTempDir);
++            }
++        }
++
++        static Long checkLatestVersion(IClient client, List<IFileSpec> fileSpecs) {
++
++            List<IFileSpec> haveList = null;
++            try {
++                haveList = client.haveList(fileSpecs);
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(VCSOperationException.DEFAULT_ERROR_MSG, e);
++            }
++            if (haveList != null && !haveList.isEmpty()) {
++                IFileSpec storyFileSpec = haveList.iterator().next();
++                int endRevision = storyFileSpec.getEndRevision();
++                if (endRevision != IFileSpec.NO_FILE_REVISION) {
++                    return Long.valueOf(endRevision);
++                } else {
++                    return null;
++                }
++            } else {
++                return null;
++            }
++        }
++
++        static IClient setupClient(IServer server, PerforceMapping perforceMapping) {
++
++            // create client
++            String p4User = server.getUserName();
++            String pluginName = "test_client_1";
++            String tmpClientName = p4User + "_" + pluginName + "_" + UUID.randomUUID().toString();
++
++            IClient tmpClient = new Client(server);
++            tmpClient.setName(tmpClientName);
++            tmpClient.setOwnerName(p4User);
++            tmpClient.setServer(server);
++
++            String tempCheckOutDir = perforceMapping.getTempCheckOutDir();
++            String rootDir = tempCheckOutDir + File.separator + tmpClientName;
++            tmpClient.setRoot(rootDir);
++            File temporaryDir = new File(tmpClient.getRoot());
++            temporaryDir.mkdirs();
++            if (!temporaryDir.exists()) {
++                throw new VCSOperationException("Error: failed to create a temporary directory for checkout.");
++            }
++
++            setupClientView(tmpClient, perforceMapping);
++
++            try {
++                server.createClient(tmpClient);
++                tmpClient = server.getClient(tmpClientName);
++                server.setCurrentClient(tmpClient);
++                return tmpClient;
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(e);
++            }
++        }
++
++        static IClientViewMapping setupClientView(IClient client, PerforceMapping perforceMapping) {
++
++            // create client mapping
++            ClientView mapping = new ClientView();
++            String fullRemoteDirPath = perforceMapping.getRemoteDirPath();
++            String subDir = perforceMapping.getSubDirExpression();
++            if (subDir != null && !subDir.isEmpty()) {
++                fullRemoteDirPath += subDir;
++            }
++            fullRemoteDirPath += "/...";
++            IClientViewMapping entry = new ClientView.ClientViewMapping(0, fullRemoteDirPath, "//" + client.getName() + "/...");
++            mapping.addEntry(entry);
++            client.setClientView(mapping);
++            return entry;
++        }
++
++        static IChangelist createChangeList(IServer server, IClient client, PerforceMapping perforceMapping) {
++            // create Changelist
++            Changelist changeListImpl = new Changelist(
++                    IChangelist.UNKNOWN,    // changelist-id yet unknown
++                    client.getName(),       // client name
++                    server.getUserName(),   // username
++                    ChangelistStatus.NEW,   // new changelist
++                    new Date(),             // current date
++                    perforceMapping.getCommitMessage(), // submission text
++                    false,                    // don't shelve this
++                    (Server) server            // the p4 server
++            );
++
++            try {
++                return client.createChangelist(changeListImpl);
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(e);
++            }
++        }
++
++        static JiraStory fetchLatest(IServer server, IClient client, String projectKey, String issueKey) {
++
++            ClientView clientView = client.getClientView();
++            Validate.isTrue(clientView.getSize() > 0);
++
++            List<IFileSpec> fileSpecs = makeFileSpecForIssue(clientView, issueKey);
++
++            String contents = null;
++            RevisionInfo revisionInfo = null;
++
++            try {
++
++                InputStream fileContents = server.getFileContents(fileSpecs, false, true);
++                Validate.notNull(fileContents);
++                contents = IOUtils.toString(fileContents);
++
++                List<IFileSpec> depotFiles = server.getDepotFiles(fileSpecs, false);
++                revisionInfo = Helper.fetchRevisionInfo(depotFiles);
++
++
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(e);
++            } catch (IOException e) {
++                throw new VCSOperationException(e);
++            }
++
++            String lastEditedUser = revisionInfo.getUserName();
++            Long endRevision = revisionInfo.getRevisionNumber();
++
++            JiraStory jiraStory = new JiraStory();
++            jiraStory.setProjectKey(projectKey);
++            jiraStory.setIssueKey(issueKey);
++            jiraStory.setLastEditedBy(lastEditedUser);
++            jiraStory.setVcsVersion(endRevision);
++            jiraStory.setAsString(contents);
++
++            return jiraStory;
++        }
++
++        static void addFilesToChangeList(IServer server, IClient client, IChangelist changelist, List<IFileSpec> fileSpecs) {
++
++            Validate.notEmpty(fileSpecs);
++
++            boolean p4add;
++            if (p4FileExists(server, fileSpecs)) {
++                p4add = false;
++            } else {
++                p4add = true;
++            }
++
++            try {
++                if (p4add) {
++                    List<IFileSpec> addSpecs = client.addFiles(fileSpecs, false, changelist.getId(), "text", false);
++                    if (addSpecs.isEmpty() || addSpecs.iterator().next().getOpStatus() == FileSpecOpStatus.ERROR) {
++                        VCSOperationException underlyingCause = new VCSOperationException("Underlying P4Java error - " + addSpecs.iterator().next().getStatusMessage());
++                        throw new VCSOperationException("VCS error occurred - unable to add file into perforce, using path - "
++                                + fileSpecs.iterator().next().getDepotPath(), underlyingCause);
++                    }
++                } else {
++                    List<IFileSpec> editedSpecs = client.editFiles(fileSpecs, false, false, changelist.getId(), "text");
++                    if (editedSpecs.isEmpty() || editedSpecs.iterator().next().getOpStatus() == FileSpecOpStatus.ERROR) {
++                        VCSOperationException underlyingCause = new VCSOperationException("Underlying P4Java error - " + editedSpecs.iterator().next().getStatusMessage());
++                        throw new VCSOperationException("VCS error occurred - unable to mark file for edit in perforce, using path - "
++                                + fileSpecs.iterator().next().getDepotPath(), underlyingCause);
++                    }
++                }
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(e);
++            }
++        }
++
++        static boolean p4FileExists(IServer server, List<IFileSpec> fileSpecs) {
++
++            try {
++                List<IFileSpec> depotFiles = server.getDepotFiles(fileSpecs, false);
++                if (depotFiles.isEmpty() ||
++                        (depotFiles.get(0) == null) ||
++                        (depotFiles.get(0).getAction() == null) ||
++                        (depotFiles.get(0).getAction() == FileAction.DELETE)) {
++                    return false;
++                } else {
++                    return true;
++                }
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(e);
++            }
++        }
++
++
++        private static List<IFileSpec> makeFileSpecForIssue(ClientView clientView, String issueKey) {
++            IClientViewMapping viewMapping = clientView.getEntry(0);
++            String depotPath = viewMapping.getDepotSpec();
++            // substring the trailing "..." and add story file name
++            Validate.isTrue(depotPath.endsWith("..."));
++            String fullRemoteFilePath = depotPath.substring(0, depotPath.length() - 3) + issueKey + ".story";
++            return FileSpecBuilder.makeFileSpecList(fullRemoteFilePath);
++        }
++
++        static Long commitChangeList(IChangelist changeList) {
++
++            try {
++
++                List<IFileSpec> files = changeList.getFiles(false);
++                Validate.notEmpty(files);
++
++                List<IFileSpec> submittedFiles = changeList.submit(false);
++                changeList.setStatus(ChangelistStatus.SUBMITTED);
++
++                if (submittedFiles == null || submittedFiles.isEmpty()
++                        || submittedFiles.iterator().next().getOpStatus() == FileSpecOpStatus.ERROR) {
++                    throw new VCSOperationException(
++                            "Failed to submit changes to VCS repository. See application logs for more details.",
++                            new VCSOperationException(submittedFiles.iterator().next().getStatusMessage()));
++                } else {
++                    IFileSpec fileSpec = submittedFiles.iterator().next();
++                    int endRevision = fileSpec.getEndRevision();
++                    if (endRevision == -1) {
++                        throw new VCSOperationException(new VCSOperationException(submittedFiles.iterator().next().getStatusMessage()));
++                    } else {
++                        return Long.valueOf(endRevision);
++                    }
++                }
++            } catch (P4JavaException e) {
++                throw new VCSOperationException(e);
++            }
++        }
++    }
++
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(revision )
+@@ -1,8 +1,11 @@
+ package com.jbehaveforjira.plugin.ao;
+ 
+ import com.atlassian.activeobjects.external.ActiveObjects;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.dto.story.StoryDTOUtils;
+ import net.java.ao.Query;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ 
+ import static com.google.common.base.Preconditions.checkNotNull;
+@@ -33,17 +36,93 @@
+         return newArrayList(ao.find(JBehaveStory.class));
+     }
+ 
+-    public List<JBehaveStory> findByProjectAndIssueKey(String projectKey, String issueKey) {
++    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
++
++        JBehaveStory foundStory = this.findStoredStory(projectKey, issueKey);
++        if (foundStory != null) {
++            return StoryDTOUtils.toDTO(foundStory);
++        } else {
++            return null;
++        }
++    }
++
++    public JBehaveStory findStoredStory(String projectKey, String issueKey) {
++
+         String[] params = new String[]{projectKey, issueKey};
+         Query query = Query.select().where("PROJECT_KEY = ? AND ISSUE_KEY = ?", params);
+-        JBehaveStory[] result = ao.find(JBehaveStory.class, query);
+-        return newArrayList(result);
++        JBehaveStory[] foundStories = ao.find(JBehaveStory.class, query);
++
++        if (foundStories == null || foundStories.length == 0) {
++            return null;
++        } else if (foundStories.length > 1) {
++            throw new RuntimeException("More than one story was found for issue key - " + issueKey);
++        } else {
++            JBehaveStory story = foundStories[0];
++            return story;
+-    }
++        }
++    }
+ 
+-    public List<JBehaveStory> findByProjectKey(String projectKey) {
++    public void save(JiraStory storyToSave) {
++
++        JBehaveStory storedStory = findStoredStory(storyToSave.getProjectKey(), storyToSave.getIssueKey());
++        if (storedStory == null) {
++            storedStory = ao.create(JBehaveStory.class);
++        } else if (storedStory.getVersion() >= storyToSave.getVersion()) {
++            // check we are not trying to overwrite some else's modification
++            throw new RuntimeException("Story for issue - " + storyToSave.getIssueKey() + " has been modified by another user (" + storedStory.getLastEditedBy() + ").");
++        }
++
++        doSave(storyToSave, storedStory);
++    }
++
++    public void saveNoVersionCheck(JiraStory storyToSave) {
++
++        JBehaveStory storedStory = findStoredStory(storyToSave.getProjectKey(), storyToSave.getIssueKey());
++        if (storedStory == null) {
++            storedStory = ao.create(JBehaveStory.class);
++        }
++
++        doSave(storyToSave, storedStory);
++    }
++
++    private void doSave(JiraStory storyToSave, JBehaveStory storedStory) {
++
++        storedStory.setVersion(storyToSave.getVersion());
++        storedStory.setIssueKey(storyToSave.getIssueKey());
++        storedStory.setProjectKey(storyToSave.getProjectKey());
++        storedStory.setAsString(storyToSave.getAsString());
++        storedStory.setLastEditedBy(storyToSave.getLastEditedBy());
++        storedStory.save();
++    }
++
++    public JiraStory delete(String projectKey, String issueKey) {
++        JBehaveStory story = findStoredStory(projectKey, issueKey);
++        if (story != null) {
++            // delete story reports
++            JBehaveStoryReport[] storyTestReports = story.getStoryReports();
++            for (JBehaveStoryReport storyTestReport : storyTestReports) {
++                ao.delete(storyTestReport);
++            }
++
++            ao.delete(story);
++            JiraStory deletedStory = StoryDTOUtils.toDTO(story);
++            return deletedStory;
++        }
++        return null;
++    }
++
++    public List<JiraStory> findByProjectKey(String projectKey) {
+         String[] params = new String[]{projectKey};
+         Query query = Query.select().where("PROJECT_KEY = ?", params);
+         JBehaveStory[] result = ao.find(JBehaveStory.class, query);
+-        return newArrayList(result);
++        ArrayList<JBehaveStory> foundStories = newArrayList(result);
++        List<JiraStory> storyDTOs = new ArrayList<JiraStory>(foundStories.size());
++        for (JBehaveStory story : foundStories) {
++            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
++            storyDTOs.add(storyDTO);
+-    }
++        }
++        return storyDTOs;
++    }
++
++
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java	(revision )
+@@ -1,17 +1,38 @@
+ package com.jbehaveforjira.plugin.contextproviders;
+ 
+ import com.atlassian.crowd.embedded.api.User;
++import com.atlassian.jira.issue.Issue;
+ import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
+ import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
++import com.atlassian.jira.project.Project;
++import com.jbehaveforjira.plugin.service.StoryService;
+ 
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+ public class StoryPanelContextProvider extends AbstractJiraContextProvider {
+ 
++    private final StoryService storyService;
++
++    public StoryPanelContextProvider(StoryService storyService) {
++        this.storyService = storyService;
++    }
++
+     @Override
+     public Map getContextMap(User user, JiraHelper jiraHelper) {
++
+         Map contextMap = new HashMap();
++
++        Issue currentIssue = (Issue) jiraHelper.getContextParams().get("issue");
++        Project currentProject = (Project) jiraHelper.getContextParams().get("project");
++        boolean display;
++        if (currentIssue != null && currentProject != null) {
++            display = storyService.issueHasStory(currentProject.getKey(), currentIssue.getKey());
++        } else {
++            display = false;
++        }
++        contextMap.put("display", display);
++
+         return contextMap;
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/jbehave_preferences.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/jbehave_preferences.vm	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/jbehave_preferences.vm	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/story_panel.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/story_panel.vm	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/story_panel.vm	(revision )
+@@ -1,3 +1,6 @@
++$webResourceManager.requireResource("com.jbehaveforjira.plugin:view-issue-page-3rd-party-resources")
++$webResourceManager.requireResource("com.jbehaveforjira.plugin:view-issue-page-resources")
++$webResourceManager.requireResource("com.jbehaveforjira.plugin:update-jbehave-preferences-web-resource")
+ <div id="story-panel"><!--DEFAULT content!--></div>
+ 
+ ##<div id="story-panel">
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/JiraStory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/JiraStory.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
+@@ -1,5 +1,6 @@
+ package com.jbehaveforjira.plugin.dto.story;
+ 
++
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+ import javax.xml.bind.annotation.XmlRootElement;
+@@ -14,8 +15,12 @@
+ 
+     private Long version;
+ 
++    private Long vcsVersion;
++
+     private String asString;
+ 
++    private String lastEditedBy;
++
+     public String getIssueKey() {
+         return issueKey;
+     }
+@@ -40,11 +45,39 @@
+         this.version = version;
+     }
+ 
++    public Long getVcsVersion() {
++        return vcsVersion;
++    }
++
++    public void setVcsVersion(Long vcsVersion) {
++        this.vcsVersion = vcsVersion;
++    }
++
+     public String getAsString() {
+         return asString;
+     }
+ 
+     public void setAsString(String asString) {
+         this.asString = asString;
++    }
++
++    public String getLastEditedBy() {
++        return lastEditedBy;
++    }
++
++    public void setLastEditedBy(String lastEditedBy) {
++        this.lastEditedBy = lastEditedBy;
++    }
++
++    @Override
++    public String toString() {
++        return "JiraStory{" +
++                "projectKey='" + projectKey + '\'' +
++                ", issueKey='" + issueKey + '\'' +
++                ", version=" + version +
++                ", vcsVersion=" + vcsVersion +
++                ", asString='" + asString + '\'' +
++                ", lastEditedBy='" + lastEditedBy + '\'' +
++                '}';
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingsDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingsDTO.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingsDTO.java	(revision )
+@@ -0,0 +1,32 @@
++package com.jbehaveforjira.plugin.dto.preferences;
++
++import javax.xml.bind.annotation.XmlAccessType;
++import javax.xml.bind.annotation.XmlAccessorType;
++import javax.xml.bind.annotation.XmlRootElement;
++import java.util.ArrayList;
++import java.util.List;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class SettingsDTO {
++
++    private final List<SettingDTO> settings;
++
++    protected SettingsDTO() {
++        settings = new ArrayList<SettingDTO>();
++    }
++
++    public SettingsDTO(List<SettingDTO> settings) {
++        this.settings = settings;
++    }
++
++    public List<SettingDTO> getSettings() {
++        return settings;
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/SettingsManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/SettingsManager.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/SettingsManager.java	(revision )
+@@ -0,0 +1,145 @@
++package com.jbehaveforjira.plugin.config;
++
++import com.atlassian.sal.api.pluginsettings.PluginSettings;
++import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++
++import java.util.Map;
++import java.util.concurrent.ConcurrentHashMap;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++public class SettingsManager {
++
++    private static final String KEY_PREFIX = "com.jbehaveforjira.plugin:";
++
++    private final Logger log = LoggerFactory.getLogger(this.getClass());
++
++    private final PluginSettings pluginSettings;
++
++//    public static final Setting<EnabledProjects> ENABLED_PROJECTS = new Setting(SettingKey.ENABLED_PROJECTS, new EnabledProjects());
++
++    private Map<String, Setting> allSettings;
++
++//    public static final Setting<Boolean> PERFORCE_ENABLED = new Setting(SettingKey.PERFORCE_ENABLED, Boolean.FALSE) {
++
++//        @Override
++//        public void fromString(String valueAsString) {
++//            super.value = Boolean.valueOf(valueAsString);
++//        }
++//    };
++//    public static final Setting<PerforceMappings> INTEGRATION_PERFORCE = new Setting<PerforceMappings>(SettingKey.INTEGRATION_PERFORCE, new PerforceMappings()) {
++
++//        @Override
++//        public void fromString(String valueAsString) {
++//            ObjectMapper objectMapper = new ObjectMapper();
++//            objectMapper.setVisibilityChecker(objectMapper.getVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
++////            objectMapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
++//
++//            try {
++////                CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, PerforceMapping.class);
++////                Object readValue = objectMapper.readValue(valueAsString, type);
++//                Object readValue = objectMapper.readValue(valueAsString, PerforceMappings.class);
++////                Object readValue = objectMapper.readValue(valueAsString, this.value.getClass());
++////                this.value = (List<PerforceMapping>) readValue;
++//                this.value = (PerforceMappings) readValue;
++//            } catch (IOException e) {
++//                throw new RuntimeException("Exception occurred while attempting to unmarshall plugin setting for key - " + this.key(), e);
++//            }
++//        }
++//    };
++
++    public SettingsManager(PluginSettingsFactory settingsFactory) {
++
++        this.pluginSettings = settingsFactory.createGlobalSettings();
++
++        allSettings = new ConcurrentHashMap<String, Setting>();
++
++//        initSetting(PERFORCE_ENABLED);
++//        initSetting(INTEGRATION_PERFORCE);
++    }
++
++//    private void initSetting(Setting<?> setting) {
++//
++//        allSettings.add(setting);
++//
++//        String fullKey = KEY_PREFIX + setting.key();
++//
++//        Object value = pluginSettings.get(fullKey);
++//        if (value != null) {
++//            String asString = (String) value;
++//            try {
++//                setting.fromString(asString);
++//            } catch (SettingParseException e) {
++//                log.error("Error occurred while trying to initialize plugin setting for key - " + fullKey
++//                        + ". The plugin might not function as expected as the result. See application logs for more details.", e);
++//            }
++//
++//        }
++//    }
++
++    public Map<String, Setting> allSettings() {
++
++        return allSettings;
++    }
++
++//    public void persistSettings() {
++//        this.storeSetting(PERFORCE_ENABLED);
++//        this.storeSetting(INTEGRATION_PERFORCE);
++//    }
++
++    public void storeSetting(Setting setting) {
++        String asString = setting.asString();
++        String fullKey = KEY_PREFIX + setting.key();
++        pluginSettings.put(fullKey, asString);
++        allSettings.put(setting.key(), setting);
++    }
++
++//    public void reloadSettings() {
++//        reloadSetting(PERFORCE_ENABLED);
++//        reloadSetting(INTEGRATION_PERFORCE);
++//    }
++
++//    private void reloadSetting(Setting setting) {
++//        Object value = pluginSettings.get(setting.key().fullKey());
++//        if (value != null) {
++//            String asString = (String) value;
++//            setting.fromString(asString);
++//        }
++//    }
++
++    public Setting findForKey(String settingKey) {
++
++        Setting setting = allSettings.get(settingKey);
++        return setting;
++    }
++
++    public void loadSetting(Setting setting) {
++        String fullKey = KEY_PREFIX + setting.key();
++        String asString = (String) pluginSettings.get(fullKey);
++        if (asString != null) {
++            try {
++                setting.fromString(asString);
++            } catch (SettingParseException e) {
++                log.error("Error occurred while trying to load plugin setting for key - " + fullKey
++                        + ". The plugin might not function as expected as the result. See application logs for more details.", e);
++            }
++        }
++        allSettings.put(setting.key(), setting);
++    }
++
++    public boolean deleteForKey(String settingKey) {
++        String fullKey = KEY_PREFIX + settingKey;
++        String removed = (String)pluginSettings.remove(fullKey);
++        if (removed != null) {
++            return true;
++        } else {
++            return false;
++        }
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReportDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReportDao.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReportDao.java	(revision )
+@@ -20,7 +20,8 @@
+     }
+ 
+     public JBehaveStoryReport createStoryHtmlReport() {
+-        return ao.create(JBehaveStoryReport.class);
++        JBehaveStoryReport storyReport = ao.create(JBehaveStoryReport.class);
++        return storyReport;
+     }
+ 
+     public void delete(JBehaveStoryReport storyHtmlReport) {
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/admin.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/admin.vm	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/admin.vm	(revision )
+@@ -0,0 +1,39 @@
++##$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
++$webResourceManager.requireResource("com.atlassian.auiplugin:aui-messages")
++$webResourceManager.requireResource("com.jbehaveforjira.plugin:admin-resources")
++<html>
++<head>
++    <title>XProduct Admin</title>
++    <meta name="decorator" content="atl.admin">
++</head>
++<body>
++<div><h2>JBehave for Jira plugin settings</h2></div>
++<div id="settings-msg-bar"></div>
++<div class="aui-group">
++    <div class="aui-item" style="width: 20%;">
++        <select id="settingSelector" size="3" style="width: 100%; height: 100%">
++            #foreach($settingKey in $settingKeys)
++                <option value="${settingKey}">${settingKey}</option>
++            #end
++        </select>
++    </div>
++    <div class="aui-item">
++        <div>
++            <textarea id="setingValue" rows="20" style="width: 100%">Default value</textarea>
++        </div>
++##        <div class="field-group">
++##            <button id="updateSetting" value="Save" class="button">Save</button>
++##        </div>
++    </div>
++</div>
++<div class="aui-group">
++    <div class="aui-item" style="width: 20%;"></div>
++    <div class="aui-item" >
++        <div class="field-group">
++            <button id="updateSetting" value="Save" class="button">Update</button>
++        </div>
++    </div>
++##    <div class="aui-item" style="width:100%; border: 1px solid greenyellow">TEST</div>
++</div>
++</body>
++</html>
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java	(revision )
+@@ -0,0 +1,69 @@
++package com.jbehaveforjira.plugin.dto.rest;
++
++import org.apache.commons.lang3.exception.ExceptionUtils;
++
++import javax.xml.bind.annotation.XmlAccessType;
++import javax.xml.bind.annotation.XmlAccessorType;
++import javax.xml.bind.annotation.XmlRootElement;
++
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class RestResponse<T> {
++
++    private final ResponseKind kind;
++
++    private final String message;
++
++    private final T payload;
++
++    protected RestResponse() {
++        // for reflection/framework purposes only
++        kind = null;
++        message = null;
++        payload = null;
++    }
++
++    public RestResponse(ResponseKind kind, String message) {
++        this(kind, message, null);
++    }
++
++    public RestResponse(ResponseKind kind, T payload) {
++        this(kind, null, payload);
++    }
++
++    public RestResponse(ResponseKind kind, String message, T payload) {
++        this.kind = kind;
++        this.message = message;
++        this.payload = payload;
++    }
++
++    public ResponseKind getKind() {
++        return kind;
++    }
++
++    public String getMessage() {
++        return message;
++    }
++
++    public T getPayload() {
++        return payload;
++    }
++
++    public static <T> RestResponse<T> success() {
++        return new RestResponse(ResponseKind.success, null, null);
++    }
++
++    public static <T> RestResponse<T> success(T payload) {
++        return new RestResponse(ResponseKind.success, null, payload);
++    }
++
++    public static <T> RestResponse<T> failure(String errorMsg) {
++        return new RestResponse(ResponseKind.failure, errorMsg, null);
++    }
++
++    public static <T> RestResponse<T> failure(Throwable throwable) {
++        String stackTrace = ExceptionUtils.getStackTrace(throwable);
++        return new RestResponse(ResponseKind.failure, throwable.getMessage(), stackTrace);
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingDTO.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingDTO.java	(revision )
+@@ -0,0 +1,47 @@
++package com.jbehaveforjira.plugin.dto.preferences;
++
++import com.jbehaveforjira.plugin.config.Setting;
++
++import javax.xml.bind.annotation.XmlAccessType;
++import javax.xml.bind.annotation.XmlAccessorType;
++import javax.xml.bind.annotation.XmlRootElement;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class SettingDTO {
++
++    private String key;
++
++    private String value;
++
++    protected SettingDTO() {
++        // for reflection usage by frameworks only
++    }
++
++    public SettingDTO(String key, String value) {
++        this.key = key;
++        this.value = value;
++    }
++
++    public String getKey() {
++        return key;
++    }
++
++    public String getValue() {
++        return value;
++    }
++
++    public static SettingDTO fromSetting(Setting setting) {
++        SettingDTO settingDTO = new SettingDTO();
++        settingDTO.key = setting.key();
++        settingDTO.value = setting.asString();
++        return settingDTO;
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/VCSOperationException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/VCSOperationException.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/VCSOperationException.java	(revision )
+@@ -0,0 +1,21 @@
++package com.jbehaveforjira.plugin.integration;
++
++/**
++ */
++public class VCSOperationException extends RuntimeException {
++
++    public static final String DEFAULT_ERROR_MSG = "An error occurred while attempting to perform VCS operation. See application logs for details.";
++
++    public VCSOperationException(String message) {
++        super(message);
++    }
++
++    public VCSOperationException(Throwable cause) {
++        super(DEFAULT_ERROR_MSG, cause);
++    }
++
++    public VCSOperationException(String message, Throwable cause) {
++        super(message, cause);
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/atlassian-plugin.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/atlassian-plugin.xml	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/atlassian-plugin.xml	(revision )
+@@ -14,16 +14,15 @@
+         <param name="plugin-banner">images/marketing/banner.jpg</param>
+         <param name="vendor-icon">images/marketing/vendor_icon.jpg</param>
+         <param name="vendor-logo">images/marketing/vendor_logo.jpg</param>
+-        <param name="configure.url"><![CDATA[/secure/ConfigureJBehaveForJira!default.jspa]]></param>
+-        <!--<param name="configure.url">/plugins/servlet/helloworld</param>-->
+-        <!--<param name="configure.url">/plugins/servlet/timesheet</param>-->
++        <param name="configure.url">/plugins/servlet/jbehaveforjira/admin</param>
+     </plugin-info>
+ 
+     <!-- ==================================================================================================== -->
+     <!--3rd party scripts-->
+     <!-- ==================================================================================================== -->
+-    <web-resource name="View Issue Page 3rd Party Resources" key="jbehave-for-jira-view-issue-page-3rd-party-resources">
+-        <context>jira.view.issue</context>
++    <web-resource name="View Issue Page 3rd Party Resources" key="view-issue-page-3rd-party-resources">
++        <!--<context>jira.view.issue</context>-->
++        <!--<context>issuePage3rdPartyResources</context>-->
+         <!--codemirror core-->
+         <resource type="download" name="codemirror.js" location="/3rdparty/codemirror-4.3/lib/codemirror.js"/>
+         <resource type="download" name="codemirror.css" location="/3rdparty/codemirror-4.3/lib/codemirror.css"/>
+@@ -31,10 +30,12 @@
+         <resource type="download" name="jbehave.js" location="/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js"/>
+         <!--codemirror hints-->
+         <resource type="download" name="show-hint.js" location="/3rdparty/codemirror-4.3/addon/hint/show-hint.js"/>
+-        <resource type="download" name="jbehave-hint.js" location="/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js"/>
++        <resource type="download" name="jbehave-hint.js"
++                  location="/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js"/>
+         <resource type="download" name="show-hint.css" location="/3rdparty/codemirror-4.3/addon/hint/show-hint.css"/>
+         <!--other codemirror plugins-->
+-        <resource type="download" name="fullscreen.css" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.css"/>
++        <resource type="download" name="fullscreen.css"
++                  location="/3rdparty/codemirror-4.3/addon/display/fullscreen.css"/>
+         <resource type="download" name="fullscreen.js" location="/3rdparty/codemirror-4.3/addon/display/fullscreen.js"/>
+         <!--<resource type="download" name="placeholder.js" location="/3rdparty/codemirror-4.3/addon/display/placeholder.js"/>-->
+         <resource type="download" name="comment.js" location="/3rdparty/codemirror-4.3/addon/comment/comment.js"/>
+@@ -47,7 +48,9 @@
+ 
+     </web-resource>
+     <!--Custom javascript and css-->
+-    <web-resource name="View Issue Page Resources" key="jbehave-for-jira-view-issue-page-resources">
++    <web-resource name="View Issue Page Resources" key="view-issue-page-resources">
++        <!--<context>jira.view.issue</context>-->
++        <!--<context>issuePageResources</context>-->
+         <dependency>com.atlassian.auiplugin:ajs</dependency>
+         <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
+         <transformation extension="soy">
+@@ -59,7 +62,8 @@
+         <resource type="download" name="StoryController.js" location="/js/StoryController.js"/>
+         <!--soy-->
+         <resource type="download" name="TemplatesShowStory.soy.js" location="/soy/TemplatesShowStory.soy"/>
+-        <resource type="download" name="TemplatesShowStoryReports.soy.js" location="/soy/TemplatesShowStoryReports.soy"/>
++        <resource type="download" name="TemplatesShowStoryReports.soy.js"
++                  location="/soy/TemplatesShowStoryReports.soy"/>
+         <!-- CSS -->
+         <resource type="download" name="story-report.css" location="css/story-report.css">
+             <param name="content-type" value="text/css"/>
+@@ -71,22 +75,16 @@
+         <resource type="download" name="images/" location="images">
+             <!--<param name="content-type" value="image/gif"/>-->
+         </resource>
+-        <context>jira.view.issue</context>
+     </web-resource>
+-
+-    <web-resource key="configuration-page-resources" name="JBehave for Jira Plugin Configuration JavaScript/CSS Resources">
+-        <dependency>com.atlassian.auiplugin:aui-sidebar</dependency>
+-        <!-- CSS -->
+-        <resource type="download" name="config-page.css" location="css/config-page.css">
+-            <param name="content-type" value="text/css"/>
+-        </resource>
+-        <resource type="download" name="Config.js" location="js/Config.js">
+-            <param name="content-type" value="text/javascript"/>
+-        </resource>
+-        <!--<resource type="download" name="plugin_logo.png" location="images/plugin_logo.png">-->
+-            <!--<param name="content-type" value="binary/css"/>-->
+-        <!--</resource>-->
+-        <resource type="download" name="images/" location="images/marketing/"/>
++    <web-resource name="Admin Web Resources" key="admin-resources">
++        <!--<context>adminPageResources</context>-->
++        <transformation extension="soy">
++            <transformer key="soyTransformer"/>
++        </transformation>
++        <dependency>com.atlassian.auiplugin:ajs</dependency>
++        <dependency>com.atlassian.auiplugin:aui-messages</dependency>
++        <resource type="download" name="Admin.js" location="/js/Admin.js"/>
++        <resource type="download" name="TemplatesAdminSettings.soy.js" location="/soy/TemplatesAdminSettings.soy"/>
+     </web-resource>
+ 
+     <!-- ==================================================================================================== -->
+@@ -108,39 +106,96 @@
+     <web-section key="jbehave-links-section" name="JBehave Story"
+                  location="opsbar-operations" weight="20">
+         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
++        <conditions type="and">
++            <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
++        </conditions>
+     </web-section>
++    <web-item name="Add JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
++              key="viewIssuePage.webItem.createStory.key"
++              section="jbehave-links-section" weight="10">
++        <description key="viewIssuePage.webItem.createStory.description">Add Story Web Item</description>
++        <conditions type="and">
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
++                <param name="permission" value="edit"/>
++            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition" invert="true">
++            </condition>
++        </conditions>
++        <label key="viewIssuePage.webItem.createStory.label"/>
++        <link linkId="add-jbehave-story-link">/secure/AddDeleteStoryAction!add.jspa?id=${issueId}</link>
++        <styleClass>add-new-story-button</styleClass>
++    </web-item>
++    <web-item name="Delete JBehave Story" i18n-name-key="viewIssuePage.webItem.deleteStory.name"
++              key="viewIssuePage.webItem.deleteStory.key"
++              section="jbehave-links-section" weight="20">
++        <description key="viewIssuePage.webItem.deleteStory.description">Delete Story Web Item</description>
++        <conditions type="and">
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
++                <param name="permission" value="edit"/>
++            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
++            </condition>
++        </conditions>
++        <label key="viewIssuePage.webItem.deleteStory.label"/>
++        <link linkId="add-jbehave-story-link">/secure/AddDeleteStoryAction!delete.jspa?id=${issueId}</link>
++        <styleClass>delete-story-button</styleClass>
++    </web-item>
++    <webwork1 key="add-jbehave-story-webwork-module" name="Add JBehave Story Webwork Module"
++              i18n-name-key="scheduler-webwork-module.name">
++        <description key="scheduler-webwork-module.description">The Add JBehve Story Module Plugin</description>
++        <actions>
++            <action name="com.jbehaveforjira.plugin.actions.AddDeleteStoryAction"
++                    alias="AddDeleteStoryAction">
++                <view name="input">/velocity/blank.vm</view>
++                <view name="error">/velocity/blank.vm</view>
++            </action>
++        </actions>
++    </webwork1>
+     <!-- ==================================================================================================== -->
+     <!--JBehave Preferences-->
+     <!-- ==================================================================================================== -->
+-    <web-item name="Update JBehave Preferences" i18n-name-key="userPreferences.title" key="update-jbehave-preferences-web-item"
+-              section="jbehave-links-section" weight="10">
++    <web-item name="Update JBehave Preferences" i18n-name-key="userPreferences.title"
++              key="update-jbehave-preferences-web-item"
++              section="jbehave-links-section" weight="30">
+         <description key="userPreferencesLink.description">Update JBehave Preferences</description>
+         <label key="userPreferences.title"/>
+-        <link linkId="update-jbehave-preferences-web-item-link">/secure/UpdateJBehavePreferencesAction!default.jspa?id=${issueId}</link>
++        <link linkId="update-jbehave-preferences-web-item-link">
++            /secure/UpdateJBehavePreferencesAction!default.jspa?id=${issueId}
++        </link>
+         <styleClass>issueaction-update-jbehave-preferences</styleClass>
++        <conditions type="and">
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
++                <param name="permission" value="edit"/>
++            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
++            </condition>
++            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++        </conditions>
+     </web-item>
+     <webwork1 key="update-jbehave-preferences-webwork-module" name="Update JBehave Preferences Webwork Module"
+               i18n-name-key="scheduler-webwork-module.name">
+         <description key="scheduler-webwork-module.description">The Scheduler Webwork Module Plugin</description>
+         <actions>
+-            <action name="com.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction" alias="UpdateJBehavePreferencesAction">
++            <action name="com.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction"
++                    alias="UpdateJBehavePreferencesAction">
+                 <view name="input">/velocity/jbehave_preferences.vm</view>
+                 <view name="error">/velocity/jbehave_preferences.vm</view>
+             </action>
+-            <action name="com.jbehaveforjira.plugin.actions.ConfigurePluginAction" alias="ConfigureJBehaveForJira" roles-required="admin">
+-                <view name="input">/velocity/plugin_config.vm</view>
+-                <view name="success">/velocity/plugin_config.vm</view>
+-                <view name="blank">/velocity/blank.vm</view>
+-            </action>
+         </actions>
+     </webwork1>
+     <web-resource name="Update JBehave Preferences Web Resource"
+-                  i18n-name-key="update-jbehave-preferences-web-resource.name" key="update-jbehave-preferences-web-resource">
+-        <description key="update-jbehave-preferences-web-resource.description">Update JBehave Preferences Web Resource Plugin</description>
++                  i18n-name-key="update-jbehave-preferences-web-resource.name"
++                  key="update-jbehave-preferences-web-resource">
++        <description key="update-jbehave-preferences-web-resource.description">Update JBehave Preferences Web Resource
++            Plugin
++        </description>
+         <resource name="UpdateJBehavePreferences.js" type="download" location="js/UpdateJBehavePreferences.js">
+             <param name="content-type" value="text/javascript"/>
+         </resource>
+-        <context>atl.general</context>
++        <!--<context>atl.general</context>-->
+     </web-resource>
+     <!-- ==================================================================================================== -->
+     <!--Issue page - Story panel-->
+@@ -152,7 +207,17 @@
+         <context-provider class="com.jbehaveforjira.plugin.contextproviders.StoryPanelContextProvider"/>
+         <resource name="view" type="velocity" location="/velocity/story_panel.vm"/>
+         <label key="viewIssuePage.storyPanel.label"/>
+-        <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
++        <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++        <conditions type="and">
++            <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
++                <param name="permission" value="edit"/>
++            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
++            </condition>
++            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++        </conditions>
+     </web-panel>
+     <!--Issue page - Story reports panel-->
+     <web-panel name="Story Reports Panel" i18n-name-key="viewIssuePage.storyReportsPanel.name"
+@@ -162,7 +227,17 @@
+         <context-provider class="com.jbehaveforjira.plugin.contextproviders.StoryReportsPanelContextProvider"/>
+         <resource name="view" type="velocity" location="/velocity/story_reports_panel.vm"/>
+         <label key="viewIssuePage.storyReportsPanel.label"/>
+-        <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
++        <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++        <conditions type="and">
++            <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
++                <param name="permission" value="edit"/>
++            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
++            </condition>
++            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++        </conditions>
+     </web-panel>
+     <!-- ==================================================================================================== -->
+     <!--Custom customfields-->
+@@ -187,11 +262,22 @@
+     </component>
+     <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
+     <component-import key="pluginLicenseManager" interface="com.atlassian.upm.api.license.PluginLicenseManager"/>
++    <component-import key="pluginSettingsFactory"
++                      interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
++
++    <component-import key="templateRenderer" interface="com.atlassian.templaterenderer.TemplateRenderer"/>
++    <component-import key="loginUriProvider" interface="com.atlassian.sal.api.auth.LoginUriProvider"/>
++    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager"/>
++    <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver"/>
++    <servlet key="admin-servlet" class="com.jbehaveforjira.plugin.config.AdminServlet">
++        <url-pattern>/jbehaveforjira/admin</url-pattern>
++    </servlet>
+     <!-- ==================================================================================================== -->
+     <!-- Event listenders -->
+     <!-- ==================================================================================================== -->
+     <component key="eventListener" class="com.jbehaveforjira.plugin.listeners.IssueDeletedEventListener">
+-            <description>Class that processes the incoming JIRA issue events.</description>
++            
++        <description>Class that processes the incoming JIRA issue events.</description>
+     </component>
+     <!-- ==================================================================================================== -->
+     <!-- Custom components -->
+@@ -202,13 +288,15 @@
+                class="com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao"/>
+     <component key="story-step-doc-dao" name="Story Step Doc DAO"
+                class="com.jbehaveforjira.plugin.ao.JBehaveStepDocDao"/>
+-    Services
+-    <component key="story-service" name="Story Service"
+-               class="com.jbehaveforjira.plugin.service.StoryServiceImpl"/>
++    <!--Services-->
++    <component key="story-service" name="Story Service" class="com.jbehaveforjira.plugin.service.JiraStoryService"/>
+     <component key="story-report-service" name="Story Report Service"
+-               class="com.jbehaveforjira.plugin.service.StoryReportServiceImpl"/>
++               class="com.jbehaveforjira.plugin.service.JiraStoryReportService"/>
+     <component key="step-doc-service" name="Step Doc Service"
+-               class="com.jbehaveforjira.plugin.service.StepDocsServiceImpl"/>
++               class="com.jbehaveforjira.plugin.service.JiraStepDocsService"/>
++    <component key="perforce-service" name="Perforce Service"
++               class="com.jbehaveforjira.plugin.integration.perforce.PerforceService"/>
++    <component key="settings-manager" name="Settings Manager" class="com.jbehaveforjira.plugin.config.SettingsManager"/>
+     <!-- ==================================================================================================== -->
+     <!--Active Objects-->
+     <!-- ==================================================================================================== -->
+@@ -218,16 +306,4 @@
+         <entity>com.jbehaveforjira.plugin.ao.JBehaveStoryReport</entity>
+         <entity>com.jbehaveforjira.plugin.ao.JBehaveStepDoc</entity>
+     </ao>
+-    <!-- ==================================================================================================== -->
+-    <!--Plugin configuration-->
+-    <!-- ==================================================================================================== -->
+-    <!--<webwork1 key="jbehaveforjira-plugin-webwork" name="JBehave For Jira Plugin Actions" class="java.lang.Object">-->
+-        <!--<actions>-->
+-            <!--<action name="com.jbehaveforjira.plugin.actions.ConfigureJBehaveForJira" alias="ConfigureJBehaveForJira" roles-required="admin">-->
+-                <!--<view name="input">/velocity/plugin_config.vm</view>-->
+-                <!--<view name="success">/velocity/plugin_config.vm</view>-->
+-                <!--<view name="blank">/velocity/plugin_config.vm</view>-->
+-            <!--</action>-->
+-        <!--</actions>-->
+-    <!--</webwork1>-->
+ </atlassian-plugin>
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryReportServiceImpl.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryReportService.java	(revision )
+@@ -13,13 +13,13 @@
+ import java.util.Collections;
+ import java.util.List;
+ 
+-public class StoryReportServiceImpl implements StoryReportService {
++public class JiraStoryReportService implements StoryReportService {
+ 
+     private JBehaveStoryReportDao storyReportDao;
+ 
+     private JBehaveStoryDao storyDao;
+ 
+-    public StoryReportServiceImpl(IssueService is,
++    public JiraStoryReportService(IssueService is,
+                                   JiraAuthenticationContext authenticationContext,
+                                   JBehaveStoryDao storyDao,
+                                   JBehaveStoryReportDao storyReportDao) {
+@@ -29,18 +29,15 @@
+ 
+     public void addStoryTestReport(String projectKey, String issueKey, JiraStoryHtml storyReportDTO) {
+ 
+-        List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+-        if (byIssueKey.isEmpty()) {
++        JBehaveStory jiraStory = storyDao.findStoredStory(projectKey, issueKey);
++        if (jiraStory == null) {
+             throw new IllegalArgumentException("Failed to set story test status, " +
+                     "issue with key " + issueKey + " for project key - " + projectKey + " could not be found.");
+-        } else if (byIssueKey.size() > 1) {
+-            throw new RuntimeException("More than one story was found for issue key - " + issueKey);
+         } else {
+ 
+-            JBehaveStory story = byIssueKey.get(0);
++            JBehaveStoryReport[] storyHtmlReports = jiraStory.getStoryReports();
+ 
+             // first we delete any storyReport that exists for the same environment as in the received reportDTO
+-            JBehaveStoryReport[] storyHtmlReports = story.getStoryReports();
+             String reportedEnvironment = storyReportDTO.getEnvironment();
+             if (storyHtmlReports.length > 0) {
+                 // find one for the reportedEnvironment if exists and delete it since it will be replaced by the one received
+@@ -54,7 +51,7 @@
+             }
+ 
+             JBehaveStoryReport storyHtmlReport = storyReportDao.createStoryHtmlReport();
+-            storyHtmlReport.setStory(story);
++            storyHtmlReport.setStory(jiraStory);
+             StoryReportDTOUtils.fromDTOToModel(storyReportDTO, storyHtmlReport);
+             storyHtmlReport.save();
+         }
+@@ -63,15 +60,12 @@
+ 
+     @Override
+     public List<JiraStoryHtml> findStoryReports(String projectKey, String issueKey) {
+-        List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+-        if (byIssueKey.isEmpty()) {
++
++        JBehaveStory jiraStory = storyDao.findStoredStory(projectKey, issueKey);
++        if (jiraStory == null) {
+             return Collections.emptyList();
+-        } else if (byIssueKey.size() > 1) {
+-            throw new RuntimeException("More than one story was found for issue key - " + issueKey);
+         } else {
+-            JBehaveStory story = byIssueKey.get(0);
+-
+-            JBehaveStoryReport[] storyTestReports = story.getStoryReports();
++            JBehaveStoryReport[] storyTestReports = jiraStory.getStoryReports();
+             if (storyTestReports.length == 0) {
+                 // createStoryReport a new report
+                 return Collections.emptyList();
+@@ -89,15 +83,12 @@
+     @Override
+     public void deleteForIssue(String projectKey, String issueKey) {
+ 
+-        List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+-        if (byIssueKey.isEmpty()) {
++        JBehaveStory jiraStory = storyDao.findStoredStory(projectKey, issueKey);
++        if (jiraStory == null) {
+             throw new IllegalArgumentException("Failed to set story test status, " +
+                     "issue with key " + issueKey + " for project key - " + projectKey + " could not be found.");
+-        } else if (byIssueKey.size() > 1) {
+-            throw new RuntimeException("More than one story was found for issue key - " + issueKey);
+         } else {
+-            JBehaveStory story = byIssueKey.get(0);
+-            JBehaveStoryReport[] storyTestReports = story.getStoryReports();
++            JBehaveStoryReport[] storyTestReports = jiraStory.getStoryReports();
+             if (storyTestReports.length != 0) {
+                 for (JBehaveStoryReport storyTestReport : storyTestReports) {
+                     storyReportDao.delete(storyTestReport);
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/soy/TemplatesShowStory.soy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/soy/TemplatesShowStory.soy	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/soy/TemplatesShowStory.soy	(revision )
+@@ -51,35 +51,26 @@
+ {/template}
+ 
+ /**
+- * Renders waiting message while the story is being saved.
++ * Renders save or cancel message bar content.
++ * @param username
+  */
+-{template .renderWaitingMessage}
+- <div>
+-    <div class="savingMsgDiv">Saving&nbsp;&nbsp;&nbsp;&nbsp;</div>
+-//    <div id="save-story-button-spinner" class="button-spinner"></div>
+-    <span class="aui-icon aui-icon-wait">Saving...</span>
++{template .renderStoryModifiedByAnotherUserMsg}
++<div id="storyEditedMsgContainer">
++    <span>Story has been modified in your VCS repository by user - {$username}. You must update it before you can make further changes to it. <span
++        class="edit-operation-link"><a href="#" onclick="storyController.buttonHandler.loadFromVCSHandler(event)">Update</a></span></span>
+ </div>
+ {/template}
+ 
+ /**
+- * Renders the save and cancel buttons.
++ * Renders waiting message while the story is being saved.
++ * @param message
+  */
+-{template .renderEditOperationsButtons}
+-    <div id="storyEditorOperations" class="save-options" tabindex="1"
+-        style="display: none;">
+-        <div class="field-tools">
+-            <a id="description-preview_link" class="fullscreen" href="#" title="preview"><span
+-                    class="aui-icon wiki-renderer-icon"></span></a>
+-            <a class="help-lnk" id="viewHelp" href="/jira/secure/WikiRendererHelpAction.jspa?section=texteffects"
+-               title="Get local help about wiki markup help" data-helplink="local"><span
+-                    class="aui-icon aui-icon-small aui-iconfont-help"></span></a>
+-        </div>
+-        <button class="aui-button" title="Press Alt+s to submit this form"
+-                onclick="alert('hello')"><span
+-                class="icon icon-save">Save</span></button>
+-        <button class="aui-button cancel" title="Press Alt+` to cancel"><span
+-                class="icon icon-cancel">Cancel</span></button>
++{template .renderWaitingMessage}
++ <div>
++    <div class="savingMsgDiv">{$message}</div>
++//    <div id="save-story-button-spinner" class="button-spinner"></div>
++    <span class="aui-icon aui-icon-wait">{$message}</span>
+-    </div>
++</div>
+ {/template}
+ 
+ /**
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision )
+@@ -4,21 +4,18 @@
+ import com.atlassian.jira.project.Project;
+ import com.atlassian.plugin.PluginParseException;
+ import com.atlassian.plugin.web.Condition;
+-import com.jbehaveforjira.plugin.ao.JBehaveStory;
+-import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+-import com.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+-import org.apache.commons.lang.Validate;
++import com.jbehaveforjira.plugin.service.StoryService;
+ 
+-import java.util.List;
+ import java.util.Map;
+ 
++@Deprecated
+ public class JiraIssueHasStoryReportsCondition implements Condition {
+ 
+-    private JBehaveStoryDao storyDao;
++    private StoryService storyService;
+ 
+-    public JiraIssueHasStoryReportsCondition(JBehaveStoryDao storyDao) {
++    public JiraIssueHasStoryReportsCondition(StoryService storyService) {
+ 
+-        this.storyDao = storyDao;
++        this.storyService = storyService;
+     }
+ 
+     @Override
+@@ -32,16 +29,6 @@
+         String projectKey = project.getKey();
+         Issue issue = (Issue) context.get("issue");
+         String isssueKey = issue.getKey();
+-        List<JBehaveStory> stories = storyDao.findByProjectAndIssueKey(projectKey, isssueKey);
+-
+-        if (stories.isEmpty()) {
+-            return false;
+-        } else {
+-            // check if there are reports
+-            Validate.isTrue(stories.size() == 1);
+-            JBehaveStory story = stories.get(0);
+-            JBehaveStoryReport[] storyHtmlReports = story.getStoryReports();
+-            return storyHtmlReports.length != 0;
+-        }
++        return storyService.issueHasStory(projectKey, isssueKey);
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/Admin.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/Admin.js	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/Admin.js	(revision )
+@@ -0,0 +1,135 @@
++AJS.$(function () {
++
++    console.log("loading Admin.js script");
++
++    // form the URL
++    var baseURL = contextPath + "/rest/jbehave-for-jira/1.0/settings";
++
++    AJS.$("#settingSelector").first().change(
++        function() {
++
++            var selectedSetting = AJS.$("#settingSelector").val();
++            var fullURL = baseURL + "/for-key?settingKey=" + selectedSetting;
++            //alert("selectedSetting = " + selectedSetting);
++
++            var successCallback = function (response, status, xhr) {
++                var jsonResponse = JSON.stringify(response, null, "\t");
++                console.debug("successCallback - json response:\n" + jsonResponse);
++                AJS.$("#settings-msg-bar").empty();
++
++                if (response.kind == "success") {
++                    var valueAsString = response.payload.value;
++                    var valuePretified = "";
++                    if (valueAsString != null) {
++                        var valueAsJson = JSON.parse(valueAsString);
++                        valuePretified = JSON.stringify(valueAsJson, null, "\t");
++                    }
++                    AJS.$("#setingValue").val(valuePretified);
++                } else {
++                    AJS.messages.error("#settings-msg-bar", {
++                        title: null,
++                        body: "Failed to fetch setting value. Server error - " + response.message,
++                        closeable: true
++                    });
++                }
++            };
++
++            var failureCallback = function (response, status, xhr) {
++                var jsonResponse = JSON.stringify(response, null, "\t");
++                console.debug("failureCallback - json response:\n" + response);
++                AJS.$("#settings-msg-bar").empty();
++                AJS.messages.error("#settings-msg-bar", {
++                    title: null,
++                    body: "Error occurred while communicating with the server! Server error - " + response.statusText,
++                    closeable: true
++                });
++            };
++
++            AJS.$.ajax({
++                type: "GET",
++                url: fullURL,
++                dataType: "json",
++                success: successCallback,
++                error: failureCallback
++            });
++        }
++    );
++
++    AJS.$("#updateSetting").first().click(
++        function (event) {
++
++            event.preventDefault();
++            var settingKey = AJS.$("#settingSelector").val();
++            var settingValue = AJS.$("#setingValue").val();
++
++            var fullURL = baseURL + "/update-setting?settingKey=" + settingKey;
++
++            var successCallback = function (response, status, xhr) {
++                var jsonResponse = JSON.stringify(response, null, "\t");
++                console.debug("setting update response:\n" + response);
++                AJS.$("#settings-msg-bar").empty();
++                if (response.kind == "success") {
++                    AJS.messages.success("#settings-msg-bar", {
++                        title: null,
++                        body: "Setting was updated successfully.",
++                        closeable: true
++                    });
++                    var valueAsString = response.payload.value;
++                    var valuePretified = "";
++                    if (valueAsString != null) {
++                        var valueAsJson = JSON.parse(valueAsString);
++                        valuePretified = JSON.stringify(valueAsJson, null, "\t");
++                    }
++                    AJS.$("#setingValue").val(valuePretified);
++                } else {
++                    response.msgPrefix = "Failed to update setting value. Server error - \"";
++                    response.msgSuffix = "\"";
++                    var errorMsgContent = execspec.admin.settings.renderErrorMsg(response);
++                    AJS.messages.error("#settings-msg-bar", {
++                        title: null,
++                        body: errorMsgContent,
++                        closeable: true
++                    });
++                }
++            };
++
++            var errorCallback = function (response, status, xhr) {
++                var jsonResponse = JSON.stringify(response, null, "\t");
++                console.debug("setting update response:\n" + response);
++                AJS.$("#settings-msg-bar").empty();
++                AJS.messages.error("#settings-msg-bar", {
++                    title: null,
++                    body: "Error occurred while communicating with the server! Server error - " + response.statusText,
++                    closeable: true
++                });
++            };
++
++            AJS.$.ajax({
++                type: "POST",
++                url: fullURL,
++                contentType: "text/plain; charset=utf-8",
++                success: successCallback,
++                error: errorCallback,
++                data: settingValue,
++                dataType: "json"
++                //dataType: "text/plain"
++            });
++        }
++    );
++
++
++    //// wait for the DOM (i.e., document "skeleton") to load. This likely isn&#39;t necessary for the current case,
++    //// but may be helpful for AJAX that provides secondary content.
++    //AJS.$(document).ready(function() {
++    //    // request the config information from the server
++    //    AJS.$.ajax({
++    //        url: url,
++    //        dataType: "json"
++    //    }).done(function(config) { // when the configuration is returned...
++    //        // ...populate the form.
++    //
++    //        AJS.$("#name").val(config.name);
++    //        AJS.$("#time").val(config.time);
++    //    });
++    //});
++});
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/css/show-story.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/css/show-story.css	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/css/show-story.css	(revision )
+@@ -265,4 +265,4 @@
+     background-position: right bottom;
+     width: 100%;
+     height: 100%;
+-}
++}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/blank.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/blank.vm	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/blank.vm	(revision )
+@@ -1,15 +1,1 @@
+-<html>
+-<head>
+-##    <title>$action.getText('timesheet.configuration.title')</title>
+-    <title>JBehaveForJira Configuration</title>
+-    <meta content="atl.admin" name="decorator"/>
+-## used to organise the admin menu
+-##    <meta name="admin.active.section" content="admin_plugins_menu/timetracking_section"/>
+-##    <meta name="admin.active.tab" content="timesheet-configuration-link"/>
+-##    $webResourceManager.requireResource("jira-timesheet-plugin:configuration")
+-</head>
+-<body>
+-Test BLANC configuration page!
+-
+-</body>
+-</html>
+\ No newline at end of file
++<!--empty velocity template-->
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/plugin_config.vm
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/plugin_config.vm	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/velocity/plugin_config.vm	(date 1426521820000)
+@@ -1,297 +0,0 @@
+-##@formatter:off
+-<html>
+-
+-    <head>
+-    ##    <title>$action.getText('timesheet.configuration.title')</title>
+-        <title>JBehaveForJira Configuration</title>
+-        <meta content="atl.admin" name="decorator"/>
+-        $webResourceManager.requireResource("com.jbehaveforjira.plugin:configuration-page-resources")
+-##        $webResourceManager.requireResource("com.atlassian.auiplugin:aui-sidebar")
+-    </head>
+-    <body>
+-        <div id="timesheet-configuration">
+-            <div>
+-                <h3>JBehave for Jira plugin configuration:</h3>
+-
+-                <div class="aui-sidebar">
+-                    <div class="aui-sidebar-wrapper">
+-                        <div class="aui-sidebar-body">
+-
+-                            <section id="content" role="main">
+-                                <div class="aui-page-panel">
+-                                    <div class="aui-page-panel-inner">
+-                                        <div class="aui-page-panel-nav">
+-                                            <!-- content such as a vertical nav -->
+-##                                            <div>General</div>
+-##                                            <div>VCS Integration</div>
+-
+-                                            <nav class="aui-navgroup aui-navgroup-vertical">
+-                                                <div class="aui-navgroup-inner">
+-                                                    <div class="aui-sidebar-group aui-sidebar-group-actions">
+-                                                        <!-- the AUI Nav heading will be used as the tooltip text -->
+-                                                        <div class="aui-nav-heading" title="Actions">
+-                                                            <strong>General</strong>
+-                                                        </div>
+-                                                        <!-- If a sidebar group does not have a nav heading, then the aui-nav's title attribute will be used
+-                                                             for the tooltip for the group -->
+-                                                        <ul class="aui-nav" title="Page actions">
+-                                                            <li>
+-                                                                <a href="#" title="Enabled projects">Enabled projects</a>
+-                                                            </li>
+-                                                        </ul>
+-                                                    </div>
+-                                                </div>
+-                                            </nav>
+-
+-                                        </div>
+-                                        <section class="aui-page-panel-content" #*style="border: solid 1px green"*#>
+-                                            <!-- main area for content -->
+-                                            main area
+-                                        </section>
+-##                                        <aside class="aui-page-panel-sidebar">
+-##                                            <!-- tangental content here -->
+-##                                            tangental content
+-##                                        </aside>
+-                                    </div>
+-                                </div>
+-                            </section>
+-
+-                            <!-- AUI Page Header -->
+-                            <header class="aui-page-header">
+-                                <div class="aui-page-header-inner">
+-            ##                        <div class="aui-page-header-image">
+-            ##                            <!-- AUI Avatar -->
+-            ##                            <span class="aui-avatar aui-avatar-large aui-avatar-project">
+-            ##                                <span class="aui-avatar-inner"><img src="images/marketing/plugin_logo.png"
+-            ##                                                                    alt="Project avatar"/>asdf</span>
+-            ##                            </span>
+-            ##                        </div>
+-                                    <div class="aui-page-header-main">
+-                                        <h1>
+-                                            JBehave for Jira - plugin settings
+-                                        </h1>
+-##                                        <ol class="aui-nav aui-nav-breadcrumbs">
+-##                                            <li>
+-##                                                <a href="#"><span class="aui-nav-item-label">Here you can set various configuration options of this plugin</span></a>
+-##                                            </li>
+-##                                        </ol>
+-                                    </div>
+-                                </div>
+-                            </header>
+-
+-                            <!-- AUI Navigation -->
+-                            <nav class="aui-navgroup aui-navgroup-vertical">
+-                                <div class="aui-navgroup-inner">
+-
+-                                    <!-- A Sidebar group will collapse into a single trigger icon when sidebar is collapsed -->
+-                                    <!-- The 'actions' sidebar group type will be styled differently from normal groups when sidebar is collapsed -->
+-                                    <div class="aui-sidebar-group aui-sidebar-group-actions">
+-
+-                                        <!-- the AUI Nav heading will be used as the tooltip text -->
+-                                        <div class="aui-nav-heading" title="Actions">
+-                                            <strong>Actions</strong>
+-                                        </div>
+-
+-                                        <!-- If a sidebar group does not have a nav heading, then the aui-nav's title attribute will be used
+-                                             for the tooltip for the group -->
+-                                        <ul class="aui-nav" title="Page actions">
+-                                            <li>
+-                                                <a href="#" title="Edit">Edit</a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#" title="View">View</a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#" title="Share">Share</a>
+-                                            </li>
+-                                        </ul>
+-                                    </div>
+-
+-                                    <!-- A "Tier One" Sidebar group will display all of its nav items, but all nav items MUST have an AUI Icon
+-                                         which will be used when the sidebar is collapsed -->
+-                                    <div class="aui-sidebar-group aui-sidebar-group-tier-one">
+-
+-                                        <!-- in a "Tier One" Sidebar group, AUI Nav heading is ignored, and each nav item's label will be used
+-                                             as the tooltip text instead -->
+-                                        <div class="aui-nav-heading" title="Stuff">
+-                                            <strong>Simple Nav</strong>
+-                                        </div>
+-
+-                                        <ul class="aui-nav">
+-                                            <li class="aui-nav-selected">
+-                                                <a href="#">
+-
+-                                                    <!-- "Tier One" navigation items MUST have an AUI Icon before the text label -->
+-                                                    <span class="aui-icon aui-icon-small aui-iconfont-info"></span>
+-
+-
+-                                                    <!-- "Tier One" Nav items labels also need an extra SPAN around them with the aui-nav-item-label class -->
+-                                                    <span class="aui-nav-item-label">Summary</span>
+-                                                </a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#" title="This is a really really long title for whatever this is">
+-                                                    <span class="aui-icon aui-icon-small aui-iconfont-details"></span>
+-                                                    <span class="aui-nav-item-label">Issues</span>
+-                                                </a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#">
+-                                                    <span class="aui-icon aui-icon-small aui-iconfont-jira-completed-task"></span>
+-                                                    <span class="aui-nav-item-label">Road Map</span>
+-                                                </a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#">
+-                                                    <span class="aui-icon aui-icon-small aui-iconfont-time"></span>
+-                                                    <span class="aui-nav-item-label">Versions</span>
+-                                                </a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#">
+-                                                    <span class="aui-icon aui-icon-small aui-iconfont-devtools-submodule"></span>
+-                                                    <span class="aui-nav-item-label">Components</span>
+-                                                </a>
+-                                            </li>
+-                                            <li>
+-                                                <a href="#">
+-                                                    <span class="aui-icon aui-icon-small aui-iconfont-devtools-tag"></span>
+-                                                    <span class="aui-nav-item-label">Labels</span>
+-                                                </a>
+-                                            </li>
+-                                        </ul>
+-                                    </div>
+-                                </div>
+-                            </nav>
+-                        </div>
+-
+-                        <!-- Sidebar footer contains the expand/collapse trigger, and optionally a button or a dropdown with configuration settings -->
+-                        <div class="aui-sidebar-footer">
+-                            <a href="http://example.com" class="aui-button aui-button-subtle aui-sidebar-settings-button" title="Settings">
+-                                <span class="aui-icon aui-icon-small aui-iconfont-configure"></span>
+-                                <span class="aui-button-label">Settings</span>
+-                            </a>
+-                            <a class="aui-button aui-button-subtle aui-sidebar-toggle aui-sidebar-footer-tipsy" title="Collapse sidebar (â€‰[â€‰)"></a>
+-                        </div>
+-                    </div>
+-                </div><!-- end AUI Sidebar -->
+-
+-                <div class="aui-tabs horizontal-tabs" role="application">
+-                    <ul class="tabs-menu" role="tablist">
+-                        <li class="menu-item active-tab" role="presentation">
+-                            <a href="#tabs-settings-general" role="tab" aria-selected="true"><strong>General</strong></a>
+-                        </li>
+-                        <li class="menu-item" role="presentation">
+-                            <a href="#tabs-example-second" role="tab" aria-selected="false"><strong>VCS Integration</strong></a>
+-                        </li>
+-                    </ul>
+-                    <div class="tabs-pane active-pane" id="tabs-settings-general" role="tabpanel" aria-hidden="false">
+-                        <div id="msgBar">
+-##                            <p>test error message!</p>
+-                        </div>
+-##                        ##    #if (!$action.statusMessage.empty)
+-##                        <div class="aui-message">
+-##                        ##        <p>$i18n.getText($action.statusMessage)</p>
+-##                            <p>test status message</p>
+-##                        </div>
+-                        <form action="${req.contextPath}/secure/ConfigureJBehaveForJira!something.jspa" method="post"
+-                              onsubmit="if (this.submitted) return false; this.submitted = true; return true" class="aui
+-                              top-label
+-                              ">
+-##                            <div class="config-section-label">Enable for projects</div>
+-                            ##        <label for="multiselect">Enable for projects:</label>
+-
+-                            <div class="config-section-label">Enable for projects:</div>
+-                            <div class="config-section">
+-##                                <span class="field-group">
+-                                    <label for="availableProjects">Available projects</label>
+-                                    <select class="multi-select" size="8" multiple="multiple"
+-                                            id="availableProjects" name="availableProjects">
+-                                        #foreach ($projectKey in $action.availableProjectKeys)
+-                                        <option value="$textutils.plainTextToHtml($projectKey)"
+-                                        ##                    #if ($auditorGroups.contains($group))
+-                                        ##                        selected="selected" #end
+-                                                >
+-                                            $projectKey
+-                                        </option>
+-                                        #end
+-                                    </select>
+-##                                </span>
+-                            </div>
+-
+-                            <div class="config-section">
+-##                                <span class="field-group">
+-                                    <div>
+-                                    <button id="moveAvailableProjectRight"
+-                                            class="aui-button aui-button move-button">&gt;</button>
+-                                    </div>
+-##                                    <br/>
+-                                    <div>
+-                                    <button id="moveAvailableProjectLeft"
+-                                            class="aui-button aui-button move-button">&lt;</button>
+-                                    </div>
+-##                                </span>
+-                            </div>
+-
+-                            <div class="config-section">
+-##                                <span class="field-group">
+-                                    <label for="enabledProjects">Enabled projects</label>
+-                                    <select class="multi-select" size="8" multiple="multiple"
+-                                            id="enabledProjects" name="enabledProjects">
+-                                        #foreach ($projectKey in $action.enabledProjectKeys)
+-                                        <option value="$textutils.plainTextToHtml($projectKey)"
+-                                        ##                    #if ($auditorGroups.contains($group))
+-                                        ##                        selected="selected" #end
+-                                                >
+-                                            $projectKey
+-                                        </option>
+-                                        #end
+-                                    </select>
+-##                                </span>
+-                            </div>
+-
+-                            <div>
+-##                                <div>
+-####                                    <div class="config-section
+-##                                    #if ($timesheetAuditorsGroupsError) formErrors #end">
+-####                                        <div class="field-group">
+-##
+-##                                            <div>
+-##                                                <label for="multiselect2">Enabled projects</label>
+-##                                                <select class="multi-select" size="8" multiple="multiple" id="multiselect2"
+-##                                                        name="multiselect2">
+-##                                                    #foreach ($projectKey in $action.projectKeys)
+-##                                                        <option value="$textutils.plainTextToHtml($projectKey)"
+-##                                                        ##                    #if ($auditorGroups.contains($group))
+-##                                                        ##                        selected="selected" #end
+-##                                                                >
+-##                                                            $projectKey
+-##                                                        </option>
+-##                                                    #end
+-##                                                </select>
+-##                                            </div>
+-##                                        ##            <div class="description">Default
+-##                                        ##                width input of a required field</div>
+-####                                        </div>
+-####                                    </div>
+-##                                </div>
+-
+-                                <div class="config-buttons">
+-                                    <input class="aui-button" type="submit" value="Submit"></input>
+-                                    <button class="aui-button" onclick="configController.discardChanges(event)"
+-                                            value="Cancel">Discard Changes</button>
+-                                </div>
+-                            </div>
+-                        </form>
+-
+-                    </div>
+-                    <div class="tabs-pane" id="tabs-example-second" role="tabpanel" aria-hidden="true">
+-                        <h2>This is Tab 2</h2>
+-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+-                    </div>
+-                </div>
+-            </div>
+-        </div>
+-    </body>
+-</html>
+-##@formatter:on
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/StoriesPayload.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/StoryController.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/StoryController.js	(revision )
+@@ -45,10 +45,14 @@
+         storyController.prefs = prefs;
+         restService.fetchStepDocs(pageUtils.getProjectKey(), function (foundStepDocs) {
+             stepDocs = foundStepDocs;
+-            restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), function (fetchedStory) {
++            restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), false, function (fetchedStory) {
++                if (fetchedStory != null) {
+-                editor = storyController.initEditor();
+-                storyController.editor = editor;
+-                storyController.showStory(fetchedStory);
++                    editor = storyController.initEditor();
++                    storyController.editor = editor;
++                    storyController.showStory(fetchedStory);
++                } else {
++                    console.log("No story found for Jira item.");
++                }
+             });
+         });
+     });
+@@ -124,7 +128,7 @@
+                         cm.lineComment(from, to, options);
+                     }
+                 },
+-                "Ctrl-F11": function(cm) {
++                "Ctrl-F11": function (cm) {
+                     cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                 }
+ //                ,
+@@ -143,12 +147,12 @@
+     }
+ 
+     this.onEditorFocusHandler = function (editor, changeObj) {
+-        console.log("#### editor focused");
++        //console.log("#### editor focused");
+         AJS.$("#myDiv").focus();
+     }
+ 
+     this.onEditorBlurHandler = function (editor, changeObj) {
+-        console.log("#### editor blurred");
++        //console.log("#### editor blurred");
+     }
+ 
+     this.onEditorChangeHandler = function (editor, changeObj) {
+@@ -216,13 +220,20 @@
+         debug("> showStory");
+ 
+         editor.off("change", storyController.onEditorChangeHandler);
++        editor.setOption("readOnly", true);
+         editor.setValue(storyModel.asString);
+         editor.on("change", storyController.onEditorChangeHandler);
+ 
+         loadedStory = storyModel;
+         storyChanged = false;
+ 
++        var jiraStoryVersion = storyModel.version;
++        var vcsStoryVersion = storyModel.vcsVersion;
++        if (vcsStoryVersion != null && vcsStoryVersion > jiraStoryVersion) {
++            msgBar.showStoryModifiedByAnotherUserMsg(storyModel.lastEditedBy);
++        } else {
+-        editor.setOption("readOnly", false);
++            editor.setOption("readOnly", false);
++        }
+ 
+         storyController.remarkAllSteps();
+         if (storyModel.version != null) {
+@@ -412,7 +423,7 @@
+             if (issueKey == null) {
+                 issueKey = AJS.$.trim(AJS.$("#key-val").text());
+             }
+-            return  issueKey;
++            return issueKey;
+         };
+ 
+         this.getProjectKey = function () {
+@@ -438,6 +449,7 @@
+         this.issueKey = null;
+         this.version = null;
+         this.asString = null;
++        this.lastEditedBy = null;
+     }
+ 
+     function StoryReportModel() {
+@@ -479,28 +491,56 @@
+             currentMsgContent = AJS.$("#storyMsgBar").html();
+         }
+ 
+-        this.showSavingMsg = function () {
+-            var waitingMsg = execspec.viewissuepage.showstory.renderWaitingMessage();
++        this.showStoryModifiedByAnotherUserMsg = function (username) {
++            var templateParam = new Object();
++            templateParam.username = username;
++            var msgContent = execspec.viewissuepage.showstory.renderStoryModifiedByAnotherUserMsg(templateParam);
++            AJS.$("#storyMsgBar").empty();
++            AJS.messages.warning("#storyMsgBar", {
++                title: null,
++                id: "storyWarningMsg",
++                body: msgContent,
++                closeable: false
++            });
++            currentMsgContent = AJS.$("#storyMsgBar").html();
++        }
++
++        this.showWaitingMessage = function (message) {
++            var templateParam = new Object();
++            templateParam.message = message;
++            var waitingMsg = execspec.viewissuepage.showstory.renderWaitingMessage(templateParam);
+             AJS.$('#storyEditedMsgContainer').html(waitingMsg);
+             currentMsgContent = AJS.$("#storyMsgBar").html();
+         }
+ 
+-        this.showSuccessMessage = function (saveCancelMsg) {
++        this.showSuccessMessage = function (successMsg) {
+             AJS.$("#storyMsgBar").empty();
+             AJS.messages.success("#storyMsgBar", {
+                 title: null,
+                 fadeout: true,
+                 delay: 3000,
+-                body: saveCancelMsg,
++                body: successMsg,
+                 closeable: true
+             });
+             currentMsgContent = AJS.$("#storyMsgBar").html();
+         }
++
++        this.showErrorMessage = function (errorMsg) {
++            AJS.$("#storyMsgBar").empty();
++            AJS.messages.warning("#storyMsgBar", {
++                title: null,
++                fadeout: true,
++                body: errorMsg,
++                closeable: true
++            });
++            currentMsgContent = AJS.$("#storyMsgBar").html();
+-    }
++        }
++    }
+ 
+     function RestService() {
+ 
+-        var restPathBase = "/jira/rest/jbehave-for-jira/1.0/";
++        var contextPath = AJS.contextPath();
++        var restPathBase = contextPath + "/rest/jbehave-for-jira/1.0/";
+ 
+         this.getUserPreferences = function (callback) {
+             var urlString = restPathBase + "preferences/for-user";
+@@ -514,30 +554,32 @@
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                     error("An error occurred while trying to fetch user preferences, textStatus - "
+-                        + textStatus + " errorThrown - " + errorThrown + ". Will use default values for user preferences.");
++                    + textStatus + " errorThrown - " + errorThrown + ". Will use default values for user preferences.");
+                     callback(new PreferencesModel());
+                 }
+             });
+         }
+ 
+-        this.loadStory = function (projectKey, issueKey, callback) {
++        this.loadStory = function (projectKey, issueKey, updateFromVCS, callback) {
+ 
+             var urlString = restPathBase + "find/for-issue/" + projectKey + "/" + issueKey;
++            if (updateFromVCS != null && updateFromVCS == true) {
++                urlString += "?updateFromVCS=" + updateFromVCS
++            }
+             var jqxhr = AJS.$.getJSON(urlString);
+ 
+             var successCallback = function (storyPayload, status, xhr) {
+ 
+                 if (storyPayload != undefined) {
+                     debug("found storyPayload - " + JSON.stringify(storyPayload, null, "\t"));
++                    callback(storyPayload);
+                 } else {
+                     debug("no story found for project - " + projectKey + ", issue - " + issueKey);
+-                    storyPayload = new StoryModel();
+-                    storyPayload.projectKey = pageUtils.getProjectKey();
+-                    storyPayload.issueKey = pageUtils.getIssueKey();
+-                    storyPayload.asString = "";
++                    //storyPayload = new StoryModel();
++                    //storyPayload.projectKey = pageUtils.getProjectKey();
++                    //storyPayload.issueKey = pageUtils.getIssueKey();
++                    //storyPayload.asString = "";
+                 }
+-
+-                callback(storyPayload);
+             }
+ 
+             jqxhr.done(successCallback);
+@@ -550,7 +592,7 @@
+ 
+         this.findStoryReports = function (projectKey, issueKey, callBack) {
+ 
+-            var urlString = restPathBase + "story-report/find/" + projectKey + "/" + issueKey;
++            var urlString = restPathBase + "story-test/find/" + projectKey + "/" + issueKey;
+ 
+             var jqxhr = AJS.$.getJSON(urlString);
+ 
+@@ -692,7 +734,7 @@
+                                 difference = maxColumnWidths[i] - token.length;
+                                 if (difference < 0) {
+                                     console.error("Error occurred while trying to align table line - " + currentLine + ", length of token - "
+-                                        + token + " was longer than maximum length for its column");
++                                    + token + " was longer than maximum length for its column");
+                                     pos += token.length;
+                                 } else {
+                                     // we replace the original token with the trimmed one
+@@ -910,7 +952,8 @@
+                 from: from, to: to,
+                 isModeError: false,
+                 severity: severity,
+-                message: message};
++                message: message
++            };
+             currentErrors.push(markerObj);
+         }
+ 
+@@ -919,7 +962,8 @@
+                 from: from, to: to,
+                 isModeError: true,
+                 severity: severity,
+-                message: message};
++                message: message
++            };
+             currentErrors.push(markerObj);
+         }
+     }
+@@ -1133,7 +1177,7 @@
+                                                             formatString = tfi.formatPattern;
+                                                         }
+                                                         seenValueToken.errorMsg = "Value for tabular field '" + lookingAtFieldName
+-                                                            + "' doesn't match expected format '" + formatString + "'";
++                                                        + "' doesn't match expected format '" + formatString + "'";
+                                                     }
+                                                 }
+ 
+@@ -1829,7 +1873,7 @@
+             storyModel.asString = editor.getValue();
+ 
+             editor.setOption("readOnly", true);
+-            msgBar.showSavingMsg();
++            msgBar.showWaitingMessage("Saving...");
+ 
+             restService.saveOrUpdateStory(storyModel);
+             debug("# saveStoryHandler");
+@@ -1845,6 +1889,24 @@
+             storyController.showStory(loadedStory);
+             msgBar.clear();
+             debug("# cancelEditingStory");
++        }
++
++        this.loadFromVCSHandler = function (event) {
++            debug("> loadFromVCSHandler");
++            if (event.preventDefault) {
++                event.preventDefault();
++            } else {
++                event.returnValue = false;
++            }
++
++            msgBar.showWaitingMessage("Updating...");
++
++            restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), true, function (fetchedStory) {
++                msgBar.clear();
++                storyController.showStory(fetchedStory);
++            });
++
++            debug("# loadFromVCSHandler");
+         }
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/SettingParseException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/SettingParseException.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/SettingParseException.java	(revision )
+@@ -0,0 +1,18 @@
++package com.jbehaveforjira.plugin.config;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++public class SettingParseException extends Exception {
++
++    public SettingParseException(String message) {
++        super(message);
++    }
++
++    public SettingParseException(String message, Throwable cause) {
++        super(message, cause);
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.js	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/soy/TemplatesAdminSettings.soy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/soy/TemplatesAdminSettings.soy	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/soy/TemplatesAdminSettings.soy	(revision )
+@@ -0,0 +1,16 @@
++{namespace execspec.admin.settings}
++
++
++/**
++ * Renders save or cancel message bar content.
++ * @param msgPrefix
++ * @param message
++ * @param msgSuffix
++ * @param payload
++ */
++{template .renderErrorMsg}
++<div>
++    <span>{$msgPrefix}{$message}{$msgSuffix}<span>
++    <div id="serverStackTrace">{literal}<!--{/literal}{$payload}{literal}-->{/literal}</div>
++</div>
++{/template}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/PluginSettingsResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/PluginSettingsResource.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/PluginSettingsResource.java	(revision )
+@@ -0,0 +1,131 @@
++package com.jbehaveforjira.plugin.rest;
++
++import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.user.preferences.UserPreferencesManager;
++import com.jbehaveforjira.plugin.config.Setting;
++import com.jbehaveforjira.plugin.config.SettingsManager;
++import com.jbehaveforjira.plugin.dto.preferences.SettingDTO;
++import com.jbehaveforjira.plugin.dto.preferences.SettingsDTO;
++import com.jbehaveforjira.plugin.dto.rest.RestResponse;
++import org.apache.commons.lang.Validate;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++
++import javax.ws.rs.*;
++import javax.ws.rs.core.MediaType;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
++
++@Path("/settings")
++public class PluginSettingsResource {
++
++    private final static String DEFAULT_ERROR_MESSAGE = "Exception occurred while processing REST call.";
++
++    private final Logger logger = LoggerFactory.getLogger(this.getClass());
++
++    private JiraAuthenticationContext authenticationContext;
++    private UserPreferencesManager preferencesManager;
++    private SettingsManager settingsManager;
++
++    public PluginSettingsResource(JiraAuthenticationContext authenticationContext,
++                                  UserPreferencesManager preferencesManager, SettingsManager settingsManager) {
++
++        this.authenticationContext = authenticationContext;
++        this.preferencesManager = preferencesManager;
++        this.settingsManager = settingsManager;
++    }
++
++    @GET
++    @Path("/all")
++    @Produces({MediaType.APPLICATION_JSON})
++    public RestResponse<SettingsDTO> getAll() {
++
++        RestResponse<SettingsDTO> response;
++        try {
++            Map<String, Setting> allSettings = settingsManager.allSettings();
++
++            List<SettingDTO> dtos = new ArrayList<SettingDTO>(allSettings.size());
++            for (Setting setting : allSettings.values()) {
++                SettingDTO dto = SettingDTO.fromSetting(setting);
++                dtos.add(dto);
++            }
++            SettingsDTO settingsDTO = new SettingsDTO(dtos);
++            response = RestResponse.success(settingsDTO);
++        } catch (Exception ex) {
++            response = RestResponse.failure(ex);
++            logger.warn(DEFAULT_ERROR_MESSAGE, ex);
++        }
++
++        return response;
++    }
++
++    @GET
++    @Path("/for-key")
++    @Produces({MediaType.APPLICATION_JSON})
++    public RestResponse<SettingDTO> getForKey(@QueryParam("settingKey") String settingKey) {
++
++        RestResponse<SettingDTO> response;
++        try {
++            SettingDTO dto = null;
++            Setting setting = settingsManager.findForKey(settingKey);
++            if (setting != null) {
++                dto = SettingDTO.fromSetting(setting);
++            }
++            response = RestResponse.success(dto);
++        } catch (Exception ex) {
++            response = RestResponse.failure(ex);
++            logger.warn(DEFAULT_ERROR_MESSAGE, ex);
++        }
++
++        return response;
++    }
++
++    @DELETE
++    @Path("/delete-for-key")
++    @Produces({MediaType.APPLICATION_JSON})
++    public RestResponse<String> deleteForKey(@QueryParam("settingKey") String settingKey) {
++
++        RestResponse<String> response;
++        try {
++            settingsManager.deleteForKey(settingKey);
++            response = RestResponse.success();
++        } catch (Exception ex) {
++            response = RestResponse.failure(ex);
++            logger.warn(DEFAULT_ERROR_MESSAGE, ex);
++        }
++        return response;
++    }
++
++    @POST
++    @Path("/update-setting")
++    @Produces(MediaType.APPLICATION_JSON)
++    @Consumes(MediaType.TEXT_PLAIN)
++    public RestResponse<SettingDTO> updateSetting(@QueryParam("settingKey") String settingKey, String asString) {
++
++
++        RestResponse<SettingDTO> response;
++
++        try {
++
++            Validate.notEmpty(settingKey);
++            Validate.notNull(asString);
++
++            Setting targetSetting = settingsManager.findForKey(settingKey);
++            if (targetSetting == null) {
++                throw new IllegalArgumentException("Error - setting key '" + settingKey + "' is unknown.");
++            } else {
++                targetSetting.fromString(asString);
++                settingsManager.storeSetting(targetSetting);
++                SettingDTO dto = SettingDTO.fromSetting(targetSetting);
++                response = RestResponse.success(dto);
++            }
++
++        } catch (Exception ex) {
++            response = RestResponse.failure(ex);
++            logger.warn("Exception occurred while trying to update plugin setting for key - " + settingKey, ex);
++        }
++        return response;
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/Setting.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/Setting.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/Setting.java	(revision )
+@@ -0,0 +1,82 @@
++package com.jbehaveforjira.plugin.config;
++
++
++import org.apache.commons.lang3.Validate;
++import org.apache.commons.lang3.exception.ExceptionUtils;
++import org.codehaus.jackson.annotate.JsonAutoDetect;
++import org.codehaus.jackson.map.ObjectMapper;
++import org.codehaus.jackson.map.SerializationConfig;
++
++import java.io.IOException;
++
++/**
++ */
++public /*abstract*/ class Setting<T> {
++
++    protected T value;
++
++    protected final String key;
++
++    /**
++     * Constructor here only for marshalling purposes that are done via reflection.
++     */
++    protected Setting() {
++        key = null;
++    }
++
++    public Setting(String key, T defaultValue) {
++        Validate.notNull(key);
++        this.key = key;
++        this.value = defaultValue;
++    }
++
++    public String key() {
++        return key;
++    }
++
++//    public abstract void fromString(String valueAsString);
++
++    //    @Override
++
++    public T value() {
++        return value;
++    }
++
++    public void fromString(String valueAsString) throws SettingParseException{
++        ObjectMapper objectMapper = new ObjectMapper();
++        objectMapper.setVisibilityChecker(objectMapper.getVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
++//        objectMapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
++        try {
++            Object readValue = objectMapper.readValue(valueAsString, value.getClass());
++            value = (T) readValue;
++        } catch (IOException e) {
++            Throwable rootCause = ExceptionUtils.getRootCause(e);
++            String rootError;
++            if (rootCause != null) {
++                rootError = rootCause.getMessage();
++            } else {
++                rootError = e.getMessage();
++            }
++            throw new SettingParseException("Exception occurred while attempting to unmarshall plugin setting for key - " + this.key
++                    + ". Error - " + rootError + ".", e);
++        }
++    }
++
++    //    @Override
++    public String asString() {
++
++        if (this.value != null) {
++            ObjectMapper objectMapper = new ObjectMapper();
++            objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
++            try {
++                String asString = objectMapper.writeValueAsString(this.value);
++                return asString;
++            } catch (IOException e) {
++                throw new RuntimeException("Exception occurred while attempting to marshall plugin setting for key - " + this.key, e);
++            }
++        } else {
++            return null;
++        }
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.css	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/lint.css	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryService.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryService.java	(revision )
+@@ -0,0 +1,190 @@
++package com.jbehaveforjira.plugin.service;
++
++import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.user.ApplicationUser;
++import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
++import com.jbehaveforjira.plugin.config.SettingsManager;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.integration.RevisionInfo;
++import com.jbehaveforjira.plugin.integration.VcsService;
++import com.jbehaveforjira.plugin.integration.perforce.PerforceService;
++
++import java.util.List;
++
++/**
++ * A facade to hide any additional operations that need to happen behind the scenes when the user tries to save or
++ * update a story.
++ */
++public class JiraStoryService implements StoryService {
++
++    private VcsService perforceService;
++
++    private JBehaveStoryDao jiraRepo;
++
++    private SettingsManager settingsManager;
++
++    private final JiraAuthenticationContext authenticationContext;
++
++    public JiraStoryService(PerforceService perforceService, JBehaveStoryDao jiraStoryService, SettingsManager settingsManager, JiraAuthenticationContext authenticationContext) {
++        this.perforceService = perforceService;
++        this.jiraRepo = jiraStoryService;
++        this.settingsManager = settingsManager;
++        this.authenticationContext = authenticationContext;
++    }
++
++    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey, boolean updateFromVCS) {
++
++        JiraStory jiraStory = this.jiraRepo.findByProjectAndIssueKey(projectKey, issueKey);
++
++        if (updateFromVCS) {
++
++            JiraStory repoStory = this.fetchLatestFromVCSRepo(projectKey, issueKey);
++
++            if (repoStory != null && jiraStory == null) {
++                // we need to bring over a copy VCS into Jira store
++                jiraStory = new JiraStory();
++                jiraStory.setProjectKey(projectKey);
++                jiraStory.setIssueKey(issueKey);
++                jiraStory.setLastEditedBy(repoStory.getLastEditedBy());
++                jiraStory.setVersion(repoStory.getVcsVersion());
++                jiraStory.setVcsVersion(repoStory.getVcsVersion());
++                jiraRepo.save(jiraStory);
++
++            } else if (repoStory != null && jiraStory != null
++                    && repoStory.getVcsVersion() > jiraStory.getVersion()) {
++                // we need to update from vcs
++                jiraStory.setAsString(repoStory.getAsString());
++                jiraStory.setLastEditedBy(repoStory.getLastEditedBy());
++                // we set version in jira store to be the same as in VCS
++                jiraStory.setVersion(repoStory.getVcsVersion());
++                jiraStory.setVcsVersion(repoStory.getVcsVersion());
++                this.jiraRepo.save(jiraStory);
++            }
++        }
++
++        return jiraStory;
++    }
++
++    @Override
++    public boolean issueHasStory(String projectKey, String issueKey) {
++
++        JiraStory jiraStory = this.jiraRepo.findByProjectAndIssueKey(projectKey, issueKey);
++        if (jiraStory != null) {
++           return true;
++        } else {
++            return false;
++        }
++    }
++
++    @Override
++    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
++
++        JiraStory jiraStory = this.jiraRepo.findByProjectAndIssueKey(projectKey, issueKey);
++        if (jiraStory != null) {
++            RevisionInfo revisionInfo = this.checkLatestVersionInVCS(projectKey, issueKey);
++            if (revisionInfo != null) {
++                jiraStory.setVcsVersion(revisionInfo.getRevisionNumber());
++                jiraStory.setLastEditedBy(revisionInfo.getUserName());
++            }
++        }
++
++        return jiraStory;
++    }
++
++    @Override
++    public List<JiraStory> findByProjectKey(String projectKey) {
++
++        List<JiraStory> byProjectKey = jiraRepo.findByProjectKey(projectKey);
++        return byProjectKey;
++    }
++
++    @Override
++    public void delete(String projectKey, String issueKey) {
++
++        JiraStory deletedStory = this.jiraRepo.delete(projectKey, issueKey);
++        if (deletedStory != null) {
++            this.deleteFromVCS(deletedStory);
++        }
++    }
++
++    @Override
++    public void saveAndCommit(JiraStory story) {
++
++        this.save(story);
++
++        // store in VCS - if this one fails the DB store above will be rolled back as part of this method's
++        // DB transaction
++        Long vcsRevision = this.commitToVCS(story);
++
++        if (vcsRevision != null) {
++            // we need to sync version with VCS revision number and save again, forcing the save (i.e. without version checking)
++            story.setVersion(vcsRevision);
++            story.setVcsVersion(vcsRevision);
++            this.jiraRepo.saveNoVersionCheck(story);
++        }
++    }
++
++    @Override
++    public void save(JiraStory storyDTO) {
++
++        // increment version
++        Long currentVersion = storyDTO.getVersion();
++        if (currentVersion != null) {
++            storyDTO.setVersion(currentVersion + 1);
++        } else {
++            storyDTO.setVersion(1L);
++        }
++
++        // set edited by
++        ApplicationUser user = authenticationContext.getUser();
++        if (user != null) {
++            String username = user.getUsername();
++            storyDTO.setLastEditedBy(username);
++        }
++
++        // store in Jira DB
++        this.jiraRepo.save(storyDTO);
++    }
++
++    @Override
++    public Long commitToVCS(JiraStory storyDTO) {
++
++        Long committed = perforceService.commit(storyDTO);
++        if (committed != null) {
++            return committed;
++        }
++
++        // GIT and any other
++        return null;
++    }
++
++    private JiraStory fetchLatestFromVCSRepo(String projectKey, String issueKey) {
++
++        JiraStory jiraStory = perforceService.findByProjectAndIssueKey(projectKey, issueKey);
++        if (jiraStory != null) {
++            return jiraStory;
++        }
++        // GIT and any other
++
++        return null;
++    }
++
++    private RevisionInfo checkLatestVersionInVCS(String projectKey, String issueKey) {
++
++        RevisionInfo revisionInfo = perforceService.getLatestRevisionInfo(projectKey, issueKey);
++        if (revisionInfo != null) {
++            return revisionInfo;
++        }
++
++        // GIT and any other
++        return null;
++    }
++
++    private void deleteFromVCS(JiraStory story) {
++
++        boolean deleted = perforceService.delete(story);
++
++        // GIT and any other
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/UpdateJBehavePreferencesAction.java	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
+@@ -16,7 +16,8 @@
+         var issueKey = AJS.$.trim(AJS.$("#key-val").text());
+         if (issueKey) {
+             var projectKey = issueKey.match("[A-Z]*")[0];
+-            var restPathBase = "/jira/rest/jbehave-for-jira/1.0/";
++            var contextPath = AJS.contextPath();
++            var restPathBase = contextPath + "/rest/jbehave-for-jira/1.0/";
+             var pathStepDocs = restPathBase + "step-doc/for-project/" + projectKey;
+             AJS.$.ajax({
+                 type: "GET",
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/3rdparty/codemirror-4.3/addon/lint/jbehave-lint.js	(revision )
+@@ -1,0 +1,0 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryServiceImpl.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryServiceImpl.java	(date 1426521820000)
+@@ -1,176 +0,0 @@
+-package com.jbehaveforjira.plugin.service;
+-
+-import com.atlassian.crowd.embedded.api.User;
+-import com.atlassian.jira.bc.issue.IssueService;
+-import com.atlassian.jira.security.JiraAuthenticationContext;
+-import org.apache.commons.lang.Validate;
+-import com.jbehaveforjira.plugin.ao.JBehaveStory;
+-import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+-import com.jbehaveforjira.plugin.ao.JBehaveStoryReport;
+-import com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao;
+-import com.jbehaveforjira.plugin.dto.story.JiraStory;
+-import com.jbehaveforjira.plugin.dto.story.StoryDTOUtils;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+-public class StoryServiceImpl implements StoryService {
+-
+-    private final Logger log = LoggerFactory.getLogger(getClass());
+-
+-    private final IssueService is;
+-
+-    private final JiraAuthenticationContext authenticationContext;
+-
+-    private final JBehaveStoryDao storyDao;
+-
+-    private final JBehaveStoryReportDao storyReportDao;
+-
+-    private final StepDocsService stepDocsSerivce;
+-
+-    private StoryReportService storyReportService;
+-
+-    public StoryServiceImpl(JBehaveStoryDao storyDao, JBehaveStoryReportDao storyReportDao,
+-                            IssueService is,
+-                            JiraAuthenticationContext authenticationContext,
+-                            StepDocsService stepDocsSerivce,
+-                            StoryReportService storyReportService) {
+-        this.storyDao = storyDao;
+-        this.storyReportDao = storyReportDao;
+-        this.is = is;
+-        this.authenticationContext = authenticationContext;
+-        this.stepDocsSerivce = stepDocsSerivce;
+-        this.storyReportService = storyReportService;
+-    }
+-
+-    @Override
+-    public synchronized JiraStory saveOrUpdate(JiraStory storyDTO) {
+-
+-        String issueKey = storyDTO.getIssueKey();
+-        User user = authenticationContext.getLoggedInUser();
+-        IssueService.IssueResult issue = is.getIssue(user, issueKey);
+-        Validate.notNull(issue, "Could not find issue for key - " + issueKey);
+-
+-        Long version = storyDTO.getVersion();
+-        if (version == null) {
+-
+-            // create
+-            List<JBehaveStory> byProjectAndIssueKey = storyDao.findByProjectAndIssueKey(storyDTO.getProjectKey(), storyDTO.getIssueKey());
+-            Validate.isTrue(byProjectAndIssueKey.isEmpty(), "Issue with key - " + storyDTO.getIssueKey() + " already has story attached");
+-            return this.create(storyDTO, user.getName());
+-
+-        } else {
+-
+-            // update
+-            List<JBehaveStory> byProjectAndIssueKey = storyDao.findByProjectAndIssueKey(storyDTO.getProjectKey(), storyDTO.getIssueKey());
+-            Validate.isTrue(!byProjectAndIssueKey.isEmpty(), "Editing story failed - issue with key - " + storyDTO.getIssueKey() + " does not have any stories attached");
+-            Validate.isTrue(byProjectAndIssueKey.size() == 1);
+-
+-            JBehaveStory story = byProjectAndIssueKey.get(0);
+-            Long storedVersion = story.getVersion();
+-            Long receivedVersion = storyDTO.getVersion();
+-            if (!storedVersion.equals(receivedVersion)) {
+-                String lastEditedBy = story.getLastEditedBy();
+-                throw new RuntimeException("Story for issue - " + storyDTO.getIssueKey() + " has been modified by another user (" + lastEditedBy + ").");
+-            } else {
+-                return this.update(story, storyDTO, user.getName());
+-            }
+-
+-        }
+-    }
+-
+-    private JiraStory create(JiraStory storyDTO, String userName) {
+-
+-        final JBehaveStory story = storyDao.create();
+-        story.setVersion(1L);
+-        story.setIssueKey(storyDTO.getIssueKey());
+-        story.setProjectKey(storyDTO.getProjectKey());
+-        story.setAsString(storyDTO.getAsString());
+-        story.setLastEditedBy(userName);
+-        story.save();
+-
+-        JiraStory byId = this.findById(story.getID());
+-        return byId;
+-    }
+-
+-    private JiraStory update(JBehaveStory story, JiraStory storyDTO, String userName) {
+-
+-        long currentVersion = story.getVersion();
+-        long rolledVersion = currentVersion + 1;
+-        story.setVersion(rolledVersion);
+-        story.setAsString(storyDTO.getAsString());
+-
+-        story.setLastEditedBy(userName);
+-        story.save();
+-
+-        JiraStory byId = this.findById(story.getID());
+-        return byId;
+-    }
+-
+-    @Override
+-    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
+-
+-        List<JBehaveStory> byIssueKey = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+-        if (byIssueKey.isEmpty()) {
+-            return null;
+-        } else if (byIssueKey.size() > 1) {
+-            throw new RuntimeException("More than one story was found for issue key - " + issueKey);
+-        } else {
+-
+-            JBehaveStory story = byIssueKey.get(0);
+-
+-            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
+-            return storyDTO;
+-        }
+-    }
+-
+-    @Override
+-    public List<JiraStory> findByProjectKey(String projectKey) {
+-
+-        List<JBehaveStory> stories = storyDao.findByProjectKey(projectKey);
+-
+-        List<JiraStory> storyDTOs = new ArrayList<JiraStory>(stories.size());
+-        for (JBehaveStory story : stories) {
+-            JiraStory storyDTO = StoryDTOUtils.toDTO(story);
+-            storyDTOs.add(storyDTO);
+-        }
+-
+-        return storyDTOs;
+-    }
+-
+-    @Override
+-    public JiraStory findById(int storyId) {
+-
+-        JBehaveStory story = storyDao.get(storyId);
+-
+-        JiraStory storyModel = StoryDTOUtils.toDTO(story);
+-        return storyModel;
+-    }
+-
+-    @Override
+-    public void delete(Long storyId) {
+-        JBehaveStory story = storyDao.get(storyId.intValue());
+-        deleteStory(story);
+-    }
+-
+-    @Override
+-    public void delete(String projectKey, String issueKey) {
+-        List<JBehaveStory> stories = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+-        for (JBehaveStory story : stories) {
+-            deleteStory(story);
+-        }
+-    }
+-
+-    private void deleteStory(JBehaveStory story) {
+-
+-        // delete story reports
+-        JBehaveStoryReport[] storyTestReports = story.getStoryReports();
+-        for (JBehaveStoryReport storyTestReport : storyTestReports) {
+-            storyReportDao.delete(storyTestReport);
+-        }
+-
+-        storyDao.delete(story);
+-    }
+-}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/ConfigurePluginAction.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/ConfigurePluginAction.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/ConfigurePluginAction.java	(date 1426521820000)
+@@ -1,91 +0,0 @@
+-package com.jbehaveforjira.plugin.actions;
+-
+-import com.atlassian.jira.bc.project.ProjectService;
+-import com.atlassian.jira.project.Project;
+-import com.atlassian.jira.security.JiraAuthenticationContext;
+-import com.atlassian.jira.user.ApplicationUser;
+-import com.atlassian.jira.web.action.JiraWebActionSupport;
+-import com.jbehaveforjira.plugin.dto.story.JiraStory;
+-import org.codehaus.jackson.JsonToken;
+-import org.codehaus.jackson.map.JsonMappingException;
+-import org.codehaus.jackson.map.ObjectMapper;
+-import org.codehaus.jackson.node.ObjectNode;
+-import org.codehaus.jackson.schema.JsonSchema;
+-
+-import javax.servlet.http.HttpServletRequest;
+-import java.util.ArrayList;
+-import java.util.List;
+-
+-/**
+- * Created by Dmytro on 2/4/2015.
+- */
+-public class ConfigurePluginAction extends JiraWebActionSupport {
+-
+-    private List<String> projectKeys = new ArrayList<String>();
+-
+-    private final ProjectService projectService;
+-
+-    private JiraAuthenticationContext authenticationContext;
+-
+-    public ConfigurePluginAction(ProjectService projectService, JiraAuthenticationContext authenticationContext) {
+-        this.projectService = projectService;
+-        this.authenticationContext = authenticationContext;
+-    }
+-
+-    @Override
+-    public String doDefault() {
+-
+-        ApplicationUser user = authenticationContext.getUser();
+-        List<Project> allProjects = this.projectService.getAllProjects(user).getReturnedValue();
+-        if (allProjects != null) {
+-            projectKeys = new ArrayList<String>(allProjects.size());
+-            for (Project project : allProjects) {
+-                projectKeys.add(project.getKey());
+-            }
+-        }
+-
+-        ObjectMapper mapper = new ObjectMapper();
+-        JsonSchema jsonSchema = null;
+-        try {
+-            jsonSchema = mapper.generateJsonSchema(JiraStory.class);
+-            ObjectNode schemaNode = jsonSchema.getSchemaNode();
+-            JsonToken jsonToken = schemaNode.asToken();
+-            String asString = jsonSchema.toString();
+-            System.out.println();
+-        } catch (JsonMappingException e) {
+-            e.printStackTrace();
+-        }
+-
+-        return INPUT;
+-    }
+-
+-    @Override
+-    public String doExecute() throws Exception {
+-
+-        HttpServletRequest httpRequest = getHttpRequest();
+-
+-        return SUCCESS;
+-    }
+-
+-    public String doSomething() {
+-        doDefault();
+-        return INPUT;
+-    }
+-
+-    @Override
+-    protected void doValidation() {
+-        System.out.println();
+-    }
+-
+-    public List<String> getProjectKeys() {
+-        return projectKeys;
+-    }
+-
+-    public List<String> getAvailableProjectKeys() {
+-        return projectKeys;
+-    }
+-
+-    public List<String> getEnabledProjectKeys() {
+-        return new ArrayList<String>();
+-    }
+-}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/Config.js
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/Config.js	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/js/Config.js	(date 1426521820000)
+@@ -1,76 +0,0 @@
+-function ConfigController() {
+-
+-    this.init = function () {
+-        AJS.$("#moveAvailableProjectLeft").each(function (index, element) {
+-
+-            AJS.$(element).click(function (eventObject) {
+-                if (eventObject.preventDefault) {
+-                    eventObject.preventDefault();
+-                } else {
+-                    eventObject.returnValue = false;
+-                }
+-                var selectedProjects = $('#enabledProjects').val();
+-//                AJS.$("#enabledProjects").each(function (index, element) {
+-//                    alert("moving left - " + selectedProjects + "!");
+-                AJS.$('#enabledProjects option:selected').remove().appendTo('#availableProjects');
+-//                });
+-            });
+-
+-        });
+-        AJS.$("#moveAvailableProjectRight").each(function (index, element) {
+-
+-            AJS.$(element).click(function (eventObject) {
+-                if (eventObject.preventDefault) {
+-                    eventObject.preventDefault();
+-                } else {
+-                    eventObject.returnValue = false;
+-                }
+-                var selectedProjects = $('#availableProjects').val();
+-//                AJS.$("#availableProjects").each(function (index, element) {
+-//                    alert("moving right - " + selectedProjects + "!");
+-                AJS.$('#availableProjects option:selected').remove().appendTo('#enabledProjects');
+-//                });
+-            });
+-
+-        });
+-    };
+-
+-//    this.moveAvailableProjectRight = function(event) {
+-//        alert("moving right");
+-//        event.preventDefault();
+-//    }
+-//
+-//    this.moveAvailableProjectLeft = function(event) {
+-//        alert("moving left");
+-//        event.preventDefault();
+-//    }
+-
+-    this.discardChanges = function (event) {
+-//        alert("discarding changes");
+-        event.preventDefault();
+-
+-        AJS.messages.error("#msgBar", {
+-            title: null,
+-            id: "storyWarningMsg",
+-            body: "hello",
+-            closeable: false
+-        });
+-
+-        AJS.$("#sidebar").sidebar({
+-            id: "localstorageidstring",
+-            minWidth: function () {
+-                return 200
+-            },
+-            maxWidth: function () {
+-                return jQuery(window).width() - 500;
+-            }
+-        });
+-
+-    }
+-}
+-
+-var configController;
+-AJS.$(function () {
+-    configController = new ConfigController();
+-    configController.init();
+-});
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java	(revision )
+@@ -0,0 +1,42 @@
++package com.jbehaveforjira.plugin.conditions;
++
++import com.atlassian.jira.project.Project;
++import com.atlassian.plugin.PluginParseException;
++import com.atlassian.plugin.web.Condition;
++import com.jbehaveforjira.plugin.config.Setting;
++import com.jbehaveforjira.plugin.config.SettingsManager;
++
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
++
++public class EnabledForProjectCondition implements Condition {
++
++    public static final Setting<List<String>> ENABLED_PROJECTS = new Setting<List<String>>("ENABLED_PROJECTS", new ArrayList<String>());
++
++    private SettingsManager settingsManager;
++
++    public EnabledForProjectCondition(SettingsManager settingsManager) {
++
++        this.settingsManager = settingsManager;
++        this.settingsManager.loadSetting(ENABLED_PROJECTS);
++    }
++
++    @Override
++    public void init(Map<String, String> params) throws PluginParseException {
++    }
++
++    @Override
++    public boolean shouldDisplay(Map<String, Object> context) {
++
++        Project project = (Project) context.get("project");
++        String projectKey = project.getKey();
++
++        return this.enabledForProject(projectKey);
++    }
++
++    public boolean enabledForProject(String projectKey) {
++
++        return this.ENABLED_PROJECTS.value().contains(projectKey);
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
+@@ -51,26 +51,11 @@
+         } catch (IOException e) {
+             throw new RuntimeException(e);
+         }
+-
+         log.debug("saving story:\n" + storyDTO);
+ 
+-        JiraStory savedStoryDTO = storyService.saveOrUpdate(storyDTO);
+-        Validate.notNull(savedStoryDTO.getVersion());
++        storyService.saveAndCommit(storyDTO);
+ 
+-        try {
+-            Thread.sleep(500);
+-        } catch (InterruptedException e) {
+-            // ignore
+-        }
+-
+-        return savedStoryDTO;
+-    }
+-
+-    @DELETE
+-    @Path("/delete/{storyId}")
+-    public Response delete(@PathParam("storyId") Long storyId) {
+-        storyService.delete(storyId);
+-        return Response.ok("Successful deletion from server!").build();
++        return storyDTO;
+     }
+ 
+     @DELETE
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/META-INF/MANIFEST.MF
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/META-INF/MANIFEST.MF	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/resources/META-INF/MANIFEST.MF	(revision )
+@@ -1,2 +1,2 @@
+ Built-By: Maryna Pristrom
+-Build-Jdk: 1.7.0
++Build-Jdk: 1.7.0
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/AddDeleteStoryAction.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/AddDeleteStoryAction.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/actions/AddDeleteStoryAction.java	(revision )
+@@ -0,0 +1,105 @@
++package com.jbehaveforjira.plugin.actions;
++
++import com.atlassian.jira.bc.issue.IssueService;
++import com.atlassian.jira.issue.Issue;
++import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.user.ApplicationUser;
++import com.atlassian.jira.web.action.JiraWebActionSupport;
++import com.jbehaveforjira.plugin.dto.story.JiraStory;
++import com.jbehaveforjira.plugin.service.StoryService;
++import org.apache.commons.lang.Validate;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++public class AddDeleteStoryAction extends JiraWebActionSupport {
++
++    private Long id;
++
++    private final IssueService issueService;
++
++    private final JiraAuthenticationContext authenticationContext;
++
++    private final StoryService storyService;
++
++    public AddDeleteStoryAction(IssueService issueService,
++                                JiraAuthenticationContext authenticationContext, StoryService storyService) {
++        this.issueService = issueService;
++        this.authenticationContext = authenticationContext;
++        this.storyService = storyService;
++    }
++
++    @Override
++    public String doDefault() throws Exception {
++        return super.doDefault();
++    }
++
++    @Override
++    protected String doExecute() throws Exception {
++        return super.doExecute();
++    }
++
++    @Override
++    protected void doValidation() {
++        super.doValidation();
++    }
++
++    public void doAdd() {
++
++        Issue issueObject = getIssueObject();
++        Validate.notNull(issueObject);
++
++        JiraStory story = new JiraStory();
++        story.setProjectKey(issueObject.getProjectObject().getKey());
++        story.setIssueKey(issueObject.getKey());
++        ApplicationUser user = authenticationContext.getUser();
++        if (user != null) {
++            String username = user.getUsername();
++            story.setLastEditedBy(username);
++        }
++        story.setAsString("");
++
++        storyService.save(story);
++
++        returnComplete("/browse/" + issueObject.getKey());
++    }
++
++    public void doDelete() {
++
++        Issue issueObject = getIssueObject();
++        Validate.notNull(issueObject);
++        storyService.delete(issueObject.getProjectObject().getKey(), issueObject.getKey());
++
++        returnComplete("/browse/" + issueObject.getKey());
++    }
++
++    private Issue getIssue() {
++        return getIssueObject();
++    }
++
++    private Issue getIssueObject() {
++        ApplicationUser appUser = authenticationContext.getUser();
++        if (appUser != null) {
++            final IssueService.IssueResult issueResult = issueService.getIssue(
++                    appUser.getDirectoryUser(), id);
++            if (!issueResult.isValid()) {
++                this.addErrorCollection(issueResult.getErrorCollection());
++                return null;
++            }
++            return issueResult.getIssue();
++        } else {
++            return null;
++        }
++    }
++
++    public Long getId() {
++        return id;
++    }
++
++    public void setId(Long id) {
++        this.id = id;
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(revision )
+@@ -0,0 +1,75 @@
++package com.jbehaveforjira.plugin.integration.perforce;
++
++import javax.xml.bind.annotation.XmlAccessType;
++import javax.xml.bind.annotation.XmlAccessorType;
++import javax.xml.bind.annotation.XmlAttribute;
++import javax.xml.bind.annotation.XmlRootElement;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class PerforceMapping {
++
++    @XmlAttribute(name="my_test_attribute", required = true)
++    private String serverUri;
++
++    private String username;
++
++    private String password;
++
++    private String remoteDirPath;
++
++    private String subDirExpression;
++
++    private String tempCheckOutDir;
++
++    private String commitMessage;
++
++    protected PerforceMapping() {
++
++    }
++
++    public PerforceMapping(String projectKey, String serverUri, String username, String password,
++                           String remoteDirPath, String subDirExpression, String tempCheckOutDir, String commitMessage) {
++        this.serverUri = serverUri;
++        this.username = username;
++        this.password = password;
++        this.remoteDirPath = remoteDirPath;
++        this.subDirExpression = subDirExpression;
++        this.tempCheckOutDir = tempCheckOutDir;
++        this.commitMessage = commitMessage;
++    }
++
++    public String getServerUri() {
++        return serverUri;
++    }
++
++    public String getUsername() {
++        return username;
++    }
++
++    public String getPassword() {
++        return password;
++    }
++
++    public String getRemoteDirPath() {
++        return remoteDirPath;
++    }
++
++    public String getTempCheckOutDir() {
++        return tempCheckOutDir;
++    }
++
++    public String getCommitMessage() {
++        return commitMessage;
++    }
++
++    public String getSubDirExpression() {
++        return subDirExpression;
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/AdminServlet.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/AdminServlet.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/config/AdminServlet.java	(revision )
+@@ -0,0 +1,91 @@
++package com.jbehaveforjira.plugin.config;
++
++import com.atlassian.jira.project.Project;
++import com.atlassian.jira.project.ProjectManager;
++import com.atlassian.sal.api.auth.LoginUriProvider;
++import com.atlassian.sal.api.user.UserManager;
++import com.atlassian.templaterenderer.TemplateRenderer;
++
++import javax.servlet.ServletException;
++import javax.servlet.http.HttpServlet;
++import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
++import java.io.IOException;
++import java.net.URI;
++import java.util.*;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++public class AdminServlet extends HttpServlet {
++
++
++    private final UserManager userManager;
++    private final LoginUriProvider loginUriProvider;
++    private final TemplateRenderer renderer;
++    private final ProjectManager projectManager;
++    private final SettingsManager settingsManager;
++
++    public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, ProjectManager projectManager, SettingsManager settingsManager)
++    {
++        this.userManager = userManager;
++        this.loginUriProvider = loginUriProvider;
++        this.renderer = renderer;
++        this.projectManager = projectManager;
++        this.settingsManager = settingsManager;
++    }
++
++    @Override
++    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
++    {
++        String username = userManager.getRemoteUsername(request);
++        if (username == null || !userManager.isSystemAdmin(username))
++        {
++            redirectToLogin(request, response);
++            return;
++        }
++
++        Map<String, Object> context = new HashMap<String, Object>();
++
++        List<Project> projectObjects = projectManager.getProjectObjects();
++        List<String> projectKeys = new ArrayList<String>(projectObjects.size());
++        for (Project projectObject : projectObjects) {
++            projectKeys.add(projectObject.getKey());
++        }
++        context.put("projectKeys", projectKeys);
++
++        Map<String, Setting> allSettings = settingsManager.allSettings();
++        List<String> keys = new ArrayList<String>(allSettings.keySet());
++        Collections.sort(keys, new Comparator<String>() {
++            @Override
++            public int compare(String o1, String o2) {
++                return o1.compareTo(o2);
++            }
++        });
++        context.put("settingKeys", keys);
++//        Collection<Setting> values = allSettings.values();
++        context.put("settingValuesMap", allSettings);
++
++        response.setContentType("text/html;charset=utf-8");
++        renderer.render("velocity/admin.vm", context, response.getWriter());
++    }
++
++    private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
++    {
++        response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
++    }
++
++    private URI getUri(HttpServletRequest request)
++    {
++        StringBuffer builder = request.getRequestURL();
++        if (request.getQueryString() != null)
++        {
++            builder.append("?");
++            builder.append(request.getQueryString());
++        }
++        return URI.create(builder.toString());
++    }
++}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
+@@ -5,15 +5,12 @@
+ import com.atlassian.jira.event.issue.IssueEvent;
+ import com.atlassian.jira.event.type.EventType;
+ import com.atlassian.jira.issue.Issue;
+-import com.jbehaveforjira.plugin.ao.JBehaveStory;
+ import com.jbehaveforjira.plugin.ao.JBehaveStoryDao;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.DisposableBean;
+ import org.springframework.beans.factory.InitializingBean;
+ 
+-import java.util.List;
+-
+ /**
+  * @author Maryna Pristrom
+  */
+@@ -32,6 +29,7 @@
+ 
+     /**
+      * Called when the plugin has been enabled.
++     *
+      * @throws Exception
+      */
+     @Override
+@@ -42,6 +40,7 @@
+ 
+     /**
+      * Called when the plugin is being disabled or removed.
++     *
+      * @throws Exception
+      */
+     @Override
+@@ -58,13 +57,7 @@
+             Issue issue = issueEvent.getIssue();
+             String issueKey = issue.getKey();
+             String projectKey = issue.getProjectObject().getKey();
+-            List<JBehaveStory> stories = storyDao.findByProjectAndIssueKey(projectKey, issueKey);
+-            if (!stories.isEmpty()) {
+-                for (JBehaveStory story : stories) {
+-                    log.debug("Deleting JBehave story for issue with key - " + issueKey + " in project - " + projectKey + ", due to issue deletion");
+-                    storyDao.delete(story);
+-                }
+-            }
++            storyDao.delete(projectKey, issueKey);
+         }
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java	(revision )
+@@ -0,0 +1,34 @@
++package com.jbehaveforjira.plugin.integration.perforce;
++
++import javax.xml.bind.annotation.XmlAccessType;
++import javax.xml.bind.annotation.XmlAccessorType;
++import javax.xml.bind.annotation.XmlRootElement;
++import java.util.HashMap;
++import java.util.Map;
++
++/**
++ * TODO - add at least one line of java doc comment.
++ *
++ * @author stasyukd
++ * @since 6.0.0-SNAPSHOT
++ */
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class PerforceConfig {
++
++    private boolean enabled = false;
++
++    private Map<String, PerforceMapping> mappings = new HashMap<String, PerforceMapping>();
++
++    public PerforceMapping forProjectKey(String projectKey) {
++        return mappings.get(projectKey);
++    }
++
++    public Map<String, PerforceMapping> getMappings() {
++        return mappings;
++    }
++
++    public boolean isEnabled() {
++        return enabled;
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryService.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/service/StoryService.java	(revision )
+@@ -8,17 +8,21 @@
+ @Transactional
+ public interface StoryService {
+ 
++    JiraStory findByProjectAndIssueKey(String projectKey, String issueKey, boolean updateFromVCS);
++
++    boolean issueHasStory(String projectKey, String issueKey);
++
+     JiraStory findByProjectAndIssueKey(String projectKey, String issueKey);
+ 
+     List<JiraStory> findByProjectKey(String projectKey);
+ 
+-    JiraStory findById(int storyId);
++    void delete(String projectKey, String issueKey);
+ 
+-    void delete(Long storyId);
++    void saveAndCommit(JiraStory story);
+ 
+-    void delete(String projectKey, String issueKey);
++    void save(JiraStory storyDTO);
+ 
+-    JiraStory saveOrUpdate(JiraStory storyDTO);
++    Long commitToVCS(JiraStory storyDTO);
+ }
+ 
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/RevisionInfo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/RevisionInfo.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/integration/RevisionInfo.java	(revision )
+@@ -0,0 +1,39 @@
++package com.jbehaveforjira.plugin.integration;
++
++import java.util.Date;
++
++/**
++ */
++public class RevisionInfo {
++
++    private final Long revisionNumber;
++
++    private final String userName;
++
++    private final Date date;
++
++    private final String commitMessage;
++
++    public RevisionInfo(Long revisionNumber, String userName, Date date, String commitMessage) {
++        this.revisionNumber = revisionNumber;
++        this.userName = userName;
++        this.date = date;
++        this.commitMessage = commitMessage;
++    }
++
++    public Long getRevisionNumber() {
++        return revisionNumber;
++    }
++
++    public String getUserName() {
++        return userName;
++    }
++
++    public Date getDate() {
++        return date;
++    }
++
++    public String getCommitMessage() {
++        return commitMessage;
++    }
++}
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(date 1426521820000)
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(revision )
+@@ -15,6 +15,7 @@
+         storyDTO.setIssueKey(story.getIssueKey());
+         storyDTO.setVersion(story.getVersion());
+         storyDTO.setAsString(story.getAsString());
++        storyDTO.setLastEditedBy(story.getLastEditedBy());
+ 
+         return storyDTO;
+     }
+Index: jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/rest/ResponseKind.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/rest/ResponseKind.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin-repo/src/main/java/com/jbehaveforjira/plugin/dto/rest/ResponseKind.java	(revision )
+@@ -0,0 +1,7 @@
++package com.jbehaveforjira.plugin.dto.rest;
++
++public enum ResponseKind {
++
++    success,
++    failure
++}
