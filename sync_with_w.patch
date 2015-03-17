@@ -1,0 +1,65 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsServiceImpl.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(revision 52e1bb1c7107866a6e4cbd9018d359825726d515)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/JiraStepDocsService.java	(revision )
+@@ -9,11 +9,11 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+-public class StepDocsServiceImpl implements StepDocsService {
++public class JiraStepDocsService implements StepDocsService {
+ 
+     private final JBehaveStepDocDao stepDocDao;
+ 
+-    public StepDocsServiceImpl(JBehaveStepDocDao stepDocDao) {
++    public JiraStepDocsService(JBehaveStepDocDao stepDocDao) {
+         this.stepDocDao = stepDocDao;
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision 52e1bb1c7107866a6e4cbd9018d359825726d515)
++++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -11,11 +11,12 @@
+     <url>http://www.jbehaveforjira.com</url>
+     <properties>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+-        <amps.version>4.2.10</amps.version>
++        <!--<amps.version>4.2.10</amps.version>-->
++        <amps.version>5.0.0</amps.version>
+         <ao.version>0.19.7</ao.version>
+-        <!--<jira.version>6.3.13</jira.version>-->
++        <jira.version>6.3.13</jira.version>
+         <!--<jira.version>6.1</jira.version>-->
+-        <jira.version>6.0.8</jira.version>
++        <!--<jira.version>6.0.8</jira.version>-->
+         <!--<jira.version>6.0</jira.version>-->
+         <java.version>1.6</java.version>
+         <atlassian.templaterenderer.version>1.0.5</atlassian.templaterenderer.version>
+@@ -24,13 +25,17 @@
+         <plugins>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+-                <artifactId>maven-jar-plugin</artifactId>
+-                <configuration>
+-                    <archive>
+-                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+-                    </archive>
+-                </configuration>
++                <artifactId>maven-dependency-plugin</artifactId>
+             </plugin>
++            <!--<plugin>-->
++                <!--<groupId>org.apache.maven.plugins</groupId>-->
++                <!--<artifactId>maven-jar-plugin</artifactId>-->
++                <!--<configuration>-->
++                    <!--<archive>-->
++                        <!--<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>-->
++                    <!--</archive>-->
++                <!--</configuration>-->
++            <!--</plugin>-->
+             <plugin>
+                 <groupId>com.atlassian.maven.plugins</groupId>
+                 <artifactId>maven-jira-plugin</artifactId>
