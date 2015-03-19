@@ -1,627 +1,105 @@
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
-@@ -0,0 +1,150 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class JiraStoryHtml {
-+
-+    private String environment;
-+
-+    private String storyPath;
-+
-+    private Long storyVersion;
-+
-+    public TestStatus status;
-+
-+    private Integer totalScenarios;
-+
-+    private Integer totalScenariosPassed;
-+
-+    private Integer totalScenariosFailed;
-+
-+    private Integer totalScenariosPending;
-+
-+    private Integer totalScenariosSkipped;
-+
-+    private Integer totalScenariosNotPerformed;
-+
-+    private String htmlReport;
-+
-+    protected JiraStoryHtml() {
-+    }
-+
-+    public JiraStoryHtml(String environment, String storyPath,
-+                               Long storyVersion, TestStatus status, String htmlReport) {
-+        this.environment = environment;
-+        this.storyPath = storyPath;
-+        this.storyVersion = storyVersion;
-+        this.status = status;
-+        this.htmlReport = htmlReport;
-+    }
-+
-+    public String getEnvironment() {
-+        return environment;
-+    }
-+
-+    public void setEnvironment(String environment) {
-+        this.environment = environment;
-+    }
-+
-+    public String getStoryPath() {
-+        return storyPath;
-+    }
-+
-+    public void setStoryPath(String storyPath) {
-+        this.storyPath = storyPath;
-+    }
-+
-+    public Long getStoryVersion() {
-+        return storyVersion;
-+    }
-+
-+    public void setStoryVersion(Long storyVersion) {
-+        this.storyVersion = storyVersion;
-+    }
-+
-+    public TestStatus getStatus() {
-+        return status;
-+    }
-+
-+    public void setStatus(TestStatus status) {
-+        this.status = status;
-+    }
-+
-+    public String getHtmlReport() {
-+        return htmlReport;
-+    }
-+
-+    public void setHtmlReport(String htmlReport) {
-+        this.htmlReport = htmlReport;
-+    }
-+
-+    public Integer getTotalScenarios() {
-+        return totalScenarios;
-+    }
-+
-+    public void setTotalScenarios(Integer totalScenarios) {
-+        this.totalScenarios = totalScenarios;
-+    }
-+
-+    public Integer getTotalScenariosPassed() {
-+        return totalScenariosPassed;
-+    }
-+
-+    public void setTotalScenariosPassed(Integer totalScenariosPassed) {
-+        this.totalScenariosPassed = totalScenariosPassed;
-+    }
-+
-+    public Integer getTotalScenariosFailed() {
-+        return totalScenariosFailed;
-+    }
-+
-+    public void setTotalScenariosFailed(Integer totalScenariosFailed) {
-+        this.totalScenariosFailed = totalScenariosFailed;
-+    }
-+
-+    public Integer getTotalScenariosPending() {
-+        return totalScenariosPending;
-+    }
-+
-+    public void setTotalScenariosPending(Integer totalScenariosPending) {
-+        this.totalScenariosPending = totalScenariosPending;
-+    }
-+
-+    public Integer getTotalScenariosSkipped() {
-+        return totalScenariosSkipped;
-+    }
-+
-+    public void setTotalScenariosSkipped(Integer totalScenariosSkipped) {
-+        this.totalScenariosSkipped = totalScenariosSkipped;
-+    }
-+
-+    public Integer getTotalScenariosNotPerformed() {
-+        return totalScenariosNotPerformed;
-+    }
-+
-+    public void setTotalScenariosNotPerformed(Integer totalScenariosNotPerformed) {
-+        this.totalScenariosNotPerformed = totalScenariosNotPerformed;
-+    }
-+
-+    @Override
-+    public String toString() {
-+        return "JiraStoryHtmlReport{" +
-+                "environment='" + environment + '\'' +
-+                ", storyPath='" + storyPath + '\'' +
-+                ", storyVersion=" + storyVersion +
-+                ", status=" + status +
-+                ", totalScenarios=" + totalScenarios +
-+                ", totalScenariosPassed=" + totalScenariosPassed +
-+                ", totalScenariosFailed=" + totalScenariosFailed +
-+                ", totalScenariosPending=" + totalScenariosPending +
-+                ", totalScenariosSkipped=" + totalScenariosSkipped +
-+                ", totalScenariosNotPerformed=" + totalScenariosNotPerformed +
-+                ", htmlReport='" + htmlReport + '\'' +
-+                '}';
-+    }
-+}
-+
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1426611071000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
+@@ -108,6 +108,7 @@
+         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
+         <conditions type="and">
+             <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+     </web-section>
+     <web-item name="Add JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
+@@ -119,8 +120,8 @@
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                 <param name="permission" value="edit"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition" invert="true">
+-            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition" invert="true"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+         <label key="viewIssuePage.webItem.createStory.label"/>
+         <link linkId="add-jbehave-story-link">/secure/AddDeleteStoryAction!add.jspa?id=${issueId}</link>
+@@ -135,8 +136,8 @@
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                 <param name="permission" value="edit"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
+-            </condition>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+         <label key="viewIssuePage.webItem.deleteStory.label"/>
+         <link linkId="add-jbehave-story-link">/secure/AddDeleteStoryAction!delete.jspa?id=${issueId}</link>
+@@ -170,9 +171,8 @@
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                 <param name="permission" value="edit"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
+-            </condition>
+-            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+     </web-item>
+     <webwork1 key="update-jbehave-preferences-webwork-module" name="Update JBehave Preferences Webwork Module"
+@@ -214,9 +214,8 @@
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                 <param name="permission" value="edit"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
+-            </condition>
+-            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+     </web-panel>
+     <!--Issue page - Story reports panel-->
+@@ -234,9 +233,8 @@
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+                 <param name="permission" value="edit"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
+-            </condition>
+-            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+     </web-panel>
+     <!-- ==================================================================================================== -->
+Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/ParameterInfo.java	(revision )
-@@ -0,0 +1,62 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class ParameterInfo {
-+
-+    private String parameterType;
-+
-+    private String simpleParameterType;
-+
-+    private boolean listType;
-+
-+    private List<String> allowedValues;
-+
-+    private List<TabularFieldInfo> tabularFieldInfos;
-+
-+    public List<TabularFieldInfo> getTabularFieldInfos() {
-+        return tabularFieldInfos;
-+    }
-+
-+    public void setTabularFieldInfos(List<TabularFieldInfo> tabularFieldInfos) {
-+        this.tabularFieldInfos = tabularFieldInfos;
-+    }
-+
-+    public String getSimpleParameterType() {
-+        return simpleParameterType;
-+    }
-+
-+    public void setSimpleParameterType(String simpleParameterType) {
-+        this.simpleParameterType = simpleParameterType;
-+    }
-+
-+    public String getParameterType() {
-+        return parameterType;
-+    }
-+
-+    public void setParameterType(String parameterType) {
-+        this.parameterType = parameterType;
-+    }
-+
-+    public boolean isListType() {
-+        return listType;
-+    }
-+
-+    public void setListType(boolean listType) {
-+        this.listType = listType;
-+    }
-+
-+    public List<String> getAllowedValues() {
-+        return allowedValues;
-+    }
-+
-+    public void setAllowedValues(List<String> allowedValues) {
-+        this.allowedValues = allowedValues;
-+    }
-+
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoriesPayload.java	(revision )
-@@ -0,0 +1,31 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.story;
-+
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlElement;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+@XmlRootElement(name = "stories_payload")
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class StoriesPayload {
-+
-+    @XmlElement
-+    private List<JiraStory> stories;
-+
-+    /**
-+     * Constructor for use via reflection.
-+     */
-+    protected StoriesPayload() {
-+    }
-+
-+    public StoriesPayload(List<JiraStory> stories) {
-+        this.stories = stories;
-+    }
-+
-+    public List<JiraStory> getStories() {
-+        return stories;
-+    }
-+
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/JiraStory.java	(revision )
-@@ -0,0 +1,50 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.story;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class JiraStory {
-+
-+    private String projectKey;
-+
-+    private String issueKey;
-+
-+    private Long version;
-+
-+    private String asString;
-+
-+    public String getIssueKey() {
-+        return issueKey;
-+    }
-+
-+    public void setIssueKey(String issueKey) {
-+        this.issueKey = issueKey;
-+    }
-+
-+    public String getProjectKey() {
-+        return projectKey;
-+    }
-+
-+    public void setProjectKey(String projectKey) {
-+        this.projectKey = projectKey;
-+    }
-+
-+    public Long getVersion() {
-+        return version;
-+    }
-+
-+    public void setVersion(Long version) {
-+        this.version = version;
-+    }
-+
-+    public String getAsString() {
-+        return asString;
-+    }
-+
-+    public void setAsString(String asString) {
-+        this.asString = asString;
-+    }
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-@@ -0,0 +1,32 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.stepdoc;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class TabularFieldInfo {
-+
-+    private String fieldName;
-+
-+    private List<String> allowedValues;
-+
-+    public String getFieldName() {
-+        return fieldName;
-+    }
-+
-+    public void setFieldName(String fieldName) {
-+        this.fieldName = fieldName;
-+    }
-+
-+    public List<String> getAllowedValues() {
-+        return allowedValues;
-+    }
-+
-+    public void setAllowedValues(List<String> allowedValues) {
-+        this.allowedValues = allowedValues;
-+    }
-+
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
-@@ -0,0 +1,25 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.storyreport;
-+
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+@XmlRootElement(name = "stories_payload")
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class StoryTestReportsPayload {
-+
-+    private List<JiraStoryHtml> storyTestReports;
-+
-+    protected StoryTestReportsPayload() {
-+    }
-+
-+    public StoryTestReportsPayload(List<JiraStoryHtml> storyTestReports) {
-+        this.storyTestReports = storyTestReports;
-+    }
-+
-+    public List<JiraStoryHtml> getStoryTestReports() {
-+        return storyTestReports;
-+    }
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
-@@ -0,0 +1,80 @@
-+package org.bitbucket.jbehaveforjira.plugin.rest;
-+
-+import org.apache.commons.lang.Validate;
-+
-+import javax.ws.rs.GET;
-+import javax.ws.rs.Path;
-+import javax.ws.rs.Produces;
-+import javax.ws.rs.core.MediaType;
-+import java.io.BufferedReader;
-+import java.io.IOException;
-+import java.io.InputStream;
-+import java.io.InputStreamReader;
-+
-+@Path("/groovy-client")
-+public class GroovyClientDownload {
-+
-+    private final String baseDir = "org/bitbucket/jbehaveforjira/groovyclient/";
-+
-+    @GET
-+    @Path("/story-paths-finder")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    public String getStoryPathsFinder() {
-+
-+        String scriptPath = baseDir + "GroovyStoryPathsFinder.groovy";
-+        String groovyScript = loadScript(scriptPath);
-+        return groovyScript;
-+    }
-+
-+    @GET
-+    @Path("/story-loader")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    public String getStoryLoader() {
-+
-+        String scriptPath = baseDir + "GroovyStoryLoader.groovy";
-+        String groovyScript = loadScript(scriptPath);
-+        return groovyScript;
-+    }
-+
-+    @GET
-+    @Path("/step-doc-reporter")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    public String getStepDocReporter() {
-+
-+        String scriptPath = baseDir + "GroovyStepDocReporter.groovy";
-+        String groovyScript = loadScript(scriptPath);
-+        return groovyScript;
-+    }
-+
-+    @GET
-+    @Path("/story-reporter")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    public String getStoryReporter() {
-+
-+        String scriptPath = baseDir + "GroovyStoryReporter.groovy";
-+        String groovyScript = loadScript(scriptPath);
-+        return groovyScript;
-+    }
-+
-+    private String loadScript(String scriptPath) {
-+
-+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(scriptPath);
-+        Validate.notNull(inputStream);
-+
-+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-+        StringBuilder sb = new StringBuilder();
-+        String line = null;
-+        try {
-+            line = br.readLine();
-+            while (line != null) {
-+                sb.append(line);
-+                sb.append("\n");
-+                line = br.readLine();
-+            }
-+        } catch (IOException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        return sb.toString();
-+    }
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/rest/StoryTestResource.java	(revision )
-@@ -0,0 +1,104 @@
-+package org.bitbucket.jbehaveforjira.plugin.rest;
-+
-+import com.atlassian.jira.bc.issue.search.SearchService;
-+import com.atlassian.jira.security.JiraAuthenticationContext;
-+import org.apache.commons.lang.Validate;
-+import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
-+import org.bitbucket.jbehaveforjira.plugin.dto.storyreport.StoryTestReportsPayload;
-+import org.bitbucket.jbehaveforjira.plugin.service.StoryReportService;
-+import org.bitbucket.jbehaveforjira.plugin.service.StoryService;
-+import org.codehaus.jackson.map.ObjectMapper;
-+import org.slf4j.Logger;
-+import org.slf4j.LoggerFactory;
-+
-+import javax.ws.rs.*;
-+import javax.ws.rs.core.MediaType;
-+import javax.ws.rs.core.Response;
-+import java.io.IOException;
-+import java.util.List;
-+
-+@Path("/story-test")
-+public class StoryTestResource {
-+
-+    private Logger log = LoggerFactory.getLogger(this.getClass());
-+
-+    private final StoryService storyService;
-+
-+    private final StoryReportService storyReportService;
-+
-+    private SearchService searchService;
-+    private JiraAuthenticationContext authenticationContext;
-+
-+    public StoryTestResource(StoryService storyService,
-+                             StoryReportService storyReportService,
-+                             SearchService searchService,
-+                             JiraAuthenticationContext authenticationContext) {
-+        this.storyService = storyService;
-+        this.storyReportService = storyReportService;
-+        this.searchService = searchService;
-+        this.authenticationContext = authenticationContext;
-+    }
-+
-+    @POST
-+    @Path("/add/{projectKey}/{issueKey}")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    @Consumes(MediaType.APPLICATION_JSON)
-+    public String addStoryTestReport(
-+            @PathParam("projectKey") String projectKey,
-+            @PathParam("issueKey") String issueKey,
-+            String payload) {
-+
-+        ObjectMapper mapper = new ObjectMapper();
-+        JiraStoryHtml storyReportDTO = null;
-+        try {
-+            storyReportDTO = mapper.readValue(payload, JiraStoryHtml.class);
-+        } catch (IOException e) {
-+            throw new RuntimeException(e);
-+        }
-+
-+        storyReportService.addStoryTestReport(projectKey, issueKey, storyReportDTO);
-+        return "success";
-+    }
-+
-+    @POST
-+    @Path("/add-for-path/{projectKey}/{storyPath}")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    @Consumes(MediaType.APPLICATION_JSON)
-+    public String addStoryTestReportForPath(
-+            @PathParam("projectKey") String projectKey,
-+            @PathParam("storyPath") String storyPath,
-+            String payload) {
-+
-+        Validate.notNull(storyPath);
-+        Validate.isTrue(storyPath.endsWith(".story"));
-+        String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
-+
-+        return this.addStoryTestReport(projectKey, issueKey, payload);
-+    }
-+
-+
-+
-+    @GET
-+    @Path("/find/{projectKey}/{issueKey}")
-+    @Produces(MediaType.APPLICATION_JSON)
-+    @Consumes(MediaType.APPLICATION_JSON)
-+    public StoryTestReportsPayload findStoryTestReport(
-+            @PathParam("projectKey") String projectKey,
-+            @PathParam("issueKey") String issueKey) {
-+
-+        List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
-+
-+        StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
-+        return storyTestReportsPayloadDTO;
-+    }
-+
-+    @DELETE
-+    @Path("/delete/{projectKey}/{issueKey}")
-+    public Response deleteStoryTestReport(
-+            @PathParam("projectKey") String projectKey,
-+            @PathParam("issueKey") String issueKey) {
-+
-+        storyReportService.deleteForIssue(projectKey, issueKey);
-+        return Response.ok("Successful deletion from server!").build();
-+    }
-+}
-Index: jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
-+++ jbehave-for-jira-plugin/src/main/java/org/bitbucket/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
-@@ -0,0 +1,21 @@
-+package org.bitbucket.jbehaveforjira.plugin.dto.story;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.List;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class StoryPaths {
-+
-+    private List<String> paths;
-+
-+    public List<String> getPaths() {
-+        return paths;
-+    }
-+
-+    public void setPaths(List<String> paths) {
-+        this.paths = paths;
-+    }
-+}
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1426611071000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -27,15 +27,15 @@
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-dependency-plugin</artifactId>
+             </plugin>
+-            <!--<plugin>-->
+-                <!--<groupId>org.apache.maven.plugins</groupId>-->
+-                <!--<artifactId>maven-jar-plugin</artifactId>-->
+-                <!--<configuration>-->
+-                    <!--<archive>-->
+-                        <!--<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>-->
+-                    <!--</archive>-->
+-                <!--</configuration>-->
+-            <!--</plugin>-->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <configuration>
++                    <archive>
++                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
++                    </archive>
++                </configuration>
++            </plugin>
+             <plugin>
+                 <groupId>com.atlassian.maven.plugins</groupId>
+                 <artifactId>maven-jira-plugin</artifactId>
