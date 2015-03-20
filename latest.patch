@@ -1,105 +1,492 @@
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1426611071000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -108,6 +108,7 @@
-         <label key="viewIssuePage.webSection.jbehaveStory.label"/>
-         <conditions type="and">
-             <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
-+            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
-         </conditions>
-     </web-section>
-     <web-item name="Add JBehave Story" i18n-name-key="viewIssuePage.webItem.createStory.name"
-@@ -119,8 +120,8 @@
-             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                 <param name="permission" value="edit"/>
-             </condition>
--            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition" invert="true">
--            </condition>
-+            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition" invert="true"/>
-+            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
-         </conditions>
-         <label key="viewIssuePage.webItem.createStory.label"/>
-         <link linkId="add-jbehave-story-link">/secure/AddDeleteStoryAction!add.jspa?id=${issueId}</link>
-@@ -135,8 +136,8 @@
-             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                 <param name="permission" value="edit"/>
-             </condition>
--            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
--            </condition>
-+            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
-+            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
-         </conditions>
-         <label key="viewIssuePage.webItem.deleteStory.label"/>
-         <link linkId="add-jbehave-story-link">/secure/AddDeleteStoryAction!delete.jspa?id=${issueId}</link>
-@@ -170,9 +171,8 @@
-             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                 <param name="permission" value="edit"/>
-             </condition>
--            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
--            </condition>
--            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
-+            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
-+            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
-         </conditions>
-     </web-item>
-     <webwork1 key="update-jbehave-preferences-webwork-module" name="Update JBehave Preferences Webwork Module"
-@@ -214,9 +214,8 @@
-             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                 <param name="permission" value="edit"/>
-             </condition>
--            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
--            </condition>
--            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
-+            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
-+            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
-         </conditions>
-     </web-panel>
-     <!--Issue page - Story reports panel-->
-@@ -234,9 +233,8 @@
-             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
-                 <param name="permission" value="edit"/>
-             </condition>
--            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition">
--            </condition>
--            <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
-+            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
-+            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
-         </conditions>
-     </web-panel>
-     <!-- ==================================================================================================== -->
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(revision )
+@@ -1,30 +1,5 @@
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:view-issue-page-3rd-party-resources")
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:view-issue-page-resources")
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:update-jbehave-preferences-web-resource")
+-<div id="story-panel"><!--DEFAULT content!--></div>
+-
+-##<div id="story-panel">
+-##    <div id="myDiv" tabindex="-1" class="editable-field active">
+-##        <script type="text/javascript">
+-##            var counter = 0;
+-##            counter++;
+-##//            alert("hello world - " + counter);
+-##
+-##//            AJS.$(function () {
+-##//                alert("Alert on window load event");
+-##//            });
+-##        </script>
+-##        <textarea rows="10" >Test area</textarea><br><br>
+-##        <span class="overlay-icon icon icon-edit-sml"></span>
+-##    </div>
+-##    <div id="storyContainer" class="editable-field active">
+-##        <div id="storyMsgBar"></div>
+-##        <div id="storyEditAreaContainer">
+-##            <textarea id="jbStoryTextArea"
+-##                      rows="10"
+-####                      style="display: none;"
+-##                      placeholder="enter story text here"></textarea>
+-##        </div>
+-##    </div>
+-##</div>
++<div id="story-panel">Click to add JBehave story<!--DEFAULT content!--></div>
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(revision )
+@@ -5,12 +5,6 @@
+ import javax.xml.bind.annotation.XmlAttribute;
+ import javax.xml.bind.annotation.XmlRootElement;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ @XmlRootElement
+ @XmlAccessorType(XmlAccessType.FIELD)
+ public class PerforceMapping {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingDTO.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingDTO.java	(revision )
+@@ -6,12 +6,6 @@
+ import javax.xml.bind.annotation.XmlAccessorType;
+ import javax.xml.bind.annotation.XmlRootElement;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ @XmlRootElement
+ @XmlAccessorType(XmlAccessType.FIELD)
+ public class SettingDTO {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(revision )
+@@ -16,6 +16,10 @@
+     public boolean shouldDisplay(Map<String, Object> context) {
+         final User profileUser = (User) context.get("profileUser");
+         final User currentUser = (User) context.get("currentUser");
++        if (profileUser != null && currentUser != null) {
+-        return profileUser.equals(currentUser);
++            return profileUser.equals(currentUser);
++        } else {
++            return false;
++        }
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java	(revision )
+@@ -2,12 +2,6 @@
+ 
+ import com.jbehaveforjira.plugin.dto.story.JiraStory;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ public interface VcsService {
+ 
+     Long commit(JiraStory story);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingsDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingsDTO.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/SettingsDTO.java	(revision )
+@@ -6,12 +6,6 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ @XmlRootElement
+ @XmlAccessorType(XmlAccessType.FIELD)
+ public class SettingsDTO {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -592,7 +592,7 @@
+ 
+         this.findStoryReports = function (projectKey, issueKey, callBack) {
+ 
+-            var urlString = restPathBase + "story-test/find/" + projectKey + "/" + issueKey;
++            var urlString = restPathBase + "story-report/find/" + projectKey + "/" + issueKey;
+ 
+             var jqxhr = AJS.$.getJSON(urlString);
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java	(revision )
+@@ -6,12 +6,6 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ @XmlRootElement
+ @XmlAccessorType(XmlAccessType.FIELD)
+ public class PerforceConfig {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/SettingParseException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/SettingParseException.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/SettingParseException.java	(revision )
+@@ -1,11 +1,5 @@
+ package com.jbehaveforjira.plugin.config;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ public class SettingParseException extends Exception {
+ 
+     public SettingParseException(String message) {
 Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1426611071000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -27,15 +27,15 @@
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-dependency-plugin</artifactId>
-             </plugin>
--            <!--<plugin>-->
--                <!--<groupId>org.apache.maven.plugins</groupId>-->
--                <!--<artifactId>maven-jar-plugin</artifactId>-->
--                <!--<configuration>-->
--                    <!--<archive>-->
--                        <!--<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>-->
--                    <!--</archive>-->
--                <!--</configuration>-->
--            <!--</plugin>-->
-+            <plugin>
-+                <groupId>org.apache.maven.plugins</groupId>
-+                <artifactId>maven-jar-plugin</artifactId>
-+                <configuration>
-+                    <archive>
-+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-+                    </archive>
-+                </configuration>
-+            </plugin>
-             <plugin>
-                 <groupId>com.atlassian.maven.plugins</groupId>
-                 <artifactId>maven-jira-plugin</artifactId>
+@@ -6,7 +6,7 @@
+     <artifactId>jira-plugin</artifactId>
+     <packaging>atlassian-plugin</packaging>
+     <name>JBehave For Jira - Jira Plugin</name>
+-    <version>1.0.4</version>
++    <version>1.0.5</version>
+     <description>Provides integration with JBehave BDD framework</description>
+     <url>http://www.jbehaveforjira.com</url>
+     <properties>
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/AddDeleteStoryAction.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/AddDeleteStoryAction.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/actions/AddDeleteStoryAction.java	(revision )
+@@ -9,12 +9,6 @@
+ import com.jbehaveforjira.plugin.service.StoryService;
+ import org.apache.commons.lang.Validate;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ public class AddDeleteStoryAction extends JiraWebActionSupport {
+ 
+     private Long id;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(revision )
+@@ -25,10 +25,14 @@
+     public boolean shouldDisplay(Map<String, Object> context) {
+ 
+         Project project = (Project) context.get("project");
+-        String projectKey = project.getKey();
+         Issue issue = (Issue) context.get("issue");
++        if (project != null && issue != null) {
++            String projectKey = project.getKey();
+-        String issueKey = issue.getKey();
+-        return  storyService.issueHasStory(projectKey, issueKey);
++            String issueKey = issue.getKey();
++            return  storyService.issueHasStory(projectKey, issueKey);
++        } else {
++            return false;
++        }
+     }
+ 
+     public boolean hasStory(String projectKey, String issueKey) {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/AdminServlet.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/AdminServlet.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/AdminServlet.java	(revision )
+@@ -14,12 +14,6 @@
+ import java.net.URI;
+ import java.util.*;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ public class AdminServlet extends HttpServlet {
+ 
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/SettingsManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/SettingsManager.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/SettingsManager.java	(revision )
+@@ -8,12 +8,6 @@
+ import java.util.Map;
+ import java.util.concurrent.ConcurrentHashMap;
+ 
+-/**
+- * TODO - add at least one line of java doc comment.
+- *
+- * @author stasyukd
+- * @since 6.0.0-SNAPSHOT
+- */
+ public class SettingsManager {
+ 
+     private static final String KEY_PREFIX = "com.jbehaveforjira.plugin:";
+@@ -22,96 +16,25 @@
+ 
+     private final PluginSettings pluginSettings;
+ 
+-//    public static final Setting<EnabledProjects> ENABLED_PROJECTS = new Setting(SettingKey.ENABLED_PROJECTS, new EnabledProjects());
+-
+     private Map<String, Setting> allSettings;
+ 
+-//    public static final Setting<Boolean> PERFORCE_ENABLED = new Setting(SettingKey.PERFORCE_ENABLED, Boolean.FALSE) {
+-
+-//        @Override
+-//        public void fromString(String valueAsString) {
+-//            super.value = Boolean.valueOf(valueAsString);
+-//        }
+-//    };
+-//    public static final Setting<PerforceMappings> INTEGRATION_PERFORCE = new Setting<PerforceMappings>(SettingKey.INTEGRATION_PERFORCE, new PerforceMappings()) {
+-
+-//        @Override
+-//        public void fromString(String valueAsString) {
+-//            ObjectMapper objectMapper = new ObjectMapper();
+-//            objectMapper.setVisibilityChecker(objectMapper.getVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+-////            objectMapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+-//
+-//            try {
+-////                CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, PerforceMapping.class);
+-////                Object readValue = objectMapper.readValue(valueAsString, type);
+-//                Object readValue = objectMapper.readValue(valueAsString, PerforceMappings.class);
+-////                Object readValue = objectMapper.readValue(valueAsString, this.value.getClass());
+-////                this.value = (List<PerforceMapping>) readValue;
+-//                this.value = (PerforceMappings) readValue;
+-//            } catch (IOException e) {
+-//                throw new RuntimeException("Exception occurred while attempting to unmarshall plugin setting for key - " + this.key(), e);
+-//            }
+-//        }
+-//    };
+-
+     public SettingsManager(PluginSettingsFactory settingsFactory) {
+ 
+         this.pluginSettings = settingsFactory.createGlobalSettings();
+-
+         allSettings = new ConcurrentHashMap<String, Setting>();
+-
+-//        initSetting(PERFORCE_ENABLED);
+-//        initSetting(INTEGRATION_PERFORCE);
+     }
+ 
+-//    private void initSetting(Setting<?> setting) {
+-//
+-//        allSettings.add(setting);
+-//
+-//        String fullKey = KEY_PREFIX + setting.key();
+-//
+-//        Object value = pluginSettings.get(fullKey);
+-//        if (value != null) {
+-//            String asString = (String) value;
+-//            try {
+-//                setting.fromString(asString);
+-//            } catch (SettingParseException e) {
+-//                log.error("Error occurred while trying to initialize plugin setting for key - " + fullKey
+-//                        + ". The plugin might not function as expected as the result. See application logs for more details.", e);
+-//            }
+-//
+-//        }
+-//    }
+-
+     public Map<String, Setting> allSettings() {
+ 
+         return allSettings;
+     }
+ 
+-//    public void persistSettings() {
+-//        this.storeSetting(PERFORCE_ENABLED);
+-//        this.storeSetting(INTEGRATION_PERFORCE);
+-//    }
+-
+     public void storeSetting(Setting setting) {
+         String asString = setting.asString();
+         String fullKey = KEY_PREFIX + setting.key();
+         pluginSettings.put(fullKey, asString);
+         allSettings.put(setting.key(), setting);
+     }
+-
+-//    public void reloadSettings() {
+-//        reloadSetting(PERFORCE_ENABLED);
+-//        reloadSetting(INTEGRATION_PERFORCE);
+-//    }
+-
+-//    private void reloadSetting(Setting setting) {
+-//        Object value = pluginSettings.get(setting.key().fullKey());
+-//        if (value != null) {
+-//            String asString = (String) value;
+-//            setting.fromString(asString);
+-//        }
+-//    }
+ 
+     public Setting findForKey(String settingKey) {
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
+@@ -1,34 +0,0 @@
+-package com.jbehaveforjira.plugin.conditions;
+-
+-import com.atlassian.jira.issue.Issue;
+-import com.atlassian.jira.project.Project;
+-import com.atlassian.plugin.PluginParseException;
+-import com.atlassian.plugin.web.Condition;
+-import com.jbehaveforjira.plugin.service.StoryService;
+-
+-import java.util.Map;
+-
+-@Deprecated
+-public class JiraIssueHasStoryReportsCondition implements Condition {
+-
+-    private StoryService storyService;
+-
+-    public JiraIssueHasStoryReportsCondition(StoryService storyService) {
+-
+-        this.storyService = storyService;
+-    }
+-
+-    @Override
+-    public void init(Map<String, String> params) throws PluginParseException {
+-    }
+-
+-    @Override
+-    public boolean shouldDisplay(Map<String, Object> context) {
+-
+-        Project project = (Project) context.get("project");
+-        String projectKey = project.getKey();
+-        Issue issue = (Issue) context.get("issue");
+-        String isssueKey = issue.getKey();
+-        return storyService.issueHasStory(projectKey, isssueKey);
+-    }
+-}
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/admin.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/admin.vm	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/admin.vm	(revision )
+@@ -1,9 +1,8 @@
+-##$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+ $webResourceManager.requireResource("com.atlassian.auiplugin:aui-messages")
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:admin-resources")
+ <html>
+ <head>
+-    <title>XProduct Admin</title>
++    <title>JBehave for Jira Admin</title>
+     <meta name="decorator" content="atl.admin">
+ </head>
+ <body>
+@@ -19,11 +18,8 @@
+     </div>
+     <div class="aui-item">
+         <div>
+-            <textarea id="setingValue" rows="20" style="width: 100%">Default value</textarea>
++            <textarea id="setingValue" rows="20" style="width: 100%">Select a setting key on the left to update its value</textarea>
+         </div>
+-##        <div class="field-group">
+-##            <button id="updateSetting" value="Save" class="button">Save</button>
+-##        </div>
+     </div>
+ </div>
+ <div class="aui-group">
+@@ -33,7 +29,6 @@
+             <button id="updateSetting" value="Save" class="button">Update</button>
+         </div>
+     </div>
+-##    <div class="aui-item" style="width:100%; border: 1px solid greenyellow">TEST</div>
+ </div>
+ </body>
+ </html>
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java	(revision dce063cb0dac907fbb0ec7bf211511a9e79f56c1)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java	(revision )
+@@ -30,9 +30,12 @@
+     public boolean shouldDisplay(Map<String, Object> context) {
+ 
+         Project project = (Project) context.get("project");
++        if (project != null ) {
+-        String projectKey = project.getKey();
++            String projectKey = project.getKey();
+-
+-        return this.enabledForProject(projectKey);
++            return this.enabledForProject(projectKey);
++        } else {
++            return false;
++        }
+     }
+ 
+     public boolean enabledForProject(String projectKey) {
