@@ -1,475 +1,224 @@
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java	(date 1426859956000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/VcsService.java	(revision )
-@@ -10,5 +10,5 @@
- 
-     RevisionInfo getLatestRevisionInfo(String projectKey, String issueKey);
- 
--    boolean delete(JiraStory story);
-+    Boolean delete(JiraStory story);
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java	(date 1426881923000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceConfig.java	(revision )
+@@ -25,4 +25,12 @@
+     public boolean isEnabled() {
+         return enabled;
+     }
++
++    public void setEnabled(boolean enabled) {
++        this.enabled = enabled;
++    }
++
++    public void setMappings(Map<String, PerforceMapping> mappings) {
++        this.mappings = mappings;
++    }
  }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/Setting.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(date 1426859956000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(revision )
-@@ -217,7 +217,7 @@
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/Setting.java	(date 1426881923000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/Setting.java	(revision )
+@@ -15,19 +15,23 @@
+ 
+     protected T value;
+ 
++    protected final T exampleValue;
++
+     protected final String key;
+ 
+     /**
+-     * Constructor here only for marshalling purposes that are done via reflection.
++     * Intended for use via Reflection API only.
+      */
+     protected Setting() {
+-        key = null;
++        this.exampleValue = null;
++        this.key = null;
      }
  
-     @Override
--    public boolean delete(JiraStory story) {
-+    public Boolean delete(JiraStory story) {
+-    public Setting(String key, T defaultValue) {
++    public Setting(String key, T defaultValue, T exampleValue) {
+         Validate.notNull(key);
+         this.key = key;
+         this.value = defaultValue;
++        this.exampleValue = exampleValue;
+     }
  
-         if (INTEGRATION_PERFORCE.value().isEnabled()) {
-             PerforceConfig mappings = INTEGRATION_PERFORCE.value();
-@@ -227,7 +227,7 @@
-                 return true;
+     public String key() {
+@@ -42,7 +46,7 @@
+         return value;
+     }
+ 
+-    public void fromString(String valueAsString) throws SettingParseException{
++    public void fromString(String valueAsString) throws SettingParseException {
+         ObjectMapper objectMapper = new ObjectMapper();
+         objectMapper.setVisibilityChecker(objectMapper.getVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+ //        objectMapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+@@ -65,18 +69,30 @@
+     //    @Override
+     public String asString() {
+ 
+-        if (this.value != null) {
++        return asJSonString(this.value);
++    }
++
++    public String exampleAsString() {
++
++        return asJSonString(this.exampleValue);
++    }
++
++    private String asJSonString(T currentValue) {
++
++        if (currentValue != null) {
+             ObjectMapper objectMapper = new ObjectMapper();
+             objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+             try {
+-                String asString = objectMapper.writeValueAsString(this.value);
++                String asString = objectMapper.writeValueAsString(currentValue);
+                 return asString;
+             } catch (IOException e) {
+-                throw new RuntimeException("Exception occurred while attempting to marshall plugin setting for key - " + this.key, e);
++                throw new RuntimeException("Exception occurred while attempting to marshall plugin setting for key - " + this.key
++                        + ". Object value was: " + currentValue, e);
              }
+         } else {
+             return null;
          }
--        return false;
-+        return null;
      }
++
  
-     private static class Helper {
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitService.java
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/utils/Tuple.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitService.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitService.java	(revision )
-@@ -0,0 +1,116 @@
-+package com.jbehaveforjira.plugin.integration.git;
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/utils/Tuple.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/utils/Tuple.java	(revision )
+@@ -0,0 +1,21 @@
++package com.jbehaveforjira.plugin.utils;
 +
-+import com.jbehaveforjira.plugin.config.Setting;
-+import com.jbehaveforjira.plugin.config.SettingsManager;
-+import com.jbehaveforjira.plugin.dto.story.JiraStory;
-+import com.jbehaveforjira.plugin.integration.RevisionInfo;
-+import com.jbehaveforjira.plugin.integration.VcsService;
-+import org.eclipse.jgit.api.CloneCommand;
-+import org.eclipse.jgit.api.Git;
-+import org.eclipse.jgit.lib.Config;
-+import org.eclipse.jgit.lib.Ref;
-+import org.eclipse.jgit.transport.CredentialsProvider;
-+import org.eclipse.jgit.transport.RefSpec;
-+import org.eclipse.jgit.transport.RemoteConfig;
-+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
++public class Tuple<A, B> {
 +
-+import java.io.File;
-+import java.util.Collection;
++    private final A a;
 +
-+public class GitService implements VcsService {
++    private final B b;
 +
-+    public static final Setting<GitConfig> INTEGRATION_GIT = new Setting<GitConfig>("INTEGRATION_GIT", new GitConfig());
-+
-+    private final SettingsManager settingsManager;
-+
-+    public GitService(SettingsManager settingsManager) {
-+
-+        this.settingsManager = settingsManager;
-+        this.settingsManager.loadSetting(INTEGRATION_GIT);
++    public Tuple(A a, B b) {
++        this.a = a;
++        this.b = b;
 +    }
 +
-+    @Override
-+    public Long commit(JiraStory story) {
-+        throw new UnsupportedOperationException("Not yet implemented");
++    public A getA() {
++        return a;
 +    }
 +
-+    @Override
-+    public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
-+        throw new UnsupportedOperationException("Not yet implemented");
-+    }
-+
-+    @Override
-+    public RevisionInfo getLatestRevisionInfo(String projectKey, String issueKey) {
-+
-+        Git result = null;
-+        String remoteUrl = "http://stasyukd@git:7990/scm/ccl/swan.git";
-+
-+        try {
-+            File localPath = File.createTempFile("TestGitRepository", "");
-+            localPath.delete();
-+
-+            // then clone
-+            System.out.println("Cloning from " + remoteUrl + " to " + localPath);
-+
-+            char[] password = "test".toCharArray();
-+            CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider("stasyukd", password);
-+
-+            Collection<Ref> lsResults = Git.lsRemoteRepository().setRemote(remoteUrl)
-+//                    .setCredentialsProvider(credentialsProvider)
-+                    .setTimeout(30)
-+                    .call();
-+
-+//            System.out.println("Listing local branches:");
-+//            List<Ref> call = new Git(repository).branchList().call();
-+//            for (Ref ref : call) {
-+//                System.out.println("Branch: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
-+//            }
-+//            System.out.println("Now including remote branches:");
-+//            call = new Git(repository).branchList().setListMode(ListMode.ALL).call();
-+//            for (Ref ref : call) {
-+//                System.out.println("Branch: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
-+//            }
-+
-+            Config config = new Config();
-+
-+            config.setString("remote", "origin", "pushurl", remoteUrl);
-+            config.setString("url", remoteUrl, "name", "short:");
-+//            config.setString();
-+            RemoteConfig rc = new RemoteConfig(config, "master");
-+            rc.addFetchRefSpec(new RefSpec("+:LatitudeAcceptanceTests/java-apps => ."));
-+            rc.update(config);
-+
-+//            config.save();
-+
-+//            .checkout().addPath("file1.txt").addPath("file2.txt").call();
-+
-+            // cloning repository
-+            CloneCommand cloneCommand = Git.cloneRepository();
-+//            cloneCommand.setRemote(rc.getName());
-+            cloneCommand.setURI(remoteUrl);
-+            cloneCommand.setBranch("refs/heads/feature/coherence-cache");
-+//            cloneCommand.setCredentialsProvider(credentialsProvider);
-+            cloneCommand.setDirectory(localPath);
-+            cloneCommand.setTimeout(30);
-+            cloneCommand.setNoCheckout(true);
-+            result = cloneCommand.call();
-+
-+            // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
-+            System.out.println("Having repository: " + result.getRepository().getDirectory());
-+
-+        } catch (Exception e) {
-+            e.printStackTrace();
-+        } finally {
-+            if (result != null) {
-+                result.close();
-+            }
-+        }
-+
-+        return null;
-+    }
-+
-+    @Override
-+    public Boolean delete(JiraStory story) {
-+        throw new UnsupportedOperationException("Not yet implemented");
++    public B getB() {
++        return b;
 +    }
 +}
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1426859956000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -282,18 +282,14 @@
-     <!-- ==================================================================================================== -->
-     <!--DAOs-->
-     <component key="story-dao" name="Story DAO" class="com.jbehaveforjira.plugin.ao.JBehaveStoryDao"/>
--    <component key="story-test-report-dao" name="Story Test Report DAO"
--               class="com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao"/>
--    <component key="story-step-doc-dao" name="Story Step Doc DAO"
--               class="com.jbehaveforjira.plugin.ao.JBehaveStepDocDao"/>
-+    <component key="story-test-report-dao" name="Story Test Report DAO" class="com.jbehaveforjira.plugin.ao.JBehaveStoryReportDao"/>
-+    <component key="story-step-doc-dao" name="Story Step Doc DAO" class="com.jbehaveforjira.plugin.ao.JBehaveStepDocDao"/>
-     <!--Services-->
-     <component key="story-service" name="Story Service" class="com.jbehaveforjira.plugin.service.JiraStoryService"/>
--    <component key="story-report-service" name="Story Report Service"
--               class="com.jbehaveforjira.plugin.service.JiraStoryReportService"/>
--    <component key="step-doc-service" name="Step Doc Service"
--               class="com.jbehaveforjira.plugin.service.JiraStepDocsService"/>
--    <component key="perforce-service" name="Perforce Service"
--               class="com.jbehaveforjira.plugin.integration.perforce.PerforceService"/>
-+    <component key="story-report-service" name="Story Report Service" class="com.jbehaveforjira.plugin.service.JiraStoryReportService"/>
-+    <component key="step-doc-service" name="Step Doc Service" class="com.jbehaveforjira.plugin.service.JiraStepDocsService"/>
-+    <component key="perforce-service" name="Perforce Service" class="com.jbehaveforjira.plugin.integration.perforce.PerforceService"/>
-+    <component key="git-service" name="GIT Service" class="com.jbehaveforjira.plugin.integration.git.GitService"/>
-     <component key="settings-manager" name="Settings Manager" class="com.jbehaveforjira.plugin.config.SettingsManager"/>
-     <!-- ==================================================================================================== -->
-     <!--Active Objects-->
 Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(date 1426859956000)
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(date 1426881923000)
 +++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceMapping.java	(revision )
-@@ -2,14 +2,12 @@
+@@ -28,7 +28,7 @@
  
- import javax.xml.bind.annotation.XmlAccessType;
- import javax.xml.bind.annotation.XmlAccessorType;
--import javax.xml.bind.annotation.XmlAttribute;
- import javax.xml.bind.annotation.XmlRootElement;
+     }
  
- @XmlRootElement
- @XmlAccessorType(XmlAccessType.FIELD)
- public class PerforceMapping {
- 
--    @XmlAttribute(name="my_test_attribute", required = true)
-     private String serverUri;
- 
-     private String username;
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitConfig.java
+-    public PerforceMapping(String projectKey, String serverUri, String username, String password,
++    public PerforceMapping(String serverUri, String username, String password,
+                            String remoteDirPath, String subDirExpression, String tempCheckOutDir, String commitMessage) {
+         this.serverUri = serverUri;
+         this.username = username;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitConfig.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitConfig.java	(revision )
-@@ -0,0 +1,30 @@
-+package com.jbehaveforjira.plugin.integration.git;
-+
-+import com.jbehaveforjira.plugin.integration.perforce.PerforceMapping;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+import java.util.HashMap;
-+import java.util.Map;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class GitConfig {
-+
-+    private boolean enabled = false;
-+
-+    private Map<String, PerforceMapping> mappings = new HashMap<String, PerforceMapping>();
-+
-+    public PerforceMapping forProjectKey(String projectKey) {
-+        return mappings.get(projectKey);
-+    }
-+
-+    public Map<String, PerforceMapping> getMappings() {
-+        return mappings;
-+    }
-+
-+    public boolean isEnabled() {
-+        return enabled;
-+    }
-+}
-Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1426859956000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
-@@ -95,6 +95,11 @@
-             <artifactId>p4java</artifactId>
-             <version>2013.2.788582</version>
-         </dependency>
-+        <dependency>
-+            <groupId>org.eclipse.jgit</groupId>
-+            <artifactId>org.eclipse.jgit</artifactId>
-+            <version>3.7.0.201502260915-r</version>
-+        </dependency>
-         <!-- ================================================================================= -->
-         <!--Jira provided dependencies-->
-         <!-- ================================================================================= -->
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryService.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryService.java	(date 1426859956000)
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/JiraStoryService.java	(revision )
-@@ -6,7 +6,7 @@
- import com.jbehaveforjira.plugin.config.SettingsManager;
- import com.jbehaveforjira.plugin.dto.story.JiraStory;
- import com.jbehaveforjira.plugin.integration.RevisionInfo;
--import com.jbehaveforjira.plugin.integration.VcsService;
-+import com.jbehaveforjira.plugin.integration.git.GitService;
- import com.jbehaveforjira.plugin.integration.perforce.PerforceService;
- 
- import java.util.List;
-@@ -17,19 +17,23 @@
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(date 1426881923000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(revision )
+@@ -36,14 +36,28 @@
   */
- public class JiraStoryService implements StoryService {
+ public class PerforceService implements VcsService {
  
--    private VcsService perforceService;
-+    private final PerforceService perforceService;
+-    public static final Setting<PerforceConfig> INTEGRATION_PERFORCE = new Setting<PerforceConfig>("INTEGRATION_PERFORCE", new PerforceConfig());
++    private final Setting<PerforceConfig> perforceConfig;
  
-+    private final GitService gitService;
-+
-     private JBehaveStoryDao jiraRepo;
+     private final SettingsManager settingsManager;
  
-     private SettingsManager settingsManager;
+     public PerforceService(SettingsManager settingsManager) {
  
-     private final JiraAuthenticationContext authenticationContext;
- 
--    public JiraStoryService(PerforceService perforceService, JBehaveStoryDao jiraStoryService, SettingsManager settingsManager, JiraAuthenticationContext authenticationContext) {
--        this.perforceService = perforceService;
-+    public JiraStoryService(JBehaveStoryDao jiraStoryService, SettingsManager settingsManager, JiraAuthenticationContext authenticationContext,
-+                            PerforceService perforceService, GitService gitService) {
-         this.jiraRepo = jiraStoryService;
          this.settingsManager = settingsManager;
-         this.authenticationContext = authenticationContext;
-+        this.perforceService = perforceService;
-+        this.gitService = gitService;
+-        this.settingsManager.loadSetting(INTEGRATION_PERFORCE);
++
++        PerforceConfig defaultValue = new PerforceConfig();
++
++        // construct example
++        PerforceConfig exampleValue = new PerforceConfig();
++        exampleValue.setEnabled(true);
++        Map<String, PerforceMapping> mappings = exampleValue.getMappings();
++        PerforceMapping demoMapping = new PerforceMapping(
++                "http://myperforce-server.com", "perforce_username", "perforce_password",
++                "//depo/projects/DEMO/...", "JBehaveStories/...", "C:\temp", "committed via JBehaveForJira plugin");
++        mappings.put("DEMO", demoMapping);
++
++        this.perforceConfig = new Setting<PerforceConfig>("INTEGRATION_PERFORCE", defaultValue, exampleValue);
++
++        this.settingsManager.loadSetting(perforceConfig);
      }
  
-     public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey, boolean updateFromVCS) {
-@@ -149,42 +153,74 @@
+     private JiraStory findByProjectAndIssueKey(PerforceMapping perforceMapping, String projectKey, String issueKey)
+@@ -177,8 +191,8 @@
      @Override
-     public Long commitToVCS(JiraStory storyDTO) {
+     public Long commit(JiraStory story) {
  
--        Long committed = perforceService.commit(storyDTO);
-+        Long committed;
-+
-+        committed = perforceService.commit(storyDTO);
-         if (committed != null) {
-             return committed;
-         }
+-        if (INTEGRATION_PERFORCE.value().isEnabled()) {
+-            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++        if (perforceConfig.value().isEnabled()) {
++            PerforceConfig mappings = perforceConfig.value();
+             PerforceMapping perforceMapping = mappings.forProjectKey(story.getProjectKey());
+             if (perforceMapping != null) {
+                 Long revisionNumber = this.commit(perforceMapping, story);
+@@ -191,8 +205,8 @@
+     @Override
+     public JiraStory findByProjectAndIssueKey(String projectKey, String issueKey) {
  
--        // GIT and any other
-+        committed = gitService.commit(storyDTO);
-+        if (committed != null) {
-+            return committed;
-+        }
-+
-+        // any other VCS
-         return null;
-     }
+-        if (INTEGRATION_PERFORCE.value().isEnabled()) {
+-            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++        if (perforceConfig.value().isEnabled()) {
++            PerforceConfig mappings = perforceConfig.value();
+             PerforceMapping perforceMapping = mappings.forProjectKey(projectKey);
+             if (perforceMapping != null) {
+                 JiraStory jiraStory = findByProjectAndIssueKey(perforceMapping, projectKey, issueKey);
+@@ -205,8 +219,8 @@
+     @Override
+     public RevisionInfo getLatestRevisionInfo(String projectKey, String issueKey) {
  
-     private JiraStory fetchLatestFromVCSRepo(String projectKey, String issueKey) {
+-        if (INTEGRATION_PERFORCE.value().isEnabled()) {
+-            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++        if (perforceConfig.value().isEnabled()) {
++            PerforceConfig mappings = perforceConfig.value();
+             PerforceMapping perforceMapping = mappings.forProjectKey(projectKey);
+             if (perforceMapping != null) {
+                 return getLatestRevisionInfo(perforceMapping, projectKey, issueKey);
+@@ -219,8 +233,8 @@
+     @Override
+     public boolean delete(JiraStory story) {
  
--        JiraStory jiraStory = perforceService.findByProjectAndIssueKey(projectKey, issueKey);
-+        JiraStory jiraStory;
-+
-+        jiraStory = perforceService.findByProjectAndIssueKey(projectKey, issueKey);
-         if (jiraStory != null) {
-             return jiraStory;
-         }
--        // GIT and any other
- 
-+        jiraStory = gitService.findByProjectAndIssueKey(projectKey, issueKey);
-+        if (jiraStory != null) {
-+            return jiraStory;
-+        }
-+
-+        // any other VCS
-+
-         return null;
-     }
- 
-     private RevisionInfo checkLatestVersionInVCS(String projectKey, String issueKey) {
- 
--        RevisionInfo revisionInfo = perforceService.getLatestRevisionInfo(projectKey, issueKey);
-+        RevisionInfo revisionInfo = null;
-+
-+        revisionInfo = perforceService.getLatestRevisionInfo(projectKey, issueKey);
-         if (revisionInfo != null) {
-             return revisionInfo;
-         }
- 
--        // GIT and any other
-+        revisionInfo = gitService.getLatestRevisionInfo(projectKey, issueKey);
-+        if (revisionInfo != null) {
-+            return revisionInfo;
-+        }
-+
-+        // any other VCS
-         return null;
-     }
- 
-     private void deleteFromVCS(JiraStory story) {
- 
--        boolean deleted = perforceService.delete(story);
-+        Boolean deleted;
- 
--        // GIT and any other
-+        deleted = perforceService.delete(story);
-+        if (deleted != null) {
-+            return;
-+        }
-+
-+        deleted = gitService.delete(story);
-+        if (deleted != null) {
-+            return;
-+        }
-+
-+        // any other VCS
-     }
- 
- }
-Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitMapping.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitMapping.java	(revision )
-+++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/git/GitMapping.java	(revision )
-@@ -0,0 +1,67 @@
-+package com.jbehaveforjira.plugin.integration.git;
-+
-+import javax.xml.bind.annotation.XmlAccessType;
-+import javax.xml.bind.annotation.XmlAccessorType;
-+import javax.xml.bind.annotation.XmlRootElement;
-+
-+@XmlRootElement
-+@XmlAccessorType(XmlAccessType.FIELD)
-+public class GitMapping {
-+
-+    private String serverUri;
-+
-+    private String username;
-+
-+    private String password;
-+
-+    private String remoteDirPath;
-+
-+    private String subDirExpression;
-+
-+    private String tempCheckOutDir;
-+
-+    private String commitMessage;
-+
-+    protected GitMapping() {
-+
-+    }
-+
-+    public GitMapping(String projectKey, String serverUri, String username, String password,
-+                      String remoteDirPath, String subDirExpression, String tempCheckOutDir, String commitMessage) {
-+        this.serverUri = serverUri;
-+        this.username = username;
-+        this.password = password;
-+        this.remoteDirPath = remoteDirPath;
-+        this.subDirExpression = subDirExpression;
-+        this.tempCheckOutDir = tempCheckOutDir;
-+        this.commitMessage = commitMessage;
-+    }
-+
-+    public String getServerUri() {
-+        return serverUri;
-+    }
-+
-+    public String getUsername() {
-+        return username;
-+    }
-+
-+    public String getPassword() {
-+        return password;
-+    }
-+
-+    public String getRemoteDirPath() {
-+        return remoteDirPath;
-+    }
-+
-+    public String getTempCheckOutDir() {
-+        return tempCheckOutDir;
-+    }
-+
-+    public String getCommitMessage() {
-+        return commitMessage;
-+    }
-+
-+    public String getSubDirExpression() {
-+        return subDirExpression;
-+    }
-+}
+-        if (INTEGRATION_PERFORCE.value().isEnabled()) {
+-            PerforceConfig mappings = INTEGRATION_PERFORCE.value();
++        if (perforceConfig.value().isEnabled()) {
++            PerforceConfig mappings = perforceConfig.value();
+             PerforceMapping perforceMapping = mappings.forProjectKey(story.getProjectKey());
+             if (perforceMapping != null) {
+                 delete(perforceMapping, story);
