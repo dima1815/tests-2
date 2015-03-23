@@ -1,1 +1,269 @@
-test
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/Admin.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/Admin.js	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/Admin.js	(revision )
+@@ -8,6 +8,8 @@
+     AJS.$("#settingSelector").first().change(
+         function() {
+ 
++            AJS.$("#showExampleSetting").show();
++
+             var selectedSetting = AJS.$("#settingSelector").val();
+             var fullURL = baseURL + "/for-key?settingKey=" + selectedSetting;
+             //alert("selectedSetting = " + selectedSetting);
+@@ -40,7 +42,8 @@
+                 AJS.$("#settings-msg-bar").empty();
+                 AJS.messages.error("#settings-msg-bar", {
+                     title: null,
+-                    body: "Error occurred while communicating with the server! Server error - " + response.statusText,
++                    body: "Error occurred while communicating with the server! Server error - "
++                        + response.status + " " + response.statusText,
+                     closeable: true
+                 });
+             };
+@@ -55,6 +58,59 @@
+         }
+     );
+ 
++    AJS.$("#showExampleSetting").first().click(
++        function (event) {
++
++            event.preventDefault();
++
++            var selectedSetting = AJS.$("#settingSelector").val();
++            var fullURL = baseURL + "/example-for-key?settingKey=" + selectedSetting;
++
++            var successCallback = function (response, status, xhr) {
++                var jsonResponse = JSON.stringify(response, null, "\t");
++                console.debug("successCallback - json response:\n" + jsonResponse);
++                AJS.$("#settings-msg-bar").empty();
++
++                if (response.kind == "success") {
++                    var valueAsString = response.payload.value;
++                    var valuePretified = "";
++                    if (valueAsString != null) {
++                        var valueAsJson = JSON.parse(valueAsString);
++                        valuePretified = JSON.stringify(valueAsJson, null, "\t");
++                    }
++                    AJS.$("#setingValue").val(valuePretified);
++                } else {
++                    AJS.messages.error("#settings-msg-bar", {
++                        title: null,
++                        body: "Failed to fetch example setting value. Server error - " + response.message,
++                        closeable: true
++                    });
++                }
++            };
++
++            var failureCallback = function (response, status, xhr) {
++                var jsonResponse = JSON.stringify(response, null, "\t");
++                console.debug("failureCallback - json response:\n" + response);
++                AJS.$("#settings-msg-bar").empty();
++                AJS.messages.error("#settings-msg-bar", {
++                    title: null,
++                    body: "Error occurred while communicating with the server! Server error - "
++                        + response.status + " " + response.statusText,
++                    closeable: true
++                });
++            };
++
++            AJS.$.ajax({
++                type: "GET",
++                url: fullURL,
++                dataType: "json",
++                success: successCallback,
++                error: failureCallback
++            });
++        }
++    );
++
++
+     AJS.$("#updateSetting").first().click(
+         function (event) {
+ 
+@@ -93,13 +149,14 @@
+                 }
+             };
+ 
+-            var errorCallback = function (response, status, xhr) {
++            var failureCallback = function (response, status, xhr) {
+                 var jsonResponse = JSON.stringify(response, null, "\t");
+                 console.debug("setting update response:\n" + response);
+                 AJS.$("#settings-msg-bar").empty();
+                 AJS.messages.error("#settings-msg-bar", {
+                     title: null,
+-                    body: "Error occurred while communicating with the server! Server error - " + response.statusText,
++                    body: "Error occurred while communicating with the server! Server error - "
++                        + response.status + " " + response.statusText,
+                     closeable: true
+                 });
+             };
+@@ -109,7 +166,7 @@
+                 url: fullURL,
+                 contentType: "text/plain; charset=utf-8",
+                 success: successCallback,
+-                error: errorCallback,
++                error: failureCallback,
+                 data: settingValue,
+                 dataType: "json"
+                 //dataType: "text/plain"
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/PluginSettingsResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/PluginSettingsResource.java	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/PluginSettingsResource.java	(revision )
+@@ -81,6 +81,28 @@
+         return response;
+     }
+ 
++    @GET
++    @Path("/example-for-key")
++    @Produces({MediaType.APPLICATION_JSON})
++    public RestResponse<SettingDTO> getExampleForKey(@QueryParam("settingKey") String settingKey) {
++
++        RestResponse<SettingDTO> response;
++        try {
++            SettingDTO dto = null;
++            Setting setting = settingsManager.findForKey(settingKey);
++            if (setting != null && setting.exampleAsString() != null) {
++                String exampleAsString = setting.exampleAsString();
++                dto = new SettingDTO(setting.key(), exampleAsString);
++            }
++            response = RestResponse.success(dto);
++        } catch (Exception ex) {
++            response = RestResponse.failure(ex);
++            logger.warn(DEFAULT_ERROR_MESSAGE, ex);
++        }
++
++        return response;
++    }
++
+     @DELETE
+     @Path("/delete-for-key")
+     @Produces({MediaType.APPLICATION_JSON})
+Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -6,7 +6,7 @@
+     <artifactId>jira-plugin</artifactId>
+     <packaging>atlassian-plugin</packaging>
+     <name>JBehave For Jira - Jira Plugin</name>
+-    <version>1.0.5</version>
++    <version>1.0.6</version>
+     <description>Provides integration with JBehave BDD framework</description>
+     <url>http://www.jbehaveforjira.com</url>
+     <properties>
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/Setting.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/Setting.java	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/config/Setting.java	(revision )
+@@ -77,17 +77,17 @@
+         return asJSonString(this.exampleValue);
+     }
+ 
+-    private String asJSonString(T currentValue) {
++    private String asJSonString(T valueToMarshall) {
+ 
+-        if (currentValue != null) {
++        if (valueToMarshall != null) {
+             ObjectMapper objectMapper = new ObjectMapper();
+             objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+             try {
+-                String asString = objectMapper.writeValueAsString(currentValue);
++                String asString = objectMapper.writeValueAsString(valueToMarshall);
+                 return asString;
+             } catch (IOException e) {
+                 throw new RuntimeException("Exception occurred while attempting to marshall plugin setting for key - " + this.key
+-                        + ". Object value was: " + currentValue, e);
++                        + ". Object value was: " + valueToMarshall, e);
+             }
+         } else {
+             return null;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/integration/perforce/PerforceService.java	(revision )
+@@ -54,6 +54,10 @@
+                 "http://myperforce-server.com", "perforce_username", "perforce_password",
+                 "//depo/projects/DEMO/...", "JBehaveStories/...", "C:\temp", "committed via JBehaveForJira plugin");
+         mappings.put("DEMO", demoMapping);
++        PerforceMapping testProjectMapping = new PerforceMapping(
++                "http://myperforce-server.com", "perforce_username", "perforce_password",
++                "//depo/projects/TEST_PROJECT/...", "JBehaveStories/...", "C:\temp", "committed via JBehaveForJira plugin");
++        mappings.put("TEST_PROJECT", testProjectMapping);
+ 
+         this.perforceConfig = new Setting<PerforceConfig>("INTEGRATION_PERFORCE", defaultValue, exampleValue);
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/admin.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/admin.vm	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/admin.vm	(revision )
+@@ -24,9 +24,12 @@
+ </div>
+ <div class="aui-group">
+     <div class="aui-item" style="width: 20%;"></div>
+-    <div class="aui-item" >
++    <div class="aui-item">
+         <div class="field-group">
+-            <button id="updateSetting" value="Save" class="button">Update</button>
++            <button id="updateSetting" value="Save" class="aui-button">Update</button>
++            <button id="showExampleSetting" style="display:none;" value="ShowExample"
++                    class="aui-button aui-button-link">show example
++            </button>
+         </div>
+     </div>
+ </div>
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java	(revision 2fae7ca3e7db026c8f8cbd530ad0e9928601fa4f)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/EnabledForProjectCondition.java	(revision )
+@@ -12,14 +12,18 @@
+ 
+ public class EnabledForProjectCondition implements Condition {
+ 
+-    public static final Setting<List<String>> ENABLED_PROJECTS = new Setting<List<String>>("ENABLED_PROJECTS", new ArrayList<String>());
++    public final Setting<List<String>> enabledProjectsConfig;
+ 
+     private SettingsManager settingsManager;
+ 
+     public EnabledForProjectCondition(SettingsManager settingsManager) {
+ 
+         this.settingsManager = settingsManager;
+-        this.settingsManager.loadSetting(ENABLED_PROJECTS);
++        List<String> exampleSetting = new ArrayList<String>();
++        exampleSetting.add("DEMO");
++        exampleSetting.add("TEST_PROJECT");
++        this.enabledProjectsConfig  = new Setting<List<String>>("ENABLED_PROJECTS", new ArrayList<String>(), exampleSetting);
++        this.settingsManager.loadSetting(this.enabledProjectsConfig);
+     }
+ 
+     @Override
+@@ -40,6 +44,6 @@
+ 
+     public boolean enabledForProject(String projectKey) {
+ 
+-        return this.ENABLED_PROJECTS.value().contains(projectKey);
++        return this.enabledProjectsConfig.value().contains(projectKey);
+     }
+ }
