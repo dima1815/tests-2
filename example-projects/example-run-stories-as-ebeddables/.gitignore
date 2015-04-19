@@ -2,7 +2,7 @@
 ## IntelliJ
 #################
 .idea/
-*.iml
+example-run-stories-as-ebeddables.iml
 
 #################
 ## Eclipse

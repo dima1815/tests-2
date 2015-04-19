@@ -2,7 +2,7 @@
 ## IntelliJ
 #################
 .idea/
-*.iml
+execspec-common/execspec-common.iml
 
 #################
 ## Eclipse
