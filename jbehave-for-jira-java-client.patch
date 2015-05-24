@@ -1,174 +1,183 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStepDocReporter.java
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/StringResponse.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStepDocReporter.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStepDocReporter.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/resources/ftl/jbehave-html-output.ftl
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/resources/ftl/jbehave-html-output.ftl	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/resources/ftl/jbehave-html-output.ftl	(date 1414444951000)
-@@ -1,1 +0,0 @@
--
-\ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterConverter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterConverter.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterConverter.java	(revision )
-@@ -59,4 +59,4 @@
-             }
-         }
-     }
--}
-+}
-\ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterConversionException.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterConversionException.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterConversionException.java	(revision )
-@@ -1,1 +1,28 @@
-+package com.jbehaveforjira.javaclient.utils;
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/StringResponse.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/StringResponse.java	(revision )
+@@ -0,0 +1,21 @@
++package com.jbehaveforjira.javaclient.dto;
 +
-+/**
-+ * Specialized sub type of RuntimeException for throwing when an error occurs during step parameter conversion.
-+ *
-+ * @author Maryna Pristrom
-+ */
-+public class StepParameterConversionException extends RuntimeException {
-+
-+    public StepParameterConversionException() {
-+    }
-+
-+    public StepParameterConversionException(String message) {
-+        super(message);
-+    }
-+
-+    public StepParameterConversionException(String message, Throwable cause) {
-+        super(message, cause);
-+    }
-+
-+    public StepParameterConversionException(Throwable cause) {
-+        super(cause);
-+    }
-+
-+    public StepParameterConversionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-+        super(message, cause, enableSuppression, writableStackTrace);
-+    }
-+}
-\ No newline at end of file
- 
-\ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterListConverter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterListConverter.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameterListConverter.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/ParameterInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/ParameterInfo.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/ParameterInfo.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryPathsFinder.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(revision )
-@@ -1,5 +1,17 @@
- package com.jbehaveforjira.javaclient;
- 
-+import com.sun.jersey.api.client.Client;
-+import com.sun.jersey.api.client.ClientResponse;
-+import com.sun.jersey.api.client.WebResource;
-+
-+import javax.ws.rs.core.MediaType;
-+import javax.ws.rs.core.Response;
 +import javax.xml.bind.annotation.XmlAccessType;
 +import javax.xml.bind.annotation.XmlAccessorType;
 +import javax.xml.bind.annotation.XmlRootElement;
-+import java.net.URI;
-+import java.net.URISyntaxException;
-+import java.util.ArrayList;
- import java.util.Collections;
- import java.util.List;
- 
-@@ -8,27 +20,65 @@
-  */
- public class JiraStoryPathsFinder implements StoryPathsFinder {
- 
--    private final StoryPathsFinder storyPathsFinder;
-+    private String postUrl;
- 
--    public JiraStoryPathsFinder(String jiraBaseUrl, String jiraProject, String jiraUserName, String jiraPassword) {
-+    public JiraStoryPathsFinder(String jiraBaseUrl, String projectKey, String username, String password) {
- 
--        String[] constructorArgs = {jiraBaseUrl, jiraProject, jiraUserName, jiraPassword};
--        this.storyPathsFinder = GroovyResourceHelper.loadGroovyResource(
--                jiraBaseUrl, "story-paths-finder", jiraUserName, jiraPassword,
--                "StoryPathsFinder", constructorArgs);
-+        this.postUrl = jiraBaseUrl + "/rest/jbehave-for-jira/1.0/find/story-paths/" + projectKey + "?os_username=" + username + "&os_password=" + password;
-     }
- 
--    @Override
-     public List<String> findPaths() {
--
-         return this.findPaths(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-     }
- 
--    @Override
-     public List<String> findPaths(List<String> includes, List<String> excludes) {
- 
--        List<String> paths = storyPathsFinder.findPaths(includes, excludes);
-+        List<String> paths = new ArrayList<String>();
 +
-+        URI jiraSearchUrl = null;
-+        try {
-+            jiraSearchUrl = new URI(postUrl);
-+        } catch (URISyntaxException e) {
-+            throw new RuntimeException(e);
-+        }
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class StringResponse extends BaseRestResponse {
 +
-+        Client client = Client.create();
-+        WebResource res = client.resource(jiraSearchUrl);
-+        res.type(MediaType.APPLICATION_JSON);
-+        ClientResponse response = res.get(ClientResponse.class);
-+        if (response.getStatus() == 200) {
++    private String payload;
 +
-+            int length = response.getLength();
-+            MediaType type = response.getType();
-+            StoryPaths storyPaths = response.getEntity(StoryPaths.class);
-+
-+            if (storyPaths.getPaths() != null && !storyPaths.getPaths().isEmpty()) {
-+                paths = storyPaths.getPaths();
-+            }
-+
-+        } else {
-+            int status = response.getStatus();
-+            Response.StatusType statusInfo = response.getStatusInfo();
-+            throw new RuntimeException("Error occurred while trying to find Jira story paths. " +
-+                    "Response status was - " + status + ", status info - " + statusInfo);
-+        }
-+
-         return paths;
++    public String getPayload() {
++        return payload;
 +    }
 +
-+    @XmlRootElement
-+    @XmlAccessorType(XmlAccessType.FIELD)
++    public void setPayload(String payload) {
++        this.payload = payload;
++    }
++
++}
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision 6ead532dcdbc93bf184cd48dba752d451ac0cb48)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision )
+@@ -1,5 +1,7 @@
+ package com.jbehaveforjira.javaclient;
+ 
++import com.jbehaveforjira.javaclient.dto.ResponseKind;
++import com.jbehaveforjira.javaclient.dto.StringResponse;
+ import com.sun.jersey.api.client.Client;
+ import com.sun.jersey.api.client.ClientResponse;
+ import com.sun.jersey.api.client.WebResource;
+@@ -71,13 +73,20 @@
+         log.info("response - " + response);
+ 
+         if (response.getStatus() == 200) {
+-            String story = response.getEntity(String.class);
+ 
++            StringResponse responsePayload = response.getEntity(StringResponse.class);
++            ResponseKind kind = responsePayload.getKind();
++            if (kind.equals(ResponseKind.success)) {
++                String story = responsePayload.getPayload();
+-            if (downloadedStoriesDir != null && !downloadedStoriesDir.trim().isEmpty()) {
+-                this.writeModelToFile(storyPath, story);
+-            }
++                if (downloadedStoriesDir != null && !downloadedStoriesDir.trim().isEmpty()) {
++                    this.writeModelToFile(storyPath, story);
++                }
+-
+-            return story;
++                return story;
++            } else {
++                throw new RuntimeException("Failed to load story for story path - " + storyPath
++                        + ". Server returned error, server message - " + responsePayload.getMessage());
++            }
++
+         } else {
+             int status = response.getStatus();
+             Response.StatusType statusInfo = response.getStatusInfo();
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryReporter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryReporter.java	(revision 6ead532dcdbc93bf184cd48dba752d451ac0cb48)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryReporter.java	(revision )
+@@ -1,5 +1,7 @@
+ package com.jbehaveforjira.javaclient;
+ 
++import com.jbehaveforjira.javaclient.dto.ResponseKind;
++import com.jbehaveforjira.javaclient.dto.StringResponse;
+ import com.sun.jersey.api.client.Client;
+ import com.sun.jersey.api.client.WebResource;
+ import freemarker.ext.beans.BeansWrapper;
+@@ -354,11 +356,16 @@
+         Client client = Client.create();
+         WebResource res = client.resource(postUrl);
+ 
+-        String response = res.accept(MediaType.APPLICATION_JSON)
++        StringResponse response = res.accept(MediaType.APPLICATION_JSON)
+                 .type(MediaType.APPLICATION_JSON)
+-                .post(String.class, storyHtmlReportDTO);
++                .post(StringResponse.class, storyHtmlReportDTO);
+ 
+-        System.out.println("response - " + response);
++        if (response.getKind().equals(ResponseKind.success)) {
++            // story report successfully uploaded to jira
++        } else {
++            throw new RuntimeException("Failed to upload story execution report to Jira for story path - "
++                    + outputStory.getPath() + ". Server returned error, msg - " + response.getMessage());
++        }
+     }
+ 
+     private Map<String, Object> newDataModel() {
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStepDocReporter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStepDocReporter.java	(revision 6ead532dcdbc93bf184cd48dba752d451ac0cb48)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStepDocReporter.java	(revision )
+@@ -1,5 +1,7 @@
+ package com.jbehaveforjira.javaclient;
+ 
++import com.jbehaveforjira.javaclient.dto.ResponseKind;
++import com.jbehaveforjira.javaclient.dto.StringResponse;
+ import com.sun.jersey.api.client.Client;
+ import org.apache.commons.lang.Validate;
+ import org.codehaus.jackson.map.ObjectMapper;
+@@ -132,8 +134,8 @@
+             if (parameterInfos.size() != stepDocDTO.parameterGroups.size()) {
+                 // this should not happen, but it may if the developer made a mistake in matching the number of method parameters to
+                 // number of parameters in pattern
+-                System.out.println("[WARN] Number of resolved parameters doesn't match number of gathered parameter infos, for class - "
+-                        + stepDocDTO.stepClassName + " and method - " + stepDocDTO.stepMethodSignature);
++//                System.out.println("[WARN] Number of resolved parameters doesn't match number of gathered parameter infos, for class - "
++//                        + stepDocDTO.stepClassName + " and method - " + stepDocDTO.stepMethodSignature);
+ //                throw new IllegalStateException("Number of resolved parameters doesn't match number of gathered parameter infos");
+             }
+ 
+@@ -382,13 +384,14 @@
+         }
+ 
+         Client client = Client.create();
+-        String response = client.resource(this.reportStepDocUrl)
++        StringResponse response = client.resource(this.reportStepDocUrl)
+                 .accept(MediaType.APPLICATION_JSON)
+                 .type(MediaType.APPLICATION_JSON)
+-                .post(String.class, payloadAsString);
++                .post(StringResponse.class, payloadAsString);
+ 
+-        if (!response.startsWith("success")) {
+-            throw new RuntimeException("Failed to upload step doc! Server returned error message - " + response);
++        ResponseKind kind = response.getKind();
++        if (!kind.equals(ResponseKind.success)) {
++            throw new RuntimeException("Failed to upload step docs! Server returned error message - " + response);
+         }
+     }
+ 
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/StoryPathsResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/StoryPathsResponse.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/StoryPathsResponse.java	(revision )
+@@ -0,0 +1,34 @@
++package com.jbehaveforjira.javaclient.dto;
++
++import javax.xml.bind.annotation.XmlAccessType;
++import javax.xml.bind.annotation.XmlAccessorType;
++import javax.xml.bind.annotation.XmlRootElement;
++import java.util.List;
++
++@XmlRootElement
++@XmlAccessorType(XmlAccessType.FIELD)
++public class StoryPathsResponse extends BaseRestResponse {
++
++    private StoryPaths payload;
++
++    public StoryPaths getPayload() {
++        return payload;
++    }
++
++    public void setPayload(StoryPaths payload) {
++        this.payload = payload;
++    }
++
 +    public static class StoryPaths {
 +
 +        private List<String> paths;
@@ -180,507 +189,127 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +        public void setPaths(List<String> paths) {
 +            this.paths = paths;
 +        }
-     }
- 
--}
++    }
 +}
-\ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/resources/ftl/jira-jbehave-html-output.ftl
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryPathsFinder.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/resources/ftl/jira-jbehave-html-output.ftl	(revision )
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/resources/ftl/jira-jbehave-html-output.ftl	(revision )
-@@ -0,0 +1,351 @@
-+<#ftl strip_whitespace=true>
-+
-+<#--<#macro renderEmptyElement text><!-- story element - ${text?html} was empty &ndash;&gt;</#macro>-->
-+<#macro renderMultiline text>${text?html?replace("\n", "<br/>")}</#macro>
-+
-+<#macro renderMeta meta>
-+<div class="meta">
-+	<div class="keyword">${keywords.meta}</div>
-+    <#assign metaProperties=meta.getProperties()>
-+    <#list metaProperties.keySet() as name>
-+        <#assign property = metaProperties.get(name)>
-+		<div class="property">${keywords.metaProperty}${name?html} ${property?html}</div>
-+    </#list>
-+</div>
-+</#macro>
-+
-+<#macro renderNarrative narrative>
-+<div class="narrative">
-+	<div class="keyword">${keywords.narrative}</div>
-+    <#assign isAlternative=narrative.isAlternative()?string>
-+    <#if isAlternative == "true">
-+		<div class="element asA"><span class="keyword asA">${keywords.asA}</span><span class="text"> ${narrative.asA}</span></div>
-+		<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span><span class="text"> ${narrative.iWantTo}</span>
-+		</div>
-+		<div class="element soThat"><span class="keyword soThat">${keywords.soThat}</span><span class="text"> ${narrative.soThat}</span>
-+		</div>
-+    <#else>
-+		<div class="element inOrderTo"><span class="keyword inOrderTo">${keywords.inOrderTo}</span><span
-+				class="text"> ${narrative.inOrderTo}</span></div>
-+		<div class="element asA"><span class="keyword asA">${keywords.asA}</span><span class="text"> ${narrative.asA}</span></div>
-+		<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span><span class="text"> ${narrative.iWantTo}</span>
-+		</div>
-+    </#if>
-+</div>
-+</#macro>
-+
-+<#macro renderGivenStories givenStories>
-+<div class="givenStories">
-+	<div class="keyword">${keywords.givenStories}</div>
-+    <#list givenStories.getStories() as givenStory>
-+		<div class="givenStory">${givenStory.path}</div>
-+    </#list>
-+</div>
-+</#macro>
-+
-+<#macro renderLifecycle lifecycle>
-+<div class="lifecycle">
-+	<div class="keyword">${keywords.lifecycle}</div>
-+    <#if !lifecycle.getBeforeSteps().isEmpty()>
-+		<div class="before">
-+			<div class="keyword">${keywords.before}</div>
-+            <#list lifecycle.getBeforeSteps() as step>
-+            <#--<div class="step">${step?html}</div>-->
-+                <@renderStep step/>
-+            </#list>
-+		</div>
-+    </#if>
-+    <#if !lifecycle.getAfterSteps().isEmpty()>
-+		<div class="after">
-+			<div class="keyword">${keywords.after}</div>
-+            <#list lifecycle.getOutcomes() as outcome>
-+				<div class="outcome">
-+                    <#if lifecycle.getAfterSteps(outcome)?has_content>
-+                    <#--TODO - there is no keyword currently for 'Outcome', will need to be localized below-->
-+						<div><span class="keyword">Outcome:</span><span class="text"> ${outcome}</span></div>
-+                        <#list lifecycle.getAfterSteps(outcome) as step>
-+                            <@renderStep step/>
-+                        </#list>
-+                    </#if>
-+				</div>
-+            </#list>
-+		</div>
-+    </#if>
-+</div>
-+</#macro>
-+
-+<#macro renderTable table>
-+    <#assign rows=table.getRows()>
-+    <#assign headers=table.getHeaders()>
-+    <#assign oddEven="odd">
-+<table>
-+	<thead>
-+	<tr>
-+        <#list headers as header>
-+			<th>${header?html}</th>
-+        </#list>
-+	</tr>
-+	</thead>
-+	<tbody>
-+        <#list rows as row>
-+		<tr class="${oddEven}">
-+            <#list headers as header>
-+                <#assign cell=row.get(header)>
-+				<td>${cell?html}</td>
-+            </#list>
-+		</tr>
-+            <#if oddEven == "odd">
-+                <#assign oddEven="even">
-+            <#else>
-+                <#assign oddEven="odd">
-+            </#if>
-+        </#list>
-+	</tbody>
-+</table>
-+</#macro>
-+
-+<#macro renderOutcomeValue value dateFormat>
-+    <#if value?is_date>${value?string(dateFormat)}<#else>${value?html}</#if>
-+</#macro>
-+
-+<#macro renderOutcomes table>
-+    <#assign outcomes=table.getOutcomes()>
-+    <#assign fields=table.getOutcomeFields()>
-+<span class="keyword">Outcomes:</span>
-+<table>
-+	<thead>
-+	<tr>
-+        <#list fields as field>
-+			<th>${field?html}</th>
-+        </#list>
-+	</tr>
-+	</thead>
-+	<tbody>
-+        <#list outcomes as outcome>
-+            <#assign isVerified=outcome.isVerified()?string>
-+            <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
-+		<tr class="${verified}">
-+			<td>${outcome.description?html}</td>
-+			<td><@renderOutcomeValue outcome.getValue() table.getDateFormat()/></td>
-+			<td>${outcome.matcher?string}</td>
-+			<td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
-+		</tr>
-+        </#list>
-+	</tbody>
-+</table>
-+</#macro>
-+
-+<#macro renderStep step>
-+<#--<#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>-->
-+<div class="step ${step.outcome}">
-+<#--${formattedStep}-->
-+
-+    <#list step.getStepTokens() as token>
-+        <#if token.getType() == "COMMENT">
-+            <span class="comment">${token.asString()?html}</span>
-+        <#elseif token.getType() == "KEYWORD">
-+			<span class="keyword">${token.asString()?html}</span>
-+        <#elseif token.getType() == "TEXT">
-+			<span class="text">${token.asString()?html}</span>
-+        <#elseif token.getType() == "PARAMETER">
-+			<span class="parameter">${token.asString()?html}</span>
-+        <#elseif token.getType() == "TABULAR_PARAMETER">
-+			<div class="tabular-parameter">
-+                <@renderTable token.getTable()/>
-+			</div>
-+        </#if>
-+    </#list>
-+    <@renderStepOutcome step/>
-+</div>
-+</#macro>
-+
-+<#macro renderStepOutcome step>
-+<div class="step-outcome">
-+    <#assign outcome = step.getOutcome()>
-+    <#if outcome=="passed">
-+		<span class="outcome-keyword ${outcome}">(PASSED)</span>
-+    </#if>
-+    <#if outcome=="pending">
-+		<span class="outcome-keyword ${outcome}">(${keywords.pending})</span>
-+    </#if>
-+    <#if outcome=="failed">
-+		<span class="outcome-keyword ${outcome}">(${keywords.failed})</span>
-+    </#if>
-+    <#if outcome=="not_performed">
-+		<span class="outcome-keyword ${outcome}">(${keywords.notPerformed})</span>
-+    </#if>
-+    <#if outcome=="ignored">
-+		<span class="outcome-keyword ${outcome}">(${keywords.ignorable})</span>
-+    </#if>
-+
-+    <#if step.getFailure()??>
-+    <#-- render failure trace-->
-+		<span class="step-failure">
-+            <#if step.getUnderlyingErrorMsg()??>
-+	            <span class="failure-msg">Underlying error - ${step.getUnderlyingErrorMsg()}</span>
-+            </#if>
-+			<a href="#" onclick="toggleFailureTrace(event);"><span class="failure-show-trace-trigger"
-+			                                                       replace-text="hide trace">show trace</span></a>
-+			<div class="failure-trace" style="display: none;">
-+				<pre class="failure">${step.failureCause?html}</pre>
-+			</div>
-+        </span>
-+    </#if>
-+
-+    <#if step.getOutcomes()??>
-+		<div class="outcomes">
-+            <@renderOutcomes step.getOutcomes()/>
-+		</div>
-+    </#if>
-+
-+</div>
-+</#macro>
-+
-+<#-- report start ======================================================================================================================-->
-+
-+<div class="jb-story-report">
-+
-+<#if story.getDescription()??>
-+	<div class="description">
-+        <@renderMultiline story.getDescription()/>
-+	</div>
-+</#if>
-+
-+<#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
-+
-+<#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
-+
-+<#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
-+
-+<#assign scenarios = story.getScenarios()>
-+<#assign scenarioIndex = 0>
-+<#list scenarios as scenario>
-+    <#assign scenarioContentId = "scenario_" + scenarioIndex + "_content">
-+    <#assign scenarioTriggerContentId = "scenario_" + scenarioIndex + "_content_trigger">
-+    <#if scenario.getOutcome() == "passed" || scenario.getOutcome() == "ignored" || scenario.getOutcome() == "not_performed">
-+        <#assign contentCollapsedOrExpanded = "collapsed">
-+    <#else>
-+        <#assign contentCollapsedOrExpanded = "expanded">
-+    </#if>
-+	<div class="scenario ${scenario.getOutcome()}">
-+		<div id="${scenarioTriggerContentId}" class="title jb-story-ele-exp-trigger ${contentCollapsedOrExpanded}">
-+			<a href="#" onclick="storyReportToggleElement(event, '${scenarioContentId}', '${scenarioTriggerContentId}');">
-+				<span class="keyword">${keywords.scenario}</span>
-+				<span class="text"> <@renderMultiline scenario.getTitle()/></span>
-+                <#if scenario.getOutcome() == "passed">
-+					<span class="aui-lozenge aui-lozenge-success">passed</span>
-+                <#elseif scenario.getOutcome() == "failed">
-+					<span class="aui-lozenge aui-lozenge-error">failed</span>
-+                <#elseif scenario.getOutcome() == "pending">
-+					<span class="aui-lozenge aui-lozenge-current">pending</span>
-+                <#elseif scenario.getOutcome() == "not_performed">
-+					<span class="aui-lozenge">not performed</span>
-+                <#elseif scenario.getOutcome() == "ignored">
-+					<span class="aui-lozenge aui-lozenge-moved">ignored</span>
-+                </#if>
-+			</a>
-+		</div>
-+		<div id="${scenarioContentId}" class="content ${contentCollapsedOrExpanded}">
-+            <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
-+            <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
-+            <#if scenario.getExamplesTable()??>
-+				<div class="examples">
-+					<div class="examples-keyword">${keywords.examplesTable}</div>
-+					<div class="examples-table">
-+                        <@renderTable scenario.getExamplesTable()/>
-+					</div>
-+                <#--examples themselves-->
-+                    <#if scenario.getExamples()??>
-+                        <#list scenario.getExamples() as example>
-+							<div class="example">
-+								<div class="title">
-+									<span class="keyword">${keywords.examplesTableRow}</span><span class="text"> ${example?html}</span>
-+								</div>
-+                                <#assign steps = scenario.getStepsByExample(example)>
-+                                <#list steps as step>
-+                                    <@renderStep step/>
-+                                </#list>
-+							</div>
-+                        </#list>
-+                    </#if>
-+				</div>
-+				<!-- end examples -->
-+            <#else> <!-- normal scenario steps -->
-+				<div class="steps">
-+                    <#assign steps = scenario.getSteps()>
-+                <#list steps as step>
-+                    <@renderStep step/>
-+                </#list>
-+				</div>
-+            </#if>
-+        <#--<#if scenario.getPendingMethods()??>-->
-+        <#--<#list scenario.getPendingMethods() as method>-->
-+        <#--<div>-->
-+        <#--<pre class="pending">${method?html}</pre>-->
-+        <#--</div>-->
-+        <#--</#list>-->
-+        <#--</#if>-->
-+		</div>
-+	</div>
-+	<!-- end scenario -->
-+    <#assign scenarioIndex = scenarioIndex + 1>
-+</#list>
-+<#if story.isCancelled()?string == 'true'>
-+	<div class="cancelled">${keywords.storyCancelled} (${keywords.duration} ${story.storyDuration.durationInSecs} s)</div>
-+</#if>
-+</div>
-+<!-- end story -->
-+
-+<#-- report end ========================================================================================================================-->
-+
-+<script type="text/javascript">
-+
-+	function toggleFailureTrace(event) {
-+		AJS.$(event.target).closest(".step-failure").find(".failure-trace").each(function (index, element) {
-+			AJS.$(element).toggle();
-+			var replaceText = event.target.getAttribute("replace-text");
-+			var currentHtml = AJS.$(event.target).html();
-+			AJS.$(event.target).html(replaceText);
-+			event.target.setAttribute("replace-text", currentHtml);
-+		});
-+		if (event.preventDefault) {
-+			event.preventDefault();
-+		} else {
-+			event.returnValue = false;
-+		}
-+	}
-+
-+	function storyReportToggleElement(event, idOfElementToToggle, idOfTrigger) {
-+		if (AJS.$("#" + idOfElementToToggle).hasClass("expanded")) {
-+			AJS.$("#" + idOfElementToToggle).removeClass("expanded");
-+			AJS.$("#" + idOfTrigger).removeClass("expanded");
-+			AJS.$("#" + idOfElementToToggle).addClass("collapsed");
-+			AJS.$("#" + idOfTrigger).addClass("collapsed");
-+		} else {
-+			AJS.$("#" + idOfElementToToggle).removeClass("collapsed");
-+			AJS.$("#" + idOfTrigger).removeClass("collapsed");
-+			AJS.$("#" + idOfElementToToggle).addClass("expanded");
-+			AJS.$("#" + idOfTrigger).addClass("expanded");
-+//			AJS.$("#" + idOfTrigger).mouseover(function (event) {
-+//				AJS.$("#" + idOfTrigger).addClass("mouse-over");
-+//			});
-+//			AJS.$("#" + idOfTrigger).mouseout(function (event) {
-+//				AJS.$("#" + idOfTrigger).removeClass("mouse-over");
-+//			});
-+		}
-+		if (event.preventDefault) {
-+			event.preventDefault();
-+		} else {
-+			event.returnValue = false;
-+		}
-+	}
-+	AJS.$('.jb-story-ele-exp-trigger').mouseover(function (event) {
-+		var target = AJS.$(event.target)[0];
-+		AJS.$(target).closest(".jb-story-ele-exp-trigger").addClass("mouse-over");
-+	});
-+
-+	AJS.$('.jb-story-ele-exp-trigger').mouseout(function (event) {
-+		var target = AJS.$(event.target)[0];
-+		AJS.$(target).closest(".jb-story-ele-exp-trigger").removeClass("mouse-over");
-+	});
-+</script>
-\ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryLoader.java	(revision )
-@@ -15,6 +15,8 @@
- import java.io.PrintWriter;
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(revision 6ead532dcdbc93bf184cd48dba752d451ac0cb48)
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryPathsFinder.java	(revision )
+@@ -1,14 +1,13 @@
+ package com.jbehaveforjira.javaclient;
+ 
++import com.jbehaveforjira.javaclient.dto.ResponseKind;
++import com.jbehaveforjira.javaclient.dto.StoryPathsResponse;
+ import com.sun.jersey.api.client.Client;
+ import com.sun.jersey.api.client.ClientResponse;
+ import com.sun.jersey.api.client.WebResource;
+ 
+ import javax.ws.rs.core.MediaType;
+ import javax.ws.rs.core.Response;
+-import javax.xml.bind.annotation.XmlAccessType;
+-import javax.xml.bind.annotation.XmlAccessorType;
+-import javax.xml.bind.annotation.XmlRootElement;
  import java.net.URI;
  import java.net.URISyntaxException;
-+import java.util.regex.Matcher;
-+import java.util.regex.Pattern;
- 
- /**
-  * @author Maryna Pristrom
-@@ -31,15 +33,20 @@
- 
-     private String password;
- 
--    private String downloadedStoriesDir = "src/test/resources/jira_stories";
-+    private String downloadedStoriesDir;
- 
-     private String loadStoryPath = "rest/jbehave-for-jira/1.0/find/for-path/";
- 
-     public JiraStoryLoader(String jiraBaseUrl, String projectKey, String username, String password) {
-+        this(jiraBaseUrl, projectKey, username, password, null);
-+    }
-+
-+    public JiraStoryLoader(String jiraBaseUrl, String projectKey, String username, String password, String downloadDir) {
-         this.jiraBaseUrl = jiraBaseUrl;
-         this.projectKey = projectKey;
-         this.username = username;
-         this.password = password;
-+        this.downloadedStoriesDir = downloadDir;
-     }
- 
-     @Override
-@@ -65,6 +72,11 @@
- 
+ import java.util.ArrayList;
+@@ -48,13 +47,19 @@
+         ClientResponse response = res.get(ClientResponse.class);
          if (response.getStatus() == 200) {
-             String story = response.getEntity(String.class);
-+
-+            if (downloadedStoriesDir != null && !downloadedStoriesDir.trim().isEmpty()) {
-+                this.writeModelToFile(storyPath, story);
-+            }
-+
-             return story;
-         } else {
-             int status = response.getStatus();
-@@ -77,10 +89,29 @@
  
-     private void writeModelToFile(String storyPath, String storyModel) {
- 
-+        // trim story version from story path
-+        // extract version
-+        String actualStoryPath;
-+        String regexPattern = "(.*)\\.([0-9]*)(\\.story)";
-+        Pattern p = Pattern.compile(regexPattern);
-+        Matcher matcher = p.matcher(storyPath);
-+        if (matcher.matches()) {
-+            actualStoryPath = matcher.group(1) + matcher.group(3);
-+        } else {
-+            throw new IllegalArgumentException("Jira story path must match pattern - " + regexPattern);
-+        }
-+
-         PrintWriter pw = null;
-         try {
-             File storiesDir = new File(downloadedStoriesDir);
--            File outFile = new File(storiesDir, storyPath);
-+            if (storiesDir.exists()) {
-+                if (!storiesDir.isDirectory()) {
-+                    throw new RuntimeException("Specified download directory must not be an existing file!");
+-            int length = response.getLength();
+-            MediaType type = response.getType();
+-            StoryPaths storyPaths = response.getEntity(StoryPaths.class);
+-
++            StoryPathsResponse storyPathsResponse = response.getEntity(StoryPathsResponse.class);
++            ResponseKind kind = storyPathsResponse.getKind();
++            if (kind.equals(ResponseKind.success)) {
++                StoryPathsResponse.StoryPaths storyPaths = storyPathsResponse.getPayload();
+-            if (storyPaths.getPaths() != null && !storyPaths.getPaths().isEmpty()) {
+-                paths = storyPaths.getPaths();
++                if (storyPaths.getPaths() != null && !storyPaths.getPaths().isEmpty()) {
++                    paths = storyPaths.getPaths();
++                } else {
++                    // will return empty paths collection
+-            }
 +                }
 +            } else {
-+                storiesDir.mkdirs();
++                throw new RuntimeException("Failed to retrieve story paths from Jira. Server returned error, msg - "
++                        + storyPathsResponse.getMessage());
 +            }
-+            File outFile = new File(storiesDir, actualStoryPath);
-             outFile.getParentFile().mkdirs();
-             FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
-             pw = new PrintWriter(fw);
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryReporter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryReporter.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/JiraStoryReporter.java	(revision )
-@@ -780,12 +780,6 @@
  
-                 int indexOfFirstSpace = step.indexOf(" ");
-                 Validate.isTrue(indexOfFirstSpace > -1);
--                int indexOfFirstSpace = step.indexOf(" ");
--                Validate.isTrue(indexOfFirstSpace > -1);
--                int indexOfFirstSpace = step.indexOf(" ");
--                Validate.isTrue(indexOfFirstSpace > -1);
--                int indexOfFirstSpace = step.indexOf(" ");
--                Validate.isTrue(indexOfFirstSpace > -1);
+         } else {
+             int status = response.getStatus();
+@@ -64,21 +69,6 @@
+         }
  
-                 String keyword = step.substring(0, indexOfFirstSpace);
-                 stepTokens.add(new OutputStepToken(OutputStepToken.StepTokenType.KEYWORD, keyword));
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/StoryPathsFinder.java
+         return paths;
+-    }
+-
+-    @XmlRootElement
+-    @XmlAccessorType(XmlAccessType.FIELD)
+-    public static class StoryPaths {
+-
+-        private List<String> paths;
+-
+-        public List<String> getPaths() {
+-            return paths;
+-        }
+-
+-        public void setPaths(List<String> paths) {
+-            this.paths = paths;
+-        }
+     }
+ 
+ }
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/ResponseKind.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/StoryPathsFinder.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/StoryPathsFinder.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameter.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameter.java	(date 1414444951000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/utils/StepParameter.java	(revision )
-@@ -1,1 +1,19 @@
-+package com.jbehaveforjira.javaclient.utils;
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/ResponseKind.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/ResponseKind.java	(revision )
+@@ -0,0 +1,7 @@
++package com.jbehaveforjira.javaclient.dto;
 +
-+/**
-+ * @author Maryna Pristrom
-+ */
-+public interface StepParameter {
++public enum ResponseKind {
 +
-+    /**
-+     * Converts current instance into string representation.
-+     * @return
-+     */
-+    String asString();
-+
-+    /**
-+     * Populates given instance from the specified string representation.
-+     * @param asString
-+     */
-+    void fromString(String asString);
++    success,
++    failure
 +}
-\ No newline at end of file
- 
-\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/BaseRestResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/BaseRestResponse.java	(revision )
++++ jbehave-for-jira/jbehave-for-jira-java-client/src/main/java/com/jbehaveforjira/javaclient/dto/BaseRestResponse.java	(revision )
+@@ -0,0 +1,25 @@
++package com.jbehaveforjira.javaclient.dto;
++
++public abstract class BaseRestResponse {
++
++    private ResponseKind kind;
++
++    private String message;
++
++    public ResponseKind getKind() {
++        return kind;
++    }
++
++    public void setKind(ResponseKind kind) {
++        this.kind = kind;
++    }
++
++    public String getMessage() {
++        return message;
++    }
++
++    public void setMessage(String message) {
++        this.message = message;
++    }
++
++}
