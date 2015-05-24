@@ -1,835 +1,1481 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/TestStatus.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/ProfileUserEqualsCurrentUser.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportServiceImpl.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportServiceImpl.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTOUtils.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.css	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.css	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryCondition.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(revision )
-@@ -24,3 +24,4 @@
- ##        </div>
- ##    </div>
- ##</div>
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(revision )
+@@ -6,6 +6,9 @@
+ import com.atlassian.jira.user.preferences.UserPreferencesManager;
+ import com.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction;
+ import com.jbehaveforjira.plugin.dto.preferences.UserPreferencesDTO;
++import com.jbehaveforjira.plugin.dto.rest.RestResponse;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ 
+ import javax.ws.rs.GET;
+ import javax.ws.rs.Path;
+@@ -15,6 +18,8 @@
+ @Path("/preferences")
+ public class UserPreferencesResource {
+ 
++    private Logger log = LoggerFactory.getLogger(this.getClass());
 +
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
-@@ -840,8 +840,6 @@
-             return firstChars == "!--";
-         }
+     private JiraAuthenticationContext authenticationContext;
+     private UserPreferencesManager preferencesManager;
+ 
+@@ -28,22 +33,33 @@
+     @GET
+     @Path("/for-user")
+     @Produces({MediaType.APPLICATION_JSON})
+-    public UserPreferencesDTO getForCurrentUser(){
++    public RestResponse<UserPreferencesDTO> getForCurrentUser(){
+ 
++        RestResponse<UserPreferencesDTO> response;
++
++        try {
+-        ApplicationUser user = authenticationContext.getUser();
+-        final Preferences preferences = preferencesManager.getPreferences(user);
++            ApplicationUser user = authenticationContext.getUser();
++            final Preferences preferences = preferencesManager.getPreferences(user);
+ 
+-        boolean showLineNumbers = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_SHOW_LINE_NUMBERS);
+-        boolean autoAlignTables = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_ALIGN_TABLES);
+-        boolean autoInsertTabularFields = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_INSERT_TABLES);
+-        boolean highlightErrors = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_HIGHLIGHT_ERRORS);
++            boolean showLineNumbers = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_SHOW_LINE_NUMBERS);
++            boolean autoAlignTables = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_ALIGN_TABLES);
++            boolean autoInsertTabularFields = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_INSERT_TABLES);
++            boolean highlightErrors = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_HIGHLIGHT_ERRORS);
+ 
+-        UserPreferencesDTO userPrefs = new UserPreferencesDTO();
+-        userPrefs.setShowLineNumbers(showLineNumbers);
+-        userPrefs.setHighlightErrors(highlightErrors);
+-        userPrefs.setAutoAlignTables(autoAlignTables);
+-        userPrefs.setAutoInsertTabularFields(autoInsertTabularFields);
++            UserPreferencesDTO userPrefs = new UserPreferencesDTO();
++            userPrefs.setShowLineNumbers(showLineNumbers);
++            userPrefs.setHighlightErrors(highlightErrors);
++            userPrefs.setAutoAlignTables(autoAlignTables);
++            userPrefs.setAutoInsertTabularFields(autoInsertTabularFields);
+-        return userPrefs;
++
++            response = RestResponse.success(userPrefs);
++
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while attempting to fetch preferences for user", t);
++        }
++
++        return response;
      }
--        }
--    }
  
- //    this.addModeGutterError = function (from, to, message) {
- //        errorsGutter.addModeError(from, to, message);
-@@ -1406,17 +1404,6 @@
-             var lineHandle = editor.getLineHandle(lineNumber);
-             var lineText = lineHandle.text;
-             if (textUtils.startsWithScenario(lineText) || textUtils.startsWithExamples(lineText)) {
--                return true;
--            } else {
--                return false;
--            }
--        }
--
--        this.lineStartsWithLineComment = function (lineNumber) {
--
--            var lineHandle = editor.getLineHandle(lineNumber);
--            var lineText = lineHandle.text;
--            if (textUtils.startsWithLineComment(lineText)) {
-                 return true;
-             } else {
-                 return false;
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/show-hint.js
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/show-hint.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/show-hint.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/tooltipsy/tooltipsy.min.js	(revision )
-@@ -17,4 +17,4 @@
-  * - $('element').data('tooltipsy').destroy(): Remove tooltip from DOM
-  * More information visit http://tooltipsy.com/
-  */
--;(function(a){a.tooltipsy=function(c,b){this.options=b;this.$el=a(c);this.title=this.$el.attr("title")||"";this.$el.attr("title","");this.random=parseInt(Math.random()*10000);this.ready=false;this.shown=false;this.width=0;this.height=0;this.delaytimer=null;this.$el.data("tooltipsy",this);this.init()};a.tooltipsy.prototype={init:function(){var e=this,d,b=e.$el,c=b[0];e.settings=d=a.extend({},e.defaults,e.options);d.delay=+d.delay;if(typeof d.content==="function"){e.readify()}if(d.showEvent===d.hideEvent&&d.showEvent==="click"){b.toggle(function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}if(d.delay>0){e.delaytimer=window.setTimeout(function(){e.show(f)},d.delay)}else{e.show(f)}},function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}window.clearTimeout(e.delaytimer);e.delaytimer=null;e.hide(f)})}else{b.bind(d.showEvent,function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}e.delaytimer=window.setTimeout(function(){e.show(f)},d.delay||0)}).bind(d.hideEvent,function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}window.clearTimeout(e.delaytimer);e.delaytimer=null;e.hide(f)})}},show:function(i){if(this.ready===false){this.readify()}var b=this,f=b.settings,h=b.$tipsy,k=b.$el,d=k[0],g=b.offset(d);if(b.shown===false){if((function(m){var l=0,e;for(e in m){if(m.hasOwnProperty(e)){l++}}return l})(f.css)>0){b.$tip.css(f.css)}b.width=h.outerWidth();b.height=h.outerHeight()}if(f.alignTo==="cursor"&&i){var j=[i.clientX+f.offset[0],i.clientY+f.offset[1]];if(j[0]+b.width>a(window).width()){var c={top:j[1]+"px",right:j[0]+"px",left:"auto"}}else{var c={top:j[1]+"px",left:j[0]+"px",right:"auto"}}}else{var j=[(function(){if(f.offset[0]<0){return g.left-Math.abs(f.offset[0])-b.width}else{if(f.offset[0]===0){return g.left-((b.width-k.outerWidth())/2)}else{return g.left+k.outerWidth()+f.offset[0]}}})(),(function(){if(f.offset[1]<0){return g.top-Math.abs(f.offset[1])-b.height}else{if(f.offset[1]===0){return g.top-((b.height-b.$el.outerHeight())/2)}else{return g.top+b.$el.outerHeight()+f.offset[1]}}})()]}h.css({top:j[1]+"px",left:j[0]+"px"});b.settings.show(i,h.stop(true,true))},hide:function(c){var b=this;if(b.ready===false){return}if(c&&c.relatedTarget===b.$tip[0]){b.$tip.bind("mouseleave",function(d){if(d.relatedTarget===b.$el[0]){return}b.settings.hide(d,b.$tipsy.stop(true,true))});return}b.settings.hide(c,b.$tipsy.stop(true,true))},readify:function(){this.ready=true;this.$tipsy=a('<div id="tooltipsy'+this.random+'" style="position:fixed;z-index:2147483647;display:none">').appendTo("body");this.$tip=a('<div class="'+this.settings.className+'">').appendTo(this.$tipsy);this.$tip.data("rootel",this.$el);var c=this.$el;var b=this.$tip;this.$tip.html(this.settings.content!=""?(typeof this.settings.content=="string"?this.settings.content:this.settings.content(c,b)):this.title)},offset:function(b){return this.$el[0].getBoundingClientRect()},destroy:function(){if(this.$tipsy){this.$tipsy.remove();a.removeData(this.$el,"tooltipsy")}},defaults:{alignTo:"element",offset:[0,-1],content:"",show:function(c,b){b.fadeIn(100)},hide:function(c,b){b.fadeOut(100)},css:{},className:"tooltipsy",delay:200,showEvent:"mouseenter",hideEvent:"mouseleave"}};a.fn.tooltipsy=function(b){return this.each(function(){new a.tooltipsy(this,b)})}})(jQuery);
-+;(function(a){a.tooltipsy=function(c,b){this.options=b;this.$el=a(c);this.title=this.$el.attr("title")||"";this.$el.attr("title","");this.random=parseInt(Math.random()*10000);this.ready=false;this.shown=false;this.width=0;this.height=0;this.delaytimer=null;this.$el.data("tooltipsy",this);this.init()};a.tooltipsy.prototype={init:function(){var e=this,d,b=e.$el,c=b[0];e.settings=d=a.extend({},e.defaults,e.options);d.delay=+d.delay;if(typeof d.content==="function"){e.readify()}if(d.showEvent===d.hideEvent&&d.showEvent==="click"){b.toggle(function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}if(d.delay>0){e.delaytimer=window.setTimeout(function(){e.show(f)},d.delay)}else{e.show(f)}},function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}window.clearTimeout(e.delaytimer);e.delaytimer=null;e.hide(f)})}else{b.bind(d.showEvent,function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}e.delaytimer=window.setTimeout(function(){e.show(f)},d.delay||0)}).bind(d.hideEvent,function(f){if(d.showEvent==="click"&&c.tagName=="A"){f.preventDefault()}window.clearTimeout(e.delaytimer);e.delaytimer=null;e.hide(f)})}},show:function(i){if(this.ready===false){this.readify()}var b=this,f=b.settings,h=b.$tipsy,k=b.$el,d=k[0],g=b.offset(d);if(b.shown===false){if((function(m){var l=0,e;for(e in m){if(m.hasOwnProperty(e)){l++}}return l})(f.css)>0){b.$tip.css(f.css)}b.width=h.outerWidth();b.height=h.outerHeight()}if(f.alignTo==="cursor"&&i){var j=[i.clientX+f.offset[0],i.clientY+f.offset[1]];if(j[0]+b.width>a(window).width()){var c={top:j[1]+"px",right:j[0]+"px",left:"auto"}}else{var c={top:j[1]+"px",left:j[0]+"px",right:"auto"}}}else{var j=[(function(){if(f.offset[0]<0){return g.left-Math.abs(f.offset[0])-b.width}else{if(f.offset[0]===0){return g.left-((b.width-k.outerWidth())/2)}else{return g.left+k.outerWidth()+f.offset[0]}}})(),(function(){if(f.offset[1]<0){return g.top-Math.abs(f.offset[1])-b.height}else{if(f.offset[1]===0){return g.top-((b.height-b.$el.outerHeight())/2)}else{return g.top+b.$el.outerHeight()+f.offset[1]}}})()]}h.css({top:j[1]+"px",left:j[0]+"px"});b.settings.show(i,h.stop(true,true))},hide:function(c){var b=this;if(b.ready===false){return}if(c&&c.relatedTarget===b.$tip[0]){b.$tip.bind("mouseleave",function(d){if(d.relatedTarget===b.$el[0]){return}b.settings.hide(d,b.$tipsy.stop(true,true))});return}b.settings.hide(c,b.$tipsy.stop(true,true))},readify:function(){this.ready=true;this.$tipsy=a('<div id="tooltipsy'+this.random+'" style="position:fixed;z-index:2147483647;display:none">').appendTo("body");this.$tip=a('<div class="'+this.settings.className+'">').appendTo(this.$tipsy);this.$tip.data("rootel",this.$el);var c=this.$el;var b=this.$tip;this.$tip.html(this.settings.content!=""?(typeof this.settings.content=="string"?this.settings.content:this.settings.content(c,b)):this.title)},offset:function(b){return this.$el[0].getBoundingClientRect()},destroy:function(){if(this.$tipsy){this.$tipsy.remove();a.removeData(this.$el,"tooltipsy")}},defaults:{alignTo:"element",offset:[0,-1],content:"",show:function(c,b){b.fadeIn(100)},hide:function(c,b){b.fadeOut(100)},css:{},className:"tooltipsy",delay:200,showEvent:"mouseenter",hideEvent:"mouseleave"}};a.fn.tooltipsy=function(b){return this.each(function(){new a.tooltipsy(this,b)})}})(jQuery);
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
+@@ -265,4 +265,16 @@
+     background-position: right bottom;
+     width: 100%;
+     height: 100%;
+-}
 \ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/css/show-story.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/css/show-story.css	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/fullscreen.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/logback.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/logback.xml	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/logback.xml	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/ParameterMetaInfo.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/preferences/UserPreferencesDTO.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/show-hint.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/show-hint.css	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/show-hint.css	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
-@@ -1,3 +1,4 @@
-+/* environment tab badges =====================================================================================*/
- .aui-badge {
-     margin-left: 5px;
-     color: #FFF;
-@@ -27,182 +28,167 @@
-     /*apply default jira color scheme*/
- }
- 
--/*pre.pending {*/
--/*padding-left: 16px;*/
--/*}*/
-+/* scenario lozenge ==================================================================================================== */
-+.jb-story-report .aui-lozenge {
-+    vertical-align: text-top;
-+    /*vertical-align: middle;*/
-+}
- 
--/*.story-report-tab {*/
--/*color: #555;*/
-+.jb-story-report-lozenge-container {
-+    margin-left: 4px;
-+    /*vertical-align: text-top;*/
 +}
 +
-+/*.jb-story-outcomes {*/
-+/*color: #6600ff;*/
-+/*color: #b43d3d;*/
- /*}*/
++.story-panel .no-content {
++    color: rgb(51, 51, 51);
++    cursor: text;
++    display: inline;
++    font-family: Arial, sans-serif;
++    font-size: 14px;
++    font-style: italic;
++    height: auto;
++    line-height: 20px;
++    width: auto;
++}
+\ No newline at end of file
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
+@@ -2,16 +2,16 @@
  
--/*.story-report-tab .story {*/
--/*text-align: left;*/
--/*margin-left: 10px;*/
-+/*.jb-story-outcomes table {*/
-+/*border: solid 1px #b43d3d;*/
-+/*border-collapse: collapse;*/
- /*}*/
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+-import org.apache.commons.lang.Validate;
++import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.story.JiraStory;
+ import com.jbehaveforjira.plugin.service.StoryService;
++import org.apache.commons.lang.Validate;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
  
--/*.story-report-tab .path {*/
--/*color: #555;*/
--/*font-weight: bolder;*/
--/*font-size: 16px;*/
--/*opacity: 0.85;*/
--/*margin-bottom: 10px;*/
--/*padding: 5px 10px 5px 10px;*/
-+/*.jb-story-outcomes thead th {*/
-+/*font-weight: bold;*/
-+/*font-style: italic;*/
- /*}*/
+ import javax.ws.rs.*;
+ import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
+ import java.io.IOException;
  
--/*.story-report-tab .narrative {*/
--/*color: #00F;*/
--/*color: blue;*/
--/*text-align: left;*/
-+/*.jb-story-outcomes td {*/
-+/*border-left: solid 1px #b43d3d;*/
-+/*border: solid 1px black;*/
-+/*font-weight: normal;*/
-+/*margin: 0px;*/
-+/*padding: 4px;*/
- /*}*/
+ @Path("/crud")
+@@ -36,35 +36,55 @@
+     @Path("/save/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.TEXT_PLAIN)
+-    public JiraStory save(@PathParam("projectKey") String projectKey,
++    public RestResponse<JiraStory> save(@PathParam("projectKey") String projectKey,
+                           @PathParam("issueKey") String issueKey,
+                           String storyPayload) {
  
--/*.story-report-tab .narrative .label {*/
--/*font-size: 16px;*/
-+/*.cm-jb-story-step-failed-keyword {*/
- /*font-weight: bold;*/
--/*padding-bottom: 5px;*/
-+/*color: #ff0000;*/
- /*}*/
+-        Validate.notNull(projectKey);
+-        Validate.notNull(issueKey);
++        RestResponse<JiraStory> response;
  
--/*.story-report .cm-jb-story-description-line {*/
--/*padding-bottom: 10px;*/
-+/*.cm-jb-story-keyword-notPerformed {*/
-+/*color: #808080;*/
- /*}*/
- 
--/*table.tabular-parameter {*/
--/*border: 1px solid black;*/
--/*padding: 0px;*/
--/*margin: 0px;*/
-+/*.cm-jb-story-step-failed-message {*/
-+/*color: #ff0000;*/
- /*}*/
- 
--/*table.tabular-parameter th {*/
--/*border: 1px solid black;*/
--/*margin: 0px;*/
--/*padding: 0px;*/
-+/*.cm-jb-story-step-successful-message {*/
+-        // TODO - decide what to do about the null parameters below?
++        try {
 +
-+/*color: green;*/
- /*}*/
- 
--/*table.tabular-parameter td {*/
--/*border: 1px solid black;*/
--/*margin: 0px;*/
--/*padding: 0px;*/
-+/*.cm-jb-story-keyword-pending {*/
-+/*color: orange;*/
-+/*color: #ffd351;*/
- /*}*/
--/*table.tabular-parameter   {*/
--/*display: table; border-collapse: collapse;*/
--/*}*/
--/*tr {*/
--/*display: table-row; border: 1px solid #000;*/
--/*}*/
--/*td {*/
--/*display: table-cell;*/
--/*}*/
--table.tabular-parameter {
--    border: solid 1px purple;
--    border-collapse: collapse;
++            Validate.notNull("Parameter 'projectKey' cannot be empty", projectKey);
++            Validate.notNull("Parameter 'issueKey' cannot be empty", issueKey);
 +
-+/* collapsible elements ==============================================================================================*/
+-        ObjectMapper mapper = new ObjectMapper();
+-        JiraStory storyDTO = null;
+-        try {
+-            storyDTO = mapper.readValue(storyPayload, JiraStory.class);
+-        } catch (IOException e) {
+-            throw new RuntimeException(e);
+-        }
+-        log.debug("saving story:\n" + storyDTO);
++            ObjectMapper mapper = new ObjectMapper();
++            JiraStory storyDTO = null;
++            try {
++                storyDTO = mapper.readValue(storyPayload, JiraStory.class);
++            } catch (IOException e) {
++                throw new RuntimeException(e);
++            }
++            log.debug("saving story:\n" + storyDTO);
+ 
+-        storyService.saveAndCommit(storyDTO);
++            storyService.saveAndCommit(storyDTO);
+ 
+-        return storyDTO;
++            response = RestResponse.success(storyDTO);
 +
-+.jb-story-ele-exp-trigger {
-+    padding-left: 16px;
- }
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while trying to save JBehave story", t);
+-    }
++        }
  
--table.tabular-parameter td, th {
--    border-left: solid 1px purple;
--    /*border: solid 1px black;*/
--    font-weight: normal;
--    margin: 0px;
--    padding: 4px;
-+.jb-story-ele-exp-trigger.collapsed {
-+    /*background: url(your_image_url) no-repeat;*/
-+    background: url(images/ui/collapsed_icon.png) no-repeat left center;
- }
- 
--table.tabular-parameter thead th {
--    font-weight: bold;
--    font-style: italic;
-+.jb-story-ele-exp-trigger.expanded.mouse-over {
-+    background: url(images/ui/expanded_icon.png) no-repeat left center;
- }
- 
--.jb-story-outcomes {
--    /*color: #6600ff;*/
--    color: #b43d3d;
-+/* latest changes *************************************************************************************************/
++        return response;
++    }
 +
-+.jb-story-report .description {
-+    color: #d04437;
-+    padding-top: 5px;
-+    padding-left: 16px;
- }
- 
--.jb-story-outcomes table {
--    border: solid 1px #b43d3d;
--    border-collapse: collapse;
-+/* Meta ----------------------------------------- */
+     @DELETE
+     @Path("/delete/{projectKey}/{issueKey}")
+-    public Response delete(@PathParam("projectKey") String projectKey, @PathParam("issueKey") String issueKey) {
++    public RestResponse<String> delete(@PathParam("projectKey") String projectKey, @PathParam("issueKey") String issueKey) {
 +
-+.jb-story-report .meta {
-+    color: #770088;
-+    padding-top: 5px;
-+    padding-left: 16px;
++        RestResponse<String> response;
++
++        try {
+-        Validate.notEmpty(projectKey);
+-        Validate.notEmpty(issueKey);
+-        storyService.delete(projectKey, issueKey);
++            Validate.notEmpty(projectKey);
++            Validate.notEmpty(issueKey);
++            storyService.delete(projectKey, issueKey);
+-        return Response.ok("Successful deletion from server!").build();
++            response = RestResponse.success("JBehave story was deleted successfully");
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while trying to delete JBehave story for projectKey - " + projectKey + ", issueKey - " + issueKey, t);
++        }
++
++        return response;
+     }
+ 
  }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReport.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryReport.java	(revision )
+@@ -2,6 +2,7 @@
  
--.jb-story-outcomes thead th {
-+.jb-story-report .meta .keyword {
-+    font-size: larger;
-     font-weight: bold;
--    font-style: italic;
- }
+ import net.java.ao.Entity;
+ import net.java.ao.Preload;
++import net.java.ao.schema.StringLength;
  
--.jb-story-outcomes td {
--    border-left: solid 1px #b43d3d;
--    border-left: solid 1px;
--    font-weight: normal;
--    margin: 0px;
--    padding: 4px;
-+.jb-story-report .meta .property {
- }
+ @Preload
+ public interface JBehaveStoryReport extends Entity {
+@@ -22,6 +23,7 @@
  
--.cm-jb-story-step-failed-keyword {
--    /*font-weight: bold;*/
--    color: #ff0000;
--}
-+/* Narrative ------------------------------------ */
+     void setStoryVersion(Long storyVersion);
  
--.cm-jb-story-keyword-notPerformed {
--    color: #808080;
-+.jb-story-report .narrative {
-+    color: #0000cc;
-+    padding-top: 5px;
-+    padding-left: 16px;
- }
++    @StringLength(StringLength.UNLIMITED)
+     String getHtmlReport();
  
--.cm-jb-story-step-failed-message {
--    color: #ff0000;
-+.jb-story-report .narrative .keyword {
-+    font-size: larger;
-+    font-weight: bold;
- }
+     void setHtmlReport(String htmlReport);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -42,26 +42,59 @@
+     // initialization sequence
  
--.cm-jb-story-step-successful-message {
+     this.initSequence = function () {
+-        restService.getUserPreferences(function (fetchedPreferences) {
+-            prefs = fetchedPreferences;
++        restService.getUserPreferences(function (preferencesResponse) {
++
++            if (preferencesResponse.kind == "success") {
++                debug("Successfully fetched user preferences");
++
++                prefs = preferencesResponse.payload;
+-            storyController.prefs = prefs;
++                storyController.prefs = prefs;
+-            restService.fetchStepDocs(pageUtils.getProjectKey(), function (foundStepDocs) {
+-                stepDocs = foundStepDocs;
+-                restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), false, function (fetchedStory) {
+-                    if (fetchedStory != null) {
++
++                restService.fetchStepDocs(function (stepDocsResponse) {
++
++                    if (stepDocsResponse.kind == "success") {
++                        debug("Successfully fetched step docs");
++
++                        stepDocs = stepDocsResponse.payload.stepDocs;
++
++                        restService.loadStory(false, function (loadStoryResponse) {
++
++                            if (loadStoryResponse.kind == "success") {
++
++                                debug("Successfully loaded story");
++                                var loadedStory = loadStoryResponse.payload;
++                                if (loadedStory != null) {
++
+-                        editor = storyController.initEditor();
+-                        storyController.editor = editor;
++                                    editor = storyController.initEditor();
++                                    storyController.editor = editor;
+-                        storyController.showStory(fetchedStory);
++                                    storyController.showStory(loadedStory);
++
+-                    } else {
++                                } else {
+-                        console.log("No story found for Jira item.");
++                                    debug("No story found for current Jira item.");
+-                    }
++                                }
++                            } else {
++                                error("Failed to load story, server error message - " + loadStoryResponse.message + "\nServer error stack trace:\n" + loadStoryResponse.payload);
++                                JIRA.Messages.showWarningMsg("Failed to load story for JBehave for Jira plugin. See browser log for more details.");
++                            }
+-                });
++                        });
++
++                    } else if (stepDocsResponse.kind == "failure") {
++                        error("Failed to fetch step docs, server error message - " + stepDocsResponse.message + "\nServer error stack trace:\n" + stepDocsResponse.payload);
++                        JIRA.Messages.showWarningMsg("Failed to fetch step documentation for JBehave for Jira plugin. See browser log for more details.");
++                    } else {
++                        error("Invalid payload structure returned from server for step docs: \n" + JSON.stringify(stepDocsResponse, null, "\t"));
++                    }
+-            });
++                });
++
++            } else if (preferencesResponse.kind == "failure") {
++                error("Failed to fetch user preferences, server error message - " + preferencesResponse.message + "\nServer error stack trace:\n" + preferencesResponse.payload);
++                JIRA.Messages.showWarningMsg("Failed to fetch user preferences for JBehave for Jira plugin. See browser log for more details.");
++            } else {
++                error("Invalid payload structure returned from server for user preferences: \n" + JSON.stringify(preferencesResponse, null, "\t"));
++            }
+         });
+     }
+ 
+-    this.initSequence();
 -
--.jb-story-report .scenario {
--    padding-top: 10px;
-+.jb-story-report .narrative .keyword.inOrderTo, .jb-story-report .narrative .keyword.asA, .jb-story-report .narrative .keyword.iWantTo, .jb-story-report .narrative .keyword.soThat {
-+    /*font-size: 16px;*/
-+    font-size: inherit;
-+    font-weight: bold;
- }
+     this.updateCurrentStoryInput = function () {
+         if (initialized) {
+             currentStoryInput = editor.getValue();
+@@ -256,18 +289,26 @@
+     }
  
--.cm-jb-story-keyword-pending {
--    /*color: orange;*/
--    color: #ffd351;
-+.jb-story-report .narrative .text {
- }
+     this.fetchAndShowStoryReports = function () {
++
+         // this is NOT a new story, so check and show any story reports
+-        restService.findStoryReports(pageUtils.getProjectKey(), pageUtils.getIssueKey(),
+-            function (storyReportsPayload) {
+-                debug("> findStoryReports.callback");
+-                if (storyReportsPayload != undefined && storyReportsPayload.storyTestReports.length != 0) {
+-                    debug("found storyReportsPayload - " + JSON.stringify(storyReportsPayload, null, "\t"));
+-                    storyController.showStoryReports(storyReportsPayload.storyTestReports);
++        restService.findStoryReports(function (storyReportsResponse) {
++                if (storyReportsResponse.kind == "success") {
++                    debug("found storyReportsPayload - " + JSON.stringify(loadedReportsPayload, null, "\t"));
++                    var loadedReportsPayload = storyReportsResponse.payload;
++                    if (loadedReportsPayload != undefined && loadedReportsPayload.storyTestReports.length != 0) {
++                        storyController.showStoryReports(loadedReportsPayload.storyTestReports);
+-                } else {
++                    } else {
+-                    debug("no story reports were found for project");
++                        debug("No story reports found for current Jira issue.");
++                        var noReportsContent = execspec.viewissuepage.showstoryreports.renderNoStoryReports();
++                        AJS.$('#storyReportsPanel').html(noReportsContent);
+-                }
++                    }
++                } else {
++                    error("Failed to load story reports, server error message - " + loadStoryResponse.message + "\nServer error stack trace:\n" + loadStoryResponse.payload);
++                    JIRA.Messages.showWarningMsg("Failed to load story reports for JBehave for Jira plugin. See browser log for more details.");
++                }
+                 initialized = true;
+                 debug("# findStoryReports.callback");
++
+             }
+         );
+     }
+@@ -556,6 +597,7 @@
  
--.jb-story-report-step {
--    padding-top: 3px;
+         var contextPath = AJS.contextPath();
+         var restPathBase = contextPath + "/rest/jbehave-for-jira/1.0/";
++        var reqTimeout = 10000;
+ 
+         this.getUserPreferences = function (callback) {
+             var urlString = restPathBase + "preferences/for-user";
+@@ -564,90 +606,88 @@
+                 url: urlString,
+ //                async: false,
+                 success: function (data, textStatus, jqXHR) {
+-                    info("User preferences fetched successfully");
++                    debug("REST call for User Preferences returned successfully");
+                     callback(data);
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+-                    error("An error occurred while trying to fetch user preferences, textStatus - "
+-                        + textStatus + " errorThrown - " + errorThrown + ". Will use default values for user preferences.");
+-                    callback(new PreferencesModel());
+-                }
++                    error("REST call for User Preferences failed, textStatus - " + textStatus + "," + errorThrown - " + errorThrown");
++                    JIRA.Messages.showWarningMsg("Failed to fetch user preferences for JBehave for Jira plugin. Please contact your system administrator.");
++                },
++                timeout: reqTimeout
+             });
+         }
+ 
+-        this.loadStory = function (projectKey, issueKey, updateFromVCS, callback) {
++        this.loadStory = function (updateFromVCS, callback) {
+ 
++            var projectKey = pageUtils.getProjectKey();
++            var issueKey = pageUtils.getIssueKey();
++
+             var urlString = restPathBase + "find/for-issue/" + projectKey + "/" + issueKey;
+             if (updateFromVCS != null && updateFromVCS == true) {
+                 urlString += "?updateFromVCS=" + updateFromVCS
+             }
+-            var jqxhr = AJS.$.getJSON(urlString);
+ 
+-            var successCallback = function (storyPayload, status, xhr) {
+-
+-                if (storyPayload != undefined) {
+-                    debug("found storyPayload - " + JSON.stringify(storyPayload, null, "\t"));
+-                    callback(storyPayload);
+-                } else {
+-                    debug("no story found for project - " + projectKey + ", issue - " + issueKey);
+-                    //storyPayload = new StoryModel();
+-                    //storyPayload.projectKey = pageUtils.getProjectKey();
+-                    //storyPayload.issueKey = pageUtils.getIssueKey();
+-                    //storyPayload.asString = "";
+-                }
+-            }
+-
+-            jqxhr.done(successCallback);
+-
+-            jqxhr.fail(function (data, status, xhr) {
+-                error("fail, received data - " + data);
+-                error("xhr.status - " + xhr.status);
++            AJS.$.ajax({
++                type: "GET",
++                url: urlString,
++                success: function (data, textStatus, jqXHR) {
++                    debug("REST call for Load Story returned successfully");
++                    callback(data);
++                },
++                error: function (jqXHR, textStatus, errorThrown) {
++                    error("REST call for Load Story failed, textStatus - " + textStatus + "," + errorThrown - " + errorThrown");
++                    JIRA.Messages.showWarningMsg("Failed to load story for JBehave for Jira plugin. Please contact your system administrator.");
++                },
++                timeout: reqTimeout
+             });
+         }
+ 
+-        this.findStoryReports = function (projectKey, issueKey, callBack) {
++        this.findStoryReports = function (callback) {
+ 
++            var projectKey = pageUtils.getProjectKey();
++            var issueKey = pageUtils.getIssueKey();
++
+             var urlString = restPathBase + "story-report/find/" + projectKey + "/" + issueKey;
+ 
+-            var jqxhr = AJS.$.getJSON(urlString);
+-
+-            var successCallback = function (data, status, xhr) {
+-                callBack(data);
+-            }
+-            jqxhr.done(successCallback);
+-
+-            jqxhr.fail(function (data, status, xhr) {
+-                console.error("fail, received data - " + data);
+-                console.error("xhr.status - " + xhr.status);
++            AJS.$.ajax({
++                type: "GET",
++                url: urlString,
++                success: function (data, textStatus, jqXHR) {
++                    debug("REST call for Load Story Reports returned successfully");
++                    callback(data);
++                },
++                error: function (jqXHR, textStatus, errorThrown) {
++                    error("REST call for Load Story Reports failed, textStatus - " + textStatus + "," + errorThrown - " + errorThrown");
++                    JIRA.Messages.showWarningMsg("Failed to load story reports for JBehave for Jira plugin. Please contact your system administrator.");
++                },
++                timeout: reqTimeout
+             });
+         }
+ 
+-        this.fetchStepDocs = function (projectKey, callback) {
++        this.fetchStepDocs = function (callback) {
+ 
++            var projectKey = pageUtils.getProjectKey()
++
+             var pathStepDocs = restPathBase + "step-doc/for-project/" + projectKey;
+             AJS.$.ajax({
+                 type: "GET",
+                 url: pathStepDocs,
+                 contentType: "text/plain; charset=utf-8",
+-                success: function (data, status, xhr) {
+-                    callback(data.stepDocs);
++                success: function (data, textStatus, jqXHR) {
++                    debug("REST call for step docs returned successfully");
++                    callback(data);
+                 },
+-                dataType: "json"
+-//                async: false
++                error: function (jqXHR, textStatus, errorThrown) {
++                    error("REST call for step docs failed, textStatus - " + textStatus + "," + errorThrown - " + errorThrown");
++                    JIRA.Messages.showWarningMsg("Failed to fetch step information for JBehave for Jira plugin. Please contact your system administrator.");
++                },
++                timeout: reqTimeout
+             });
+-        }
+ 
+-        this.saveOrUpdateStory = function (storyModel) {
+-
+-            var successCallback = function (savedStory, status, xhr) {
+-                var jsonStory = JSON.stringify(savedStory, null, "\t");
+-                debug("saved story:\n" + jsonStory);
+-
+-                msgBar.showSuccessMessage("Story was saved successfully!");
+-                storyController.showStory(savedStory);
+-                debug("# saveOrUpdateStory callback");
+-            }
++        }
+ 
++        this.saveOrUpdateStory = function (storyModel, callback) {
++
+             var saveUrl = restPathBase + "crud/save/" + storyModel.projectKey + "/" + storyModel.issueKey;
+             if (storyModel.version != undefined && storyModel.version != "") {
+                 saveUrl += "?version=" + storyModel.version;
+@@ -660,7 +700,15 @@
+                 type: "POST",
+                 url: saveUrl,
+                 contentType: "text/plain; charset=utf-8",
+-                success: successCallback,
++                success: function (data, textStatus, jqXHR) {
++                    debug("REST call for save story returned successfully");
++                    callback(data);
++                },
++                error: function (jqXHR, textStatus, errorThrown) {
++                    error("REST call for save story failed, textStatus - " + textStatus + "," + errorThrown - " + errorThrown");
++                    JIRA.Messages.showWarningMsg("Failed to save story for JBehave for Jira plugin. Please contact your system administrator.");
++                },
++                timeout: reqTimeout,
+                 data: storyPayload,
+                 dataType: "json"
+             });
+@@ -749,7 +797,7 @@
+                                 difference = maxColumnWidths[i] - token.length;
+                                 if (difference < 0) {
+                                     console.error("Error occurred while trying to align table line - " + currentLine + ", length of token - "
+-                                        + token + " was longer than maximum length for its column");
++                                    + token + " was longer than maximum length for its column");
+                                     pos += token.length;
+                                 } else {
+                                     // we replace the original token with the trimmed one
+@@ -1192,7 +1240,7 @@
+                                                             formatString = tfi.formatPattern;
+                                                         }
+                                                         seenValueToken.errorMsg = "Value for tabular field '" + lookingAtFieldName
+-                                                            + "' doesn't match expected format '" + formatString + "'";
++                                                        + "' doesn't match expected format '" + formatString + "'";
+                                                     }
+                                                 }
+ 
+@@ -1890,7 +1938,21 @@
+             editor.setOption("readOnly", true);
+             msgBar.showWaitingMessage("Saving...");
+ 
+-            restService.saveOrUpdateStory(storyModel);
++            restService.saveOrUpdateStory(storyModel, function(response) {
++                if (response.kind = "success") {
++                    var savedStory = response.payload;
++                    var jsonStory = JSON.stringify(savedStory, null, "\t");
++                    debug("saved story:\n" + jsonStory);
++                    msgBar.showSuccessMessage("Story was saved successfully!");
++                    storyController.showStory(savedStory);
++                    debug("# saveOrUpdateStory callback");
++                } else if (response.kind == "failure") {
++                    error("Failed to save story, server error message - " + response.message + "\nServer error stack trace:\n" + response.payload);
++                    JIRA.Messages.showWarningMsg("Failed to save story for JBehave for Jira plugin. See browser log for more details.");
++                } else {
++                    error("Invalid payload structure returned from server for save story request: \n" + JSON.stringify(response, null, "\t"));
++                }
++            });
+             debug("# saveStoryHandler");
+         }
+ 
+@@ -1916,9 +1978,9 @@
+ 
+             msgBar.showWaitingMessage("Updating...");
+ 
+-            restService.loadStory(pageUtils.getProjectKey(), pageUtils.getIssueKey(), true, function (fetchedStory) {
++            restService.loadStory(true, function (loadStoryResponse) {
+                 msgBar.clear();
+-                storyController.showStory(fetchedStory);
++                storyController.showStory(loadStoryResponse);
+             });
+ 
+             debug("# loadFromVCSHandler");
+@@ -1930,6 +1992,8 @@
+             if (array[i] == elt) return i;
+         return -1;
+     }
++
++    this.initSequence();
+ 
+ //    var indexOf = function(needle) {
+ //        if(typeof Array.prototype.indexOf === 'function') {
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
+@@ -3,6 +3,8 @@
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import com.atlassian.upm.api.license.PluginLicenseManager;
++import com.jbehaveforjira.plugin.dto.rest.ResponseKind;
++import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.story.JiraStory;
+ import com.jbehaveforjira.plugin.dto.story.StoriesPayload;
+ import com.jbehaveforjira.plugin.dto.story.StoryPaths;
+@@ -15,7 +17,6 @@
+ 
+ import javax.ws.rs.*;
+ import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.regex.Matcher;
+@@ -53,55 +54,74 @@
+     @GET
+     @Path("/story-paths/{projectKey}")
+     @Produces({MediaType.APPLICATION_JSON})
+-    public StoryPaths listStoryPaths(@PathParam("projectKey") String projectKey,
++    public RestResponse<StoryPaths> listStoryPaths(@PathParam("projectKey") String projectKey,
+-                                     @QueryParam("appendVersionToPath")
+-                                     @DefaultValue("true") boolean includeVersionInPath) {
++                                                   @QueryParam("appendVersionToPath")
++                                                   @DefaultValue("true") boolean includeVersionInPath) {
+ 
+ //        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+ //        if (!(license.isDefined() && license.get().isValid())) {
+ //             throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
+ //        }
+ 
++        RestResponse<StoryPaths> response;
++
++        try {
++
+-        Validate.notEmpty(projectKey);
++            Validate.notEmpty(projectKey);
+ 
+-        List<JiraStory> stories = storyService.findByProjectKey(projectKey);
+-        List<String> paths = new ArrayList<String>(stories.size());
+-        for (JiraStory story : stories) {
+-            StringBuilder storyPathSb = new StringBuilder(story.getProjectKey() + "/" + story.getIssueKey());
+-            if (includeVersionInPath) {
+-                Long version = story.getVersion();
+-                Validate.notNull(version);
+-                storyPathSb.append("." + version);
+-            }
+-            storyPathSb.append(".story");
+-            String storyPath = storyPathSb.toString();
+-            paths.add(storyPath);
+-        }
+-        StoryPaths pathsModel = new StoryPaths();
+-        pathsModel.setPaths(paths);
++            List<JiraStory> stories = storyService.findByProjectKey(projectKey);
++            List<String> paths = new ArrayList<String>(stories.size());
++            for (JiraStory story : stories) {
++                StringBuilder storyPathSb = new StringBuilder(story.getProjectKey() + "/" + story.getIssueKey());
++                if (includeVersionInPath) {
++                    Long version = story.getVersion();
++                    Validate.notNull(version);
++                    storyPathSb.append("." + version);
++                }
++                storyPathSb.append(".story");
++                String storyPath = storyPathSb.toString();
++                paths.add(storyPath);
++            }
++            StoryPaths pathsModel = new StoryPaths();
++            pathsModel.setPaths(paths);
+ 
+-        return pathsModel;
++            response = RestResponse.success(pathsModel);
++
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while trying to fetch story paths for project - " + projectKey, t);
+-    }
++        }
+ 
++        return response;
++    }
++
+     @GET
+     @Path("/for-project/{projectKey}")
+     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+-    public StoriesPayload findForProject(@PathParam("projectKey") String projectKey) {
++    public RestResponse<StoriesPayload> findForProject(@PathParam("projectKey") String projectKey) {
+ 
+ //        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+ //        if (!(license.isDefined() && license.get().isValid())) {
+ //            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
+ //        }
+ 
++        RestResponse<StoriesPayload> response;
++
++        try {
+-        List<JiraStory> stories = storyService.findByProjectKey(projectKey);
+-        StoriesPayload payload = new StoriesPayload(stories);
++            List<JiraStory> stories = storyService.findByProjectKey(projectKey);
++            StoriesPayload payload = new StoriesPayload(stories);
+-        return payload;
++            response = RestResponse.success(payload);
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while trying to find stories for project - " + projectKey, t);
+-    }
++        }
++        return response;
++    }
+ 
+     @GET
+     @Path("/for-issue/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+-    public Response findForIssue(
++    public RestResponse<JiraStory> findForIssue(
+             @PathParam("projectKey") String projectKey,
+             @PathParam("issueKey") String issueKey, @QueryParam("updateFromVCS") @DefaultValue("false") boolean updateFromVCS) {
+ 
+@@ -110,30 +130,32 @@
+ //            throw new IllegalStateException("No valid license could be found for plugin with key - '" + pluginLicenseManager.getPluginKey() + "'");
+ //        }
+ 
++        RestResponse<JiraStory> response;
++
++        try {
+-        JiraStory storyDTO;
+-        if (updateFromVCS) {
+-            storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey, updateFromVCS);
+-        } else {
+-            storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+-        }
++            JiraStory storyDTO;
++            if (updateFromVCS) {
++                storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey, updateFromVCS);
++            } else {
++                storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
++            }
+-
+-        Response response;
+-        if (storyDTO != null) {
+-            response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+-        } else {
+-            response = Response.noContent().build();
++            response = RestResponse.success(storyDTO);
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while trying to find story for projectKey - " + projectKey + ", issueKey - " + issueKey, t);
+         }
++
+         return response;
+     }
+ 
++    /*
++     * TODO - need to refactor this method so that it always returns story as text, i.e. for json payload structure
++     * above method should be called instead.
++     */
+     @GET
+     @Path("/for-path/{projectKey}/{storyPath}")
+     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+-    public Response findForPath(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("storyPath") String storyPath,
+-            @QueryParam("asString")
+-            @DefaultValue("false") boolean asString) {
++    public RestResponse<String> findForPath(@PathParam("projectKey") String projectKey, @PathParam("storyPath") String storyPath) {
+ 
+ //        Option<PluginLicense> license = pluginLicenseManager.getLicense();
+ //        if (!(license.isDefined() && license.get().isValid())) {
+@@ -159,16 +181,12 @@
+ 
+         JiraStory storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+ 
+-        Response response;
++        RestResponse<String> response;
+         if (storyDTO != null) {
+-            if (asString) {
+-                String storyAsString = storyDTO.getAsString();
++            String storyAsString = storyDTO.getAsString();
+-                response = Response.ok(storyAsString, MediaType.TEXT_PLAIN).build();
++            response = new RestResponse<String>(ResponseKind.success, "Story found for path - " + storyPath, storyAsString);
+-            } else {
++        } else {
+-                response = Response.ok(storyDTO, MediaType.APPLICATION_JSON).build();
+-            }
+-        } else {
+-            response = Response.noContent().build();
++            response = new RestResponse<String>(ResponseKind.failure, "No story found for path - " + storyPath, null);
+         }
+         return response;
+     }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryReportResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryReportResource.java	(revision )
+@@ -2,18 +2,18 @@
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+-import org.apache.commons.lang.Validate;
++import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+ import com.jbehaveforjira.plugin.dto.storyreport.StoryTestReportsPayload;
+ import com.jbehaveforjira.plugin.service.StoryReportService;
+ import com.jbehaveforjira.plugin.service.StoryService;
++import org.apache.commons.lang.Validate;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+ import javax.ws.rs.*;
+ import javax.ws.rs.core.MediaType;
+-import javax.ws.rs.core.Response;
+ import java.io.IOException;
+ import java.util.Collections;
+ import java.util.Comparator;
+@@ -46,69 +46,97 @@
+     @Path("/add/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.APPLICATION_JSON)
+-    public String addStoryTestReport(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("issueKey") String issueKey,
+-            String payload) {
++    public RestResponse<String> addStoryTestReport(
++            @PathParam("projectKey") String projectKey, @PathParam("issueKey") String issueKey, String payload) {
+ 
++        RestResponse<String> response;
++
++        try {
+-        ObjectMapper mapper = new ObjectMapper();
+-        JiraStoryHtml storyReportDTO = null;
+-        try {
+-            storyReportDTO = mapper.readValue(payload, JiraStoryHtml.class);
+-        } catch (IOException e) {
+-            throw new RuntimeException(e);
+-        }
++            ObjectMapper mapper = new ObjectMapper();
++            JiraStoryHtml storyReportDTO = null;
++            try {
++                storyReportDTO = mapper.readValue(payload, JiraStoryHtml.class);
++            } catch (IOException e) {
++                throw new RuntimeException(e);
++            }
+ 
+-        storyReportService.addStoryTestReport(projectKey, issueKey, storyReportDTO);
++            storyReportService.addStoryTestReport(projectKey, issueKey, storyReportDTO);
+-        return "success";
++            response = RestResponse.success("JBehave story report was stored successfully");
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while attempting to add story test report", t);
+-    }
++        }
+ 
++        return response;
++    }
++
+     @POST
+     @Path("/add-for-path/{projectKey}/{storyPath}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.APPLICATION_JSON)
+-    public String addStoryTestReportForPath(
++    public RestResponse<String> addStoryTestReportForPath(
+             @PathParam("projectKey") String projectKey,
+             @PathParam("storyPath") String storyPath,
+             String payload) {
+ 
++        RestResponse<String> response;
++
++        try {
+-        Validate.notNull(storyPath);
+-        Validate.isTrue(storyPath.endsWith(".story"));
+-        String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
++            Validate.notNull(storyPath);
++            Validate.isTrue(storyPath.endsWith(".story"));
++            String issueKey = storyPath.substring(0, storyPath.lastIndexOf(".story"));
++            response = this.addStoryTestReport(projectKey, issueKey, payload);
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while attempting to add story test report for path, projectKey - " + projectKey + ", storyPath - " + storyPath, t);
++        }
+ 
+-        return this.addStoryTestReport(projectKey, issueKey, payload);
++        return response;
+     }
+ 
+-
+-
+     @GET
+     @Path("/find/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.APPLICATION_JSON)
+-    public StoryTestReportsPayload findStoryTestReport(
++    public RestResponse<StoryTestReportsPayload> findStoryTestReport(
+             @PathParam("projectKey") String projectKey,
+             @PathParam("issueKey") String issueKey) {
+ 
++        RestResponse<StoryTestReportsPayload> response;
++
++        try {
+-        List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
++            List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+ 
+-        Collections.sort(storyTestReports, new Comparator<JiraStoryHtml>() {
+-            @Override
+-            public int compare(JiraStoryHtml o1, JiraStoryHtml o2) {
+-                return o1.getEnvironment().compareTo(o2.getEnvironment());
+-            }
+-        });
++            Collections.sort(storyTestReports, new Comparator<JiraStoryHtml>() {
++                @Override
++                public int compare(JiraStoryHtml o1, JiraStoryHtml o2) {
++                    return o1.getEnvironment().compareTo(o2.getEnvironment());
++                }
++            });
+-
+-        StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
++            StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
+-        return storyTestReportsPayloadDTO;
++            response = RestResponse.success(storyTestReportsPayloadDTO);
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while attempting to find story test report for path, projectKey - " + projectKey + ", issueKey - " + issueKey, t);
+-    }
++        }
+ 
++        return response;
++    }
++
+     @DELETE
+     @Path("/delete/{projectKey}/{issueKey}")
+-    public Response deleteStoryTestReport(
+-            @PathParam("projectKey") String projectKey,
+-            @PathParam("issueKey") String issueKey) {
++    public RestResponse<String> deleteStoryTestReport(@PathParam("projectKey") String projectKey, @PathParam("issueKey") String issueKey) {
+ 
++        RestResponse<String> response;
++
++        try {
+-        storyReportService.deleteForIssue(projectKey, issueKey);
++            storyReportService.deleteForIssue(projectKey, issueKey);
+-        return Response.ok("Successful deletion from server!").build();
++            response = RestResponse.success("Story test reports were successfully deleted on the server");
++        } catch (Throwable t) {
++            response = RestResponse.failure(t);
++            log.error("Exception occurred while attempting to delete story test reports for projectKey - " + projectKey + ", issueKey - " + issueKey, t);
++        }
++
++        return response;
+     }
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStory.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStory.java	(revision )
+@@ -3,6 +3,7 @@
+ import net.java.ao.Entity;
+ import net.java.ao.OneToMany;
+ import net.java.ao.Preload;
++import net.java.ao.schema.StringLength;
+ 
+ @Preload
+ public interface JBehaveStory extends Entity {
+@@ -23,6 +24,7 @@
+ 
+     void setProjectKey(String projectKey);
+ 
++    @StringLength(StringLength.UNLIMITED)
+     String getAsString();
+ 
+     void setAsString(String asString);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/GroovyClientDownload.java	(date 1429733508000)
+@@ -1,80 +0,0 @@
+-package com.jbehaveforjira.plugin.rest;
+-
+-import org.apache.commons.lang.Validate;
+-
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
+-import java.io.BufferedReader;
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.InputStreamReader;
+-
+-@Path("/groovy-client")
+-public class GroovyClientDownload {
+-
+-    private final String baseDir = "com/jbehaveforjira/groovyclient/";
+-
+-    @GET
+-    @Path("/story-paths-finder")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStoryPathsFinder() {
+-
+-        String scriptPath = baseDir + "GroovyStoryPathsFinder.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    @GET
+-    @Path("/story-loader")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStoryLoader() {
+-
+-        String scriptPath = baseDir + "GroovyStoryLoader.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    @GET
+-    @Path("/step-doc-reporter")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStepDocReporter() {
+-
+-        String scriptPath = baseDir + "GroovyStepDocReporter.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    @GET
+-    @Path("/story-reporter")
+-    @Produces(MediaType.APPLICATION_JSON)
+-    public String getStoryReporter() {
+-
+-        String scriptPath = baseDir + "GroovyStoryReporter.groovy";
+-        String groovyScript = loadScript(scriptPath);
+-        return groovyScript;
+-    }
+-
+-    private String loadScript(String scriptPath) {
+-
+-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(scriptPath);
+-        Validate.notNull(inputStream);
+-
+-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+-        StringBuilder sb = new StringBuilder();
+-        String line = null;
+-        try {
+-            line = br.readLine();
+-            while (line != null) {
+-                sb.append(line);
+-                sb.append("\n");
+-                line = br.readLine();
+-            }
+-        } catch (IOException e) {
+-            throw new RuntimeException(e);
+-        }
+-
+-        return sb.toString();
+-    }
 -}
-+/* Lifecycle ------------------------------------- */
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/velocity/story_panel.vm	(revision )
+@@ -1,5 +1,5 @@
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:view-issue-page-3rd-party-resources")
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:view-issue-page-resources")
+ $webResourceManager.requireResource("com.jbehaveforjira.plugin:update-jbehave-preferences-web-resource")
+-<div id="story-panel">Click to add JBehave story<!--DEFAULT content!--></div>
++<div id="story-panel"><div class="no-content">JBehave story is loading...<!--DEFAULT content!--></div></div>
  
--.jb-story-report-scenario {
-+.jb-story-report .lifecycle {
-+    color: #594300;
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java	(revision )
+@@ -2,11 +2,14 @@
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
+ import com.jbehaveforjira.plugin.dto.stepdoc.StepDocsPayload;
+ import com.jbehaveforjira.plugin.service.StepDocsService;
+ import org.codehaus.jackson.map.DeserializationConfig;
+ import org.codehaus.jackson.map.ObjectMapper;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ 
+ import javax.ws.rs.*;
+ import javax.ws.rs.core.MediaType;
+@@ -16,6 +19,8 @@
+ @Path("/step-doc")
+ public class StepDocResource {
+ 
++    private final Logger logger = LoggerFactory.getLogger(this.getClass());
++
+     private StepDocsService stepDocsSerivce;
+ 
+     private SearchService searchService;
+@@ -33,32 +38,50 @@
+     @Path("/add/{projectKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.APPLICATION_JSON)
+-    public String addStepDocs(
+-            @PathParam("projectKey") String projectKey,
+-            String payload) {
++    public RestResponse<String> addStepDocs(@PathParam("projectKey") String projectKey, String payload) {
+ 
++        RestResponse<String> response;
++
++        try {
+-        ObjectMapper mapper = new ObjectMapper();
+-        mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+-        StepDocsPayload stepDocsPayload = null;
+-        try {
+-            stepDocsPayload = mapper.readValue(payload, StepDocsPayload.class);
+-        } catch (IOException e) {
+-            throw new RuntimeException(e);
+-        }
++            ObjectMapper mapper = new ObjectMapper();
++            mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
++            StepDocsPayload stepDocsPayload = null;
++            try {
++                stepDocsPayload = mapper.readValue(payload, StepDocsPayload.class);
++            } catch (IOException e) {
++                throw new RuntimeException(e);
++            }
+ 
+-        List<StepDocDTO> stepDocs = stepDocsPayload.getStepDocs();
+-        stepDocsSerivce.createStepDocs(projectKey, stepDocs);
++            List<StepDocDTO> stepDocs = stepDocsPayload.getStepDocs();
++            stepDocsSerivce.createStepDocs(projectKey, stepDocs);
+-        return "success";
++
++            response = RestResponse.success("Step docs stored successfully");
++        } catch (Exception e) {
++            response = RestResponse.failure(e);
++            logger.error("Exception occurred while processing step docs", e);
+-    }
++        }
+ 
++        return response;
++    }
++
+     @GET
+     @Path("/for-project/{projectKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+-    public StepDocsPayload findForProject(@PathParam("projectKey") String projectKey) {
++    public RestResponse<StepDocsPayload> findForProject(@PathParam("projectKey") String projectKey) {
+ 
++        RestResponse<StepDocsPayload> response;
++
++        try {
+-        List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
+-        StepDocsPayload payload = new StepDocsPayload(stepDocs);
++            List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
++            StepDocsPayload payload = new StepDocsPayload(stepDocs);
+-        return payload;
++            response = RestResponse.success(payload);
++
++        } catch (Exception ex) {
++            response = RestResponse.failure(ex);
++            logger.error("Exception occurred while fetching step docs for project - " + projectKey, ex);
++        }
++
++        return response;
+     }
+ 
+ 
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStoryReports.soy	(revision )
+@@ -42,7 +42,7 @@
+     </ul>
+     {foreach $storyReport in $storyTestReports}
+         <div id="storyReportTab{index($storyReport)}" class="tabs-pane story-report-tab{if isFirst($storyReport)} active-pane{/if}">
+-            <div id="storyReportMsgContainer{index($storyReport)}">
++            <div id="storyReportMsgContainer{index($storyReport)}" class="report-message-bar">
+                 {if $storyReport.storyVersion != $currentStoryVersion}
+                     {call aui.message.hint}
+ //                        {param title: 'Story has been modified since the last story run on this environment' /}
+@@ -95,3 +95,17 @@
+         </div>
+     </div>
+ {/template}
++
++
++/**
++ * Render no story reports message
++ */
++{template .renderNoStoryReports autoescape="false"}
++    <div class="jb-story-report">
++        <div class="no-content">
++            No story execution reports found
++        </div>
++    </div>
++{/template}
++
++
+Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -6,7 +6,7 @@
+     <artifactId>jira-plugin</artifactId>
+     <packaging>atlassian-plugin</packaging>
+     <name>JBehave For Jira - Jira Plugin</name>
+-    <version>1.0.6</version>
++    <version>1.0.7</version>
+     <description>Provides integration with JBehave BDD framework</description>
+     <url>http://www.jbehaveforjira.com</url>
+     <properties>
+@@ -49,6 +49,12 @@
+                 </configuration>
+             </plugin>
+             <plugin>
++                <groupId>com.atlassian.maven.plugins</groupId>
++                <artifactId>maven-amps-plugin</artifactId>
++                <version>${amps.version}</version>
++                <extensions>true</extensions>
++            </plugin>
++            <plugin>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>3.1</version>
+                 <configuration>
+@@ -61,11 +67,6 @@
+                 <artifactId>yuicompressor-maven-plugin</artifactId>
+                 <version>0.7.1</version>
+             </plugin>
+-            <!--<plugin>-->
+-            <!--<groupId>com.atlassian.maven.plugins</groupId>-->
+-            <!--<artifactId>maven-amps-dispatcher-plugin</artifactId>-->
+-            <!--<version>${amps.version}</version>-->
+-            <!--</plugin>-->
+             <plugin>
+                 <groupId>com.samaxes.maven</groupId>
+                 <artifactId>minify-maven-plugin</artifactId>
+@@ -133,12 +134,6 @@
+             <scope>provided</scope>
+             <version>${ao.version}</version>
+         </dependency>
+-        <!--<dependency>-->
+-        <!--<groupId>com.atlassian.plugins.rest</groupId>-->
+-        <!--<artifactId>atlassian-rest-common</artifactId>-->
+-        <!--<scope>provided</scope>-->
+-        <!--<version>1.0.2</version>-->
+-        <!--</dependency>-->
+         <dependency>
+             <groupId>com.atlassian.sal</groupId>
+             <artifactId>sal-api</artifactId>
+@@ -155,11 +150,6 @@
+         <!--Other dependencies-->
+         <!-- ================================================================================= -->
+         <dependency>
+-            <groupId>com.jbehaveforjira</groupId>
+-            <artifactId>groovy-client</artifactId>
+-            <version>1.0.0-SNAPSHOT</version>
+-        </dependency>
+-        <dependency>
+             <groupId>org.jbehave</groupId>
+             <artifactId>jbehave-core</artifactId>
+             <version>3.9.5</version>
+@@ -179,42 +169,11 @@
+             <artifactId>logback-classic</artifactId>
+             <version>1.1.2</version>
+         </dependency>
+-        <!--<dependency>-->
+-        <!--<groupId>javax.servlet</groupId>-->
+-        <!--<artifactId>servlet-api</artifactId>-->
+-        <!--<version>2.5</version>-->
+-        <!--</dependency>-->
+         <dependency>
+             <groupId>javax.ws.rs</groupId>
+             <artifactId>jsr311-api</artifactId>
+             <version>1.1.1</version>
+             <scope>provided</scope>
+-        </dependency>
+-        <!--<dependency>-->
+-            <!--<groupId>com.sun.jersey</groupId>-->
+-            <!--<artifactId>jersey-client</artifactId>-->
+-            <!--<version>1.18.1</version>-->
+-            <!--<scope>provided</scope>-->
+-        <!--</dependency>-->
+-        <!--<dependency>-->
+-            <!--<groupId>com.sun.jersey</groupId>-->
+-            <!--<artifactId>jersey-json</artifactId>-->
+-            <!--<version>1.18.1</version>-->
+-            <!--<scope>provided</scope>-->
+-        <!--</dependency>-->
+-        <!--<dependency>-->
+-        <!--<groupId>javax.xml.bind</groupId>-->
+-        <!--<artifactId>jaxb-api</artifactId>-->
+-        <!--<scope>provided</scope>-->
+-        <!--</dependency>-->
+-        <!--<dependency>-->
+-        <!--<groupId>org.codehaus.jackson</groupId>-->
+-        <!--<artifactId>jackson-core-asl</artifactId>-->
+-        <!--</dependency>-->
+-        <dependency>
+-            <groupId>org.codehaus.groovy</groupId>
+-            <artifactId>groovy-all</artifactId>
+-            <version>2.3.6</version>
+         </dependency>
+         <!-- ================================================================================= -->
+         <!-- Test dependencies -->
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/css/story-report.css	(revision )
+@@ -101,7 +101,15 @@
+ }
+ 
+ /* latest changes *************************************************************************************************/
++.jb-story-report {
++    padding-top: 15px;
++}
+ 
++.report-message-bar {
++    padding-top: 15px;
++}
++
++
+ .jb-story-report .description {
+     color: #d04437;
      padding-top: 5px;
-     padding-left: 16px;
- }
- 
--.jb-scenario-example {
--    color: firebrick;
-+.jb-story-report .lifecycle .keyword {
-+    font-size: larger;
-     font-weight: bold;
--    padding-top: 5px;
--    padding-left: 16px;
- }
- 
--/*.jb-story-report-scenario-title, */
--.jb-story-report-meta {
--    color: #770088;
--    padding-top: 5px;
--    padding-left: 16px;
-+.jb-story-report .lifecycle .before .keyword, .jb-story-report .lifecycle .after .keyword, .jb-story-report .lifecycle .outcome .keyword {
-+    font-size: inherit;
-+    font-weight: bold;
- }
- 
--.jb-story-report-meta-keyword {
--    font-size: 16px;
--    color: #770088;
--    font-weight: bold;
--    /*padding-left: 14px;*/
-+.jb-story-report .lifecycle .outcome .text {
-+    font-size: inherit;
-+    font-weight: normal;
- }
- 
--.jb-story-report-lifecycle {
-+/* Scenario --------------------------------------- */
-+
-+.jb-story-report .scenario {
-+    padding-top: 10px;
-+}
-+
- .jb-story-report .scenario .title {
-+    color: green;
- }
- 
- .jb-story-report .scenario .title a {
-     color: green;
-     text-decoration: none;
- }
--.jb-story-report-lifecycle-keyword {
--    color: #594300;
--    font-size: 16px;
-+
-+.jb-story-report .scenario .title .keyword {
-     font-weight: bold;
- }
- 
--.jb-story-report-narrative {
--    color: #0000cc;
--    padding-top: 5px;
-+.jb-story-report .scenario .content {
-     padding-left: 16px;
- }
- 
-@@ -213,16 +199,16 @@
- .jb-story-report .scenario .content.expanded {
-     display: inherit;
- }
--.jb-story-report-narrative-keyword {
--    font-size: 16px;
--    font-weight: bold;
--    color: #0000cc;
-+
-+/* Step -------------------------------------------- */
-+.jb-story-report .step {
-+    padding-top: 3px;
- }
- 
- .jb-story-report .step .keyword,
- .jb-story-report .example .step .keyword {
--.aui-lozenge {
--    /*vertical-align: middle;*/
-+    font-weight: bold;
-+    color: #aa5500;
- }
- 
- .jb-story-report .step .outcome-keyword {
-@@ -266,45 +252,37 @@
- }
- 
- /* Step parameters ----------------------------------*/
--.jb-story-report-description {
--    padding-top: 5px;
-+
-+.jb-story-report .step .parameter, .jb-story-report .step .tabular-parameter {
-+    color: purple;
- }
- 
- .jb-story-report .step .tabular-parameter table,
- .jb-story-report .scenario .examples-table table,
- .jb-story-report .step .step-outcome .outcomes table {
--.jb-story-ele-exp-trigger {
--    font-size: 16px;
--    /*padding-left: 14px;*/
-+    border: solid 1px;
-+    border-collapse: collapse;
- }
- 
--.jb-story-ele-exp-trigger {
--    text-decoration: none;
--.jb-story-report .scenario .content {
--    padding-left: 16px;
--}
--
- .jb-story-report .step .tabular-parameter td, .jb-story-report .step .tabular-parameter th,
- .jb-story-report .scenario .examples-table td, .jb-story-report .scenario .examples-table th,
- .jb-story-report .step .step-outcome .outcomes td, .jb-story-report .step .step-outcome .outcomes th {
--.jb-story-ele-exp-trigger.collapsed {
--    /*background: url(your_image_url) no-repeat;*/
--    background: url(images/ui/collapsed_icon.png) no-repeat left center;
-+    border-left: solid 1px;
-+    font-weight: normal;
-+    margin: 0px;
-+    padding: 4px;
- }
- 
- .jb-story-report .step .tabular-parameter thead th,
- .jb-story-report .scenario .examples-table thead th,
- .jb-story-report .step .step-outcome .outcomes thead th {
--.jb-story-ele-exp-trigger.expanded.mouse-over {
--    background: url(images/ui/expanded_icon.png) no-repeat left center;
-+    font-weight: bold;
-+    /*font-style: italic;*/
- }
- 
--/*.jb-story-report-scenario-content.collapsed {*/
--    /*display: none;*/
--/*}*/
--
--.jb-story-ele-exp-content {
--    padding-left: 16px;
-+.jb-story-report .step .tabular-parameter tbody tr.odd {
-+    background-color: #f5efff;
-+    /*font-style: italic;*/
- }
- 
- /* Step examples --------------------------------------------------*/
-@@ -355,25 +333,4 @@
+@@ -345,4 +353,16 @@
  
  .jb-story-report .step .step-outcome .outcomes tr.notVerified {
      color: #D04437;
--}
--.jb-story-report-description {
--    color: #d04437;
--    /*padding-bottom: 10px;*/
--}
--
--.jb-story-report-lozenge {
--    vertical-align: text-top;
--}
--
--.jb-story-report-lozenge-container {
--    margin-left: 4px;
--    /*vertical-align: text-top;*/
--}
--
--.jb-story-ele-exp-container {
--    /*padding-left: 16px;*/
--}
--
--.jb-story-ele-exp-trigger-container {
--    /*padding-left: 16px;*/
++}
++
++.jb-story-report .no-content {
++    color: rgb(51, 51, 51);
++    cursor: text;
++    display: inline;
++    font-family: Arial, sans-serif;
++    font-size: 14px;
++    font-style: italic;
++    height: auto;
++    line-height: 20px;
++    width: auto;
  }
 \ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsService.java
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsService.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsService.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryReportDTOUtils.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/JiraIssueHasStoryReportsCondition.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryReportsPanelContextProvider.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryReportsPanelContextProvider.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryReportsPanelContextProvider.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStoryDao.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin-marketing.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin-marketing.xml	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin-marketing.xml	(revision )
-@@ -23,4 +23,4 @@
-         <screenshot image="images/marketing/additional_screenshot_3.png"/>
-     </screenshots>
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/ao/JBehaveStepDoc.java	(revision )
+@@ -2,6 +2,7 @@
  
--</atlassian-plugin-marketing>
-+</atlassian-plugin-marketing>
-\ No newline at end of file
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.css
+ import net.java.ao.Entity;
+ import net.java.ao.Preload;
++import net.java.ao.schema.StringLength;
+ 
+ @Preload
+ public interface JBehaveStepDoc extends Entity {
+@@ -14,34 +15,42 @@
+ 
+     void setStartingWord(String startingWord);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getPattern();
+ 
+     void setPattern(String pattern);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getRegExpPattern();
+ 
+     void setRegExpPattern(String regExpPattern);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getGroupedRegExpPattern();
+ 
+     void setGroupedRegExpPattern(String groupedRegExpPattern);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getParameterGroups();
+ 
+     void setParameterGroups(String parameterGroups);
+ 
++    @StringLength(StringLength.UNLIMITED)
+     String getParameterInfos();
+ 
+     void setParameterInfos(String parameterInfos);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getParamBoundInPattern();
+ 
+     void setParamBoundInPattern(String paramBoundInPattern);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getExtendedPattern();
+ 
+     void setExtendedPattern(String extendedPattern);
+ 
++    @StringLength(StringLength.MAX_LENGTH)
+     String getParamBoundInExtendPattern();
+ 
+     void setParamBoundInExtendPattern(String ParamBoundInExtendPattern);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.css	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/lib/codemirror.css	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/velocity/story_reports_panel.vm
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java	(revision )
+@@ -1,5 +1,6 @@
+ package com.jbehaveforjira.plugin.dto.rest;
+ 
++import org.apache.commons.lang3.StringUtils;
+ import org.apache.commons.lang3.exception.ExceptionUtils;
+ 
+ import javax.xml.bind.annotation.XmlAccessType;
+@@ -62,8 +63,15 @@
+     }
+ 
+     public static <T> RestResponse<T> failure(Throwable throwable) {
++
+         String stackTrace = ExceptionUtils.getStackTrace(throwable);
+-        return new RestResponse(ResponseKind.failure, throwable.getMessage(), stackTrace);
++        String errorMsg = throwable.getMessage();
++        Throwable rootCause = ExceptionUtils.getRootCause(throwable);
++        if (rootCause != null && StringUtils.isNotEmpty(rootCause.getMessage())) {
++            errorMsg = rootCause.getMessage();
++        }
++
++        return new RestResponse(ResponseKind.failure, errorMsg, stackTrace);
+     }
+ 
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/velocity/story_reports_panel.vm	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/velocity/story_reports_panel.vm	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsServiceImpl.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StepDocsServiceImpl.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/mode/jbehave/jbehave.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportService.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportService.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/service/StoryReportService.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/JiraStoryHtml.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryPaths.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryPaths.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryPaths.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/LicenseIsValidCondition.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/LicenseIsValidCondition.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/conditions/LicenseIsValidCondition.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocsPayload.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocsPayload.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocsPayload.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/storyreport/StoryTestReportsPayload.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/comment/comment.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/comment/comment.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/comment/comment.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/TabularFieldInfo.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/stepdoc/StepDocDTO.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/customfields/EnvironmentTestStatuses.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/customfields/EnvironmentTestStatuses.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/customfields/EnvironmentTestStatuses.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/story/StoryDTOUtils.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/contextproviders/StoryPanelContextProvider.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/listeners/IssueDeletedEventListener.java	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/placeholder.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/placeholder.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/display/placeholder.js	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/soy/TemplatesShowStory.soy	(revision )
-@@ -1,0 +1,0 @@
-Index: jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/js/UpdateJBehavePreferences.js
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/js/UpdateJBehavePreferences.js	(date 1414444952000)
-+++ jbehave-for-jira/sync_copy/jbehave-for-jira-plugin/src/main/resources/js/UpdateJBehavePreferences.js	(revision )
-@@ -1,0 +1,0 @@
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(date 1429733508000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/3rdparty/codemirror-4.3/addon/hint/jbehave-hint.js	(revision )
+@@ -13,22 +13,37 @@
+ 
+     var stepDocs = null;
+     AJS.$(function () {
++
+         var issueKey = AJS.$.trim(AJS.$("#key-val").text());
+         if (issueKey) {
+             var projectKey = issueKey.match("[A-Z]*")[0];
+             var contextPath = AJS.contextPath();
+             var restPathBase = contextPath + "/rest/jbehave-for-jira/1.0/";
+             var pathStepDocs = restPathBase + "step-doc/for-project/" + projectKey;
++
+             AJS.$.ajax({
+                 type: "GET",
+                 url: pathStepDocs,
+                 contentType: "text/plain; charset=utf-8",
+-                success: function (data, status, xhr) {
+-                    stepDocs = data.stepDocs;
++                success: function (data, textStatus, jqXHR) {
++                    console.log("REST call for step docs returned successfully");
++
++                    if (data.kind == "success") {
++                        console.log("Successfully fetched step docs from server");
++                        stepDocs = data.payload.stepDocs;
++                    } else {
++                        console.error("Failed to load step docs, server error message - " + data.message + "\nServer error stack trace:\n" + data.payload);
++                        JIRA.Messages.showWarningMsg("Failed to load step documentation for JBehave for Jira plugin. See browser log for more details.");
++                    }
+                 },
+-                dataType: "json"
+-//                async: false
++                error: function (jqXHR, textStatus, errorThrown) {
++                    console.error("REST call for step docs failed, textStatus - " + textStatus + "," + errorThrown - " + errorThrown");
++                    JIRA.Messages.showWarningMsg("Failed to fetch step information for JBehave for Jira plugin. Please contact your system administrator.");
++                },
++                dataType: "json",
++                timeout: 10000
+             });
++
+         } else {
+             console.error("Failed to fetch step docs from server");
+         }
