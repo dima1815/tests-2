@@ -1,0 +1,713 @@
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/js/StoryController.js	(revision )
+@@ -41,54 +41,63 @@
+ 
+     // initialization sequence
+ 
+-    this.initSequence = function () {
+-        restService.getUserPreferences(function (preferencesResponse) {
++    function loadStory() {
+ 
+-            if (preferencesResponse.kind == "success") {
+-                debug("Successfully fetched user preferences");
+-
+-                prefs = preferencesResponse.payload;
+-                storyController.prefs = prefs;
+-
+-                restService.fetchStepDocs(function (stepDocsResponse) {
+-
+-                    if (stepDocsResponse.kind == "success") {
+-                        debug("Successfully fetched step docs");
+-
+-                        stepDocs = stepDocsResponse.payload.stepDocs;
+-
+-                        restService.loadStory(false, function (loadStoryResponse) {
++        restService.loadStory(false, function (loadStoryResponse) {
+-
+-                            if (loadStoryResponse.kind == "success") {
++            if (loadStoryResponse.kind == "success") {
+ 
+-                                debug("Successfully loaded story");
+-                                var loadedStory = loadStoryResponse.payload;
+-                                if (loadedStory != null) {
++                debug("Successfully loaded story");
++                var loadedStory = loadStoryResponse.payload;
++                if (loadedStory != null) {
+ 
+-                                    editor = storyController.initEditor();
+-                                    storyController.editor = editor;
+-                                    storyController.showStory(loadedStory);
++                    editor = storyController.initEditor();
++                    storyController.editor = editor;
++                    storyController.showStory(loadedStory);
+ 
+-                                } else {
+-                                    debug("No story found for current Jira item.");
+-                                }
+-                            } else {
+-                                error("Failed to load story, server error message - " + loadStoryResponse.message + "\nServer error stack trace:\n" + loadStoryResponse.payload);
+-                                JIRA.Messages.showWarningMsg("Failed to load story for JBehave for Jira plugin. See browser log for more details.");
+-                            }
+-                        });
++                } else {
++                    debug("No story found for current Jira item.");
++                }
++            } else {
++                error("Failed to load story, server error message - " + loadStoryResponse.message + "\nServer error stack trace:\n" + loadStoryResponse.payload);
++                JIRA.Messages.showWarningMsg("Failed to load story for JBehave for Jira plugin. See browser log for more details.");
++            }
++        });
++    }
+ 
++    function loadStepDocs() {
++
++        restService.fetchStepDocs(function (stepDocsResponse) {
++
++            if (stepDocsResponse.kind == "success") {
++                debug("Successfully fetched step docs");
++                stepDocs = stepDocsResponse.payload.stepDocs;
++                loadStory();
+-                    } else if (stepDocsResponse.kind == "failure") {
+-                        error("Failed to fetch step docs, server error message - " + stepDocsResponse.message + "\nServer error stack trace:\n" + stepDocsResponse.payload);
+-                        JIRA.Messages.showWarningMsg("Failed to fetch step documentation for JBehave for Jira plugin. See browser log for more details.");
++            } else if (stepDocsResponse.kind == "failure") {
++                error("Failed to fetch step docs, server error message - " + stepDocsResponse.message + "\nServer error stack trace:\n" + stepDocsResponse.payload);
++                JIRA.Messages.showWarningMsg("Failed to fetch step documentation for JBehave for Jira plugin. See browser log for more details.");
++            } else if (stepDocsResponse.kind == "unauthorized") {
++                debug("User was unauthorized to fetch step docs, server error message - " + stepDocsResponse.message);
++                //if this happens, then we do not need to load the story as the user would not have BROWSE_PROJECT permission in such case
+-                    } else {
+-                        error("Invalid payload structure returned from server for step docs: \n" + JSON.stringify(stepDocsResponse, null, "\t"));
+-                    }
+-                });
++            } else {
++                error("Invalid payload structure returned from server for step docs: \n" + JSON.stringify(stepDocsResponse, null, "\t"));
++            }
++        });
++    }
+ 
++    this.initSequence = function () {
++        restService.getUserPreferences(function (preferencesResponse) {
++
++            if (preferencesResponse.kind == "success") {
++                debug("Successfully fetched user preferences");
++                prefs = preferencesResponse.payload;
++                storyController.prefs = prefs;
++                loadStepDocs();
+             } else if (preferencesResponse.kind == "failure") {
+                 error("Failed to fetch user preferences, server error message - " + preferencesResponse.message + "\nServer error stack trace:\n" + preferencesResponse.payload);
+                 JIRA.Messages.showWarningMsg("Failed to fetch user preferences for JBehave for Jira plugin. See browser log for more details.");
++            } else if (preferencesResponse.kind == "unauthorized") {
++                debug("User was unauthorized to fetch user preferences, server error message - " + preferencesResponse.message);
++                loadStepDocs();
+             } else {
+                 error("Invalid payload structure returned from server for user preferences: \n" + JSON.stringify(preferencesResponse, null, "\t"));
+             }
+@@ -492,9 +501,9 @@
+ 
+     function PreferencesModel() {
+         this.showLineNumbers = false;
+-        this.highlightErrors = false;
+-        this.autoAlignTables = false;
+-        this.autoInsertTabularFields = false;
++        this.highlightErrors = true;
++        this.autoAlignTables = true;
++        this.autoInsertTabularFields = true;
+     }
+ 
+     function StoryModel() {
+@@ -581,7 +590,7 @@
+             currentMsgContent = AJS.$("#storyMsgBar").html();
+         }
+ 
+-        this.showErrorMessage = function (errorMsg) {
++        this.showWarningMessage = function (errorMsg) {
+             AJS.$("#storyMsgBar").empty();
+             AJS.messages.warning("#storyMsgBar", {
+                 title: null,
+@@ -591,7 +600,18 @@
+             });
+             currentMsgContent = AJS.$("#storyMsgBar").html();
+         }
++
++        this.showErrorMessage = function (errorMsg) {
++            AJS.$("#storyMsgBar").empty();
++            AJS.messages.error("#storyMsgBar", {
++                title: null,
++                fadeout: true,
++                body: errorMsg,
++                closeable: true
++            });
++            currentMsgContent = AJS.$("#storyMsgBar").html();
+-    }
++        }
++    }
+ 
+     function RestService() {
+ 
+@@ -1939,7 +1959,7 @@
+             msgBar.showWaitingMessage("Saving...");
+ 
+             restService.saveOrUpdateStory(storyModel, function(response) {
+-                if (response.kind = "success") {
++                if (response.kind == "success") {
+                     var savedStory = response.payload;
+                     var jsonStory = JSON.stringify(savedStory, null, "\t");
+                     debug("saved story:\n" + jsonStory);
+@@ -1949,6 +1969,12 @@
+                 } else if (response.kind == "failure") {
+                     error("Failed to save story, server error message - " + response.message + "\nServer error stack trace:\n" + response.payload);
+                     JIRA.Messages.showWarningMsg("Failed to save story for JBehave for Jira plugin. See browser log for more details.");
++                } else if (response.kind == "unauthorized") {
++                    debug("User was unauthorized to save or update the issue story, server error message - " + response.message);
++                    msgBar.showErrorMessage(response.message);
++                    //storyController.showStory(loadedStory);
++                    editor.setOption("readOnly", false);
++                    storyChanged = false;
+                 } else {
+                     error("Invalid payload structure returned from server for save story request: \n" + JSON.stringify(response, null, "\t"));
+                 }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/UserPreferencesResource.java	(revision )
+@@ -4,6 +4,7 @@
+ import com.atlassian.jira.security.JiraAuthenticationContext;
+ import com.atlassian.jira.user.ApplicationUser;
+ import com.atlassian.jira.user.preferences.UserPreferencesManager;
++import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+ import com.jbehaveforjira.plugin.actions.UpdateJBehavePreferencesAction;
+ import com.jbehaveforjira.plugin.dto.preferences.UserPreferencesDTO;
+ import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+@@ -32,6 +33,7 @@
+ 
+     @GET
+     @Path("/for-user")
++    @AnonymousAllowed
+     @Produces({MediaType.APPLICATION_JSON})
+     public RestResponse<UserPreferencesDTO> getForCurrentUser(){
+ 
+@@ -39,20 +41,25 @@
+ 
+         try {
+             ApplicationUser user = authenticationContext.getUser();
++
++            if (user != null) {
+-            final Preferences preferences = preferencesManager.getPreferences(user);
++                final Preferences preferences = preferencesManager.getPreferences(user);
+ 
+-            boolean showLineNumbers = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_SHOW_LINE_NUMBERS);
+-            boolean autoAlignTables = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_ALIGN_TABLES);
+-            boolean autoInsertTabularFields = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_INSERT_TABLES);
+-            boolean highlightErrors = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_HIGHLIGHT_ERRORS);
++                boolean showLineNumbers = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_SHOW_LINE_NUMBERS);
++                boolean autoAlignTables = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_ALIGN_TABLES);
++                boolean autoInsertTabularFields = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_AUTO_INSERT_TABLES);
++                boolean highlightErrors = preferences.getBoolean(UpdateJBehavePreferencesAction.PREFERENCE_KEY_HIGHLIGHT_ERRORS);
+ 
+-            UserPreferencesDTO userPrefs = new UserPreferencesDTO();
+-            userPrefs.setShowLineNumbers(showLineNumbers);
+-            userPrefs.setHighlightErrors(highlightErrors);
+-            userPrefs.setAutoAlignTables(autoAlignTables);
+-            userPrefs.setAutoInsertTabularFields(autoInsertTabularFields);
++                UserPreferencesDTO userPrefs = new UserPreferencesDTO();
++                userPrefs.setShowLineNumbers(showLineNumbers);
++                userPrefs.setHighlightErrors(highlightErrors);
++                userPrefs.setAutoAlignTables(autoAlignTables);
++                userPrefs.setAutoInsertTabularFields(autoInsertTabularFields);
+ 
+-            response = RestResponse.success(userPrefs);
++                response = RestResponse.success(userPrefs);
++            } else {
++                response = RestResponse.unauthorized("Anonymous user does not have any preferences.");
++            }
+ 
+         } catch (Throwable t) {
+             response = RestResponse.failure(t);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryFindResource.java	(revision )
+@@ -1,7 +1,13 @@
+ package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
++import com.atlassian.jira.permission.ProjectPermissions;
++import com.atlassian.jira.project.Project;
++import com.atlassian.jira.project.ProjectManager;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.security.PermissionManager;
++import com.atlassian.jira.user.ApplicationUser;
++import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+ import com.atlassian.upm.api.license.PluginLicenseManager;
+ import com.jbehaveforjira.plugin.dto.rest.ResponseKind;
+ import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+@@ -11,7 +17,7 @@
+ import com.jbehaveforjira.plugin.service.StepDocsService;
+ import com.jbehaveforjira.plugin.service.StoryReportService;
+ import com.jbehaveforjira.plugin.service.StoryService;
+-import org.apache.commons.lang.Validate;
++import org.apache.commons.lang3.Validate;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+@@ -39,16 +45,22 @@
+ 
+     private final PluginLicenseManager pluginLicenseManager;
+ 
++    private final PermissionManager permissionManager;
++
++    private final ProjectManager projectManager;
++
+     public StoryFindResource(StoryService storyService,
+                              StoryReportService storyReportService,
+                              StepDocsService stepDocsSerivce, SearchService searchService,
+-                             JiraAuthenticationContext authenticationContext, PluginLicenseManager pluginLicenseManager) {
++                             JiraAuthenticationContext authenticationContext, PluginLicenseManager pluginLicenseManager, PermissionManager permissionManager, ProjectManager projectManager) {
+         this.storyService = storyService;
+         this.storyReportService = storyReportService;
+         this.stepDocsSerivce = stepDocsSerivce;
+         this.searchService = searchService;
+         this.authenticationContext = authenticationContext;
+         this.pluginLicenseManager = pluginLicenseManager;
++        this.permissionManager = permissionManager;
++        this.projectManager = projectManager;
+     }
+ 
+     @GET
+@@ -119,6 +131,7 @@
+     }
+ 
+     @GET
++    @AnonymousAllowed
+     @Path("/for-issue/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     public RestResponse<JiraStory> findForIssue(
+@@ -131,15 +144,26 @@
+ //        }
+ 
+         RestResponse<JiraStory> response;
+-
+         try {
++
++            Validate.notEmpty(projectKey, "'projectKey' parameter cannot be empty");
++            Validate.notEmpty(issueKey, "'issueKey' parameter cannot be empty");
++
++            ApplicationUser user = authenticationContext.getUser();
++            Project project = projectManager.getProjectObjByKey(projectKey);
++            boolean hasBrowsePermission = permissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, project, user);
++            if (hasBrowsePermission) {
+-            JiraStory storyDTO;
+-            if (updateFromVCS) {
+-                storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey, updateFromVCS);
+-            } else {
+-                storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
+-            }
+-            response = RestResponse.success(storyDTO);
++                JiraStory storyDTO;
++                if (updateFromVCS) {
++                    storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey, updateFromVCS);
++                } else {
++                    storyDTO = storyService.findByProjectAndIssueKey(projectKey, issueKey);
++                }
++                response = RestResponse.success(storyDTO);
++            } else {
++                response = RestResponse.unauthorized("User does not have permission to view issue story file");
++            }
++
+         } catch (Throwable t) {
+             response = RestResponse.failure(t);
+             log.error("Exception occurred while trying to find story for projectKey - " + projectKey + ", issueKey - " + issueKey, t);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryReportResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryReportResource.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryReportResource.java	(revision )
+@@ -1,13 +1,19 @@
+ package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
++import com.atlassian.jira.permission.ProjectPermissions;
++import com.atlassian.jira.project.Project;
++import com.atlassian.jira.project.ProjectManager;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.security.PermissionManager;
++import com.atlassian.jira.user.ApplicationUser;
++import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+ import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.storyreport.JiraStoryHtml;
+ import com.jbehaveforjira.plugin.dto.storyreport.StoryTestReportsPayload;
+ import com.jbehaveforjira.plugin.service.StoryReportService;
+ import com.jbehaveforjira.plugin.service.StoryService;
+-import org.apache.commons.lang.Validate;
++import org.apache.commons.lang3.Validate;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+@@ -32,14 +38,20 @@
+ 
+     private JiraAuthenticationContext authenticationContext;
+ 
++    private final PermissionManager permissionManager;
++
++    private final ProjectManager projectManager;
++
+     public StoryReportResource(StoryService storyService,
+                                StoryReportService storyReportService,
+                                SearchService searchService,
+-                               JiraAuthenticationContext authenticationContext) {
++                               JiraAuthenticationContext authenticationContext, PermissionManager permissionManager, ProjectManager projectManager) {
+         this.storyService = storyService;
+         this.storyReportService = storyReportService;
+         this.searchService = searchService;
+         this.authenticationContext = authenticationContext;
++        this.permissionManager = permissionManager;
++        this.projectManager = projectManager;
+     }
+ 
+     @POST
+@@ -96,6 +108,7 @@
+ 
+     @GET
+     @Path("/find/{projectKey}/{issueKey}")
++    @AnonymousAllowed
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.APPLICATION_JSON)
+     public RestResponse<StoryTestReportsPayload> findStoryTestReport(
+@@ -105,16 +118,28 @@
+         RestResponse<StoryTestReportsPayload> response;
+ 
+         try {
+-            List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+ 
++            Validate.notEmpty(projectKey, "'projectKey' parameter cannot be empty");
++            Validate.notEmpty(issueKey, "'issueKey' parameter cannot be empty");
++
++            ApplicationUser user = authenticationContext.getUser();
++            Project project = projectManager.getProjectObjByKey(projectKey);
++            boolean hasBrowsePermission = permissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, project, user);
++
++            if (hasBrowsePermission) {
++                List<JiraStoryHtml> storyTestReports = storyReportService.findStoryReports(projectKey, issueKey);
+-            Collections.sort(storyTestReports, new Comparator<JiraStoryHtml>() {
+-                @Override
+-                public int compare(JiraStoryHtml o1, JiraStoryHtml o2) {
+-                    return o1.getEnvironment().compareTo(o2.getEnvironment());
+-                }
+-            });
+-            StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
+-            response = RestResponse.success(storyTestReportsPayloadDTO);
++                Collections.sort(storyTestReports, new Comparator<JiraStoryHtml>() {
++                    @Override
++                    public int compare(JiraStoryHtml o1, JiraStoryHtml o2) {
++                        return o1.getEnvironment().compareTo(o2.getEnvironment());
++                    }
++                });
++                StoryTestReportsPayload storyTestReportsPayloadDTO = new StoryTestReportsPayload(storyTestReports);
++                response = RestResponse.success(storyTestReportsPayloadDTO);
++            } else {
++                response = RestResponse.unauthorized("User does not have permission to view issue story reports");
++            }
++
+         } catch (Throwable t) {
+             response = RestResponse.failure(t);
+             log.error("Exception occurred while attempting to find story test report for path, projectKey - " + projectKey + ", issueKey - " + issueKey, t);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StepDocResource.java	(revision )
+@@ -1,11 +1,18 @@
+ package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
++import com.atlassian.jira.permission.ProjectPermissions;
++import com.atlassian.jira.project.Project;
++import com.atlassian.jira.project.ProjectManager;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.security.PermissionManager;
++import com.atlassian.jira.user.ApplicationUser;
++import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+ import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.stepdoc.StepDocDTO;
+ import com.jbehaveforjira.plugin.dto.stepdoc.StepDocsPayload;
+ import com.jbehaveforjira.plugin.service.StepDocsService;
++import org.apache.commons.lang3.Validate;
+ import org.codehaus.jackson.map.DeserializationConfig;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+@@ -16,22 +23,29 @@
+ import java.io.IOException;
+ import java.util.List;
+ 
++
+ @Path("/step-doc")
+ public class StepDocResource {
+ 
+     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+ 
+-    private StepDocsService stepDocsSerivce;
++    private StepDocsService stepDocsService;
+ 
+     private SearchService searchService;
+ 
+     private JiraAuthenticationContext authenticationContext;
+ 
+-    public StepDocResource(StepDocsService stepDocsSerivce, SearchService searchService,
+-                           JiraAuthenticationContext authenticationContext) {
+-        this.stepDocsSerivce = stepDocsSerivce;
++    private final ProjectManager projectManager;
++
++    private final PermissionManager permissionManager;
++
++    public StepDocResource(StepDocsService stepDocsService, SearchService searchService,
++                           JiraAuthenticationContext authenticationContext, ProjectManager projectManager, PermissionManager permissionManager) {
++        this.stepDocsService = stepDocsService;
+         this.searchService = searchService;
+         this.authenticationContext = authenticationContext;
++        this.projectManager = projectManager;
++        this.permissionManager = permissionManager;
+     }
+ 
+     @POST
+@@ -53,7 +67,7 @@
+             }
+ 
+             List<StepDocDTO> stepDocs = stepDocsPayload.getStepDocs();
+-            stepDocsSerivce.createStepDocs(projectKey, stepDocs);
++            stepDocsService.createStepDocs(projectKey, stepDocs);
+ 
+             response = RestResponse.success("Step docs stored successfully");
+         } catch (Exception e) {
+@@ -66,15 +80,26 @@
+ 
+     @GET
+     @Path("/for-project/{projectKey}")
++    @AnonymousAllowed
+     @Produces(MediaType.APPLICATION_JSON)
+     public RestResponse<StepDocsPayload> findForProject(@PathParam("projectKey") String projectKey) {
+ 
+         RestResponse<StepDocsPayload> response;
+ 
+         try {
+-            List<StepDocDTO> stepDocs = stepDocsSerivce.findForProject(projectKey);
++
++            Validate.notEmpty(projectKey, "'projectKey' parameter cannot be empty");
++
++            ApplicationUser user = authenticationContext.getUser();
++            Project project = projectManager.getProjectObjByKey(projectKey);
++            boolean hasBrowsePermission = permissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, project, user);
++            if (hasBrowsePermission) {
++                List<StepDocDTO> stepDocs = stepDocsService.findForProject(projectKey);
+-            StepDocsPayload payload = new StepDocsPayload(stepDocs);
+-            response = RestResponse.success(payload);
++                StepDocsPayload payload = new StepDocsPayload(stepDocs);
++                response = RestResponse.success(payload);
++            } else {
++                response = RestResponse.unauthorized("User does not have permission to browse current project");
++            }
+ 
+         } catch (Exception ex) {
+             response = RestResponse.failure(ex);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/resources/atlassian-plugin.xml	(revision )
+@@ -298,13 +298,12 @@
+         <label key="viewIssuePage.storyPanel.label"/>
+         <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
+         <conditions type="and">
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+             <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
+-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+-                <param name="permission" value="edit"/>
++                <param name="permission" value="browse"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
+-            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+     </web-panel>
+     <!-- ==================================================================================================== -->
+@@ -319,13 +318,12 @@
+         <label key="viewIssuePage.storyReportsPanel.label"/>
+         <!--<condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>-->
+         <conditions type="and">
++            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+             <condition class="com.jbehaveforjira.plugin.conditions.EnabledForProjectCondition"/>
+-            <condition class="com.atlassian.jira.plugin.webfragment.conditions.IsIssueEditableCondition"/>
++            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
+             <condition class="com.atlassian.jira.plugin.webfragment.conditions.HasIssuePermissionCondition">
+-                <param name="permission" value="edit"/>
++                <param name="permission" value="browse"/>
+             </condition>
+-            <condition class="com.jbehaveforjira.plugin.conditions.JiraIssueHasStoryCondition"/>
+-            <condition class="com.jbehaveforjira.plugin.conditions.LicenseIsValidCondition"/>
+         </conditions>
+     </web-panel>
+     <!-- ==================================================================================================== -->
+Index: jbehave-for-jira/jbehave-for-jira-plugin/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/pom.xml	(revision )
+@@ -146,6 +146,12 @@
+             <version>${atlassian.templaterenderer.version}</version>
+             <scope>provided</scope>
+         </dependency>
++        <dependency>
++            <groupId>com.atlassian.plugins.rest</groupId>
++            <artifactId>atlassian-rest-common</artifactId>
++            <version>2.9.17</version>
++            <scope>provided</scope>
++        </dependency>
+         <!-- ================================================================================= -->
+         <!--Other dependencies-->
+         <!-- ================================================================================= -->
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/ResponseKind.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/ResponseKind.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/ResponseKind.java	(revision )
+@@ -3,5 +3,6 @@
+ public enum ResponseKind {
+ 
+     success,
+-    failure
++    failure,
++    unauthorized
+ }
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/dto/rest/RestResponse.java	(revision )
+@@ -62,6 +62,10 @@
+         return new RestResponse(ResponseKind.failure, errorMsg, null);
+     }
+ 
++    public static <T> RestResponse<T> unauthorized(String errorMsg) {
++        return new RestResponse(ResponseKind.unauthorized, errorMsg, null);
++    }
++
+     public static <T> RestResponse<T> failure(Throwable throwable) {
+ 
+         String stackTrace = ExceptionUtils.getStackTrace(throwable);
+Index: jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(date 1444512645000)
++++ jbehave-for-jira/jbehave-for-jira-plugin/src/main/java/com/jbehaveforjira/plugin/rest/StoryCrudResource.java	(revision )
+@@ -1,11 +1,18 @@
+ package com.jbehaveforjira.plugin.rest;
+ 
+ import com.atlassian.jira.bc.issue.search.SearchService;
++import com.atlassian.jira.issue.Issue;
++import com.atlassian.jira.issue.IssueManager;
++import com.atlassian.jira.permission.ProjectPermissions;
++import com.atlassian.jira.project.ProjectManager;
+ import com.atlassian.jira.security.JiraAuthenticationContext;
++import com.atlassian.jira.security.PermissionManager;
++import com.atlassian.jira.user.ApplicationUser;
++import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+ import com.jbehaveforjira.plugin.dto.rest.RestResponse;
+ import com.jbehaveforjira.plugin.dto.story.JiraStory;
+ import com.jbehaveforjira.plugin.service.StoryService;
+-import org.apache.commons.lang.Validate;
++import org.apache.commons.lang3.Validate;
+ import org.codehaus.jackson.map.ObjectMapper;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+@@ -25,17 +32,27 @@
+ 
+     private JiraAuthenticationContext authenticationContext;
+ 
++    private final PermissionManager permissionManager;
++
++    private final ProjectManager projectManager;
++
++    private final IssueManager issueManager;
++
+     public StoryCrudResource(StoryService storyService, SearchService searchService,
+-                             JiraAuthenticationContext authenticationContext) {
++                             JiraAuthenticationContext authenticationContext, PermissionManager permissionManager, ProjectManager projectManager, IssueManager issueManager) {
+         this.storyService = storyService;
+         this.searchService = searchService;
+         this.authenticationContext = authenticationContext;
++        this.permissionManager = permissionManager;
++        this.projectManager = projectManager;
++        this.issueManager = issueManager;
+     }
+ 
+     @POST
+     @Path("/save/{projectKey}/{issueKey}")
+     @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.TEXT_PLAIN)
++    @AnonymousAllowed
+     public RestResponse<JiraStory> save(@PathParam("projectKey") String projectKey,
+                           @PathParam("issueKey") String issueKey,
+                           String storyPayload) {
+@@ -47,18 +64,26 @@
+             Validate.notNull("Parameter 'projectKey' cannot be empty", projectKey);
+             Validate.notNull("Parameter 'issueKey' cannot be empty", issueKey);
+ 
++            ApplicationUser user = authenticationContext.getUser();
++            Issue issue = issueManager.getIssueObject(issueKey);
++            Validate.notNull(issue, "Issue could not be found for key - " + issueKey);
++            boolean hasEditPermission = permissionManager.hasPermission(ProjectPermissions.EDIT_ISSUES, issue, user);
++            if (hasEditPermission) {
+-            ObjectMapper mapper = new ObjectMapper();
+-            JiraStory storyDTO = null;
+-            try {
+-                storyDTO = mapper.readValue(storyPayload, JiraStory.class);
+-            } catch (IOException e) {
+-                throw new RuntimeException(e);
+-            }
+-            log.debug("saving story:\n" + storyDTO);
++                ObjectMapper mapper = new ObjectMapper();
++                JiraStory storyDTO = null;
++                try {
++                    storyDTO = mapper.readValue(storyPayload, JiraStory.class);
++                } catch (IOException e) {
++                    throw new RuntimeException(e);
++                }
++                log.debug("saving story:\n" + storyDTO);
+ 
+-            storyService.saveAndCommit(storyDTO);
++                storyService.saveAndCommit(storyDTO);
+ 
+-            response = RestResponse.success(storyDTO);
++                response = RestResponse.success(storyDTO);
++            } else {
++                response = RestResponse.unauthorized("User is not authorized to update the JBehave story");
++            }
+ 
+         } catch (Throwable t) {
+             response = RestResponse.failure(t);
